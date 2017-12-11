@@ -104,34 +104,34 @@ local function LoadSkin()
 				end
 			end
 
-			local buybackName, _, _, buybackQuantity = GetBuybackItemInfo(GetNumBuybackItems())
-			if buybackName and buybackQuantity then
-				local r, g, b = GetItemQualityColor(buybackQuantity)
-				MerchantBuyBackItemName:SetTextColor(r, g, b)
-				MerchantBuyBackItemItemButton:SetBackdropBorderColor(r, g, b)
-			else
-				MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-			end
+			--local buybackName = GetBuybackItemInfo(GetNumBuybackItems())
+			--if buybackName then
+			--	local r, g, b = GetItemQualityColor("???")
+			--	MerchantBuyBackItemName:SetTextColor(r, g, b)
+			--	MerchantBuyBackItemItemButton:SetBackdropBorderColor(r, g, b)
+			--else
+			--	MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			--end
 		end
 	end)
 
-	hooksecurefunc("MerchantFrame_UpdateBuybackInfo", function()
-		local numBuybackItems = GetNumBuybackItems()
-		local itemButton, itemName
-		for i = 1, BUYBACK_ITEMS_PER_PAGE do
-			itemButton = _G["MerchantItem" .. i .. "ItemButton"]
-			itemName = _G["MerchantItem" .. i .. "Name"]
-
-			if i <= numBuybackItems then
-				local buybackName, _, _, buybackQuantity = GetBuybackItemInfo(i)
-				if buybackName and buybackQuantity then
-					local r, g, b = GetItemQualityColor(buybackQuantity)
-					itemName:SetTextColor(r, g, b)
-					itemButton:SetBackdropBorderColor(r, g, b)
-				end
-			end
-		end
-	end)
+	--hooksecurefunc("MerchantFrame_UpdateBuybackInfo", function()
+	--	local numBuybackItems = GetNumBuybackItems()
+	--	local itemButton, itemName
+	--	for i = 1, BUYBACK_ITEMS_PER_PAGE do
+	--		itemButton = _G["MerchantItem" .. i .. "ItemButton"]
+	--		itemName = _G["MerchantItem" .. i .. "Name"]
+    --
+	--		if i <= numBuybackItems then
+	--			local buybackName = GetBuybackItemInfo(i)
+	--			if buybackName then
+	--				local r, g, b = GetItemQualityColor("???")
+	--				itemName:SetTextColor(r, g, b)
+	--				itemButton:SetBackdropBorderColor(r, g, b)
+	--			end
+	--		end
+	--	end
+	--end)
 end
 
 S:AddCallback("Merchant", LoadSkin)
