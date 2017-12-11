@@ -1,0 +1,438 @@
+<!-- $Id: LibUIDropDownMenuTemplates.xml 19 2017-07-02 13:34:55Z arith $ -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Button name="L_UIDropDownMenuButtonTemplate" virtual="true">
+		<Size x="100" y="16"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentHighlight" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentCheck" file="Interface\Buttons\UI-CheckBox-Check">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.5" top="0.5" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentUnCheck" file="Interface\Buttons\UI-CheckBox-Check">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.5" right="1.0" top="0.5" bottom="1.0"/>
+				</Texture>
+				<Texture name="$parentIcon" hidden="true">
+					<Size>
+						<AbsDimension x="16" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentColorSwatch" hidden="true">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT">
+						<Offset>
+							<AbsDimension x="-6" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentSwatchBg">
+							<Size>
+								<AbsDimension x="14" y="14"/>
+							</Size>
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset>
+										<AbsDimension x="0" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Color r="1.0" g="1.0" b="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						securecall("CloseMenus");
+						L_UIDropDownMenuButton_OpenColorPicker(this:GetParent());
+					</OnClick>
+					<OnEnter>
+						L_CloseDropDownMenus(this:GetParent():GetParent():GetID() + 1);
+						getglobal(this:GetName().."SwatchBg"):SetVertexColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+						L_UIDropDownMenu_StopCounting(this:GetParent():GetParent());
+					</OnEnter>
+					<OnLeave>
+						getglobal(this:GetName().."SwatchBg"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+						L_UIDropDownMenu_StartCounting(this:GetParent():GetParent());
+					</OnLeave>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\ChatFrameColorSwatch"/>
+			</Button>
+			<Button name="$parentExpandArrow" hidden="true">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="RIGHT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>                   
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						L_ToggleDropDownMenu(this:GetParent():GetParent():GetID() + 1, this:GetParent().value, nil, nil, nil, nil, this:GetParent().menuList, this);
+					</OnClick>
+					<OnEnter>
+						local level =  this:GetParent():GetParent():GetID() + 1;
+						local listFrame = getglobal("L_DropDownList"..level);
+						if ( not listFrame or not listFrame:IsShown() or select(2, listFrame:GetPoint()) ~= this ) then
+							L_ToggleDropDownMenu(level, this:GetParent().value, nil, nil, nil, nil, this:GetParent().menuList, this);
+						end
+						L_UIDropDownMenu_StopCounting(this:GetParent():GetParent());
+					</OnEnter>
+					<OnLeave>
+						L_UIDropDownMenu_StartCounting(this:GetParent():GetParent());
+					</OnLeave>
+				</Scripts>
+				<NormalTexture file="Interface\ChatFrame\ChatFrameExpandArrow"/>
+			</Button>
+			<Button name="$parentInvisibleButton" hidden="true" parentKey="invisibleButton">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMLEFT"/>
+					<Anchor point="RIGHT" relativeTo="$parentColorSwatch" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						L_UIDropDownMenu_StopCounting(this:GetParent():GetParent());
+						L_CloseDropDownMenus(this:GetParent():GetParent():GetID() + 1);
+						local parent = this:GetParent();
+						if ( parent.tooltipTitle and parent.tooltipWhileDisabled) then
+							if ( parent.tooltipOnButton ) then
+								GameTooltip:SetOwner(parent, "ANCHOR_RIGHT");
+								GameTooltip:AddLine(parent.tooltipTitle, 1.0, 1.0, 1.0);
+								GameTooltip:AddLine(parent.tooltipText, nil, nil, nil, true);
+								GameTooltip:Show();
+							else
+								GameTooltip_AddNewbieTip(parent, parent.tooltipTitle, 1.0, 1.0, 1.0, parent.tooltipText, 1);
+							end
+						end
+					</OnEnter>
+					<OnLeave>
+						L_UIDropDownMenu_StartCounting(this:GetParent():GetParent());
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>				
+				this:SetFrameLevel(this:GetParent():GetFrameLevel()+2);
+			</OnLoad>
+			<OnClick>
+				L_UIDropDownMenuButton_OnClick(this, arg1, arg2);
+			</OnClick>
+			<OnEnter>
+				if ( this.hasArrow ) then
+					local level =  this:GetParent():GetID() + 1;
+					local listFrame = getglobal("L_DropDownList"..level);
+					if ( not listFrame or not listFrame:IsShown() or select(2, listFrame:GetPoint()) ~= this ) then
+						L_ToggleDropDownMenu(this:GetParent():GetID() + 1, this.value, nil, nil, nil, nil, this.menuList, this);
+					end
+				else
+					L_CloseDropDownMenus(this:GetParent():GetID() + 1);
+				end
+				getglobal(this:GetName().."Highlight"):Show();
+				L_UIDropDownMenu_StopCounting(this:GetParent());
+				if ( this.tooltipTitle ) then
+					if ( this.tooltipOnButton ) then
+						GameTooltip:SetOwner(this, "ANCHOR_RIGHT");
+						GameTooltip:AddLine(this.tooltipTitle, 1.0, 1.0, 1.0);
+						GameTooltip:AddLine(this.tooltipText, nil, nil, nil, true);
+						GameTooltip:Show();
+					else
+						GameTooltip_AddNewbieTip(this, this.tooltipTitle, 1.0, 1.0, 1.0, this.tooltipText, 1);
+					end
+				end
+			</OnEnter>
+			<OnLeave>
+				getglobal(this:GetName().."Highlight"):Hide();
+				L_UIDropDownMenu_StartCounting(this:GetParent());
+				GameTooltip:Hide();
+			</OnLeave>
+			<OnEnable>
+				this.invisibleButton:Hide();
+			</OnEnable>
+			<OnDisable>
+				this.invisibleButton:Show();
+			</OnDisable>
+		</Scripts>
+		<ButtonText name="$parentNormalText">
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset x="-5" y="0"/>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont inherits="GameFontHighlightSmall" justifyH="LEFT"/>
+		<HighlightFont inherits="GameFontHighlightSmall" justifyH="LEFT"/>
+		<DisabledFont inherits="GameFontDisableSmall" justifyH="LEFT"/>
+	</Button>
+	
+	<Button name="L_UIDropDownListTemplate" hidden="true" frameStrata="DIALOG" enableMouse="true" virtual="true">
+		<Frames>
+			<Frame name="$parentBackdrop" setAllPoints="true">
+				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+					<BackgroundInsets>
+						<AbsInset left="11" right="12" top="12" bottom="9"/>
+					</BackgroundInsets>
+					<TileSize>
+						<AbsValue val="32"/>
+					</TileSize>
+					<EdgeSize>
+						<AbsValue val="32"/>
+					</EdgeSize>
+				</Backdrop>
+			</Frame>
+			<Frame name="$parentMenuBackdrop" setAllPoints="true">
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize>
+						<AbsValue val="16"/>
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="16"/>
+					</TileSize>
+					<BackgroundInsets>
+						<AbsInset left="5" right="5" top="5" bottom="4"/>
+					</BackgroundInsets>
+				</Backdrop>
+				<Scripts>
+					<OnLoad>
+						this:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
+						this:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="$parentButton1" inherits="L_UIDropDownMenuButtonTemplate" id="1"/>
+			<Button name="$parentButton2" inherits="L_UIDropDownMenuButtonTemplate" id="2"/>
+			<Button name="$parentButton3" inherits="L_UIDropDownMenuButtonTemplate" id="3"/>
+			<Button name="$parentButton4" inherits="L_UIDropDownMenuButtonTemplate" id="4"/>
+			<Button name="$parentButton5" inherits="L_UIDropDownMenuButtonTemplate" id="5"/>
+			<Button name="$parentButton6" inherits="L_UIDropDownMenuButtonTemplate" id="6"/>
+			<Button name="$parentButton7" inherits="L_UIDropDownMenuButtonTemplate" id="7"/>
+			<Button name="$parentButton8" inherits="L_UIDropDownMenuButtonTemplate" id="8"/>
+			<Button name="$parentButton9" inherits="L_UIDropDownMenuButtonTemplate" id="9"/>
+			<Button name="$parentButton10" inherits="L_UIDropDownMenuButtonTemplate" id="10"/>
+			<Button name="$parentButton11" inherits="L_UIDropDownMenuButtonTemplate" id="11"/>
+			<Button name="$parentButton12" inherits="L_UIDropDownMenuButtonTemplate" id="12"/>
+			<Button name="$parentButton13" inherits="L_UIDropDownMenuButtonTemplate" id="13"/>
+			<Button name="$parentButton14" inherits="L_UIDropDownMenuButtonTemplate" id="14"/>
+			<Button name="$parentButton15" inherits="L_UIDropDownMenuButtonTemplate" id="15"/>
+			<Button name="$parentButton16" inherits="L_UIDropDownMenuButtonTemplate" id="16"/>
+			<Button name="$parentButton17" inherits="L_UIDropDownMenuButtonTemplate" id="17"/>
+			<Button name="$parentButton18" inherits="L_UIDropDownMenuButtonTemplate" id="18"/>
+			<Button name="$parentButton19" inherits="L_UIDropDownMenuButtonTemplate" id="19"/>
+			<Button name="$parentButton20" inherits="L_UIDropDownMenuButtonTemplate" id="20"/>
+			<Button name="$parentButton21" inherits="L_UIDropDownMenuButtonTemplate" id="21"/>
+			<Button name="$parentButton22" inherits="L_UIDropDownMenuButtonTemplate" id="22"/>
+			<Button name="$parentButton23" inherits="L_UIDropDownMenuButtonTemplate" id="23"/>
+			<Button name="$parentButton24" inherits="L_UIDropDownMenuButtonTemplate" id="24"/>
+			<Button name="$parentButton25" inherits="L_UIDropDownMenuButtonTemplate" id="25"/>
+			<Button name="$parentButton26" inherits="L_UIDropDownMenuButtonTemplate" id="26"/>
+			<Button name="$parentButton27" inherits="L_UIDropDownMenuButtonTemplate" id="27"/>
+			<Button name="$parentButton28" inherits="L_UIDropDownMenuButtonTemplate" id="28"/>
+			<Button name="$parentButton29" inherits="L_UIDropDownMenuButtonTemplate" id="29"/>
+			<Button name="$parentButton30" inherits="L_UIDropDownMenuButtonTemplate" id="30"/>
+			<Button name="$parentButton31" inherits="L_UIDropDownMenuButtonTemplate" id="31"/>
+			<Button name="$parentButton32" inherits="L_UIDropDownMenuButtonTemplate" id="32"/>
+		</Frames>
+		<Scripts>
+			<OnClick>
+				this:Hide();
+			</OnClick>
+			<OnEnter>
+				L_UIDropDownMenu_StopCounting(this, arg1);
+			</OnEnter>
+			<OnLeave>
+				L_UIDropDownMenu_StartCounting(this, arg1);
+			</OnLeave>
+			<OnUpdate>
+				L_UIDropDownMenu_OnUpdate(this, arg1);
+			</OnUpdate>
+			<OnShow>
+				for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
+					if (not this.noResize) then
+						getglobal(this:GetName().."Button"..i):SetWidth(this.maxWidth);
+					end
+				end
+				if (not this.noResize) then
+					this:SetWidth(this.maxWidth+25);
+				end
+				this.showTimer = nil;
+				if ( this:GetID() > 1 ) then
+					this.parent = getglobal("L_DropDownList"..(this:GetID() - 1));
+				end
+			</OnShow>
+			<OnHide>
+				L_UIDropDownMenu_OnHide(this);
+			</OnHide>
+		</Scripts>
+	</Button>
+	
+	<Frame name="L_UIDropDownMenuTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="40" y="32"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentLeft" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+					<Size>
+						<AbsDimension x="25" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="0" y="17"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.1953125" top="0" bottom="1"/>
+				</Texture>
+				<Texture name="$parentMiddle" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+					<Size>
+						<AbsDimension x="115" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.1953125" right="0.8046875" top="0" bottom="1"/>
+				</Texture>
+				<Texture name="$parentRight" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+					<Size>
+						<AbsDimension x="25" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentMiddle" relativePoint="RIGHT"/>
+					</Anchors>
+					<TexCoords left="0.8046875" right="1" top="0" bottom="1"/>
+				</Texture>
+				<FontString parentKey="Text" name="$parentText" inherits="GameFontHighlightSmall" wordwrap="false" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="0" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" relativeTo="$parentRight">
+							<Offset>
+								<AbsDimension x="-43" y="2"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon" name="$parentIcon" hidden="true">
+					<Size>
+						<AbsDimension x="16" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset x="30" y="2"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="Button" name="$parentButton" motionScriptsWhileDisabled="true" >
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentRight">
+						<Offset>
+							<AbsDimension x="-16" y="-18"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						local parent = this:GetParent();
+						local myscript = parent:GetScript("OnEnter");
+						if(myscript ~= nil) then
+							myscript(parent);
+						end
+					</OnEnter>
+					<OnLeave>
+						local parent = this:GetParent();
+						local myscript = parent:GetScript("OnLeave");
+						if(myscript ~= nil) then
+							myscript(parent);
+						end
+					</OnLeave>
+					<OnClick>
+						L_ToggleDropDownMenu(nil, nil, this:GetParent());
+						PlaySound(PlaySoundKitID and "igMainMenuOptionCheckBoxOn" or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+					</OnClick>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</NormalTexture>
+				<PushedTexture name="$parentPushedTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</PushedTexture>
+				<DisabledTexture name="$parentDisabledTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</DisabledTexture>
+				<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="24" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnHide>
+				L_CloseDropDownMenus();
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>
