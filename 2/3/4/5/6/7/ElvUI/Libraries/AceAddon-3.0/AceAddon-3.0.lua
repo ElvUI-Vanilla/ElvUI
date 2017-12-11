@@ -64,7 +64,6 @@ end
 
 local function CreateDispatcher(argCount)
 	local code = [[
-		local xpcall, eh = arg1, arg2
 		local method, ARGS
 		local function call() return method(ARGS) end
 
@@ -72,7 +71,7 @@ local function CreateDispatcher(argCount)
 			 method = func
 			 if not method then return end
 			 ARGS = unpack(arg)
-			 return xpcall(call, eh)
+			 return xpcall(call, function(err) return geterrorhandler()(err) end)
 		end
 
 		return dispatch
@@ -536,7 +535,7 @@ function AceAddon:InitializeAddon(addon)
 	local embeds = self.embeds[addon]
 	for i = 1, getn(embeds) do
 		local lib = LibStub:GetLibrary(embeds[i], true)
-		--if lib then safecall(lib.OnEmbedInitialize, lib, addon) end
+		if lib then safecall(lib.OnEmbedInitialize, lib, addon) end
 	end
 
 	-- we don't call InitializeAddon on modules specifically, this is handled

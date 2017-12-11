@@ -11,14 +11,14 @@ local pairs = pairs
 local CreateFrame = CreateFrame
 
 local RegisterAsWidget, RegisterAsContainer
-local function SetModifiedBackdrop()
-	if this.backdrop then this = this.backdrop end
-	this:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
+local function SetModifiedBackdrop(self)
+	if self.backdrop then self = self.backdrop end
+	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
 end
 
-local function SetOriginalBackdrop()
-	if this.backdrop then this = this.backdrop end
-	this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+local function SetOriginalBackdrop(self)
+	if self.backdrop then self = self.backdrop end
+	self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 end
 
 local function SkinScrollBar(frame, thumbTrim)
@@ -36,7 +36,6 @@ local function SkinScrollBar(frame, thumbTrim)
 		if not _G[frame:GetName().."ScrollUpButton"].icon then
 			S:HandleNextPrevButton(_G[frame:GetName().."ScrollUpButton"])
 			S:SquareButton_SetIcon(_G[frame:GetName().."ScrollUpButton"], "UP")
-			-- _G[frame:GetName().."ScrollUpButton"]:Size(_G[frame:GetName().."ScrollUpButton"]:GetWidth() + 7, _G[frame:GetName().."ScrollUpButton"]:GetHeight() + 7)
 			_G[frame:GetName().."ScrollUpButton"]:SetWidth(_G[frame:GetName().."ScrollUpButton"]:GetWidth() + 7)
 			_G[frame:GetName().."ScrollUpButton"]:SetHeight(_G[frame:GetName().."ScrollUpButton"]:GetHeight() + 7)
 		end
@@ -45,7 +44,6 @@ local function SkinScrollBar(frame, thumbTrim)
 		if not _G[frame:GetName().."ScrollDownButton"].icon then
 			S:HandleNextPrevButton(_G[frame:GetName().."ScrollDownButton"])
 			S:SquareButton_SetIcon(_G[frame:GetName().."ScrollDownButton"], "DOWN")
-			-- _G[frame:GetName().."ScrollDownButton"]:Size(_G[frame:GetName().."ScrollDownButton"]:GetWidth() + 7, _G[frame:GetName().."ScrollDownButton"]:GetHeight() + 7)
 			_G[frame:GetName().."ScrollDownButton"]:SetWidth(_G[frame:GetName().."ScrollDownButton"]:GetWidth() + 7)
 			_G[frame:GetName().."ScrollDownButton"]:SetHeight(_G[frame:GetName().."ScrollDownButton"]:GetHeight() + 7)
 		end
@@ -60,8 +58,10 @@ local function SkinScrollBar(frame, thumbTrim)
 		if frame:GetThumbTexture() then
 			if not thumbTrim then thumbTrim = 3 end
 			frame:GetThumbTexture():SetTexture(nil)
+			frame:GetThumbTexture():SetHeight(24)
 			if not frame.thumbbg then
 				frame.thumbbg = CreateFrame("Frame", nil, frame)
+				frame.thumbbg:SetPoint("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, -thumbTrim)
 				frame.thumbbg:SetPoint("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, -thumbTrim)
 				frame.thumbbg:SetPoint("BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -2, thumbTrim)
 				E:SetTemplate(frame.thumbbg, "Default", true, true)
@@ -102,8 +102,8 @@ local function SkinButton(f, strip, noTemplate)
 		E:SetTemplate(f, "Default", true)
 	end
 
-	f:SetScript("OnEnter", function() S:SetModifiedBackdrop(this) end)
-	f:SetScript("OnLeave", function() S:SetOriginalBackdrop(this) end)
+	HookScript(f, "OnEnter", function() SetModifiedBackdrop(this) end)
+	HookScript(f, "OnLeave", function() SetOriginalBackdrop(this) end)
 end
 
 function S:SkinAce3()
@@ -159,7 +159,7 @@ function S:SkinAce3()
 			end
 			button:SetParent(frame.backdrop)
 			text:SetParent(frame.backdrop)
-			HookScript(button, "OnClick", function(this)
+			HookScript(button, "OnClick", function()
 				local dropdown = this.obj.pullout
 				if dropdown.frame then
 					E:SetTemplate(dropdown.frame, "Default", true)
@@ -212,7 +212,7 @@ function S:SkinAce3()
 			end
 			button:SetParent(frame.backdrop)
 			text:SetParent(frame.backdrop)
-			HookScript(button, "OnClick", function(this)
+			HookScript(button, "OnClick", function()
 				local dropdown = this.obj.dropdown
 				if dropdown then
 					E:SetTemplate(dropdown, "Default", true)
