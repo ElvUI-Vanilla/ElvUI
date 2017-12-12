@@ -12,6 +12,7 @@
 	<Script file="AceGUIContainer-Window.lua"/>
 	<!-- Widgets -->
 	<Script file="AceGUIWidget-Button.lua"/>
+	<Script file="AceGUIWidget-Button-ElvUI.lua"/>
 	<Script file="AceGUIWidget-CheckBox.lua"/>
 	<Script file="AceGUIWidget-ColorPicker.lua"/>
 	<Script file="AceGUIWidget-DropDown.lua"/>

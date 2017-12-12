@@ -1,15 +1,13 @@
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "Frame", 24
+local Type, Version = "Frame", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local AceCore = LibStub("AceCore-3.0")
-local wipe = AceCore.wipe
-
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
+local wipe = table.wipe
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -25,6 +23,10 @@ Scripts
 local function Button_OnClick()
 	PlaySound("gsTitleOptionExit")
 	this.obj:Hide()
+end
+
+local function Frame_OnShow()
+	this.obj:Fire("OnShow")
 end
 
 local function Frame_OnClose()
@@ -188,6 +190,7 @@ local function Constructor()
 	frame:SetBackdropColor(0, 0, 0, 1)
 	frame:SetMinResize(400, 200)
 	frame:SetToplevel(true)
+	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
@@ -245,7 +248,6 @@ local function Constructor()
 	titlebg_r:SetWidth(30)
 	titlebg_r:SetHeight(40)
 
-	-- bottom right sizer
 	local sizer_se = CreateFrame("Frame", nil, frame)
 	sizer_se:SetPoint("BOTTOMRIGHT", 0, 0)
 	sizer_se:SetWidth(25)

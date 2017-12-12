@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local AB = E:GetModule("ActionBars");
-local ACD = LibStub("AceConfigDialog-3.0");
+local ACD = LibStub("AceConfigDialog-3.0-ElvUI");
 local group
 
 --Cache global variables

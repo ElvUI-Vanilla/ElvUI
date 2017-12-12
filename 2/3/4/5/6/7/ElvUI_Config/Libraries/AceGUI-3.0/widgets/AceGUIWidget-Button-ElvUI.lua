@@ -2,24 +2,83 @@
 Button Widget (Modified to change text color on SetDisabled method)
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "Button-ElvUI", 23
+local Type, Version = "Button-ElvUI", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local pairs = pairs
+local pairs, unpack = pairs, unpack
 
 -- WoW APIs
 local _G = _G
 local PlaySound, CreateFrame, UIParent = PlaySound, CreateFrame, UIParent
+local IsShiftKeyDown = IsShiftKeyDown
+-- GLOBALS: GameTooltip, ElvUI
 
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
+local dragdropButton
+local function lockTooltip()
+	GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+	GameTooltip:SetText(" ")
+	GameTooltip:Show()
+end
+local function dragdrop_OnMouseDown(frame, ...)
+	if frame.obj.dragOnMouseDown then
+		dragdropButton.mouseDownFrame = frame
+		dragdropButton:SetText(frame.obj.value or "Unknown")
+		dragdropButton:SetSize(frame:GetSize())
+		frame.obj.dragOnMouseDown(frame, unpack(arg))
+	end
+end
+local function dragdrop_OnMouseUp(frame, ...)
+	if frame.obj.dragOnMouseUp then
+		frame:SetAlpha(1)
+		GameTooltip:Hide()
+		dragdropButton:Hide()
+		if dragdropButton.enteredFrame and dragdropButton.enteredFrame ~= frame and dragdropButton.enteredFrame:IsMouseOver() then
+			frame.obj.dragOnMouseUp(frame, unpack(arg))
+			frame.obj.ActivateMultiControl(frame.obj, unpack(arg))
+		end
+		dragdropButton.enteredFrame = nil
+		dragdropButton.mouseDownFrame = nil
+	end
+end
+local function dragdrop_OnLeave(frame, ...)
+	if frame.obj.dragOnLeave then
+		if dragdropButton.mouseDownFrame then
+			lockTooltip()
+		end
+		if frame == dragdropButton.mouseDownFrame then
+			frame:SetAlpha(0)
+			dragdropButton:Show()
+			frame.obj.dragOnLeave(frame, unpack(arg))
+		end
+	end
+end
+local function dragdrop_OnEnter(frame, ...)
+	if frame.obj.dragOnEnter and dragdropButton:IsShown() then
+		dragdropButton.enteredFrame = frame
+		lockTooltip()
+		frame.obj.dragOnEnter(frame, unpack(arg))
+	end
+end
+local function dragdrop_OnClick(frame, ...)
+	local button = unpack(arg)
+	if frame.obj.dragOnClick and button == "RightButton" then
+		frame.obj.dragOnClick(frame, unpack(arg))
+		frame.obj.ActivateMultiControl(frame.obj, unpack(arg))
+	elseif frame.obj.stateSwitchOnClick and (button == "LeftButton") and IsShiftKeyDown() then
+		frame.obj.stateSwitchOnClick(frame, unpack(arg))
+		frame.obj.ActivateMultiControl(frame.obj, unpack(arg))
+	end
+end
+
 local function Button_OnClick(frame, ...)
 	AceGUI:ClearFocus()
 	PlaySound("igMainMenuOption")
-	frame.obj:Fire("OnClick", ...)
+	frame.obj:Fire("OnClick", unpack(arg))
 end
 
 local function Control_OnEnter(frame)
@@ -51,7 +110,7 @@ local methods = {
 			self:SetWidth(self.text:GetStringWidth() + 30)
 		end
 	end,
-
+	
 	["SetAutoWidth"] = function(self, autoWidth)
 		self.autoWidth = autoWidth
 		if self.autoWidth then
@@ -76,13 +135,28 @@ Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
 	local name = "AceGUI30Button" .. AceGUI:GetNextWidgetNum(Type)
-	local frame = CreateFrame("Button", name, UIParent, "UIPanelButtonTemplate2")
+	local frame = CreateFrame("Button", name, UIParent, "UIPanelButtonTemplate")
 	frame:Hide()
-
 	frame:EnableMouse(true)
+	frame:RegisterForClicks("AnyUp")
 	frame:SetScript("OnClick", Button_OnClick)
 	frame:SetScript("OnEnter", Control_OnEnter)
 	frame:SetScript("OnLeave", Control_OnLeave)
+
+	-- dragdrop
+	if not dragdropButton then
+		dragdropButton = CreateFrame("Button", "ElvUIAceGUI30DragDropButton", UIParent, "UIPanelButtonTemplate")
+		dragdropButton:SetFrameStrata("TOOLTIP")
+		dragdropButton:SetFrameLevel(5)
+		dragdropButton:SetPoint('BOTTOM', GameTooltip, "BOTTOM", 0, 10)
+		dragdropButton:Hide()
+		ElvUI[1]:GetModule('Skins'):HandleButton(dragdropButton)
+	end
+	frame:HookScript("OnClick", dragdrop_OnClick)
+	frame:HookScript("OnEnter", dragdrop_OnEnter)
+	frame:HookScript("OnLeave", dragdrop_OnLeave)
+	frame:HookScript("OnMouseUp", dragdrop_OnMouseUp)
+	frame:HookScript("OnMouseDown", dragdrop_OnMouseDown)
 
 	local text = frame:GetFontString()
 	text:ClearAllPoints()

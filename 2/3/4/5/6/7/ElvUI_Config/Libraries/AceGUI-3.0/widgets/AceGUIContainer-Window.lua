@@ -21,27 +21,31 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 ]]
 do
 	local Type = "Window"
-	local Version = 4
+	local Version = 6
 
-	local function frameOnClose()
+	local function frameOnShow(this)
+		this.obj:Fire("OnShow")
+	end
+
+	local function frameOnClose(this)
 		this.obj:Fire("OnClose")
 	end
 	
-	local function closeOnClick()
+	local function closeOnClick(this)
 		PlaySound("gsTitleOptionExit")
 		this.obj:Hide()
 	end
 	
-	local function frameOnMouseDown()
+	local function frameOnMouseDown(this)
 		AceGUI:ClearFocus()
 	end
 	
-	local function titleOnMouseDown()
+	local function titleOnMouseDown(this)
 		this:GetParent():StartMoving()
 		AceGUI:ClearFocus()
 	end
 	
-	local function frameOnMouseUp()
+	local function frameOnMouseUp(this)
 		local frame = this:GetParent()
 		frame:StopMovingOrSizing()
 		local self = frame.obj
@@ -52,22 +56,22 @@ do
 		status.left = frame:GetLeft()
 	end
 	
-	local function sizerseOnMouseDown()
+	local function sizerseOnMouseDown(this)
 		this:GetParent():StartSizing("BOTTOMRIGHT")
 		AceGUI:ClearFocus()
 	end
 	
-	local function sizersOnMouseDown()
+	local function sizersOnMouseDown(this)
 		this:GetParent():StartSizing("BOTTOM")
 		AceGUI:ClearFocus()
 	end
 	
-	local function sizereOnMouseDown()
+	local function sizereOnMouseDown(this)
 		this:GetParent():StartSizing("RIGHT")
 		AceGUI:ClearFocus()
 	end
 	
-	local function sizerOnMouseUp()
+	local function sizerOnMouseUp(this)
 		this:GetParent():StopMovingOrSizing()
 	end
 
@@ -180,6 +184,7 @@ do
 		frame:SetFrameStrata("FULLSCREEN_DIALOG")
 		frame:SetScript("OnMouseDown", frameOnMouseDown)
 		
+		frame:SetScript("OnShow",frameOnShow)
 		frame:SetScript("OnHide",frameOnClose)
 		frame:SetMinResize(240,240)
 		frame:SetToplevel(true)

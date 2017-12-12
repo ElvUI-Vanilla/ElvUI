@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(ElvUI);
-local D = {};
+--local D = E:GetModule("Distributor");
 local AceGUI = LibStub("AceGUI-3.0");
 
 local pairs = pairs;
@@ -14,10 +14,11 @@ local UnitName = UnitName;
 
 local DEFAULT_WIDTH = 890;
 local DEFAULT_HEIGHT = 651;
-local AC = LibStub("AceConfig-3.0");
-local ACD = LibStub("AceConfigDialog-3.0");
-local ACR = LibStub("AceConfigRegistry-3.0");
-AC.RegisterOptionsTable(E, "ElvUI", E.Options);
+local AC = LibStub("AceConfig-3.0-ElvUI");
+local ACD = LibStub("AceConfigDialog-3.0-ElvUI");
+local ACR = LibStub("AceConfigRegistry-3.0-ElvUI");
+
+AC:RegisterOptionsTable("ElvUI", E.Options);
 ACD:SetDefaultSize("ElvUI", DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 function E:RefreshGUI()
@@ -67,3 +68,98 @@ E.Options.args = {
 		func = function() E:ResetUI(); end
 	}
 };
+
+local DONATOR_STRING = "";
+local DEVELOPER_STRING = "";
+local TESTER_STRING = "";
+local LINE_BREAK = "\n";
+local DONATORS = {
+	"Dandruff",
+	"Tobur/Tarilya",
+	"Netu",
+	"Alluren",
+	"Thorgnir",
+	"Emalal",
+	"Bendmeova",
+	"Curl",
+	"Zarac",
+	"Emmo",
+	"Oz",
+	"Hawké",
+	"Aynya",
+	"Tahira",
+	"Karsten Lumbye Thomsen",
+	"Thomas B. aka Pitschiqüü",
+	"Sea Garnet",
+	"Paul Storry",
+	"Azagar",
+	"Archury",
+	"Donhorn",
+	"Woodson Harmon",
+	"Phoenyx",
+	"Feat",
+	"Konungr",
+	"Leyrin",
+	"Dragonsys",
+	"Tkalec",
+	"Paavi",
+	"Giorgio",
+	"Bearscantank",
+	"Eidolic",
+	"Cosmo",
+	"Adorno",
+	"Domoaligato",
+	"Smorg",
+	"Pyrokee",
+	"Portable",
+	"Ithilyn"
+};
+
+local DEVELOPERS = {
+	"Tukz",
+	"Haste",
+	"Nightcracker",
+	"Omega1970",
+	"Hydrazine"
+};
+
+local TESTERS = {
+	"Tukui Community",
+	"|cffF76ADBSarah|r - For Sarahing",
+	"Affinity",
+	"Modarch",
+	"Bladesdruid",
+	"Tirain",
+	"Phima",
+	"Veiled",
+	"Blazeflack",
+	"Repooc",
+	"Darth Predator",
+	"Alex",
+	"Nidra",
+	"Kurhyus",
+	"BuG",
+	"Yachanay",
+	"Catok"
+}
+
+tsort(DONATORS, function(a, b) return a < b end);
+for _, donatorName in pairs(DONATORS) do
+	tinsert(E.CreditsList, donatorName);
+	DONATOR_STRING = DONATOR_STRING .. LINE_BREAK .. donatorName;
+end
+
+tsort(DEVELOPERS, function(a,b) return a < b end);
+for _, devName in pairs(DEVELOPERS) do
+	tinsert(E.CreditsList, devName);
+	DEVELOPER_STRING = DEVELOPER_STRING .. LINE_BREAK .. devName;
+end
+
+tsort(TESTERS, function(a, b) return a < b end)
+for _, testerName in pairs(TESTERS) do
+	tinsert(E.CreditsList, testerName);
+	TESTER_STRING = TESTER_STRING .. LINE_BREAK .. testerName;
+end
+
+
+
