@@ -14,6 +14,11 @@ V["general"] = {
 	},
 }
 
+V["auras"] = {
+	["enable"] = true,
+	["disableBlizzard"] = true,
+}
+
 V["chat"] = {
 	["enable"] = true,
 }
