@@ -4,6 +4,8 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local getn = table.getn
+local unpack = unpack
+local pairs = pairs
 --WoW API / Variables
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetInventoryItemQuality = GetInventoryItemQuality
@@ -112,24 +114,31 @@ local function LoadSkin()
 		E:StripTextures(factionBar)
 		E:CreateBackdrop(factionBar, "Default")
 		factionBar:SetStatusBarTexture(E.media.normTex)
-		--factionBar:SetSize(108, 13)
+		factionBar:SetWidth(108)
+		factionBar:SetHeight(13)
 		E:RegisterStatusBar(factionBar)
 
-		--factionName:SetPoint("LEFT", factionBar, "LEFT", -150, 0)
-		--factionName:SetWidth(140)
-		--factionName.SetWidth = E.noop
+		if i == 1 then
+			factionBar:SetPoint("TOPLEFT", 190, -86)
+		end
+
+		factionName:SetPoint("LEFT", factionBar, "LEFT", -150, 0)
+		factionName:SetWidth(140)
+		factionName.SetWidth = E.noop
 
 		E:StripTextures(factionAtWarCheck)
-		--factionAtWarCheck:SetPoint("LEFT", factionBar, "RIGHT", 0, 0)
+		factionAtWarCheck:SetPoint("LEFT", factionBar, "RIGHT", 0, 0)
 
-		factionAtWarCheck.Text = factionAtWarCheck:CreateFontString(nil, "OVERLAY")
-		E:FontTemplate(factionAtWarCheck.Text)
-		factionAtWarCheck.Text:SetPoint("LEFT", 3, -6)
-		factionAtWarCheck.Text:SetText("|TInterface\\Buttons\\UI-CheckBox-SwordCheck:45:45|t")
+		factionAtWarCheck.Icon = factionAtWarCheck:CreateTexture(nil, "OVERLAY")
+		factionAtWarCheck.Icon:SetPoint("LEFT", 6, -8)
+		factionAtWarCheck.Icon:SetWidth(32)
+		factionAtWarCheck.Icon:SetHeight(32)
+		factionAtWarCheck.Icon:SetTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
 
 		E:StripTextures(factionHeader)
 		factionHeader:SetNormalTexture(nil)
 		factionHeader.SetNormalTexture = E.noop
+		factionHeader:SetPoint("TOPLEFT", factionBar, "TOPLEFT", -175, 0)
 
 		factionHeader.Text = factionHeader:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(factionHeader.Text, nil, 22)
@@ -157,7 +166,6 @@ local function LoadSkin()
 
 	for i = 1, 5 do
 		local frame = _G["PetMagicResFrame"..i]
-		-- frame:Size(24)
 		frame:SetWidth(24)
 		frame:SetHeight(24)
 	end
@@ -193,10 +201,8 @@ local function LoadSkin()
 	PetPaperDollPetInfo:GetRegions():SetTexCoord(0.04, 0.15, 0.06, 0.30)
 	PetPaperDollPetInfo:SetFrameLevel(PetModelFrame:GetFrameLevel() + 2)
 	E:CreateBackdrop(PetPaperDollPetInfo, "Default")
-	-- PetPaperDollPetInfo:Size(24, 24)
 	PetPaperDollPetInfo:SetWidth(24)
 	PetPaperDollPetInfo:SetHeight(24)
-	-- updHappiness(PetPaperDollPetInfo)
 
 	PetPaperDollPetInfo:RegisterEvent("UNIT_HAPPINESS")
 	PetPaperDollPetInfo:SetScript("OnEvent", updHappiness)
@@ -226,11 +232,12 @@ local function LoadSkin()
 
 	E:StripTextures(ReputationDetailFrame)
 	E:SetTemplate(ReputationDetailFrame, "Transparent")
+	ReputationDetailFrame:SetPoint("TOPLEFT", ReputationFrame, "TOPRIGHT", -31, -12)
 
 	S:HandleCloseButton(ReputationDetailCloseButton)
+	ReputationDetailCloseButton:SetPoint("TOPRIGHT", 2, 2)
 
 	S:HandleCheckBox(ReputationDetailAtWarCheckBox)
-	ReputationDetailAtWarCheckBox:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
 	S:HandleCheckBox(ReputationDetailInactiveCheckBox)
 	S:HandleCheckBox(ReputationDetailMainScreenCheckBox)
 
@@ -302,14 +309,14 @@ local function LoadSkin()
 
 	E:StripTextures(SkillDetailStatusBarUnlearnButton)
 	SkillDetailStatusBarUnlearnButton:SetPoint("LEFT", SkillDetailStatusBarBorder, "RIGHT", -2, -5)
-	-- SkillDetailStatusBarUnlearnButton:Size(36)
 	SkillDetailStatusBarUnlearnButton:SetWidth(36)
 	SkillDetailStatusBarUnlearnButton:SetHeight(36)
 
-	SkillDetailStatusBarUnlearnButton.Text = SkillDetailStatusBarUnlearnButton:CreateFontString(nil, "OVERLAY")
-	E:FontTemplate(SkillDetailStatusBarUnlearnButton.Text)
-	SkillDetailStatusBarUnlearnButton.Text:SetPoint("LEFT", 7, 5)
-	SkillDetailStatusBarUnlearnButton.Text:SetText("|TInterface\\Buttons\\UI-GroupLoot-Pass-Up:34:34|t")
+	SkillDetailStatusBarUnlearnButton.Icon = SkillDetailStatusBarUnlearnButton:CreateTexture(nil, "OVERLAY")
+	SkillDetailStatusBarUnlearnButton.Icon:SetPoint("LEFT", 7, 5)
+	SkillDetailStatusBarUnlearnButton.Icon:SetWidth(18)
+	SkillDetailStatusBarUnlearnButton.Icon:SetHeight(18)
+	SkillDetailStatusBarUnlearnButton.Icon:SetTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Up")
 
 
 	-- Honor Frame
