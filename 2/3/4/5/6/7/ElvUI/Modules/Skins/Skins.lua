@@ -256,9 +256,9 @@ function S:HandleEditBox(frame)
 		if _G[frame:GetName() .."Right"] then E:Kill(_G[frame:GetName() .."Right"]) end
 		if _G[frame:GetName() .."Mid"] then E:Kill(_G[frame:GetName() .."Mid"]) end
 
-		--if(frame:GetName():find("Silver") or frame:GetName():find("Copper")) then
-		--	frame.backdrop:SetPoint("BOTTOMRIGHT", -12, -2);
-		--end
+		if string.gfind(frame:GetName(), "Silver") or string.gfind(frame:GetName(), "Copper") then
+			frame.backdrop:SetPoint("BOTTOMRIGHT", -12, -2);
+		end
 	end
 end
 
