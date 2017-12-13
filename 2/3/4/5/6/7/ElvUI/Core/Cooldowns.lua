@@ -1,9 +1,11 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
+--Cache global variables
+--Lua functions
 local floor = math.floor
 local format = string.format
 local GetTime = GetTime
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
 
