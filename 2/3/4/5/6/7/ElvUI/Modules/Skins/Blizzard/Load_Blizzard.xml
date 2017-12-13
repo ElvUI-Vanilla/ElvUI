@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="AuctionHouse.lua"/>
 	<Script file="Battlefield.lua"/>
+	<Script file="Bags.lua"/>
 	<Script file="BGScore.lua"/>
 	<Script file="Binding.lua"/>
 	<Script file="Character.lua"/>
