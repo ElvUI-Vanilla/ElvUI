@@ -50,11 +50,9 @@ local function LoadSkin()
 	S:HandleButton(ScriptErrorsFrame.close)
 
 	ScriptErrorsFrame.reload:SetPoint("BOTTOMLEFT", 12, 8)
+	ScriptErrorsFrame.previous:SetPoint("BOTTOM", ScriptErrorsFrame, "BOTTOM", -50, 7)
+	ScriptErrorsFrame.next:SetPoint("BOTTOM", ScriptErrorsFrame, "BOTTOM", 50, 7)
 	ScriptErrorsFrame.close:SetPoint("BOTTOMRIGHT", -12, 8)
-
-	-- TODO FIX HandleNextPrevButton button size
-	ScriptErrorsFrame.previous:SetPoint("BOTTOM", ScriptErrorsFrame, "BOTTOM", -50, 12)
-	ScriptErrorsFrame.next:SetPoint("BOTTOM", ScriptErrorsFrame, "BOTTOM", 50, 12)
 
 	local noscalemult = E.mult * GetCVar("uiScale")
 	HookScript(FrameStackTooltip, "OnShow", function()

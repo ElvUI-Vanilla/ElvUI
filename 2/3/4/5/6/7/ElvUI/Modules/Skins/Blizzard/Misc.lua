@@ -25,12 +25,16 @@ local function LoadSkin()
 		"OptionsFrameMiscellaneous",
 		"SoundOptionsFrame",
 		"TicketStatusFrame",
+		"ReadyCheckFrame",
 		"StackSplitFrame",
 	    "DropDownList1MenuBackdrop",
 	    "DropDownList2MenuBackdrop",
 	    "DropDownList1Backdrop",
 	    "DropDownList2Backdrop",
 	}
+
+	E:StripTextures(ReadyCheckFrame)
+	E:Kill(ReadyCheckPortrait)
 
 	for i = 1, getn(skins) do
 		E:SetTemplate(_G[skins[i]], "Transparent")
@@ -165,9 +169,9 @@ local function LoadSkin()
 	SoundOptionsFrameOkay:SetPoint("RIGHT",SoundOptionsFrameCancel,"LEFT",-4,0)
 	UIOptionsFrameOkay:ClearAllPoints()
 	UIOptionsFrameOkay:SetPoint("RIGHT",UIOptionsFrameCancel,"LEFT", -4,0)
-	-- ReadyCheckFrameYesButton:SetPoint("RIGHT", ReadyCheckFrame, "CENTER", -1, 0)
-	-- ReadyCheckFrameNoButton:SetPoint("LEFT", ReadyCheckFrameYesButton, "RIGHT", 3, 0)
-	-- ReadyCheckFrameText:SetPoint("TOP", ReadyCheckFrame, "TOP", 0, -18)
+	ReadyCheckFrameYesButton:SetPoint("RIGHT", ReadyCheckFrame, "CENTER", -1, 0)
+	ReadyCheckFrameNoButton:SetPoint("LEFT", ReadyCheckFrameYesButton, "RIGHT", 3, 0)
+	ReadyCheckFrameText:SetPoint("TOP", ReadyCheckFrame, "TOP", 0, -18)
 
 	-- others
 	ZoneTextFrame:ClearAllPoints()
@@ -179,7 +183,6 @@ local function LoadSkin()
 	S:HandleButton(CoinPickupOkayButton)
 	S:HandleButton(CoinPickupCancelButton)
 
-	-- ReadyCheckFrame:HookScript("OnShow", function(self) if UnitIsUnit("player", self.initiator) then self:Hide() end end) -- bug fix, don't show it if initiator
 	StackSplitFrame:GetRegions():Hide()
 
 	-- Declension frame

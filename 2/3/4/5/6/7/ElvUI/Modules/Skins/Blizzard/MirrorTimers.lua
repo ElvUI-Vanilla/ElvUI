@@ -6,18 +6,19 @@ local S = E:GetModule("Skins");
 local _G = getfenv()
 local format = format
 --WoW API / Variables
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mirrorTimers ~= true then return end
 
-	local function MirrorTimerFrame_OnUpdate(frame, elapsed)
-		if (frame.paused) then
+	hooksecurefunc("MirrorTimerFrame_OnUpdate", function(frame, elapsed)
+		if frame.paused then
 			return
 		end
 
 		if frame.timeSinceUpdate >= 0.3 then
 			local minutes = frame.value / 60
-			local seconds = math.mod(frame.value, 60)
+			local seconds = frame.value - math.floor(frame.value / 60) * 60
 			local text = frame.label:GetText()
 
 			if frame.value > 0 then
@@ -29,7 +30,7 @@ local function LoadSkin()
 		else
 			frame.timeSinceUpdate = frame.timeSinceUpdate + elapsed
 		end
-	end
+	end)
 
 	for i = 1, MIRRORTIMER_NUMTIMERS do
 		local mirrorTimer = _G["MirrorTimer" .. i]
