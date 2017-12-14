@@ -60,6 +60,22 @@ QuestDifficultyColors = {
 	["header"] = {r = 0.70, g = 0.70, b = 0.70}
 }
 
+function HookScript(frame, scriptType, handler)
+	assert(type(frame) == "table" and frame.GetScript and type(scriptType) == "string" and type(handler) == "function", "Usage: HookScript(frame, \"type\", function)")
+
+	local original_scipt = frame:GetScript(scriptType)
+	if original_scipt then
+		frame:SetScript(scriptType, function(...)
+			local original_return = {original_scipt(unpack(arg))}
+			handler(unpack(arg))
+
+			return unpack(original_return)
+		end)
+	else
+		frame:SetScript(scriptType, handler)
+	end
+end
+
 function hooksecurefunc(arg1, arg2, arg3)
 	local isMethod = type(arg1) == "table" and type(arg2) == "string" and type(arg1[arg2]) == "function" and type(arg3) == "function"
 	assert(isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function"), "Usage: hooksecurefunc([table,] \"functionName\", hookfunc)")
