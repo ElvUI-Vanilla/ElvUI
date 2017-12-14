@@ -69,7 +69,7 @@ function A:UpdateTime(elapsed)
 			self.timeLeft = 0
 		end
 	else
-		self.timeLeft = self.timeLeft - elapsed
+		self.timeLeft = GetPlayerBuffTimeLeft(self.index)
 	end
 
 	if self.nextUpdate > 0 then
@@ -79,8 +79,7 @@ function A:UpdateTime(elapsed)
 
 	local timerValue, formatID
 	timerValue, formatID, self.nextUpdate = E:GetTimeInfo(self.timeLeft, A.db.fadeThreshold)
-	--print(timervalue)
-	--self.time:SetText(format("%s%s|r", E.TimeColors[formatID], format(E.TimeFormats[formatID][2], timervalue)))
+	self.time:SetText(format("%s%s|r", E.TimeColors[formatID], format(E.TimeFormats[formatID][2], timerValue)))
 
 	if self.timeLeft > E.db.auras.fadeThreshold then
 	--	E:StopFlash(self)
@@ -89,34 +88,28 @@ function A:UpdateTime(elapsed)
 	end
 end
 
-local UpdateTooltip = function(self)
-	if self.offset then
-		GameTooltip:SetInventoryItem("player", self.offset == 2 and 16 or 17)
+local function UpdateTooltip()
+	if this.offset then
+		GameTooltip:SetInventoryItem("player", this.offset == 2 and 16 or 17)
 	else
-		GameTooltip:SetUnitAura("player", self:GetID(), self:GetParent().filter)
+		GameTooltip:SetPlayerBuff(this.index)
 	end
 end
 
-local OnEnter = function(self)
-	if not self:IsVisible() then return end
+local function OnEnter()
+	if not this:IsVisible() then return end
 
-	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT", -5, -5)
-	self:UpdateTooltip()
+	GameTooltip:SetOwner(this, "ANCHOR_BOTTOMLEFT", -5, -5)
+	this:UpdateTooltip()
 end
 
-local OnLeave = function()
+local function OnLeave()
 	GameTooltip:Hide()
 end
 
-local OnClick = function(self)
-	if self.offset then
-		if self.offset == 2 then
-			CancelPlayerBuff(17)
-		elseif self.offset == 5 then
-			CancelPlayerBuff(16)
-		end
-	else
-		CancelUnitBuff("player", self:GetID(), self:GetParent().filter)
+local function OnClick()
+	if this.index and this.index > 0 then
+		CancelPlayerBuff(this.index)
 	end
 end
 
@@ -141,9 +134,9 @@ function A:CreateIcon(button)
 	E:SetInside(button.highlight)
 
 	button.UpdateTooltip = UpdateTooltip
-	button:SetScript("OnEnter",function()  OnEnter(this) end)
-	button:SetScript("OnLeave", function() OnLeave(this) end)
-	button:SetScript("OnClick", function() OnClick(this) end)
+	button:SetScript("OnEnter", OnEnter)
+	button:SetScript("OnLeave", OnLeave)
+	button:SetScript("OnClick", OnClick)
 
 	E:SetTemplate(button, "Default")
 end
@@ -191,6 +184,51 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 
 	wipe(buttons)
 	local button
+	local numWeapon = 0
+	if weaponPosition then
+		local hasMainHandEnchant, mainHandExpiration, _, hasOffHandEnchant, offHandExpiration = GetWeaponEnchantInfo()
+		for weapon = 2, 1, -1 do
+			button = _G["ElvUIPlayerBuffsTempEnchant"..weapon]
+			if select(weapon, hasMainHandEnchant, hasOffHandEnchant) then
+				numWeapon = numWeapon + 1
+				if not button then
+					button = CreateFrame("Button", "$parentTempEnchant"..weapon, header)
+					self:CreateIcon(button)
+				end
+				if button then
+					if button:IsShown() then button:Hide() end
+
+					local index = enchantableSlots[weapon]
+					local quality = GetInventoryItemQuality("player", index)
+					button.texture:SetTexture(GetInventoryItemTexture("player", index))
+
+					if quality then
+						button:SetBackdropBorderColor(GetItemQualityColor(quality))
+					end
+
+					local expirationTime = select(weapon, mainHandExpiration, offHandExpiration)
+					if expirationTime then
+						button.offset = select(weapon, 2, 5)
+						button:SetScript("OnUpdate", function() self.UpdateTime(this, arg1) end)
+						button.nextUpdate = -1
+						A.UpdateTime(button, 0)
+					else
+						button.timeLeft = nil
+						button.offset = nil
+						button:SetScript("OnUpdate", nil)
+						button.time:SetText("")
+					end
+					buttons[weapon] = button
+				end
+			else
+				if button and type(button.Hide) == "function" then
+					button.offset = nil
+					button:Hide()
+				end
+			end
+		end
+	end
+
 	for i = 1, getn(auraTable) do
 		button = _G[headerName.."AuraButton"..i]
 		if button then
@@ -200,10 +238,10 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 			self:CreateIcon(button)
 		end
 		local buffInfo = auraTable[i]
-		button:SetID(buffInfo.index)
+		button.index = buffInfo.index
 
-		if buffInfo.duration > 0 and buffInfo.expires then
-			local timeLeft = buffInfo.expires - GetTime()
+		if buffInfo.expires and buffInfo.expires > 0 then
+			local timeLeft = buffInfo.expires
 			if not button.timeLeft then
 				button.timeLeft = timeLeft
 				button:SetScript("OnUpdate", function() self.UpdateTime(this, arg1) end)
@@ -234,51 +272,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 
 		button.texture:SetTexture(buffInfo.icon)
 
-		buttons[i] = button
-	end
-
-	if weaponPosition then
-		local hasMainHandEnchant, mainHandExpiration, _, hasOffHandEnchant, offHandExpiration = GetWeaponEnchantInfo()
-		for weapon = 2, 1, -1 do
-			button = _G["ElvUIPlayerBuffsTempEnchant"..weapon]
-			if select(weapon, hasMainHandEnchant, hasOffHandEnchant) then
-				if not button then
-					button = CreateFrame("Button", "$parentTempEnchant"..weapon, header)
-					self:CreateIcon(button)
-				end
-				if button then
-					if button:IsShown() then button:Hide() end
-
-					local index = enchantableSlots[weapon]
-					local quality = GetInventoryItemQuality("player", index)
-					button.texture:SetTexture(GetInventoryItemTexture("player", index))
-
-					if quality then
-						button:SetBackdropBorderColor(GetItemQualityColor(quality))
-					end
-
-					local expirationTime = select(weapon, mainHandExpiration, offHandExpiration)
-					if expirationTime then
-						button.offset = select(weapon, 2, 5)
-						button:SetScript("OnUpdate", function() self.UpdateTime(this, arg1) end)
-						button.nextUpdate = -1
-						A.UpdateTime(button, 0)
-					else
-						button.timeLeft = nil
-						button.offset = nil
-						button:SetScript("OnUpdate", nil)
-						button.time:SetText("")
-					end
-
-					buttons[getn(buttons)+1] = button
-				end
-			else
-				if button and type(button.Hide) == "function" then
-					button.offset = nil
-					button:Hide()
-				end
-			end
-		end
+		buttons[i+1] = button
 	end
 
 	local display = getn(buttons)
@@ -313,7 +307,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 		top = max(top, button:GetTop() or -huge)
 		bottom = min(bottom, button:GetBottom() or huge)
 	end
-	local deadIndex = getn(auraTable) + 1
+	local deadIndex = (getn(auraTable) + numWeapon) + 1
 	button = _G[headerName.."AuraButton"..deadIndex]
 	while button do
 		if button:IsShown() then button:Hide() end
@@ -393,7 +387,7 @@ local function sortFactory(key, separateOwn, reverse)
 end
 
 local sorters = {}
-for _, key in ipairs{"index", "name", "expires"} do
+for _, key in ipairs{"index", "expires"} do
 	local label = string.upper(key)
 	sorters[label] = {}
 	for bool in pairs{[true] = true, [false] = false} do
@@ -415,30 +409,27 @@ function A:UpdateHeader(header)
 	local weaponPosition
 	if filter == "HELPFUL" then
 		db = self.db.buffs
-		weaponPosition = 0
+		weaponPosition = 1
 	end
 
-	local aura, _
-	for i = 1, 16 do
-		aura, _ = freshTable()
-		aura.buffIndex, aura.untilCancelled = GetPlayerBuff(i, filter)
-		if aura.buffIndex > 0 then
-			aura.icon, aura.count, aura.dispelType, aura.duration = GetPlayerBuffTexture(aura.buffIndex), GetPlayerBuffApplications(aura.buffIndex), GetPlayerBuffDispelType(aura.buffIndex), GetPlayerBuffTimeLeft(aura.buffIndex)
-			aura.filter = filter
-			aura.index = i
-
-			tinsert(sortingTable, aura)
-		else
+	for i = 0, 23 do
+		local aura, _ = freshTable()
+		aura.index, aura.untilCancelled = GetPlayerBuff(i, filter)
+		if aura.index < 0 then
 			releaseTable(aura)
+		else
+			aura.icon, aura.count, aura.dispelType, aura.expires = GetPlayerBuffTexture(aura.index), GetPlayerBuffApplications(aura.index), GetPlayerBuffDispelType(aura.index), GetPlayerBuffTimeLeft(aura.index)
+			aura.filter = filter
+			sortingTable[i+1] = aura
 		end
 	end
-	
+
 	local sortMethod = (sorters[db.sortMethod] or sorters["INDEX"])[db.sortDir == "-"][db.seperateOwn]
-	--tsort(sortingTable, sortMethod)
+	tsort(sortingTable, sortMethod)
 
 	self:ConfigureAuras(header, sortingTable, weaponPosition)
 	while sortingTable[1] do
-		releaseTable(tremove(sortingTable))
+		releaseTable(wipe(sortingTable))
 	end
 end
 
