@@ -24,7 +24,7 @@ function TT:RemoveTrashLines(tt)
 		local tiptext = _G["GameTooltipTextLeft"..i]
 		local linetext = tiptext:GetText()
 
-		if linetext == PVP or linetext == FACTION_ALLIANCE or linetext == FACTION_HORDE then
+		if linetext == HELPFRAME_HOME_ISSUE3_HEADER or linetext == FACTION_ALLIANCE or linetext == FACTION_HORDE then
 			tiptext:SetText(nil)
 			tiptext:Hide()
 		end
@@ -40,19 +40,20 @@ function TT:GetLevelLine(tt, offset)
 	end
 end
 
-function TT:UPDATE_MOUSEOVER_UNIT()
-	if not UnitExists("mouseover") then return end
+function TT:UPDATE_MOUSEOVER_UNIT(_, unit)
+	if not unit then unit = "mouseover" end
+	if not UnitExists(unit) then return end
 
-	--TT:RemoveTrashLines(GameTooltip)
-	local level = UnitLevel("mouseover")
+	TT:RemoveTrashLines(GameTooltip)
+	local level = UnitLevel(unit)
 	local isShiftKeyDown = IsShiftKeyDown()
 
 	local color
-	if UnitIsPlayer("mouseover") then
-		local localeClass, class = UnitClass("mouseover")
-		local name = UnitName("mouseover")
-		local guildName, guildRankName = GetGuildInfo("mouseover")
-		local pvpName = UnitPVPName("mouseover")
+	if UnitIsPlayer(unit) then
+		local localeClass, class = UnitClass(unit)
+		local name = UnitName(unit)
+		local guildName, guildRankName = GetGuildInfo(unit)
+		local pvpName = UnitPVPName(unit)
 		if not localeClass or not class then return end
 
 		color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
@@ -69,41 +70,46 @@ function TT:UPDATE_MOUSEOVER_UNIT()
 		end
 
 		local diffColor = GetQuestDifficultyColor(level)
-		local race = UnitRace("mouseover")
+		local race = UnitRace(unit)
 		GameTooltipTextLeft2:SetText((guildText and guildText.."\n" or "")..format("|cff%02x%02x%02x%s|r %s %s%s|r", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", race or "", E:RGBToHex(color.r, color.g, color.b), localeClass))
 	else
-		if UnitIsTapped("mouseover") and not UnitIsTappedByPlayer("mouseover") then
+		if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
 			color = TAPPED_COLOR
 		else
-			color = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction("mouseover", "player")] or FACTION_BAR_COLORS[UnitReaction("mouseover", "player")]
+			color = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[UnitReaction(unit, "player")] or FACTION_BAR_COLORS[UnitReaction(unit, "player")]
 		end
 
 		local levelLine = self:GetLevelLine(GameTooltip, 2)
 		if levelLine then
-			local creatureClassification = UnitClassification("mouseover")
-			local creatureType = UnitCreatureType("mouseover")
+			local creatureClassification = UnitClassification(unit)
+			local creatureType = UnitCreatureType(unit)
 			local pvpFlag = ""
 			local diffColor = GetQuestDifficultyColor(level)
 
-			if UnitIsPVP("mouseover") then
-				pvpFlag = format(" (%s)", PVP)
+			if UnitIsPVP(unit) then
+				pvpFlag = format(" (%s)", HELPFRAME_HOME_ISSUE3_HEADER)
 			end
 
 			levelLine:SetText(format("|cff%02x%02x%02x%s|r%s %s%s", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", classification[creatureClassification] or "", creatureType or "", pvpFlag))
 		end
 	end
 
-	if(color) then
+	if color then
 		GameTooltipStatusBar:SetStatusBarColor(color.r, color.g, color.b)
 	else
 		GameTooltipStatusBar:SetStatusBarColor(0.6, 0.6, 0.6)
 	end
 
 	GameTooltip:Show()
+
+	local textWidth = GameTooltipStatusBar.text:GetStringWidth()
+	if textWidth then
+		GameTooltip:SetMinimumWidth(textWidth)
+	end
 end
 
-function TT:SetUnit(...)
-	print(unpack(arg))
+function TT:SetUnit(tt, unit)
+	self:UPDATE_MOUSEOVER_UNIT(nil, unit)
 end
 
 function TT:CheckBackdropColor()
@@ -121,11 +127,61 @@ function TT:CheckBackdropColor()
 	end
 end
 
+function TT:SetTooltipFonts()
+	local font = E.LSM:Fetch("font", E.db.tooltip.font)
+	local fontOutline = E.db.tooltip.fontOutline
+	local headerSize = E.db.tooltip.headerFontSize
+	local textSize = E.db.tooltip.textFontSize
+	local smallTextSize = E.db.tooltip.smallTextFontSize
+
+	GameTooltipHeaderText:SetFont(font, headerSize, fontOutline)
+	GameTooltipText:SetFont(font, textSize, fontOutline)
+	GameTooltipTextSmall:SetFont(font, smallTextSize, fontOutline)
+	if GameTooltip.hasMoney then
+		for i = 1, GameTooltip.numMoneyFrames do
+			_G["GameTooltipMoneyFrame"..i.."PrefixText"]:SetFont(font, textSize, fontOutline)
+			_G["GameTooltipMoneyFrame"..i.."SuffixText"]:SetFont(font, textSize, fontOutline)
+			_G["GameTooltipMoneyFrame"..i.."GoldButtonText"]:SetFont(font, textSize, fontOutline)
+			_G["GameTooltipMoneyFrame"..i.."SilverButtonText"]:SetFont(font, textSize, fontOutline)
+			_G["GameTooltipMoneyFrame"..i.."CopperButtonText"]:SetFont(font, textSize, fontOutline)
+		end
+	end
+
+	ShoppingTooltip1TextLeft1:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextLeft2:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextLeft3:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextLeft4:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextRight1:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextRight2:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextRight3:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip1TextRight4:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextLeft1:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextLeft2:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextLeft3:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextLeft4:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextRight1:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextRight2:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextRight3:SetFont(font, headerSize, fontOutline)
+	ShoppingTooltip2TextRight4:SetFont(font, headerSize, fontOutline)
+end
+
 function TT:Initialize()
 	self.db = E.db.tooltip
 
 	if E.private.tooltip.enable ~= true then return end
 	E.Tooltip = TT
+
+	GameTooltipStatusBar:SetHeight(self.db.healthBar.height)
+	GameTooltipStatusBar.text = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
+	GameTooltipStatusBar.text:SetPoint("CENTER", GameTooltipStatusBar, 0, -3)
+	E:FontTemplate(GameTooltipStatusBar.text, E.LSM:Fetch("font", self.db.healthBar.font), self.db.healthBar.fontSize, self.db.healthBar.fontOutline)
+
+	if not GameTooltip.hasMoney then
+		SetTooltipMoney(GameTooltip, 1, nil, "", "")
+		SetTooltipMoney(GameTooltip, 1, nil, "", "")
+		GameTooltipMoneyFrame:Hide()
+	end
+	self:SetTooltipFonts()
 
 	self:SecureHook(GameTooltip, "SetUnit")
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
