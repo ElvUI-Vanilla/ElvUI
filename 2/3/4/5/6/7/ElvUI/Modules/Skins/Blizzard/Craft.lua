@@ -9,6 +9,10 @@ local select = select
 local find = string.find
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
+local GetItemInfo = GetItemInfo
+local GetItemQualityColor = GetItemQualityColor
+local GetCraftReagentInfo = GetCraftReagentInfo
+local GetCraftItemLink = GetCraftItemLink
 
 local function LoadSkin()
 	-- if E.private.skins.blizzard.enable ~= true or not E.private.skins.blizzard.craft ~= true then return end
@@ -19,16 +23,14 @@ local function LoadSkin()
 	CraftFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 74)
 
 	E:StripTextures(CraftRankFrameBorder)
+	CraftRankFrame:SetWidth(322)
 	CraftRankFrame:SetHeight(16)
 	CraftRankFrame:ClearAllPoints()
-	CraftRankFrame:SetPoint("TOP", 10, -45)
+	CraftRankFrame:SetPoint("TOP", -10, -45)
 	E:CreateBackdrop(CraftRankFrame)
 	CraftRankFrame:SetStatusBarTexture(E["media"].normTex)
 	CraftRankFrame:SetStatusBarColor(0.13, 0.35, 0.80)
 	E:RegisterStatusBar(CraftRankFrame)
-
-	CraftRankFrameSkillRank:ClearAllPoints()
-	CraftRankFrameSkillRank:SetPoint("CENTER", CraftRankFrame, "CENTER", 0, 0)
 
 	E:StripTextures(CraftExpandButtonFrame)
 	E:StripTextures(CraftDetailScrollChildFrame)
@@ -68,19 +70,26 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("CraftFrame_SetSelection", function(id)
-		if CraftIcon:GetNormalTexture() then
-			CraftIcon:SetAlpha(1)
-			CraftIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-			E:SetInside(CraftIcon:GetNormalTexture())
-		else
-			CraftIcon:SetAlpha(0)
-		end
+		CraftIcon:SetBackdrop({
+			bgFile = E.media.blankTex,
+			edgeFile = E["media"].blankTex,
+			tile = false, tileSize = 0, edgeSize = E.mult,
+			insets = {left = 0, right = 0, top = 0, bottom = 0}
+		})
+		CraftIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		E:SetInside(CraftIcon:GetNormalTexture())
+		CraftIcon:SetWidth(40)
+		CraftIcon:SetHeight(40)
+		CraftIcon:SetPoint("TOPLEFT", 4, -3)
 
-		local skillLink = GetCraftItemLink(id, 1)
-		if(skillLink) then
+		local skillLink = GetCraftItemLink(id)
+		local skillEnchantID = select(3, strfind(skillLink, "enchant:(%d+)"))
+		local skillItemID = select(3, strfind(skillLink, "item:(%d+)"))
+		local skillID = skillEnchantID or skillItemID
+		if skillEnchantID or skillItemID then
 			CraftRequirements:SetTextColor(1, 0.80, 0.10)
-			local quality = select(3, GetItemInfo(skillLink))
-			if(quality and quality > 1) then
+			local quality = select(3, GetItemInfo(skillID))
+			if quality then
 				CraftIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				CraftName:SetTextColor(GetItemQualityColor(quality))
 			else
@@ -93,14 +102,15 @@ local function LoadSkin()
 		for i = 1, numReagents, 1 do
 			local reagentName, reagentTexture, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
 			local reagentLink = GetCraftReagentItemLink(id, i)
+			local reagentID = select(3, strfind(reagentLink, "item:(%d+)"))
 			local icon = _G["CraftReagent" .. i .. "IconTexture"]
 			local name = _G["CraftReagent" .. i .. "Name"]
 
-			if(reagentLink) then
-				local quality = select(3, GetItemInfo(reagentLink))
-				if(quality and quality > 1) then
+			if reagentID then
+				local quality = select(3, GetItemInfo(reagentID))
+				if quality and quality > 1 then
 					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-					if(playerReagentCount < reagentCount) then
+					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
 					else
 						name:SetTextColor(GetItemQualityColor(quality))
