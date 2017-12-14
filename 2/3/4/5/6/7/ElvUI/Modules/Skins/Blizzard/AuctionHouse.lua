@@ -4,6 +4,8 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = getfenv()
+local unpack = unpack
+local pairs = pairs
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
