@@ -41,10 +41,10 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						EventTraceFrameEventHideButton_OnClick(self);
+						EventTraceFrameEventHideButton_OnClick(this);
 					</OnClick>
 					<OnLeave>
-						EventTraceFrameEvent_OnLeave(self:GetParent());
+						EventTraceFrameEvent_OnLeave(this:GetParent());
 					</OnLeave>
 				</Scripts>
 				<ButtonText text="X" inherits="GameFontRedSmall">
@@ -56,20 +56,20 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				local frameName = self:GetName();
-				self.time = _G[frameName.."Time"];
-				self.event = _G[frameName.."Event"];
-				self.HideButton = _G[frameName.."HideButton"];
-				self:GetHighlightTexture():SetAlpha(.15);
+				local frameName = this:GetName();
+				this.time = _G[frameName.."Time"];
+				this.event = _G[frameName.."Event"];
+				this.HideButton = _G[frameName.."HideButton"];
+				this:GetHighlightTexture():SetAlpha(.15);
 			</OnLoad>
 			<OnEnter>
-				EventTraceFrameEvent_OnEnter(self);
+				EventTraceFrameEvent_OnEnter(this);
 			</OnEnter>
 			<OnLeave>
-				EventTraceFrameEvent_OnLeave(self);
+				EventTraceFrameEvent_OnLeave(this);
 			</OnLeave>
 			<OnClick>
-				EventTraceFrameEvent_OnClick(self);
+				EventTraceFrameEvent_OnClick(this);
 			</OnClick>
 		</Scripts>
 		<HighlightTexture setAllPoints="true" alphaMode="ADD">
@@ -323,7 +323,7 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						self:RegisterForDrag("LeftButton");
+						this:RegisterForDrag("LeftButton");
 					</OnLoad>
 					<OnDragStart>
 						local eventTraceFrame = _G["EventTraceFrame"];
@@ -356,9 +356,9 @@
 				</Layers>
 				<Scripts>
 					<OnLoad>
-						self:SetFrameLevel(self:GetFrameLevel() + 1);
-						self:SetValue(0);
-						self:SetValueStep(1);
+						this:SetFrameLevel(self:GetFrameLevel() + 1);
+						this:SetValue(0);
+						this:SetValueStep(1);
 					</OnLoad>
 				</Scripts>
 				<ThumbTexture name="$parentThumb" file="Interface\Buttons\UI-ScrollBar-Knob">
@@ -369,19 +369,19 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				EventTraceFrame_OnLoad(self);
+				EventTraceFrame_OnLoad(this);
 			</OnLoad>
 			<OnShow>
-				EventTraceFrame_OnShow(self);
+				EventTraceFrame_OnShow(this);
 			</OnShow>
 			<OnEvent>
-				EventTraceFrame_OnEvent(self, event, ...);
+				EventTraceFrame_OnEvent(this, event, arg);
 			</OnEvent>
 			<OnUpdate>
-				EventTraceFrame_OnUpdate(self, elapsed);
+				EventTraceFrame_OnUpdate(this, arg1);
 			</OnUpdate>
 			<OnKeyUp>
-				EventTraceFrame_OnKeyUp(self, key);
+				EventTraceFrame_OnKeyUp(this, arg1);
 			</OnKeyUp>
 		</Scripts>
 	</Frame>
@@ -411,7 +411,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self:RegisterForDrag("LeftButton");
+						this:RegisterForDrag("LeftButton");
 					</OnLoad>
 					<OnDragStart>
 						local frame = _G["ScriptErrorsFrame"];
@@ -437,16 +437,16 @@
 						<Size x="343" y="194"/>
 						<Scripts>
 							<OnCursorChanged>
-								ScrollingEdit_OnCursorChanged(self);
+								ScrollingEdit_OnCursorChanged(this);
 							</OnCursorChanged>
 							<OnUpdate>
-								ScrollingEdit_OnUpdate(self, elapsed, self:GetParent());
+								ScrollingEdit_OnUpdate(this, arg1, this:GetParent());
 							</OnUpdate>
 							<OnEditFocusGained>
-								self:HighlightText(0);
+								this:HighlightText(0);
 							</OnEditFocusGained>
 							<OnEscapePressed>
-								self:ClearFocus();
+								this:ClearFocus();
 							</OnEscapePressed>
 						</Scripts>
 						<FontString inherits="GameFontHighlightSmall"/>
@@ -481,7 +481,7 @@
 
 				<Scripts>
 					<OnClick>
-						ScriptErrorsFrameButton_OnClick(self);
+						ScriptErrorsFrameButton_OnClick(this);
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -500,7 +500,7 @@
 
 				<Scripts>
 					<OnClick>
-						ScriptErrorsFrameButton_OnClick(self);
+						ScriptErrorsFrameButton_OnClick(this);
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -513,17 +513,17 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						HideUIPanel(self:GetParent());
+						HideUIPanel(this:GetParent());
 					</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				ScriptErrorsFrame_OnLoad(self);
+				ScriptErrorsFrame_OnLoad(this);
 			</OnLoad>
 			<OnShow>
-				ScriptErrorsFrame_OnShow(self);
+				ScriptErrorsFrame_OnShow(this);
 			</OnShow>
 		</Scripts>
 	</Frame>
@@ -531,19 +531,19 @@
 	<GameTooltip name="FrameStackTooltip" frameStrata="TOOLTIP" hidden="true" inherits="GameTooltipTemplate">
 		<Scripts>
 			<OnLoad>
-				FrameStackTooltip_OnLoad(self);
+				FrameStackTooltip_OnLoad(this);
 			</OnLoad>
 			<OnShow>
-				FrameStackTooltip_OnShow(self);
+				FrameStackTooltip_OnShow(this);
 			</OnShow>
 			<OnEnter>
-				FrameStackTooltip_OnEnter(self);
+				FrameStackTooltip_OnEnter(this);
 			</OnEnter>
 			<OnUpdate>
-				FrameStackTooltip_OnUpdate(self, elapsed);
+				FrameStackTooltip_OnUpdate(this, arg1);
 			</OnUpdate>
 			<OnEvent>
-				FrameStackTooltip_OnEvent(self, event, ...);
+				FrameStackTooltip_OnEvent(this, arg);
 			</OnEvent>
 		</Scripts>
 	</GameTooltip>
@@ -551,7 +551,7 @@
 	<GameTooltip name="EventTraceTooltip" frameStrata="TOOLTIP" hidden="true" parent="EventTraceFrame" inherits="GameTooltipTemplate">
 		<Scripts>
 			<OnLoad>
-				DebugTooltip_OnLoad(self)
+				DebugTooltip_OnLoad(this)
 			</OnLoad>
 		</Scripts>
 	</GameTooltip>

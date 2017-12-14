@@ -44,11 +44,11 @@ local lookup_mt = { __index = function(self, key)
 		real_MAJOR_VERSION = LIBBABBLE_MAJOR
 	end
 	if base_key then
-		warn(("%s: Translation %q not found for locale %q"):format(real_MAJOR_VERSION, key, GetLocale()))
+		warn(string.format("%s: Translation %q not found for locale %q", real_MAJOR_VERSION, key, GetLocale()))
 		rawset(self, key, base_key)
 		return base_key
 	end
-	warn(("%s: Translation %q not found."):format(real_MAJOR_VERSION, key))
+	warn(string.format("%s: Translation %q not found.", real_MAJOR_VERSION, key))
 	rawset(self, key, key)
 	return key
 end }

@@ -5,6 +5,7 @@ local pairs = pairs
 local tonumber = tonumber
 local type = type
 local format, gsub, lower, match, upper = string.format, string.gsub, string.lower, string.match, string.upper
+local getn = table.getn
 --WoW API
 local GetCurrentDungeonDifficulty = GetCurrentDungeonDifficulty
 local GetQuestGreenRange = GetQuestGreenRange
@@ -33,7 +34,7 @@ CLASS_SORT_ORDER = {
 	"WARLOCK",
 	"HUNTER"
 }
-MAX_CLASSES = #CLASS_SORT_ORDER
+MAX_CLASSES = getn(CLASS_SORT_ORDER)
 
 LOCALIZED_CLASS_NAMES_MALE = {}
 LOCALIZED_CLASS_NAMES_FEMALE = {}
@@ -104,7 +105,7 @@ function FillLocalizedClassList(tab, female)
 		if female then
 			tab[engClass] = LBC[engClass]
 		else
-			tab[engClass] = LBC[engClass:lower():gsub("^%l", upper)]
+			tab[engClass] = LBC[gsub(lower(engClass), "^%l", upper)]
 		end
 	end
 
@@ -289,7 +290,6 @@ function GetThreatStatusColor(statusIndex)
 
 	return threatColors[statusIndex][1], threatColors[statusIndex][2], threatColors[statusIndex][3]
 end
-
 
 function GetThreatStatus(currentThreat, maxThreat)
 	assert(type(currentThreat) == "number" and type(maxThreat) == "number", "Usage: GetThreatStatus(currentThreat, maxThreat)")

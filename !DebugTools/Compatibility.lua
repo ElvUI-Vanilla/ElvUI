@@ -1,10 +1,10 @@
---Cache global variables
-local format, match = string.format, string.match
-local tinsert, tsort, twipe = table.insert, table.sort, table.wipe
-local fmod = math.fmod
+-- Cache global variables
+local mod = math.mod
 local pairs = pairs
 local tostring = tostring
---WoW API
+local format, match = string.format, string.match
+local getn, tinsert, tsort, twipe = table.getn, table.insert, table.sort, table.wipe
+-- WoW API
 local GetTime = GetTime
 
 DEBUG_FRAMESTACK = "Frame Stack"
@@ -21,7 +21,7 @@ local eventHandler = CreateFrame("Frame", "EventHandler", UIParent)
 eventHandler:SetScript("OnEvent", EventHandler_OnEvent)
 
 function GetCurrentEventID()
-	return #eventList
+	return getn(eventList)
 end
 
 function GetEventTime(eventID)
@@ -92,7 +92,7 @@ end
 function UpdateFrameStack(tooltip, showHidden)
 	local x, y = GetCursorPosition()
 
-	for i = 1, #frameStackList do
+	for i = 1, getn(frameStackList) do
 		frameStackList[i] = nil
 	end
 
@@ -151,7 +151,7 @@ function UpdateFrameStack(tooltip, showHidden)
 		end
 	end
 
-	frameStackList[#frameStackList + 1] = nil
+	frameStackList[getn(frameStackList) + 1] = nil
 
 	tsort(frameStackList, FrameStackSort)
 
@@ -159,7 +159,7 @@ function UpdateFrameStack(tooltip, showHidden)
 	tooltip:AddDoubleLine(DEBUG_FRAMESTACK, format("(%.2f,%.2f)", x, y), 1, 1, 1, 1, .82, 0)
 
 	local cs, os, ol = 1, nil, nil
-	local cn = #colorSpecs
+	local cn = getn(colorSpecs)
 	local highlighted
 	local highlightFrame = GetMouseFocus()
 
@@ -173,7 +173,7 @@ function UpdateFrameStack(tooltip, showHidden)
 		end
 
 		if l ~= ol then
-			cs = fmod(cs, cn) + 1
+			cs = mod(cs, cn) + 1
 			ol = l
 		end
 

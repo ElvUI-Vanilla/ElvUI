@@ -1,3 +1,6 @@
+local mod = math.mod
+local getn = table.getn
+
 EVENT_TRACE_EVENT_HEIGHT = 16;
 EVENT_TRACE_MAX_ENTRIES = 1000;
 
@@ -18,7 +21,7 @@ local _framesSinceLast = 0;
 local _timeSinceLast = 0;
 
 local _timer = CreateFrame("FRAME");
-_timer:SetScript("OnUpdate", function (self, elapsed) _framesSinceLast = _framesSinceLast + 1; _timeSinceLast = _timeSinceLast + elapsed; end);
+_timer:SetScript("OnUpdate", function () _framesSinceLast = _framesSinceLast + 1; _timeSinceLast = _timeSinceLast + arg1; end);
 
 function EventTraceFrame_OnLoad(self)
 	local frameName = self:GetName()
@@ -42,11 +45,11 @@ function EventTraceFrame_OnLoad(self)
 	self.lastIndex = 0;
 	self.visibleButtons = 0;
 	_EventTraceFrame = self;
-	self:SetScript("OnSizeChanged", EventTraceFrame_OnSizeChanged);
+	self:SetScript("OnSizeChanged", function() EventTraceFrame_OnSizeChanged(this, this:GetWidth(), this:GetHeight()) end);
 	EventTraceFrame_OnSizeChanged(self, self:GetWidth(), self:GetHeight());
 	self:EnableMouse(true);
 	self:EnableMouseWheel(true);
-	self:SetScript("OnMouseWheel", EventTraceFrame_OnMouseWheel);
+	self:SetScript("OnMouseWheel", function() EventTraceFrame_OnMouseWheel(tris, arg1) end);
 end
 
 local _workTable = {};
@@ -97,18 +100,18 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			local hours = math.floor(minutes / 60);
 			seconds = seconds - 60 * minutes;
 			minutes = minutes - 60 * hours;
-			hours = hours % 1000;
+			hours = mod(hours, 1000)
 			self.times[nextIndex] = string.format("%.2d:%.2d:%06.3f", hours, minutes, seconds);
 			self.timeSinceLast[nextIndex] = 0;
 			self.framesSinceLast[nextIndex] = 0;
 			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = select("#", ...);
+			local numArgs = select("#", arg);
 			for i=1, numArgs do
 				if (not self.args[i]) then
 					self.args[i] = {};
 				end
-				self.args[i][nextIndex] = select(i, ...);
+				self.args[i][nextIndex] = select(i, arg);
 			end
 
 			if (self.eventsToCapture) then
@@ -138,7 +141,7 @@ end
 
 function EventTraceFrame_OnSizeChanged (self, width, height)
 	local numButtonsToDisplay = math.floor((height - 36)/EVENT_TRACE_EVENT_HEIGHT);
-	local numButtonsCreated = #self.buttons;
+	local numButtonsCreated = getn(self.buttons);
 
 	if (numButtonsCreated < numButtonsToDisplay) then
 		for i = numButtonsCreated + 1, numButtonsToDisplay do
@@ -542,7 +545,7 @@ function ScriptErrorsFrame_OnError (message, keepHidden)
 			_ScriptErrorsFrame.times[index] = date();
 		else
 			tinsert(_ScriptErrorsFrame.order, stack);
-			index = #_ScriptErrorsFrame.order;
+			index = getn(_ScriptErrorsFrame.order);
 			_ScriptErrorsFrame.count[index] = 1;
 			_ScriptErrorsFrame.messages[index] = message;
 			_ScriptErrorsFrame.times[index] = date();
@@ -562,7 +565,7 @@ function ScriptErrorsFrame_Update ()
 	local editBox = ScriptErrorsFrameScrollFrameText;
 	local index = _ScriptErrorsFrame.index;
 	if (not index or not _ScriptErrorsFrame.order[index]) then
-		index = #_ScriptErrorsFrame.order;
+		index = getn(_ScriptErrorsFrame.order);
 		_ScriptErrorsFrame.index = index;
 	end
 
@@ -586,7 +589,7 @@ function ScriptErrorsFrame_Update ()
 	if (prevText ~= text) then
 		editBox:SetText(text);
 		editBox:HighlightText(0);
-		editBox:SetCursorPosition(0);
+--		editBox:SetCursorPosition(0);
 	else
 		ScrollingEdit_OnTextChanged(editBox, parent);
 	end
@@ -597,7 +600,7 @@ end
 
 function ScriptErrorsFrame_UpdateButtons ()
 	local index = _ScriptErrorsFrame.index;
-	local numErrors = #_ScriptErrorsFrame.order;
+	local numErrors = getn(_ScriptErrorsFrame.order);
 	if (index == 0) then
 		_ScriptErrorsFrame.next:Disable();
 		_ScriptErrorsFrame.previous:Disable();
