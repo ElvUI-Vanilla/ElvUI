@@ -41,7 +41,7 @@ end
 
 function AFK:UpdateTimer()
 	local time = GetTime() - self.startTime
-	self.AFKMode.bottom.time:SetText(format("%02d:%02d", floor(time / 60), math.floor(time / 60) * 60))
+	self.AFKMode.bottom.time:SetText(format("%02d:%02d", floor(time / 60), time - floor(time / 60) * 60))
 end
 
 local function StopAnimation(self)
@@ -183,24 +183,29 @@ function AFK:OnEvent(event, ...)
 
 	if not E.db.general.afk then return end
 	if UnitAffectingCombat("player") or CinematicFrame:IsShown() then return end
-	if event == "CURRENT_SPELL_CAST_CHANGED" then
-		--Don't activate afk if player is crafting stuff, check back in 30 seconds
-		self:ScheduleTimer("OnEvent", 30)
-		return
+    -- if UnitCastingInfo("player") ~= nil then
+    --     --Don't activate afk if player is crafting stuff, check back in 30 seconds
+    --     self:ScheduleTimer("OnEvent", 30)
+    --     return
+    -- end
+
+	if arg1 == format(MARKED_AFK_MESSAGE, DEFAULT_AFK_MESSAGE) then
+		self:SetAFK(true)
+	elseif arg1 == CLEARED_AFK then
+		self:SetAFK(false)
 	end
-	print(unpack(arg1))
-	-- if event == "PLAYER_FLAGS_CHANGED" and self
-	-- self:SetAFK(true)
 end
 
 function AFK:Toggle()
 	if E.db.general.afk then
+		self:RegisterEvent("CHAT_MSG_SYSTEM", "OnEvent")
 		self:RegisterEvent("PLAYER_FLAGS_CHANGED", "OnEvent")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnEvent")
 		self:RegisterEvent("UPDATE_BATTLEFIELD_STATUS", "OnEvent")
 
 		SetCVar("autoClearAFK", "1")
 	else
+		self:UnregisterEvent("CHAT_MSG_SYSTEM")
 		self:UnregisterEvent("PLAYER_FLAGS_CHANGED")
 		self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 		self:UnregisterEvent("UPDATE_BATTLEFIELD_STATUS")
