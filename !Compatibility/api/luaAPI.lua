@@ -91,6 +91,41 @@ function string.split(delimiter, str)
 end
 strsplit = string.split
 
+function string.trim(str, chars)
+	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
+
+	str = type(str) == "number" and tostring(str) or str
+--[[
+	if chars then
+		local size = string.len(chars)
+		local token = ""
+
+		for i = 1, size do
+			token = token .. string.sub(chars, i, i + 1) .. "*"
+
+			if size > 1 and i < size then
+				token = token.."|"
+			end
+		end
+
+		token = "["..token.."]"
+
+		local trimed = 1
+		while trimed == 1 do
+			str, trimed = string.gsub(str, "^"..token.."(._)"..token.."$", "")
+		end
+	else
+		-- remove leading/trailing [space][tab][return][newline]
+		str = string.gsub(str, "^%s*(.-)%s*$", "%1")
+	end
+
+	return str
+]]
+
+	return string.gsub(str, "^%s*(.-)%s*$", "%1")
+end
+strtrim = string.trim
+
 function table.wipe(t)
 	assert(type(t) == "table", format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"))
 
