@@ -272,7 +272,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 
 		button.texture:SetTexture(buffInfo.icon)
 
-		buttons[i+1] = button
+		buttons[i+numWeapon] = button
 	end
 
 	local display = getn(buttons)
