@@ -1,9 +1,11 @@
 --Cache global variables
+local _G = _G
 local assert = assert
 local date = date
 local pairs = pairs
 local tonumber = tonumber
 local type = type
+local unpack = unpack
 local format, gsub, lower, match, upper = string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
@@ -57,6 +59,36 @@ QuestDifficultyColors = {
 	["trivial"] = {r = 0.50, g = 0.50, b = 0.50},
 	["header"] = {r = 0.70, g = 0.70, b = 0.70}
 }
+
+function hooksecurefunc(arg1, arg2, arg3)
+	local isMethod = type(arg1) == "table" and type(arg2) == "string" and type(arg1[arg2]) == "function" and type(arg3) == "function"
+	assert(isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function"), "Usage: hooksecurefunc([table,] \"functionName\", hookfunc)")
+
+	if not isMethod then
+		arg1, arg2, arg3 = _G, arg1, arg2
+	end
+
+	local original_func = arg1[arg2]
+
+	arg1[arg2] = function(...)
+		local original_return = {original_func(unpack(arg))}
+		arg3(unpack(arg))
+
+		return unpack(original_return)
+	end
+end
+
+--[[	issecurevariable([table], variable)
+	Returns 1, nil for undefined variables. This is because an undefined variable is secure since you have not tainted it.
+	Returns 1, nil for all untainted variables (i.e. Blizzard variables).
+	Returns nil for any global variable that is hooked insecurely (tainted), even unprotected ones like UnitName().
+	Returns nil for all user defined global variables.
+	If a table is passed first, it checks table.variable (e.g. issecurevariable(PlayerFrame, "Show") checks PlayerFrame["Show"] or PlayerFrame.Show (they are the same thing)).
+]]
+function issecurevariable(t, var)
+--	assert(type(t) == "table" and type(var) == "string", "Usage: issecurevariable([table,] \"variable\")")
+	return
+end
 
 function UnitAura(unit, i, filter)
 	assert((type(unit) == "string" or type(unit) == "number") and (type(i) == "string" or type(i) == "number"), "Usage: UnitAura(\"unit\", index [, filter])")
