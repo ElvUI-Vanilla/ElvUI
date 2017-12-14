@@ -13,6 +13,60 @@ local classification = {
 	rare = format("|cffAF5050 %s|r", ITEM_QUALITY3_DESC)
 }
 
+function TT:GameTooltip_SetDefaultAnchor(tt, parent)
+	if E.private.tooltip.enable ~= true then return end
+	if not self.db.visibility then return; end
+
+	if tt:GetAnchorType() ~= "ANCHOR_NONE" then return end
+
+	if parent then
+		if self.db.healthBar.statusPosition == "BOTTOM" then
+			if GameTooltipStatusBar.anchoredToTop then
+				GameTooltipStatusBar:ClearAllPoints()
+				GameTooltipStatusBar:Point("TOPLEFT", GameTooltip, "BOTTOMLEFT", E.Border, -(E.Spacing * 3))
+				GameTooltipStatusBar:Point("TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
+				GameTooltipStatusBar.text:Point("CENTER", GameTooltipStatusBar, 0, -3)
+				GameTooltipStatusBar.anchoredToTop = nil
+			end
+		else
+			if not GameTooltipStatusBar.anchoredToTop then
+				GameTooltipStatusBar:ClearAllPoints()
+				GameTooltipStatusBar:Point("BOTTOMLEFT", GameTooltip, "TOPLEFT", E.Border, (E.Spacing * 3))
+				GameTooltipStatusBar:Point("BOTTOMRIGHT", GameTooltip, "TOPRIGHT", -E.Border, (E.Spacing * 3))
+				GameTooltipStatusBar.text:Point("CENTER", GameTooltipStatusBar, 0, 3)
+				GameTooltipStatusBar.anchoredToTop = true
+			end
+		end
+		if self.db.cursorAnchor then
+			tt:SetOwner(parent, "ANCHOR_CURSOR")
+			return;
+		else
+			tt:SetOwner(parent, "ANCHOR_NONE")
+		end
+	end
+
+	if not E:HasMoverBeenMoved("TooltipMover") then
+		if ElvUI_ContainerFrame and ElvUI_ContainerFrame:IsShown() then
+			tt:SetPoint("BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18)
+		elseif RightChatPanel:GetAlpha() == 1 and RightChatPanel:IsShown() then
+			tt:SetPoint("BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", 0, 18)
+		else
+			tt:SetPoint("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18)
+		end
+	else
+		local point = E:GetScreenQuadrant(TooltipMover)
+		if point == "TOPLEFT" then
+			tt:SetPoint("TOPLEFT", TooltipMover)
+		elseif point == "TOPRIGHT" then
+			tt:SetPoint("TOPRIGHT", TooltipMover)
+		elseif point == "BOTTOMLEFT" or point == "LEFT" then
+			tt:SetPoint("BOTTOMLEFT", TooltipMover)
+		else
+			tt:SetPoint("BOTTOMRIGHT", TooltipMover)
+		end
+	end
+end
+
 function TT:SetStyle(tt)
 	E:SetTemplate(this, "Transparent", nil, true)
 	local r, g, b = this:GetBackdropColor()
@@ -60,18 +114,19 @@ function TT:UPDATE_MOUSEOVER_UNIT(_, unit)
 
 		GameTooltipTextLeft1:SetText(format("%s%s", E:RGBToHex(color.r, color.g, color.b), name))
 
-		local guildText
-		if guildName then
-			if self.db.guildRanks then
-				guildText = format("<|cff00ff10%s|r> [|cff00ff10%s|r]", guildName, guildRankName)
-			else
-				guildText = format("<|cff00ff10%s|r>", guildName)
-			end
-		end
-
 		local diffColor = GetQuestDifficultyColor(level)
 		local race = UnitRace(unit)
-		GameTooltipTextLeft2:SetText((guildText and guildText.."\n" or "")..format("|cff%02x%02x%02x%s|r %s %s%s|r", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", race or "", E:RGBToHex(color.r, color.g, color.b), localeClass))
+
+		if guildName then
+			if self.db.guildRanks then
+				GameTooltipTextLeft2:SetText(format("<|cff00ff10%s|r> [|cff00ff10%s|r]", guildName, guildRankName))
+			else
+				GameTooltipTextLeft2:SetText(format("<|cff00ff10%s|r>", guildName))
+			end
+			GameTooltip:AddLine(format("|cff%02x%02x%02x%s|r %s %s%s|r", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", race or "", E:RGBToHex(color.r, color.g, color.b), localeClass), 1, 1, 1)
+		else
+			GameTooltipTextLeft2:SetText(format("|cff%02x%02x%02x%s|r %s %s%s|r", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", race or "", E:RGBToHex(color.r, color.g, color.b), localeClass))
+		end
 	else
 		if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
 			color = TAPPED_COLOR
@@ -183,6 +238,7 @@ function TT:Initialize()
 	end
 	self:SetTooltipFonts()
 
+	self:SecureHook("GameTooltip_SetDefaultAnchor")
 	self:SecureHook(GameTooltip, "SetUnit")
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 end
