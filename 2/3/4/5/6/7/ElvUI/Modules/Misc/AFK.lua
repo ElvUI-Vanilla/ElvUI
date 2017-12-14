@@ -243,7 +243,8 @@ function AFK:Initialize()
 		E.global.afkEnabled = nil
 	end
 
-	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass]
+	local _, class = UnitClass("player")
+	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 
 	self.AFKMode = CreateFrame("Frame", "ElvUIAFKFrame")
 	self.AFKMode:SetFrameLevel(1)
@@ -296,7 +297,7 @@ function AFK:Initialize()
 	E:FontTemplate(self.AFKMode.bottom.name, nil, 20)
 	self.AFKMode.bottom.name:SetText(format("%s - %s", E.myname, E.myrealm))
 	self.AFKMode.bottom.name:SetPoint("TOPLEFT", self.AFKMode.bottom.faction, "TOPRIGHT", -10, -28)
-	-- self.AFKMode.bottom.name:SetTextColor(classColor.r, classColor.g, classColor.b)
+	self.AFKMode.bottom.name:SetTextColor(classColor.r, classColor.g, classColor.b)
 
 	self.AFKMode.bottom.guild = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(self.AFKMode.bottom.guild, nil, 20)
