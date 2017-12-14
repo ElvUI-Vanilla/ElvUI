@@ -1,3 +1,5 @@
+_G = getfenv()
+
 --Cache global variables
 local strmatch = strmatch
 --WoW API
@@ -14,7 +16,7 @@ function _ERRORMESSAGE_NEW(message)
 	LoadAddOn("!DebugTools")
 	local loaded = IsAddOnLoaded("!DebugTools")
 
-	if (GetCVar("scriptErrors") == "1") then
+	if (GetCVar("ShowErrors") == "1") then
 		if (not loaded or DEBUG_DEBUGTOOLS) then
 			ScriptErrors_Message:SetText(message)
 			ScriptErrors:Show()
