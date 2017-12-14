@@ -106,6 +106,19 @@ function issecurevariable(t, var)
 	return
 end
 
+function tContains(table, item)
+	local index = 1
+
+	while table[index] do
+		if item == table[index] then
+			return 1
+		end
+		index = index + 1
+	end
+
+	return
+end
+
 function UnitAura(unit, i, filter)
 	assert((type(unit) == "string" or type(unit) == "number") and (type(i) == "string" or type(i) == "number"), "Usage: UnitAura(\"unit\", index [, filter])")
 
