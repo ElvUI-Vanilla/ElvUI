@@ -86,7 +86,11 @@ local function FrameStackSort(b, a)
 		return
 	end
 
-	return a < b
+	if a and b then
+		return a < b
+	else
+		return
+	end
 end
 
 function UpdateFrameStack(tooltip, showHidden)
@@ -109,7 +113,7 @@ function UpdateFrameStack(tooltip, showHidden)
 		f, nf = nf, EnumerateFrames(nf)
 		local es = f:GetEffectiveScale() or 1
 
-		local Fl, Fb, Fr, Ft = f:GetRect()
+		local Fl, Fb, Fr, Ft = f:GetLeft(), f:GetBottom(), f:GetRight(), f:GetTop()
 		Fl = Fl or -1
 		Fb = Fb or -1
 		Fr = Fl + (Fr or -1)
