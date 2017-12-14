@@ -591,7 +591,7 @@ function ScriptErrorsFrame_Update ()
 		editBox:HighlightText(0);
 --		editBox:SetCursorPosition(0);
 	else
-		ScrollingEdit_OnTextChanged(editBox, parent);
+		ScriptErrorsFrameScrollFrame:UpdateScrollChildRect();
 	end
 	parent:SetVerticalScroll(0);
 
