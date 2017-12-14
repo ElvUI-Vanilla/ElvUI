@@ -4,6 +4,7 @@
 	<Include file="DataTexts\Load_DataTexts.xml"/>
 	<Include file="ActionBars\Load_ActionBars.xml"/>
 	<Include file="Maps\Load_Maps.xml"/>
+	<Include file="Misc\Load_Misc.xml"/>
 	<Include file="Chat\Load_Chat.xml"/>
 	<Include file="Skins\Load_Skins.xml"/>
 	<Include file="DataBars\Load_DataBars.xml"/>
