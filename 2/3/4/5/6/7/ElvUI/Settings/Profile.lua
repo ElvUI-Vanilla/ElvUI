@@ -15,6 +15,7 @@ P["general"] = {
 	["bottomPanel"] = true,
 	["hideErrorFrame"] = true,
 	["enhancedPvpMessages"] = true,
+	["afk"] = true,
 	["numberPrefixStyle"] = "ENGLISH",
 	["fontSize"] = 12,
 	["font"] = "PT Sans Narrow",
