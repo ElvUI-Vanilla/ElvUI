@@ -44,25 +44,25 @@ end
 function math.modf(i)
 	assert(type(i) == "number", format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"))
 
-    local int = i >= 0 and floor(i) or ceil(i)
+	local int = i >= 0 and floor(i) or ceil(i)
 
-    return int, i - int
+	return int, i - int
 end
 
 function string.join(delimiter, ...)
 	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
 
-    local size = getn(arg)
-    if size == 0 then
-        return ""
-    end
+	local size = getn(arg)
+	if size == 0 then
+		return ""
+	end
 
-    local text = arg[1]
-    for i = 2, size do
-        text = text..delimiter..arg[i]
-    end
+	local text = arg[1]
+	for i = 2, size do
+		text = text..delimiter..arg[i]
+	end
 
-    return text
+	return text
 end
 strjoin = string.join
 
@@ -139,36 +139,36 @@ wipe = table.wipe
 
 local LOCAL_ToStringAllTemp = {}
 function tostringall(...)
-    local n = getn(arg)
-    -- Simple versions for common argument counts
-    if (n == 1) then
-        return tostring(arg[1])
-    elseif (n == 2) then
-        return tostring(arg[1]), tostring(arg[2])
-    elseif (n == 3) then
-        return tostring(arg[1]), tostring(arg[2]), tostring(arg[3])
-    elseif (n == 0) then
-        return
-    end
+	local n = getn(arg)
+	-- Simple versions for common argument counts
+	if (n == 1) then
+		return tostring(arg[1])
+	elseif (n == 2) then
+		return tostring(arg[1]), tostring(arg[2])
+	elseif (n == 3) then
+		return tostring(arg[1]), tostring(arg[2]), tostring(arg[3])
+	elseif (n == 0) then
+		return
+	end
 
-    local needfix
-    for i = 1, n do
-        local v = arg[i]
-        if (type(v) ~= "string") then
-            needfix = i
-            break
-        end
-    end
-    if (not needfix) then return unpack(arg) end
+	local needfix
+	for i = 1, n do
+		local v = arg[i]
+		if (type(v) ~= "string") then
+			needfix = i
+			break
+		end
+	end
+	if (not needfix) then return unpack(arg) end
 
-    wipe(LOCAL_ToStringAllTemp)
-    for i = 1, needfix - 1 do
-        LOCAL_ToStringAllTemp[i] = arg[i]
-    end
-    for i = needfix, n do
-        LOCAL_ToStringAllTemp[i] = tostring(arg[i])
-    end
-    return unpack(LOCAL_ToStringAllTemp)
+	wipe(LOCAL_ToStringAllTemp)
+	for i = 1, needfix - 1 do
+		LOCAL_ToStringAllTemp[i] = arg[i]
+	end
+	for i = needfix, n do
+		LOCAL_ToStringAllTemp[i] = tostring(arg[i])
+	end
+	return unpack(LOCAL_ToStringAllTemp)
 end
 
 local LOCAL_PrintHandler = function(...)
