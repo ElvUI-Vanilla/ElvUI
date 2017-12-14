@@ -8,6 +8,7 @@ local unpack = unpack
 local find = string.find
 local getn = table.getn
 --WoW API / Variables
+local IsAddOnLoaded = IsAddOnLoaded
 local UnitIsUnit = UnitIsUnit
 local hooksecurefunc = hooksecurefunc
 
@@ -25,16 +26,12 @@ local function LoadSkin()
 		"OptionsFrameMiscellaneous",
 		"SoundOptionsFrame",
 		"TicketStatusFrame",
-		"ReadyCheckFrame",
 		"StackSplitFrame",
 	    "DropDownList1MenuBackdrop",
 	    "DropDownList2MenuBackdrop",
 	    "DropDownList1Backdrop",
 	    "DropDownList2Backdrop",
 	}
-
-	E:StripTextures(ReadyCheckFrame)
-	E:Kill(ReadyCheckPortrait)
 
 	for i = 1, getn(skins) do
 		E:SetTemplate(_G[skins[i]], "Transparent")
@@ -45,7 +42,6 @@ local function LoadSkin()
 		local width, height = (f:GetWidth() * .6), f:GetHeight()
 
 		local leftGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		-- leftGrad:Size(width, height)
 		leftGrad:SetWidth(width)
 		leftGrad:SetHeight(height)
 		leftGrad:SetPoint("LEFT", f, "CENTER")
@@ -53,7 +49,6 @@ local function LoadSkin()
 		leftGrad:SetGradientAlpha("Horizontal", r, g, b, 0.35, r, g, b, 0)
 
 		local rightGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		-- rightGrad:Size(width, height)
 		rightGrad:SetWidth(width)
 		rightGrad:SetHeight(height)
 		rightGrad:SetPoint("RIGHT", f, "CENTER")
@@ -146,8 +141,6 @@ local function LoadSkin()
 		"UIOptionsFrameDefaults",
 		"UIOptionsFrameOkay",
 		"UIOptionsFrameCancel",
-		"ReadyCheckFrameYesButton",
-		"ReadyCheckFrameNoButton",
 		"StackSplitOkayButton",
 		"StackSplitCancelButton",
 		"RolePollPopupAcceptButton"
@@ -169,9 +162,6 @@ local function LoadSkin()
 	SoundOptionsFrameOkay:SetPoint("RIGHT",SoundOptionsFrameCancel,"LEFT",-4,0)
 	UIOptionsFrameOkay:ClearAllPoints()
 	UIOptionsFrameOkay:SetPoint("RIGHT",UIOptionsFrameCancel,"LEFT", -4,0)
-	ReadyCheckFrameYesButton:SetPoint("RIGHT", ReadyCheckFrame, "CENTER", -1, 0)
-	ReadyCheckFrameNoButton:SetPoint("LEFT", ReadyCheckFrameYesButton, "RIGHT", 3, 0)
-	ReadyCheckFrameText:SetPoint("TOP", ReadyCheckFrame, "TOP", 0, -18)
 
 	-- others
 	ZoneTextFrame:ClearAllPoints()

@@ -12,6 +12,7 @@ local hooksecurefunc = hooksecurefunc
 function LoadSkin()
 	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true then return end
 
+	-- RaidFrame
 	local StripAllTextures = {
 		"RaidGroup1",
 		"RaidGroup2",
@@ -43,42 +44,6 @@ function LoadSkin()
 			E:SetTemplate(_G["RaidGroup" .. i .. "Slot" .. j], "Transparent")
 		end
 	end
-
-	-- hooksecurefunc("RaidClassButton_Update", function()
-	-- 	local button, icon, count
-	-- 	for index, value in pairs(RAID_CLASS_BUTTONS) do
-	-- 		button = _G["RaidClassButton" .. value.button]
-	-- 		icon = _G["RaidClassButton" .. value.button .. "IconTexture"]
-	-- 		count = _G["RaidClassButton" .. value.button .. "Count"]
-
-	-- 		E:StripTextures(button)
-
-	-- 		if not button.backdrop then
-	-- 			E:CreateBackdrop(button, "Default")
-	-- 			E:SetOutside(button.backdrop, icon)
-	-- 		end
-
-	-- 		if button:GetID() == value.button then
-	-- 			button.class = index
-	-- 			if index == "PETS" then
-	-- 				icon:SetTexture("Interface\\RaidFrame\\UI-RaidFrame-Pets")
-	-- 				icon:SetTexCoord(unpack(E.TexCoords))
-	-- 			elseif index == "MAINTANK" then
-	-- 				icon:SetTexture("Interface\\RaidFrame\\UI-RaidFrame-MainTank")
-	-- 				icon:SetTexCoord(unpack(E.TexCoords))
-	-- 			elseif index == "MAINASSIST" then
-	-- 				icon:SetTexture("Interface\\RaidFrame\\UI-RaidFrame-MainAssist")
-	-- 				icon:SetTexCoord(unpack(E.TexCoords))
-	-- 			else
-	-- 				icon:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
-	-- 				icon:SetTexCoord(value.coords[1] + 0.015, value.coords[2] - 0.02, value.coords[3] + 0.018, value.coords[4] - 0.02)
-	-- 			end
-	-- 			icon:SetWidth(20)
-	-- 			icon:SetHeight(20)
-	-- 			E:FontTemplate(count, nil, 12, "OUTLINE")
-	-- 		end
-	-- 	end
-	-- end)
 
 	local function skinPulloutFrames()
 		for i = 1, NUM_RAID_PULLOUT_FRAMES do
@@ -124,6 +89,19 @@ function LoadSkin()
 			end
 		end
 	end)
+
+	-- ReadyCheckFrame
+	E:StripTextures(ReadyCheckFrame)
+	E:SetTemplate(ReadyCheckFrame, "Transparent")
+
+	E:Kill(ReadyCheckPortrait)
+
+	S:HandleButton(ReadyCheckFrameYesButton)
+	S:HandleButton(ReadyCheckFrameNoButton)
+
+	ReadyCheckFrameYesButton:SetPoint("RIGHT", ReadyCheckFrame, "CENTER", -1, 0)
+	ReadyCheckFrameNoButton:SetPoint("LEFT", ReadyCheckFrameYesButton, "RIGHT", 3, 0)
+	ReadyCheckFrameText:SetPoint("TOP", ReadyCheckFrame, "TOP", 0, -18)
 end
 
 S:AddCallbackForAddon("Blizzard_RaidUI", "RaidUI", LoadSkin)
