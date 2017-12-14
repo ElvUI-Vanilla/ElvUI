@@ -1,6 +1,6 @@
-## Interface: 20400
+## Interface: 11200
 ## Title: !Compatibility
-## Notes: Compatibility functions for TBC
+## Notes: Compatibility functions for Vanilla
 ## Version: 1.0
 
 errorHandler.lua
