@@ -1,0 +1,8 @@
+## Interface: 20400
+## Title: !Compatibility
+## Notes: Compatibility functions for TBC
+## Version: 1.0
+
+errorHandler.lua
+api\api.xml
+slashCommands.lua
