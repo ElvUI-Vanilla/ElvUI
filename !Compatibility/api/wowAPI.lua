@@ -7,7 +7,6 @@ local type = type
 local format, gsub, lower, match, upper = string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
-local GetCurrentDungeonDifficulty = GetCurrentDungeonDifficulty
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
 local IsInInstance = IsInInstance
@@ -16,9 +15,8 @@ local UnitDebuff = UnitDebuff
 local UnitLevel = UnitLevel
 --WoW Variables
 local DUNGEON_DIFFICULTY1 = DUNGEON_DIFFICULTY1
-local DUNGEON_DIFFICULTY2 = DUNGEON_DIFFICULTY2
-local TIMEMANAGER_AM = TIMEMANAGER_AM
-local TIMEMANAGER_PM = TIMEMANAGER_PM
+local TIMEMANAGER_AM = gsub(TIME_TWELVEHOURAM, "^.-(%w+)$", "%1")
+local TIMEMANAGER_PM = gsub(TIME_TWELVEHOURPM, "^.-(%w+)$", "%1")
 --Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
@@ -74,7 +72,7 @@ end
 
 function BetterDate(formatString, timeVal)
 	local dateTable = date("*t", timeVal)
-	local amString = (dateTable.hour >= 12) and TIMEMANAGER_PM or TIMEMANAGER_AM
+	local amString = (dateTable.hour >= 12) and "PM" or "AM"
 
 	--First, we'll replace %p with the appropriate AM or PM.
 	formatString = gsub(formatString, "^%%p", amString)	--Replaces %p at the beginning of the string with the am/pm token
@@ -120,8 +118,6 @@ local zoneInfo = {
 	[LBZ["Warsong Gulch"]] = {mapID = 443, maxPlayers = 10},
 	[LBZ["Arathi Basin"]] = {mapID = 461, maxPlayers = 15},
 	[LBZ["Alterac Valley"]] = {mapID = 401, maxPlayers = 40},
-	-- TBC
-	[LBZ["Eye of the Storm"]] = {mapID = 566, maxPlayers = 15},
 
 	-- Raids
 	[LBZ["Zul'Gurub"]] = {mapID = 309, maxPlayers = 20},
@@ -130,17 +126,7 @@ local zoneInfo = {
 	[LBZ["Ruins of Ahn'Qiraj"]] = {mapID = 509, maxPlayers = 20},
 	[LBZ["Temple of Ahn'Qiraj"]] = {mapID = 531, maxPlayers = 40},
 	[LBZ["Blackwing Lair"]] = {mapID = 469, maxPlayers = 40},
---	[LBZ["Naxxramas"]] = {mapID = 533, maxPlayers = 40},
-	-- TBC
-	[LBZ["Karazhan"]] = {mapID = 532, maxPlayers = 10},
-	[LBZ["Gruul's Lair"]] = {mapID = 565, maxPlayers = 25},
-	[LBZ["Magtheridon's Lair"]] = {mapID = 544, maxPlayers = 25},
-	[LBZ["Zul'Aman"]] = {mapID = 568, maxPlayers = 10},
-	[LBZ["Serpentshrine Cavern"]] = {mapID = 548, maxPlayers = 25},
-	[LBZ["The Eye"]] = {mapID = 550, maxPlayers = 25},
-	[LBZ["Hyjal Summit"]] = {mapID = 534, maxPlayers = 25},
-	[LBZ["Black Temple"]] = {mapID = 564, maxPlayers = 25},
-	[LBZ["Sunwell Plateau"]] = {mapID = 580, maxPlayers = 25},
+	[LBZ["Naxxramas"]] = {mapID = 533, maxPlayers = 40},
 }
 
 local mapByID = {}
@@ -172,8 +158,8 @@ function GetInstanceInfo()
 
 	local name = GetRealZoneText()
 
-	local difficulty = GetCurrentDungeonDifficulty()
-	local difficultyName = difficulty == 1 and DUNGEON_DIFFICULTY1 or DUNGEON_DIFFICULTY2
+	local difficulty = 1
+	local difficultyName = DUNGEON_DIFFICULTY1
 	local maxPlayers = GetMaxPlayersByType(instanceType, name)
 
 	difficultyName = format("%d %s", maxPlayers, difficultyName)
