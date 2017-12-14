@@ -132,17 +132,18 @@ local function LoadSkin()
 	S:HandleCloseButton(TradeSkillFrameCloseButton)
 
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
-		if TradeSkillSkillIcon:GetNormalTexture() then
-			TradeSkillSkillIcon:SetAlpha(1)
-			TradeSkillSkillIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-			E:SetInside(TradeSkillSkillIcon:GetNormalTexture())
-		else
-			TradeSkillSkillIcon:SetAlpha(0)
-		end
+		E:SetTemplate(TradeSkillSkillIcon, "Default", true)
+		E:StyleButton(TradeSkillSkillIcon, nil, true)
+		TradeSkillSkillIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+		E:SetInside(TradeSkillSkillIcon:GetNormalTexture())
+
+		TradeSkillSkillIcon:SetWidth(40)
+		TradeSkillSkillIcon:SetHeight(40)
+		TradeSkillSkillIcon:SetPoint("TOPLEFT", 4, -3)
 
 		local skillLink = GetTradeSkillItemLink(id)
 		local skillID = select(3, strfind(skillLink, "item:(%d+)"))
-		if skillLink then
+		if skillID then
 			TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
 			local quality = select(3, GetItemInfo(skillID))
 

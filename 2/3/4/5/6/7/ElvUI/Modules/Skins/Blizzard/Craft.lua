@@ -70,14 +70,11 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("CraftFrame_SetSelection", function(id)
-		CraftIcon:SetBackdrop({
-			bgFile = E.media.blankTex,
-			edgeFile = E["media"].blankTex,
-			tile = false, tileSize = 0, edgeSize = E.mult,
-			insets = {left = 0, right = 0, top = 0, bottom = 0}
-		})
+		E:SetTemplate(CraftIcon, "Default", true)
+		E:StyleButton(CraftIcon, nil, true)
 		CraftIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(CraftIcon:GetNormalTexture())
+
 		CraftIcon:SetWidth(40)
 		CraftIcon:SetHeight(40)
 		CraftIcon:SetPoint("TOPLEFT", 4, -3)
@@ -89,7 +86,7 @@ local function LoadSkin()
 		if skillEnchantID or skillItemID then
 			CraftRequirements:SetTextColor(1, 0.80, 0.10)
 			local quality = select(3, GetItemInfo(skillID))
-			if quality then
+			if quality and quality > 1 then
 				CraftIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				CraftName:SetTextColor(GetItemQualityColor(quality))
 			else
