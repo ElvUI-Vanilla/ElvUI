@@ -7,10 +7,9 @@ local _G = _G
 local unpack = unpack
 local select = select
 --WoW API / Variables
-local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
-local GetTradePlayerItemLink = GetTradePlayerItemLink
-local GetTradeTargetItemLink = GetTradeTargetItemLink
+local GetTradePlayerItemInfo = GetTradePlayerItemInfo
+local GetTradeTargetItemInfo = GetTradeTargetItemInfo
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -97,7 +96,7 @@ local function LoadSkin()
 
 		local name = select(1, GetTradePlayerItemInfo(id))
 		if name then
-			local quality = select(4, GetTradeTargetItemInfo(id))
+			local quality = select(4, GetTradePlayerItemInfo(id))
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
 			if quality  then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
