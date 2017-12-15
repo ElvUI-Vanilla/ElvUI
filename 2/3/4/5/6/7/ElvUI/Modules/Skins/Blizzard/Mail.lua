@@ -47,21 +47,17 @@ local function LoadSkin()
 
 		for i = 1, INBOXITEMS_TO_DISPLAY do
 			if index <= numItems then
-				local packageIcon, _, _, _, _, _, _, _, _, _, _, _, isGM = GetInboxHeaderInfo(index)
+				local packageIcon = select(1, GetInboxHeaderInfo(index))
+				local isGM = select(13, GetInboxHeaderInfo(index))
 				local button = _G["MailItem"..i.."Button"]
 
 				button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				if packageIcon and not isGM then
-					local ItemLink = GetInboxItemLink(index, 1)
-
-					if ItemLink then
-						local quality = select(3, GetItemInfo(ItemLink))
-
-						if quality and quality > 1 then
-							button:SetBackdropBorderColor(GetItemQualityColor(quality))
-						else
-							button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-						end
+					local quality = select(4, GetInboxItem(index))
+					if quality then
+						button:SetBackdropBorderColor(GetItemQualityColor(quality))
+					else
+						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
 				elseif isGM then
 					button:SetBackdropBorderColor(0, 0.56, 0.94)
@@ -90,36 +86,32 @@ local function LoadSkin()
 	E:StripTextures(SendMailScrollFrame, true)
 	E:SetTemplate(SendMailScrollFrame, "Default")
 
-	-- hooksecurefunc("SendMailFrame_Update", function()
-	-- 	for i = 1, ATTACHMENTS_MAX_SEND do
-	-- 		local button = _G["SendMailAttachment"..i]
-	-- 		local texture = button:GetNormalTexture()
-	-- 		local itemName = GetSendMailItem(i)
+	hooksecurefunc("SendMailFrame_Update", function()
+			if not SendMailPackageButton.skinned then
+				E:StripTextures(SendMailPackageButton)
+				E:SetTemplate(SendMailPackageButton, "Default", true)
+				E:StyleButton(SendMailPackageButton, nil, true)
 
-	-- 		if not button.skinned then
-	-- 			E:StripTextures(button)
-	-- 			E:SetTemplate(button, "Default", true)
-	-- 			E:StyleButton(button, nil, true)
+				SendMailPackageButton.skinned = true
+			end
 
-	-- 			button.skinned = true
-	-- 		end
+			local itemName = select(1, GetSendMailItem())
 
-	-- 		if itemName then
-	-- 			local quality = select(3, GetItemInfo(itemName))
+			if itemName then
+				local quality = select(4, GetSendMailItem())
 
-	-- 			if quality and quality > 1 then
-	-- 				button:SetBackdropBorderColor(GetItemQualityColor(quality))
-	-- 			else
-	-- 				button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-	-- 			end
+				if quality and quality > 1 then
+					SendMailPackageButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+				else
+					SendMailPackageButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				end
 
-	-- 			texture:SetTexCoord(unpack(E.TexCoords))
-	-- 			E:SetInside(texture)
-	-- 		else
-	-- 			button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-	-- 		end
-	-- 	end
-	-- end)
+				SendMailPackageButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+				E:SetInside(SendMailPackageButton:GetNormalTexture())
+			else
+				SendMailPackageButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			end
+	end)
 
 	SendMailBodyEditBox:SetTextColor(1, 1, 1)
 
@@ -150,40 +142,30 @@ local function LoadSkin()
 	OpenMailFrame.backdrop:SetPoint("TOPLEFT", 12, -12)
 	OpenMailFrame.backdrop:SetPoint("BOTTOMRIGHT", -34, 74)
 
-	-- for i = 1, 12 do
-	-- 	local button = _G["OpenMailAttachmentButton"..i]
-	-- 	local icon = _G["OpenMailAttachmentButton"..i.."IconTexture"]
-	-- 	local count = _G["OpenMailAttachmentButton"..i.."Count"]
 
-	-- 	E:StripTextures(button)
-	-- 	E:SetTemplate(button, "Default", true)
-	-- 	E:StyleButton(button)
 
-	-- 	if icon then
-	-- 		icon:SetTexCoord(unpack(E.TexCoords))
-	-- 		icon:SetDrawLayer("ARTWORK")
-	-- 		E:SetInside(icon)
+	-- hooksecurefunc("OpenMail_Update", function()
+	-- 		local numItems = GetInboxNumItems()
+	-- 		local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1
 
-	-- 		count:SetDrawLayer("OVERLAY")
-	-- 	end
-	-- end
+	-- 		E:SetTemplate(OpenMailPackageButton, "Default", true)
+	-- 		E:StyleButton(OpenMailPackageButton, nil, true)
+	-- 		OpenMailPackageButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+	-- 		E:SetInside(OpenMailPackageButton:GetNormalTexture())
 
-	-- hooksecurefunc("OpenMailFrame_UpdateButtonPositions", function()
-	-- 	for i = 1, ATTACHMENTS_MAX_RECEIVE do
-	-- 		local ItemLink = GetInboxItemLink(InboxFrame.openMailID, i)
-	-- 		local button = _G["OpenMailAttachmentButton"..i]
-
-	-- 		button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-	-- 		if ItemLink then
-	-- 			local quality = select(3, GetItemInfo(ItemLink))
+	-- 		local itemName = select(1, GetInboxItem(index))
+	-- 		if itemName then
+	-- 			local quality = select(4, GetInboxItem(index))
 
 	-- 			if quality and quality > 1 then
-	-- 				button:SetBackdropBorderColor(GetItemQualityColor(quality))
+	-- 				OpenMailPackageButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 	-- 			else
-	-- 				button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+	-- 				OpenMailPackageButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 	-- 			end
+
+	-- 		else
+	-- 			OpenMailPackageButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 	-- 		end
-	-- 	end
 	-- end)
 
 	S:HandleCloseButton(OpenMailCloseButton)
