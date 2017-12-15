@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local select = select
 local find = string.find
@@ -13,6 +13,7 @@ local GetItemQualityColor = GetItemQualityColor
 local GetTradeSkillItemLink = GetTradeSkillItemLink
 local GetTradeSkillReagentInfo = GetTradeSkillReagentInfo
 local GetTradeSkillReagentItemLink = GetTradeSkillReagentItemLink
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tradeskill ~= true then return end
@@ -142,39 +143,42 @@ local function LoadSkin()
 		TradeSkillSkillIcon:SetPoint("TOPLEFT", 4, -3)
 
 		local skillLink = GetTradeSkillItemLink(id)
-		local skillID = select(3, strfind(skillLink, "item:(%d+)"))
-		if skillID then
+		if skillLink then
 			TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
-			local quality = select(3, GetItemInfo(skillID))
-
-			if quality and quality > 1 then
-				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
-				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
-			else
-				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				TradeSkillSkillName:SetTextColor(1, 1, 1)
+			local skillID = select(3, find(skillLink, "item:(%d+)"))
+			if skillID then
+				local quality = select(3, GetItemInfo(skillID))
+				if quality and quality > 1 then
+					TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
+					TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
+				else
+					TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					TradeSkillSkillName:SetTextColor(1, 1, 1)
+				end
 			end
 		end
 
 		local numReagents = GetTradeSkillNumReagents(id)
 		for i = 1, numReagents, 1 do
-			local reagentName, reagentTexture, reagentCount, playerReagentCount = GetTradeSkillReagentInfo(id, i)
+			local _, _, reagentCount, playerReagentCount = GetTradeSkillReagentInfo(id, i)
 			local reagentLink = GetTradeSkillReagentItemLink(id, i)
-			local reagentID = select(3, strfind(reagentLink, "item:(%d+)"))
 			local icon = _G["TradeSkillReagent" .. i .. "IconTexture"]
 			local name = _G["TradeSkillReagent" .. i .. "Name"]
 
 			if reagentLink then
-				local quality = select(3, GetItemInfo(reagentID))
-				if quality and quality > 1 then
-					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-					if(playerReagentCount < reagentCount) then
-						name:SetTextColor(0.5, 0.5, 0.5)
+				local reagentID = select(3, find(reagentLink, "item:(%d+)"))
+				if reagentID then
+					local quality = select(3, GetItemInfo(reagentID))
+					if quality and quality > 1 then
+						icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+						if playerReagentCount < reagentCount then
+							name:SetTextColor(0.5, 0.5, 0.5)
+						else
+							name:SetTextColor(GetItemQualityColor(quality))
+						end
 					else
-						name:SetTextColor(GetItemQualityColor(quality))
+						icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
-				else
-					icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 		end

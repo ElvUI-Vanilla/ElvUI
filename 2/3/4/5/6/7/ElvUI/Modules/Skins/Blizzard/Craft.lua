@@ -3,16 +3,16 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local select = select
 local find = string.find
 --WoW API / Variables
-local hooksecurefunc = hooksecurefunc
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local GetCraftReagentInfo = GetCraftReagentInfo
 local GetCraftItemLink = GetCraftItemLink
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	-- if E.private.skins.blizzard.enable ~= true or not E.private.skins.blizzard.craft ~= true then return end
@@ -80,40 +80,46 @@ local function LoadSkin()
 		CraftIcon:SetPoint("TOPLEFT", 4, -3)
 
 		local skillLink = GetCraftItemLink(id)
-		local skillEnchantID = select(3, strfind(skillLink, "enchant:(%d+)"))
-		local skillItemID = select(3, strfind(skillLink, "item:(%d+)"))
-		local skillID = skillEnchantID or skillItemID
-		if skillEnchantID or skillItemID then
+		if skillLink then
+			local skillEnchantID = select(3, find(skillLink, "enchant:(%d+)"))
+			local skillItemID = select(3, find(skillLink, "item:(%d+)"))
+			local skillID = skillEnchantID or skillItemID
 			CraftRequirements:SetTextColor(1, 0.80, 0.10)
-			local quality = select(3, GetItemInfo(skillID))
-			if quality and quality > 1 then
-				CraftIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
-				CraftName:SetTextColor(GetItemQualityColor(quality))
-			else
-				CraftIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				CraftName:SetTextColor(1, 1, 1)
+			if skillID then
+				local quality = select(3, GetItemInfo(skillID))
+				if quality and quality > 1 then
+					CraftIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
+					CraftName:SetTextColor(GetItemQualityColor(quality))
+				else
+					CraftIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					CraftName:SetTextColor(1, 1, 1)
+				end
 			end
 		end
 
 		local numReagents = GetCraftNumReagents(id)
 		for i = 1, numReagents, 1 do
-			local reagentName, reagentTexture, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
+			local _, _, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
 			local reagentLink = GetCraftReagentItemLink(id, i)
-			local reagentID = select(3, strfind(reagentLink, "item:(%d+)"))
 			local icon = _G["CraftReagent" .. i .. "IconTexture"]
 			local name = _G["CraftReagent" .. i .. "Name"]
 
-			if reagentID then
-				local quality = select(3, GetItemInfo(reagentID))
-				if quality and quality > 1 then
-					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-					if playerReagentCount < reagentCount then
-						name:SetTextColor(0.5, 0.5, 0.5)
+			if reagentLink then
+				local reagentEnchantID = select(3, find(reagentLink, "item:(%d+)"))
+				local reagentItemID = select(3, find(reagentLink, "item:(%d+)"))
+				local reagentID = reagentEnchantID or reagentItemID
+				if reagentID then
+					local quality = select(3, GetItemInfo(reagentID))
+					if quality and quality > 1 then
+						icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+						if playerReagentCount < reagentCount then
+							name:SetTextColor(0.5, 0.5, 0.5)
+						else
+							name:SetTextColor(GetItemQualityColor(quality))
+						end
 					else
-						name:SetTextColor(GetItemQualityColor(quality))
+						icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
-				else
-					icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 		end

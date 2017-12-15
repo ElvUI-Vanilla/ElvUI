@@ -3,11 +3,13 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local pairs = pairs
 local unpack = unpack
 local find = string.find
 --WoW API / Variables
+local GetItemInfo = GetItemInfo
+local GetItemQualityColor = GetItemQualityColor
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -61,7 +63,6 @@ local function LoadSkin()
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
 		icon:SetDrawLayer("OVERLAY")
-		-- icon:Size(icon:GetWidth() -(E.Spacing*2), icon:GetHeight() -(E.Spacing*2))
 		icon:SetWidth(icon:GetWidth() -(E.Spacing*2))
 		icon:SetHeight(icon:GetHeight() -(E.Spacing*2))
 		icon:SetPoint("TOPLEFT", E.Border, -E.Border)
@@ -83,7 +84,6 @@ local function LoadSkin()
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
 		icon:SetDrawLayer("OVERLAY")
-		-- icon:Size(icon:GetWidth() -(E.Spacing*2), icon:GetHeight() -(E.Spacing*2))
 		icon:SetWidth(icon:GetWidth() -(E.Spacing*2))
 		icon:SetHeight(icon:GetHeight() -(E.Spacing*2))
 		icon:SetPoint("TOPLEFT", E.Border, -E.Border)
@@ -105,7 +105,6 @@ local function LoadSkin()
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
 		icon:SetDrawLayer("OVERLAY")
-		-- icon:Size(icon:GetWidth() -(E.Spacing*2), icon:GetHeight() -(E.Spacing*2))
 		icon:SetWidth(icon:GetWidth() -(E.Spacing*2))
 		icon:SetHeight(icon:GetHeight() -(E.Spacing*2))
 		icon:SetPoint("TOPLEFT", E.Border, -E.Border)
@@ -117,19 +116,24 @@ local function LoadSkin()
 
 	local function QuestQualityColors(frame, text, quality, link)
 		if link and not quality then
-			_, _, quality = GetItemInfo(link)
+			local itemEnchantID = select(3, find(link, "enchant:(%d+)"))
+			local itemItemID = select(3, find(link, "item:(%d+)"))
+			local itemID = itemEnchantID or itemItemID
+			if itemID then
+				_, _, quality = GetItemInfo(itemID)
+			end
 		end
 
 		if quality and quality > 1 then
 			if frame then
 				frame:SetBackdropBorderColor(GetItemQualityColor(quality))
-				-- frame.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+				frame.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 			text:SetTextColor(GetItemQualityColor(quality))
 		else
 			if frame then
 				frame:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				-- frame.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				frame.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			end
 			text:SetTextColor(1, 1, 1)
 		end
@@ -139,7 +143,6 @@ local function LoadSkin()
 	E:SetTemplate(QuestRewardItemHighlight, "Default", nil, true)
 	QuestRewardItemHighlight:SetBackdropBorderColor(1, 1, 0)
 	QuestRewardItemHighlight:SetBackdropColor(0, 0, 0, 0)
-	-- QuestRewardItemHighlight:Size(142, 40)
 	QuestRewardItemHighlight:SetWidth(142)
 	QuestRewardItemHighlight:SetHeight(40)
 
@@ -306,7 +309,6 @@ local function LoadSkin()
 	S:HandleButton(QuestTrack)
 	QuestTrack:SetText(TRACK_QUEST)
 	QuestTrack:SetPoint("TOP", QuestLogFrame, "TOP", -64, -42)
-	-- QuestTrack:Size(110, 21)
 	QuestTrack:SetWidth(110)
 	QuestTrack:SetHeight(21)
 
@@ -342,8 +344,11 @@ local function LoadSkin()
 		else
 			QuestTrack:Enable()
 		end
-
-		QuestLogListScrollFrame:Show()
+		if EmptyQuestLogFrame:IsVisible() then
+			QuestLogListScrollFrame:Hide()
+		else
+			QuestLogListScrollFrame:Show()
+		end
 	end)
 
 	for i = 1, 6 do
@@ -358,7 +363,6 @@ local function LoadSkin()
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
 		icon:SetDrawLayer("OVERLAY")
-		-- icon:Size(icon:GetWidth() -(E.Spacing*2), icon:GetHeight() -(E.Spacing*2))
 		icon:SetWidth(icon:GetWidth() -(E.Spacing*2))
 		icon:SetHeight(icon:GetHeight() -(E.Spacing*2))
 		icon:SetPoint("TOPLEFT", E.Border, -E.Border)
@@ -388,16 +392,6 @@ local function LoadSkin()
 			QuestQualityColors(item, name, nil, link)
 		end
 	end)
-
-	-- QUESTS_DISPLAYED = 25
-
-	-- for i = 7, 25 do
-	-- 	local questLogTitle = CreateFrame("Button", "QuestLogTitle" .. i, QuestLogFrame, "QuestLogTitleButtonTemplate")
-
-	-- 	questLogTitle:SetID(i)
-	-- 	questLogTitle:Hide()
-	-- 	questLogTitle:SetPoint("TOPLEFT", _G["QuestLogTitle" .. i - 1], "BOTTOMLEFT", 0, 1)
-	-- end
 
 	for i = 1, QUESTS_DISPLAYED do
 		local questLogTitle = _G["QuestLogTitle" .. i]

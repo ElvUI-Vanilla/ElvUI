@@ -3,16 +3,16 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
-local unpack, select = unpack, select
+local _G = _G
+local unpack = unpack
+local select = select
 --WoW API / Variables
-local hooksecurefunc = hooksecurefunc
 local GetInboxItem = GetInboxItem
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local GetSendMailItem = GetSendMailItem
+local hooksecurefunc = hooksecurefunc
 local INBOXITEMS_TO_DISPLAY = INBOXITEMS_TO_DISPLAY
-local ATTACHMENTS_MAX_RECEIVE = ATTACHMENTS_MAX_RECEIVE
 
 local function LoadSkin()
 	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mail ~= true then return end
