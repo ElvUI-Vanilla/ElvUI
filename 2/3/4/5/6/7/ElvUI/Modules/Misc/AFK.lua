@@ -1,11 +1,13 @@
-local E, L, V, P, G = unpack(ElvUI)
-local AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0");
 -- local CH = E:GetModule("Chat")
 
-local _G = getfenv()
+--Cache global variables
+--Lua functions
+local _G = _G
 local GetTime = GetTime
 local floor = math.floor
-
+--WoW API / Variables
 local CinematicFrame = CinematicFrame
 local CreateFrame = CreateFrame
 local GetBattlefieldStatus = GetBattlefieldStatus
