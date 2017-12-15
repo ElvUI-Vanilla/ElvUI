@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local select = select
 --WoW API / Variables
@@ -92,13 +92,14 @@ local function LoadSkin()
 	S:HandleButton(TradeFrameCancelButton)
 
 	hooksecurefunc("TradeFrame_UpdatePlayerItem", function(id)
-		local link = GetTradePlayerItemLink(id)
 		local tradeItemButton = _G["TradePlayerItem" .. id .. "ItemButton"]
 		local tradeItemName = _G["TradePlayerItem" .. id .. "Name"]
-		if(link) then
-			local quality = select(3, GetItemInfo(link))
+
+		local name = select(1, GetTradePlayerItemInfo(id))
+		if name then
+			local quality = select(4, GetTradeTargetItemInfo(id))
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
-			if(quality and quality > 1) then
+			if quality  then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
@@ -107,13 +108,14 @@ local function LoadSkin()
 	end)
 
 	hooksecurefunc("TradeFrame_UpdateTargetItem", function(id)
-		local link = GetTradeTargetItemLink(id)
 		local tradeItemButton = _G["TradeRecipientItem" .. id .. "ItemButton"]
 		local tradeItemName = _G["TradeRecipientItem" .. id .. "Name"]
-		if(link) then
-			local quality = select(3, GetItemInfo(link))
+
+		local name = select(1, GetTradeTargetItemInfo(id))
+		if name then
+			local quality = select(4, GetTradeTargetItemInfo(id))
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
-			if(quality and quality > 1) then
+			if quality  then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
