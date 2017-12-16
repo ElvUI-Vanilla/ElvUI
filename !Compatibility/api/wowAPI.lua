@@ -3,6 +3,7 @@ local _G = _G
 local assert = assert
 local date = date
 local pairs = pairs
+local select = select
 local tonumber = tonumber
 local type = type
 local unpack = unpack
@@ -356,5 +357,17 @@ function GetThreatStatus(currentThreat, maxThreat)
 		return 1, threatPercent
 	else
 		return 0, threatPercent
+	end
+end
+
+-- Credits: @Shagu - pfUI
+-- https://github.com/shagu/pfUI/blob/7999f612ad464261306bbf6f309bb63b54bd44af/api/api.lua#L123
+function GetItemLinkByName(name)
+	for itemID = 1, 25818 do
+		local itemName, itemLink, itemQuality = GetItemInfo(itemID)
+		if itemName and itemName == name then
+			local hex = select(4, GetItemQualityColor(tonumber(itemQuality)))
+			return hex.. "|H"..itemLink.."|h["..itemName.."]|h|r"
+		end
 	end
 end
