@@ -5,29 +5,29 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = getfenv()
 local unpack = unpack
+local match = string.match
 --WoW API / Variables
 local GetItemQualityColor = GetItemQualityColor
-local GetContainerItemInfo = GetContainerItemInfo
+local GetContainerItemLink = GetContainerItemLink
 local BANK_CONTAINER = BANK_CONTAINER
 local NUM_CONTAINER_FRAMES = NUM_CONTAINER_FRAMES
 
 function S:ContainerFrame_Update(self)
 	local id = self:GetID()
 	local name = self:GetName()
-	local _, itemButton, cooldown, quality
+	local _, itemButton, itemLink, quality
 
 	for i = 1, self.size, 1 do
 		itemButton = _G[name.."Item"..i]
-		cooldown = _G[name.."Item"..i.."Cooldown"]
 
-		if cooldown then
-			E:RegisterCooldown(cooldown)
-		end
-
-		_, _, _, quality = GetContainerItemInfo(id, itemButton:GetID())
-
-		if quality and quality > 1 then
-			itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+		itemLink = GetContainerItemLink(id, itemButton:GetID())
+		if itemLink then
+			_, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
+			if quality then
+				itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+			else
+				itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			end
 		else
 			itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 		end
@@ -37,8 +37,7 @@ end
 function S:BankFrameItemButton_Update(button)
 	if not button.isBag then
 		local _, _, _, quality = GetContainerItemInfo(BANK_CONTAINER, button:GetID())
-
-		if quality and quality > 1 then
+		if quality then
 			button:SetBackdropBorderColor(GetItemQualityColor(quality))
 		else
 			button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -66,14 +65,19 @@ local function LoadSkin()
 		for k = 1, MAX_CONTAINER_ITEMS, 1 do
 			itemButton = _G["ContainerFrame"..i.."Item"..k]
 			itemButtonIcon = _G["ContainerFrame"..i.."Item"..k.."IconTexture"]
+			itemButtonCooldown = _G["ContainerFrame"..i.."Item"..k.."Cooldown"]
 
-			itemButton:SetNormalTexture(nil)
+			itemButton:SetNormalTexture("")
 
 			E:SetTemplate(itemButton, "Default", true)
 			E:StyleButton(itemButton)
 
 			E:SetInside(itemButtonIcon)
 			itemButtonIcon:SetTexCoord(unpack(E.TexCoords))
+
+			if itemButtonCooldown then
+				E:RegisterCooldown(itemButtonCooldown)
+			end
 		end
 	end
 

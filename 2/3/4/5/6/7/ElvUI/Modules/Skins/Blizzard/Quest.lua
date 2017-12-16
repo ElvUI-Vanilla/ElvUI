@@ -11,7 +11,6 @@ local find, format, split = string.find, string.format, string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
-local HookScript
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
