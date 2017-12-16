@@ -98,7 +98,7 @@ local function LoadSkin()
 		if name then
 			local quality = select(4, GetTradePlayerItemInfo(id))
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
-			if quality  then
+			if quality and quality > 1 then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
@@ -114,7 +114,7 @@ local function LoadSkin()
 		if name then
 			local quality = select(4, GetTradeTargetItemInfo(id))
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
-			if quality  then
+			if quality and quality > 1 then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
