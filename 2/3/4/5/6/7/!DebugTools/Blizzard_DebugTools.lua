@@ -1,4 +1,5 @@
-local _G = getfenv()
+local mod = math.mod
+local getn = table.getn
 
 EVENT_TRACE_EVENT_HEIGHT = 16;
 EVENT_TRACE_MAX_ENTRIES = 1000;
@@ -44,7 +45,7 @@ function EventTraceFrame_OnLoad(self)
 	self.lastIndex = 0;
 	self.visibleButtons = 0;
 	_EventTraceFrame = self;
-	self:SetScript("OnSizeChanged", function() EventTraceFrame_OnSizeChanged(this, arg1, arg2) end);
+	self:SetScript("OnSizeChanged", function() EventTraceFrame_OnSizeChanged(this, this:GetWidth(), this:GetHeight()) end);
 	EventTraceFrame_OnSizeChanged(self, self:GetWidth(), self:GetHeight());
 	self:EnableMouse(true);
 	self:EnableMouseWheel(true);
@@ -99,18 +100,18 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			local hours = math.floor(minutes / 60);
 			seconds = seconds - 60 * minutes;
 			minutes = minutes - 60 * hours;
-			hours = math.mod(hours, 1000);
+			hours = mod(hours, 1000)
 			self.times[nextIndex] = string.format("%.2d:%.2d:%06.3f", hours, minutes, seconds);
 			self.timeSinceLast[nextIndex] = 0;
 			self.framesSinceLast[nextIndex] = 0;
 			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = select("#", unpack(arg));
+			local numArgs = select("#", arg);
 			for i=1, numArgs do
 				if (not self.args[i]) then
 					self.args[i] = {};
 				end
-				self.args[i][nextIndex] = select(i, unpack(arg));
+				self.args[i][nextIndex] = select(i, arg);
 			end
 
 			if (self.eventsToCapture) then
@@ -127,8 +128,8 @@ function EventTraceFrame_OnEvent (self, event, ...)
 	end
 end
 
-function EventTraceFrame_OnShow()
-	wipe(this.ignoredEvents);
+function EventTraceFrame_OnShow(self)
+	wipe(self.ignoredEvents);
 	local scrollBar = _G["EventTraceFrameScroll"];
 	local minValue, maxValue = scrollBar:GetMinMaxValues();
 	scrollBar:SetValue(maxValue);
@@ -140,7 +141,7 @@ end
 
 function EventTraceFrame_OnSizeChanged (self, width, height)
 	local numButtonsToDisplay = math.floor((height - 36)/EVENT_TRACE_EVENT_HEIGHT);
-	local numButtonsCreated = getn(self.buttons)
+	local numButtonsCreated = getn(self.buttons);
 
 	if (numButtonsCreated < numButtonsToDisplay) then
 		for i = numButtonsCreated + 1, numButtonsToDisplay do
@@ -162,7 +163,7 @@ function EventTraceFrame_OnSizeChanged (self, width, height)
 		EventTraceFrame_Update();
 	elseif (numButtonsToDisplay < self.visibleButtons) then
 		for i = numButtonsToDisplay + 1, self.visibleButtons do
-		--	self.buttons[i]:Hide();
+			self.buttons[i]:Hide();
 		end
 		self.visibleButtons = numButtonsToDisplay;
 	end
@@ -493,9 +494,14 @@ function EventTraceFrameEventHideButton_OnClick (button)
 	EventTraceFrame_Update();
 end
 
-local ERROR_FORMAT = "|cffffd200Message:|r|cffffffff %s|r\n|cffffd200Time:|r|cffffffff %s|r\n|cffffd200Count:|r|cffffffff %s|r\n|cffffd200Stack:|r|cffffffff %s|r";
+local ERROR_FORMAT = [[|cffffd200Message:|r|cffffffff %s|r
+|cffffd200Time:|r|cffffffff %s|r
+|cffffd200Count:|r|cffffffff %s|r
+|cffffd200Stack:|r|cffffffff %s|r]];
 
-local WARNING_AS_ERROR_FORMAT = "|cffffd200Message:|r|cffffffff %s|r\n|cffffd200Time:|r|cffffffff %s|r\n|cffffd200Count:|r|cffffffff %s|r";
+local WARNING_AS_ERROR_FORMAT = [[|cffffd200Message:|r|cffffffff %s|r
+|cffffd200Time:|r|cffffffff %s|r
+|cffffd200Count:|r|cffffffff %s|r]];
 
 local WARNING_FORMAT = "Lua Warning:\n"..WARNING_AS_ERROR_FORMAT;
 
@@ -522,7 +528,7 @@ function ScriptErrorsFrame_OnLoad (self)
 	_ScriptErrorsFrame = self;
 end
 
-function ScriptErrorsFrame_OnShow (self)
+function ScriptErrorsFrame_OnShow ()
 	ScriptErrorsFrame_Update();
 end
 
@@ -583,7 +589,7 @@ function ScriptErrorsFrame_Update ()
 	if (prevText ~= text) then
 		editBox:SetText(text);
 		editBox:HighlightText(0);
-		--editBox:SetCursorPosition(0);
+--		editBox:SetCursorPosition(0);
 	else
 		ScriptErrorsFrameScrollFrame:UpdateScrollChildRect();
 	end
@@ -663,7 +669,7 @@ function FrameStackTooltip_OnLoad(self)
 	self:RegisterEvent("DISPLAY_SIZE_CHANGED")
 end
 
-function FrameStackTooltip_OnEvent(self, event, ...)
+function FrameStackTooltip_OnEvent(self, event)
 	if (event == "DISPLAY_SIZE_CHANGED") then
 		FrameStackTooltip_OnDisplaySizeChanged(self)
 	end

@@ -2,13 +2,12 @@
 Slider Widget
 Graphical Slider, like, for Range values.
 -------------------------------------------------------------------------------]]
-local Type, Version = "Slider", 22
+local Type, Version = "Slider", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
-local gsub = string.gsub
 local tonumber, pairs = tonumber, pairs
 
 -- WoW APIs
@@ -25,7 +24,7 @@ Support functions
 local function UpdateText(self)
 	local value = self.value or 0
 	if self.ispercent then
-		self.editbox:SetText(format("%s%%", floor(value * 1000 + 0.5) / 10))
+		self.editbox:SetText(("%s%%"):format(floor(value * 1000 + 0.5) / 10))
 	else
 		self.editbox:SetText(floor(value * 100 + 0.5) / 100)
 	end
@@ -34,8 +33,8 @@ end
 local function UpdateLabels(self)
 	local min, max = (self.min or 0), (self.max or 100)
 	if self.ispercent then
-		self.lowtext:SetText(format("%s%%", (min * 100)))
-		self.hightext:SetText(format("%s%%", (max * 100)))
+		self.lowtext:SetFormattedText("%s%%", (min * 100))
+		self.hightext:SetFormattedText("%s%%", (max * 100))
 	else
 		self.lowtext:SetText(min)
 		self.hightext:SetText(max)
@@ -68,7 +67,7 @@ local function Slider_OnValueChanged()
 		end
 		if newvalue ~= self.value and not self.disabled then
 			self.value = newvalue
-			self:Fire("OnValueChanged", newvalue)
+			self:Fire("OnValueChanged", 1, newvalue)
 		end
 		if self.value then
 			UpdateText(self)
@@ -78,7 +77,7 @@ end
 
 local function Slider_OnMouseUp()
 	local self = this.obj
-	self:Fire("OnMouseUp", self.value)
+	self:Fire("OnMouseUp", 1, self.value)
 end
 
 local function Slider_OnMouseWheel()
@@ -102,7 +101,7 @@ local function EditBox_OnEnterPressed()
 	local self = this.obj
 	local value = this:GetText()
 	if self.ispercent then
-		value = gsub(value, '%%', '')
+		value = value:gsub('%%', '')
 		value = tonumber(value) / 100
 	else
 		value = tonumber(value)
@@ -111,7 +110,7 @@ local function EditBox_OnEnterPressed()
 	if value then
 		PlaySound("igMainMenuOptionCheckBoxOn")
 		self.slider:SetValue(value)
-		self:Fire("OnMouseUp", value)
+		self:Fire("OnMouseUp", 1, value)
 	end
 end
 
@@ -222,9 +221,9 @@ local function Constructor()
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	label:SetPoint("TOPLEFT", 0, 0)
-	label:SetPoint("TOPRIGHT", 0, 0)
-	label:SetJustifyH("CENTER", 0, 0)
+	label:SetPoint("TOPLEFT",0,0)
+	label:SetPoint("TOPRIGHT",0,0)
+	label:SetJustifyH("CENTER",0,0)
 	label:SetHeight(15)
 
 	local slider = CreateFrame("Slider", nil, frame)

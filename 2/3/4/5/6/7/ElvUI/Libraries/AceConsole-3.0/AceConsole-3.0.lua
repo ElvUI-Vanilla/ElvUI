@@ -16,64 +16,79 @@ local AceConsole, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConsole then return end -- No upgrade needed
 
+local AceCore = LibStub("AceCore-3.0")
+
 AceConsole.embeds = AceConsole.embeds or {} -- table containing objects AceConsole is embedded in.
 AceConsole.commands = AceConsole.commands or {} -- table containing commands registered
 AceConsole.weakcommands = AceConsole.weakcommands or {} -- table containing self, command => func references for weak commands that don't persist through enable/disable
 
 -- Lua APIs
-local tconcat, tostring, select = table.concat, tostring, select
+local tinsert, tconcat, tgetn, tsetn = table.insert, table.concat, table.getn, table.setn
+local tostring = tostring
 local type, pairs, error = type, pairs, error
 local format, strfind, strsub = string.format, string.find, string.sub
 local max = math.max
+local strupper, strlower = string.upper, string.lower
 
 -- WoW APIs
-local _G = getfenv()
+local _G = AceCore._G
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
 -- GLOBALS: DEFAULT_CHAT_FRAME, SlashCmdList, hash_SlashCmdList
-
-local tmp={}
-local function Print(self,frame,...)
-	local n=0
+local Print
+do
+local tmp = {}
+function Print(self, frame, arg)
 	if self ~= AceConsole then
-		n=n+1
-		tmp[n] = "|cff33ff99"..tostring( self ).."|r:"
+		tmp[1] = "|cff33ff99"..tostring(self).."|r:"
+	else
+		tmp[1] = ''
 	end
-	for i=1, getn(arg) do
-		n=n+1
-		tmp[n] = tostring(arg[i])
+	if type(arg) == "string" then
+		frame:AddMessage(tmp[1]..arg)
+	else	-- arg is table and may contain frame as first element if argument frame is nil
+		local b, e = frame and 1 or 2, tgetn(arg)
+		if e >= b then
+			frame = frame or arg[1]
+			for i=0,e-b do
+				tmp[2+i] = tostring(arg[b+i])
+			end
+			frame:AddMessage(tconcat(tmp," ",1,e-b+2)) -- explicitly, because the length is not affected by assignment
+		end
 	end
-	frame:AddMessage( tconcat(tmp," ",1,n) )
 end
+end	-- Print
 
 --- Print to DEFAULT_CHAT_FRAME or given ChatFrame (anything with an .AddMessage function)
 -- @paramsig [chatframe ,] ...
 -- @param chatframe Custom ChatFrame to print to (or any frame with an .AddMessage function)
 -- @param ... List of any values to be printed
 function AceConsole:Print(...)
-	local frame = arg
+	local frame = arg[1]
 	if type(frame) == "table" and frame.AddMessage then	-- Is first argument something with an .AddMessage member?
-		return Print(self, frame, arg[2])
+		return Print(self, nil, arg)
 	else
 		return Print(self, DEFAULT_CHAT_FRAME, arg)
 	end
 end
-
 
 --- Formatted (using format()) print to DEFAULT_CHAT_FRAME or given ChatFrame (anything with an .AddMessage function)
 -- @paramsig [chatframe ,] "format"[, ...]
 -- @param chatframe Custom ChatFrame to print to (or any frame with an .AddMessage function)
 -- @param format Format string - same syntax as standard Lua format()
 -- @param ... Arguments to the format string
-function AceConsole:Printf(...)
-	local frame = arg
-	if type(frame) == "table" and frame.AddMessage then	-- Is first argument something with an .AddMessage member?
-		return Print(self, frame, format(arg[2]))
+function AceConsole:Printf(a1, ...)
+	local frame, succ, s
+	if type(a1) == "table" and a1.AddMessage then	-- Is first argument something with an .AddMessage member?
+		frame, succ, s = a1, pcall(format, unpack(arg))
 	else
-		return Print(self, DEFAULT_CHAT_FRAME, format(arg))
+		frame, succ, s = DEFAULT_CHAT_FRAME, pcall(format, a1, unpack(arg))
 	end
+	if not succ then error(s,2) end
+	return Print(self, frame, s)
 end
+
 
 
 
@@ -83,20 +98,28 @@ end
 -- @param func Function to call when the slash command is being used (funcref or methodname)
 -- @param persist if false, the command will be soft disabled/enabled when aceconsole is used as a mixin (default: true)
 function AceConsole:RegisterChatCommand( command, func, persist )
-	if type(command)~="string" then error([[Usage: AceConsole:RegisterChatCommand( "command", func[, persist ]): 'command' - expected a string]], 2) end
+	if type(command)~="string" then error([[Usage: AceConsole:RegisterChatCommand(command, func[, persist ]): 'command' - expected a string]], 2) end
 
 	if persist==nil then persist=true end	-- I'd rather have my addon's "/addon enable" around if the author screws up. Having some extra slash regged when it shouldnt be isn't as destructive. True is a better default. /Mikk
 
-	local name = "ACECONSOLE_"..string.upper(command)
+	local name = "ACECONSOLE_"..strupper(command)
 
-	if type( func ) == "string" then
+	local t = type(func)
+
+	if t  == "string" then
+		-- Ace3v: prevent user from using AceConSole as self
+		if self == AceConsole then
+			error([[Usage: RegisterChatCommand(command, func[, persist]): 'self' - use your own 'self']], 2)
+		end
 		SlashCmdList[name] = function(input, editBox)
 			self[func](self, input, editBox)
 		end
-	else
+	elseif t == "function" then
 		SlashCmdList[name] = func
+	else
+		error([[Usage: AceConsole:RegisterChatCommand(command, func[, persist ]): 'func' - expected a string or a function]], 2)
 	end
-	_G["SLASH_"..name.."1"] = "/"..string.lower(command)
+	_G["SLASH_"..name.."1"] = "/"..strlower(command)
 	AceConsole.commands[command] = name
 	-- non-persisting commands are registered for enabling disabling
 	if not persist then
@@ -113,7 +136,6 @@ function AceConsole:UnregisterChatCommand( command )
 	if name then
 		SlashCmdList[name] = nil
 		_G["SLASH_" .. name .. "1"] = nil
-		hash_SlashCmdList["/" .. command:upper()] = nil
 		AceConsole.commands[command] = nil
 	end
 end
@@ -122,17 +144,15 @@ end
 -- @return Iterator (pairs) over all commands
 function AceConsole:IterateChatCommands() return pairs(AceConsole.commands) end
 
-
-local function nils(n, ...)
-	if n>1 then
-		return nil, nils(n-1, arg)
-	elseif n==1 then
-		return nil, arg
+local function nils(n,argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	if n >= 1 then
+		return nil, nils(n-1,argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	elseif not argc or argc == 0 then
+		return
 	else
-		return arg
+		return a1, nils(0,argc-1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
 	end
 end
-
 
 --- Retreive one or more space-separated arguments from a string.
 -- Treats quoted strings and itemlinks as non-spaced.
@@ -150,7 +170,7 @@ function AceConsole:GetArgs(str, numargs, startpos)
 	-- find start of new arg
 	pos = strfind(str, "[^ ]", pos)
 	if not pos then	-- whoops, end of string
-		return nils(numargs, 1e9)
+		return nils(numargs, 1, 1e9)
 	end
 
 	if numargs<1 then
@@ -205,7 +225,7 @@ function AceConsole:GetArgs(str, numargs, startpos)
 	end
 
 	-- search aborted, we hit end of string. return it all as one argument. (yes, even if it's an unterminated quote or hyperlink)
-	return strsub(str, startpos), nils(numargs-1, 1e9)
+	return strsub(str, startpos), nils(numargs-1, 1, 1e9)
 end
 
 

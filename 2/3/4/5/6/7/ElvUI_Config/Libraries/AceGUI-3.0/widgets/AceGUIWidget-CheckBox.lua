@@ -1,12 +1,12 @@
 --[[-----------------------------------------------------------------------------
 Checkbox Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "CheckBox", 23
+local Type, Version = "CheckBox", 22
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local select, pairs, unpack = select, pairs, unpack
+local pairs = pairs
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -24,10 +24,10 @@ local function AlignImage(self)
 	self.text:ClearAllPoints()
 	if not img then
 		self.text:SetPoint("LEFT", self.checkbg, "RIGHT")
-		self.text:SetPoint("RIGHT", 0, 0)
+		self.text:SetPoint("RIGHT",0,0)
 	else
 		self.text:SetPoint("LEFT", self.image,"RIGHT", 1, 0)
-		self.text:SetPoint("RIGHT", 0, 0)
+		self.text:SetPoint("RIGHT",0,0)
 	end
 end
 
@@ -55,6 +55,7 @@ local function CheckBox_OnMouseDown()
 end
 
 local function CheckBox_OnMouseUp()
+
 	local self = this.obj
 	if not self.disabled then
 		self:ToggleChecked()
@@ -65,7 +66,7 @@ local function CheckBox_OnMouseUp()
 			PlaySound("igMainMenuOptionCheckBoxOff")
 		end
 
-		self:Fire("OnValueChanged", self.checked)
+		self:Fire("OnValueChanged", 1, self.checked)
 		AlignImage(self)
 	end
 end
@@ -172,6 +173,7 @@ local methods = {
 			highlight:SetTexture("Interface\\Buttons\\UI-CheckBox-Highlight")
 			highlight:SetTexCoord(0, 1, 0, 1)
 		end
+
 		checkbg:SetHeight(size)
 		checkbg:SetWidth(size)
 	end,
@@ -220,15 +222,14 @@ local methods = {
 			self:SetHeight(24)
 		end
 	end,
-	
-	["SetImage"] = function(self, path, ...)
+
+	["SetImage"] = function(self, path, a1,a2,a3,a4,a5,a6,a7,a8)
 		local image = self.image
 		image:SetTexture(path)
-		
+
 		if image:GetTexture() then
-			local n = select("#", arg)
-			if n == 4 or n == 8 then
-				image:SetTexCoord(unpack(arg))
+			if a4 or a8 then
+				image:SetTexCoord(a1,a2,a3,a4,a5,a6,a7,a8)
 			else
 				image:SetTexCoord(0, 1, 0, 1)
 			end
@@ -253,7 +254,7 @@ local function Constructor()
 	local checkbg = frame:CreateTexture(nil, "ARTWORK")
 	checkbg:SetWidth(24)
 	checkbg:SetHeight(24)
-	checkbg:SetPoint("TOPLEFT", 0, 0)
+	checkbg:SetPoint("TOPLEFT",0,0)
 	checkbg:SetTexture("Interface\\Buttons\\UI-CheckBox-Up")
 
 	local check = frame:CreateTexture(nil, "OVERLAY")
@@ -261,10 +262,10 @@ local function Constructor()
 	check:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
 
 	local text = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	text:SetJustifyH("LEFT", 0, 0)
+	text:SetJustifyH("LEFT")
 	text:SetHeight(18)
 	text:SetPoint("LEFT", checkbg, "RIGHT")
-	text:SetPoint("RIGHT", 0, 0)
+	text:SetPoint("RIGHT",0,0)
 
 	local highlight = frame:CreateTexture(nil, "HIGHLIGHT")
 	highlight:SetTexture("Interface\\Buttons\\UI-CheckBox-Highlight")

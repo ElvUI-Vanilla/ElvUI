@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Health.lua"/>
+	<Script file="Name.lua"/>
+	<Script file="Portrait.lua"/>
+	<Script file="Power.lua"/>
+	<Script file="InfoPanel.lua"/>
+</Ui>

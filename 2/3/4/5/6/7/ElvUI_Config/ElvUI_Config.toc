@@ -9,3 +9,4 @@
 Libraries\Load_Libraries.xml
 locales\load_locales.xml
 core.lua
+UnitFrames.lua

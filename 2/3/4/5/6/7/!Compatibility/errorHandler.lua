@@ -1,10 +1,11 @@
---Cache global variables
+_G = getfenv()
+
+-- Cache global variables
 local strmatch = strmatch
---WoW API
+-- WoW API
 local GetCVar = GetCVar
 local IsAddOnLoaded = IsAddOnLoaded
 local LoadAddOn = LoadAddOn
-local UIParentLoadAddOn = UIParentLoadAddOn
 
 local _ERROR_COUNT = 0
 local _ERROR_LIMIT = 1000
@@ -15,7 +16,7 @@ function _ERRORMESSAGE_NEW(message)
 	LoadAddOn("!DebugTools")
 	local loaded = IsAddOnLoaded("!DebugTools")
 
---	if (GetCVar("scriptErrors") == 1) then
+	if (GetCVar("ShowErrors") == "1") then
 		if (not loaded or DEBUG_DEBUGTOOLS) then
 			ScriptErrors_Message:SetText(message)
 			ScriptErrors:Show()
@@ -25,9 +26,9 @@ function _ERRORMESSAGE_NEW(message)
 		else
 			ScriptErrorsFrame_OnError(message)
 		end
---	elseif (loaded) then
---		ScriptErrorsFrame_OnError(message, true)
---	end
+	elseif (loaded) then
+		ScriptErrorsFrame_OnError(message, true)
+	end
 
 	_ERROR_COUNT = _ERROR_COUNT + 1
 	if (_ERROR_COUNT == _ERROR_LIMIT) then
@@ -44,26 +45,4 @@ function message(text)
 		ScriptErrors_Message:SetText(text)
 		ScriptErrors:Show()
 	end
-end
-
-SLASH_FRAMESTACK1 = "/framestack"
-SLASH_FRAMESTACK2 = "/fstack"
-SlashCmdList["FRAMESTACK"] = function(msg)
-	UIParentLoadAddOn("!DebugTools")
-
-
-	FrameStackTooltip_Toggle(showHidden)
-end
-
-SLASH_EVENTTRACE1 = "/eventtrace"
-SLASH_EVENTTRACE2 = "/etrace"
-SlashCmdList["EVENTTRACE"] = function(msg)
-	UIParentLoadAddOn("!DebugTools")
-	EventTraceFrame_HandleSlashCmd(msg)
-end
-
-SLASH_DUMP1 = "/dump"
-SlashCmdList["DUMP"] = function(msg)
-	UIParentLoadAddOn("!DebugTools")
-	DevTools_DumpCommand(msg)
 end

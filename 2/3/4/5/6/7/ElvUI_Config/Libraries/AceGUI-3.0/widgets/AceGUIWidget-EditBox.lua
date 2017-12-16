@@ -1,18 +1,23 @@
 --[[-----------------------------------------------------------------------------
 EditBox Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "EditBox", 27
+local Type, Version = "EditBox", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
+local AceCore = LibStub("AceCore-3.0")
+local hooksecurefunc = AceCore.hooksecurefunc
+local _G = AceCore._G
+local GetCursorInfo = _G.GetCursorInfo
+
 -- Lua APIs
-local tostring, pairs, unpack = tostring, pairs, unpack
+local tostring, pairs = tostring, pairs
 
 -- WoW APIs
 local PlaySound = PlaySound
 local GetCursorInfo, ClearCursor, GetSpellInfo = GetCursorInfo, ClearCursor, GetSpellInfo
 local CreateFrame, UIParent = CreateFrame, UIParent
-local _G = _G
+local strlen = string.len
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -116,7 +121,7 @@ end
 function _G.AceGUIEditBoxInsertLink(text)
 	for i = 1, AceGUI:GetWidgetCount(Type) do
 		local editbox = _G["AceGUI-3.0EditBox"..i]
-		if editbox and editbox:IsVisible() and editbox:HasFocus() then
+		if editbox and editbox:IsVisible() and editbox.hasfocus then
 			editbox:Insert(text)
 			return true
 		end
@@ -138,73 +143,82 @@ end
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function Control_OnEnter(frame)
-	frame.obj:Fire("OnEnter")
+local function Control_OnEnter()
+	this.obj:Fire("OnEnter")
 end
 
-local function Control_OnLeave(frame)
-	frame.obj:Fire("OnLeave")
+local function Control_OnLeave()
+	this.obj:Fire("OnLeave")
 end
 
-local function Frame_OnShowFocus(frame)
-	frame.obj.editbox:SetFocus()
-	frame:SetScript("OnShow", nil)
+local function Frame_OnShowFocus()
+	this.obj.editbox:SetFocus()
+	this:SetScript("OnShow", nil)
 end
 
-local function EditBox_OnEscapePressed(frame)
+local function EditBox_OnEscapePressed()
 	AceGUI:ClearFocus()
 end
 
-local function EditBox_OnEnterPressed(frame)
-	local self = frame.obj
-	local value = frame:GetText()
-	local cancel = self:Fire("OnEnterPressed", value)
+local function EditBox_OnEnterPressed()
+	local self = this.obj
+	local value = this:GetText()
+	local cancel = self:Fire("OnEnterPressed", 1, value)
 	if not cancel then
 		PlaySound("igMainMenuOptionCheckBoxOn")
 		HideButton(self)
 	end
 end
 
-local function EditBox_OnReceiveDrag(frame)
-	local self = frame.obj
+local function EditBox_OnReceiveDrag()
+	if not GetCursorInfo then return end
+	local self = this.obj
 	local type, id, info = GetCursorInfo()
 	if type == "item" then
 		self:SetText(info)
-		self:Fire("OnEnterPressed", info)
+		self:Fire("OnEnterPressed", 1, info)
 		ClearCursor()
 	elseif type == "spell" then
-		local name = GetSpellInfo(id, info)
-		self:SetText(name)
-		self:Fire("OnEnterPressed", name)
+		local spell, rank = GetSpellName(id, info)
+		if rank ~= "" then spell = spell.."("..rank..")" end
+		self:SetText(spell)
+		self:Fire("OnEnterPressed", 1, spell)
 		ClearCursor()
 	elseif type == "macro" then
 		local name = GetMacroInfo(id)
 		self:SetText(name)
-		self:Fire("OnEnterPressed", name)
+		self:Fire("OnEnterPressed", 1, name)
 		ClearCursor()
 	end
 	HideButton(self)
 	AceGUI:ClearFocus()
 end
 
-local function EditBox_OnTextChanged(frame)
-	local self = frame.obj
-	local value = frame:GetText()
+
+local function EditBox_OnTextChanged()
+	local self = this.obj
+	local value = this:GetText()
 	if tostring(value) ~= tostring(self.lasttext) then
-		self:Fire("OnTextChanged", value)
+		self:Fire("OnTextChanged", 1, value)
 		self.lasttext = value
 		ShowButton(self)
 	end
 end
 
-local function EditBox_OnFocusGained(frame)
-	AceGUI:SetFocus(frame.obj)
+local function EditBox_OnFocusGained()
+	this.hasfocus = true
+	AceGUI:SetFocus(this.obj)
 end
 
-local function Button_OnClick(frame)
-	local editbox = frame.obj.editbox
+local function EditBox_OnFocusLost()
+	this.hasfocus = nil
+end
+
+local function Button_OnClick()
+	local editbox = this.obj.editbox
 	editbox:ClearFocus()
-	EditBox_OnEnterPressed(editbox)
+	this = editbox	-- Ace3v: this is kinda hack here
+	EditBox_OnEnterPressed()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -242,7 +256,7 @@ local methods = {
 	["SetText"] = function(self, text)
 		self.lasttext = text or ""
 		self.editbox:SetText(text or "")
-		self.editbox:SetCursorPosition(0)
+		self.editbox:HighlightText(0)
 		HideButton(self)
 	end,
 
@@ -313,10 +327,11 @@ local function Constructor()
 	editbox:SetScript("OnReceiveDrag", EditBox_OnReceiveDrag)
 	editbox:SetScript("OnMouseDown", EditBox_OnReceiveDrag)
 	editbox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
+	editbox:SetScript("OnEditFocusLost", EditBox_OnFocusLost)
 	editbox:SetTextInsets(0, 0, 3, 3)
 	editbox:SetMaxLetters(256)
 	editbox:SetPoint("BOTTOMLEFT", 6, 0)
-	editbox:SetPoint("BOTTOMRIGHT")
+	editbox:SetPoint("BOTTOMRIGHT", 0, 0)
 	editbox:SetHeight(19)
 
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")

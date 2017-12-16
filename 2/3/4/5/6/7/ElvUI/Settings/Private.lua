@@ -37,6 +37,18 @@ V["tooltip"] = {
 	["enable"] = true
 }
 
+V["unitframe"] = {
+	["enable"] = true,
+	["disabledBlizzardFrames"] = {
+		["player"] = true,
+		["target"] = true,
+		["focus"] = true,
+		["boss"] = true,
+		["arena"] = true,
+		["party"] = true,
+	},
+}
+
 V["actionbar"] = {
 	["enable"] = true
 }

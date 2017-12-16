@@ -1,11 +1,14 @@
 --- AceDBOptions-3.0 provides a universal AceConfig options screen for managing AceDB-3.0 profiles.
 -- @class file
 -- @name AceDBOptions-3.0
--- @release $Id: AceDBOptions-3.0.lua 1066 2012-09-18 14:36:49Z nevcairiel $
+-- @release $Id: AceDBOptions-3.0.lua 1140 2016-07-03 07:53:29Z nevcairiel $
 local ACEDBO_MAJOR, ACEDBO_MINOR = "AceDBOptions-3.0", 15
 local AceDBOptions, oldminor = LibStub:NewLibrary(ACEDBO_MAJOR, ACEDBO_MINOR)
 
 if not AceDBOptions then return end -- No upgrade needed
+
+local AceCore = LibStub("AceCore-3.0")
+local new, del = AceCore.new, AceCore.del
 
 -- Lua APIs
 local pairs, next = pairs, next
@@ -230,7 +233,6 @@ elseif LOCALE == "ptBR" then
 end
 
 local defaultProfiles
-local tmpprofiles = {}
 
 -- Get a list of available profiles for the specified database.
 -- You can specify which profiles to include/exclude in the list using the two boolean parameters listed below.
@@ -239,8 +241,8 @@ local tmpprofiles = {}
 -- @param nocurrent If true, then getProfileList will not display the current profile in the list
 -- @return Hashtable of all profiles with the internal name as keys and the display name as value.
 local function getProfileList(db, common, nocurrent)
-	local profiles = {}
-	
+	local profiles = new()
+	local tmpprofiles = new()
 	-- copy existing profiles into the table
 	local currentProfile = db:GetCurrentProfile()
 	for i,v in pairs(db:GetProfiles(tmpprofiles)) do 
@@ -248,6 +250,7 @@ local function getProfileList(db, common, nocurrent)
 			profiles[v] = v 
 		end 
 	end
+	del(tmpprofiles)
 	
 	-- add our default profiles to choose from ( or rename existing profiles)
 	for k,v in pairs(defaultProfiles) do
@@ -290,6 +293,8 @@ end
 	"common" - returns all avaialble profiles + some commonly used profiles ("char - realm", "realm", "class", "Default")
 	"both" - common except the active profile
 ]]
+-- Ace3v: It is recommanded to destroy the returned table by AceCore.del
+--        if it is no longer needed
 function OptionsHandlerPrototype:ListProfiles(info)
 	local arg = info.arg
 	local profiles
@@ -308,7 +313,9 @@ end
 
 function OptionsHandlerPrototype:HasNoProfiles(info)
 	local profiles = self:ListProfiles(info)
-	return ((not next(profiles)) and true or false)
+	local r = (not next(profiles)) and true or false
+	del(profiles)
+	return r
 end
 
 --[[ Copy a profile ]]
@@ -371,8 +378,7 @@ local optionsTable = {
 	current = {
 		order = 11,
 		type = "description",
-		--name = function(info) return L["current"] .. " " .. NORMAL_FONT_COLOR_CODE .. info.handler:GetCurrentProfile() .. FONT_COLOR_CODE_CLOSE end,
-		name = "t",
+		name = function(info) return L["current"] .. " " .. NORMAL_FONT_COLOR_CODE .. info.handler:GetCurrentProfile() .. FONT_COLOR_CODE_CLOSE end,
 		width = "default",
 	},
 	choosedesc = {
@@ -387,6 +393,7 @@ local optionsTable = {
 		order = 30,
 		get = false,
 		set = "SetProfile",
+		nullable = false,	-- Ace3v: we do not want a null or empty value
 	},
 	choose = {
 		name = L["choose"],
@@ -396,6 +403,7 @@ local optionsTable = {
 		get = "GetCurrentProfile",
 		set = "SetProfile",
 		values = "ListProfiles",
+		valuesTableDestroyable = true,
 		arg = "common",
 	},
 	copydesc = {
@@ -411,6 +419,7 @@ local optionsTable = {
 		get = false,
 		set = "CopyProfile",
 		values = "ListProfiles",
+		valuesTableDestroyable = true,
 		disabled = "HasNoProfiles",
 		arg = "nocurrent",
 	},
@@ -427,6 +436,7 @@ local optionsTable = {
 		get = false,
 		set = "DeleteProfile",
 		values = "ListProfiles",
+		valuesTableDestroyable = true,
 		disabled = "HasNoProfiles",
 		arg = "nocurrent",
 		confirm = true,

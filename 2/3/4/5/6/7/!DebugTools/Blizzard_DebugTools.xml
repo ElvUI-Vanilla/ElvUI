@@ -57,9 +57,9 @@
 		<Scripts>
 			<OnLoad>
 				local frameName = this:GetName();
-				this.time = getglobal(frameName.."Time");
-				this.event = getglobal(frameName.."Event");
-				this.HideButton = getglobal(frameName.."HideButton");
+				this.time = _G[frameName.."Time"];
+				this.event = _G[frameName.."Event"];
+				this.HideButton = _G[frameName.."HideButton"];
 				this:GetHighlightTexture():SetAlpha(.15);
 			</OnLoad>
 			<OnEnter>
@@ -326,12 +326,12 @@
 						this:RegisterForDrag("LeftButton");
 					</OnLoad>
 					<OnDragStart>
-						local eventTraceFrame = getglobal("EventTraceFrame");
+						local eventTraceFrame = _G["EventTraceFrame"];
 						eventTraceFrame.moving = true;
 						eventTraceFrame:StartMoving();
 					</OnDragStart>
 					<OnDragStop>
-						local eventTraceFrame = getglobal("EventTraceFrame");
+						local eventTraceFrame = _G["EventTraceFrame"];
 						eventTraceFrame.moving = nil;
 						eventTraceFrame:StopMovingOrSizing();
 					</OnDragStop>
@@ -356,7 +356,7 @@
 				</Layers>
 				<Scripts>
 					<OnLoad>
-						this:SetFrameLevel(this:GetFrameLevel() + 1);
+						this:SetFrameLevel(self:GetFrameLevel() + 1);
 						this:SetValue(0);
 						this:SetValueStep(1);
 					</OnLoad>
@@ -375,7 +375,7 @@
 				EventTraceFrame_OnShow(this);
 			</OnShow>
 			<OnEvent>
-				EventTraceFrame_OnEvent(this, unpack(arg));
+				EventTraceFrame_OnEvent(this, event, arg);
 			</OnEvent>
 			<OnUpdate>
 				EventTraceFrame_OnUpdate(this, arg1);
@@ -414,12 +414,12 @@
 						this:RegisterForDrag("LeftButton");
 					</OnLoad>
 					<OnDragStart>
-						local frame = getglobal("ScriptErrorsFrame");
+						local frame = _G["ScriptErrorsFrame"];
 						frame.moving = true;
 						frame:StartMoving();
 					</OnDragStart>
 					<OnDragStop>
-						local frame = getglobal("ScriptErrorsFrame");
+						local frame = _G["ScriptErrorsFrame"];
 						frame.moving = nil;
 						frame:StopMovingOrSizing();
 					</OnDragStop>
@@ -543,7 +543,7 @@
 				FrameStackTooltip_OnUpdate(this, arg1);
 			</OnUpdate>
 			<OnEvent>
-				FrameStackTooltip_OnEvent(this, unpack(arg));
+				FrameStackTooltip_OnEvent(this, arg);
 			</OnEvent>
 		</Scripts>
 	</GameTooltip>

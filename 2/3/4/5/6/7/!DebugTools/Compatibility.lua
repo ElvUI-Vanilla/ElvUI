@@ -1,11 +1,10 @@
---Cache global variables
-local _G = getfenv()
-local format, match = string.format, string.match
-local tinsert, tsort, twipe = table.insert, table.sort, table.wipe
+-- Cache global variables
 local mod = math.mod
 local pairs = pairs
 local tostring = tostring
---WoW API
+local format, match = string.format, string.match
+local getn, tinsert, tsort, twipe = table.getn, table.insert, table.sort, table.wipe
+-- WoW API
 local GetTime = GetTime
 
 DEBUG_FRAMESTACK = "Frame Stack"
@@ -87,7 +86,11 @@ local function FrameStackSort(b, a)
 		return
 	end
 
-	return a < b
+	if a and b then
+		return a < b
+	else
+		return
+	end
 end
 
 function UpdateFrameStack(tooltip, showHidden)
@@ -154,7 +157,7 @@ function UpdateFrameStack(tooltip, showHidden)
 
 	frameStackList[getn(frameStackList) + 1] = nil
 
-	--tsort(frameStackList, FrameStackSort)
+	tsort(frameStackList, FrameStackSort)
 
 	tooltip:ClearLines()
 	tooltip:AddDoubleLine(DEBUG_FRAMESTACK, format("(%.2f,%.2f)", x, y), 1, 1, 1, 1, .82, 0)
@@ -174,12 +177,12 @@ function UpdateFrameStack(tooltip, showHidden)
 		end
 
 		if l ~= ol then
-			cs = mod(cs, cn) + 1 or 0
+			cs = mod(cs, cn) + 1
 			ol = l
 		end
 
 		if not highlighted then
-			local frameName = _G[n] --[[or match(n, "%((.+)%)$")]] or n
+			local frameName = _G[n] or match(n, "%((.+)%)$") or n
 			if frameName and frameName == highlightFrame then
 				tooltip:AddLine("-->" .. (a[cs] or "|cff444444") .. "<" .. l .. "> " .. n .. "|r")
 				highlighted = true
