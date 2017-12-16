@@ -12,7 +12,6 @@ local GetGuildRosterInfo = GetGuildRosterInfo
 local GUILDMEMBERS_TO_DISPLAY = GUILDMEMBERS_TO_DISPLAY
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
-local HookScript = HookScript
 local hooksecurefunc = hooksecurefunc
 
 function LoadSkin()
@@ -181,7 +180,8 @@ function LoadSkin()
 			local classText = _G["WhoFrameButton"..i.."Class"]
 			local variableText = _G["WhoFrameButton"..i.."Variable"]
 
-			_, guild, level, race, class, zone = GetWhoInfo(index)
+			local _, guild, level, race, class, zone = GetWhoInfo(index)
+			if class == UNKNOWN then return end
 
 			if class then
 				class = strupper(class)
@@ -259,16 +259,16 @@ function LoadSkin()
 	end
 
 	hooksecurefunc("GuildStatus_Update", function()
-		local _, level, online, classFileName
-		local button, buttonText, classTextColor, levelTextColor
-
 		if FriendsFrame.playerStatusFrame then
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
-				button = _G["GuildFrameButton" .. i]
-				_, _, _, level, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
+				local button = _G["GuildFrameButton" .. i]
+				local _, _, _, level, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
+				if class == UNKNOWN then return end
+
 				if class then
 					class = upper(class)
 				end
+
 				if class then
 					if online then
 						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
@@ -286,9 +286,12 @@ function LoadSkin()
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
 				button = _G["GuildFrameGuildStatusButton" .. i]
 				_, _, _, _, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
+				if class == UNKNOWN then return end
+
 				if class then
 					class = upper(class)
 				end
+
 				if class then
 					if online then
 						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
