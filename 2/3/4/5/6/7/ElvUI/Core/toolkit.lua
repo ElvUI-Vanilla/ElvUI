@@ -28,14 +28,14 @@ local function GetTemplate(t, isUnitFrameElement)
 		end
 	elseif t == "Transparent" then
 		if isUnitFrameElement then
-			borderr, borderg, borderb = unpack(E["media"].unitframeBorderColor)
+			borderr, borderg, borderb = unpack(E["media"].bordercolor)
 		else
 			borderr, borderg, borderb = unpack(E["media"].bordercolor)
 		end
 		backdropr, backdropg, backdropb, backdropa = unpack(E["media"].backdropfadecolor)
 	else
 		if isUnitFrameElement then
-			borderr, borderg, borderb = unpack(E["media"].unitframeBorderColor)
+			borderr, borderg, borderb = unpack(E["media"].bordercolor)
 		else
 			borderr, borderg, borderb = unpack(E["media"].bordercolor)
 		end

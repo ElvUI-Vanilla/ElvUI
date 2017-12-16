@@ -967,7 +967,7 @@ function ElvUF:DisableBlizzard(unit)
 			HandleFrame("PartyMemberFrame"..id)
 		else
 			for i = 1, 4 do
-				HandleFrame(("PartyMemberFrame%d"):format(i))
+				HandleFrame(format("PartyMemberFrame%d", i))
 			end
 		end
 		HandleFrame(PartyMemberBackground)

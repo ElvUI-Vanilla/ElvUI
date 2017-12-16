@@ -5,7 +5,7 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 local select, unpack, assert, tonumber, type, pairs = select, unpack, assert, tonumber, type, pairs
 local getn, tinsert, tremove = table.getn, tinsert, tremove
 local abs, ceil, floor, modf, mod = math.abs, math.ceil, math.floor, math.modf, math.mod
-local format, sub, upper, split, utf8sub = string.format, string.sub, string.upper, string.split, string.utf8sub
+local format, byte, len, sub, upper, split, utf8sub = string.format, string.byte, string.len, string.sub, string.upper, string.split, string.utf8sub
 --WoW API / Variables
 local GetScreenWidth, GetScreenHeight = GetScreenWidth, GetScreenHeight
 local CreateFrame = CreateFrame

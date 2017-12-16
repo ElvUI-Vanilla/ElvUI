@@ -1,12 +1,9 @@
 --Cache global variables
-_G = getfenv(0)
 local pairs, unpack = pairs, unpack
 
 BINDING_HEADER_ELVUI = GetAddOnMetadata("ElvUI", "Title")
 
-ElvUI = {}
-
-local AddOnName, Engine = "ElvUI", ElvUI
+local AddOnName, Engine = "ElvUI", {}
 local AddOn = LibStub("AceAddon-3.0"):NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
 AddOn.callbacks = AddOn.callbacks or
 	LibStub("CallbackHandler-1.0"):New(AddOn)

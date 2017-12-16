@@ -6,7 +6,7 @@ local S = E:GetModule("Skins");
 local _G = _G
 local select = select
 local unpack = unpack
-local find, split = string.find, string.split
+local match, split = string.match, string.split
 --WoW API / Variables
 local GetBuybackItemInfo = GetBuybackItemInfo
 local GetItemInfo = GetItemInfo
@@ -26,11 +26,11 @@ local function LoadSkin()
 	S:HandleCloseButton(MerchantFrameCloseButton, MerchantFrame.backdrop)
 
 	for i = 1, 12 do
-		local item = _G["MerchantItem" .. i]
-		local itemButton = _G["MerchantItem" .. i .. "ItemButton"]
-		local iconTexture = _G["MerchantItem" .. i .. "ItemButtonIconTexture"]
-		local altCurrencyTex1 = _G["MerchantItem" .. i .. "AltCurrencyFrameItem1Texture"]
-		local altCurrencyTex2 = _G["MerchantItem" .. i .. "AltCurrencyFrameItem2Texture"]
+		local item = _G["MerchantItem"..i]
+		local itemButton = _G["MerchantItem"..i.."ItemButton"]
+		local iconTexture = _G["MerchantItem"..i.."ItemButtonIconTexture"]
+		local altCurrencyTex1 = _G["MerchantItem"..i.."AltCurrencyFrameItem1Texture"]
+		local altCurrencyTex2 = _G["MerchantItem"..i.."AltCurrencyFrameItem2Texture"]
 
 		E:StripTextures(item, true)
 		E:CreateBackdrop(item, "Default")
@@ -43,8 +43,8 @@ local function LoadSkin()
 		iconTexture:SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(iconTexture)
 
-		_G["MerchantItem" .. i .. "MoneyFrame"]:ClearAllPoints()
-		_G["MerchantItem" .. i .. "MoneyFrame"]:SetPoint("BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 3, 0)
+		_G["MerchantItem"..i.."MoneyFrame"]:ClearAllPoints()
+		_G["MerchantItem"..i.."MoneyFrame"]:SetPoint("BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 3, 0)
 	end
 
 	S:HandleNextPrevButton(MerchantNextPageButton)
@@ -77,30 +77,30 @@ local function LoadSkin()
 	E:SetInside(MerchantBuyBackItemItemButtonIconTexture)
 
 	for i = 1, 2 do
-		S:HandleTab(_G["MerchantFrameTab" .. i])
+		S:HandleTab(_G["MerchantFrameTab"..i])
 	end
 
 	hooksecurefunc("MerchantFrame_UpdateMerchantInfo", function()
 		local numMerchantItems = GetMerchantNumItems()
 		for i = 1, MERCHANT_ITEMS_PER_PAGE do
 			local index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
-			local itemButton = _G["MerchantItem" .. i .. "ItemButton"]
-			local itemName = _G["MerchantItem" .. i .. "Name"]
+			local itemButton = _G["MerchantItem"..i.."ItemButton"]
+			local itemName = _G["MerchantItem"..i.."Name"]
 
 			if index <= numMerchantItems then
 				local itemLink = GetMerchantItemLink(index)
 				if itemLink then
-					local itemString = select(3, find(itemLink, "|H(.+)|h"))
-					local itemID = select(2, split(":", itemString))
-					local quality = select(3, GetItemInfo(itemID))
+					local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 					if quality then
 						itemName:SetTextColor(GetItemQualityColor(quality))
-						if quality > 1 then
+						if quality then
 							itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
 							itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 						end
 					end
+				else
+					itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 
@@ -108,12 +108,10 @@ local function LoadSkin()
 			if buybackName then
 				local itemLink = GetItemLinkByName(buybackName)
 				if itemLink then
-					local itemString = select(3, find(itemLink, "|H(.+)|h"))
-					local itemID = select(2, split(":", itemString))
-					local quality = select(3, GetItemInfo(itemID))
+					local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 					if quality then
 						MerchantBuyBackItemName:SetTextColor(GetItemQualityColor(quality))
-						if quality > 1 then
+						if quality then
 							MerchantBuyBackItemItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
 							MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -129,24 +127,24 @@ local function LoadSkin()
 	hooksecurefunc("MerchantFrame_UpdateBuybackInfo", function()
 		local numBuybackItems = GetNumBuybackItems()
 		for i = 1, BUYBACK_ITEMS_PER_PAGE do
-			local itemButton = _G["MerchantItem" .. i .. "ItemButton"]
-			local itemName = _G["MerchantItem" .. i .. "Name"]
+			local itemButton = _G["MerchantItem"..i.."ItemButton"]
+			local itemName = _G["MerchantItem"..i.."Name"]
 
 			if i <= numBuybackItems then
 				local buybackName = GetBuybackItemInfo(i)
 				if buybackName then
 					local itemLink = GetItemLinkByName(buybackName)
 					if itemLink then
-						local itemString = select(3, find(itemLink, "|H(.+)|h"))
-						local itemID = select(2, split(":", itemString))
-						local quality = select(3, GetItemInfo(itemID))
+						local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 						if quality then
 							itemName:SetTextColor(GetItemQualityColor(quality))
-							if quality > 1 then
+							if quality then
 								itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 							else
 								itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 							end
+						else
+							itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 						end
 					end
 				end
