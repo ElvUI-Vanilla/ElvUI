@@ -1,25 +1,26 @@
--- Cache global variables
+--Cache global variables
 local _G = _G
 local assert = assert
 local date = date
 local pairs = pairs
+local select = select
 local tonumber = tonumber
 local type = type
 local unpack = unpack
 local format, gsub, lower, match, upper = string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
--- WoW API
+--WoW API
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
 local IsInInstance = IsInInstance
 local UnitBuff = UnitBuff
 local UnitDebuff = UnitDebuff
 local UnitLevel = UnitLevel
--- WoW Variables
+--WoW Variables
 local DUNGEON_DIFFICULTY1 = DUNGEON_DIFFICULTY1
 local TIMEMANAGER_AM = gsub(TIME_TWELVEHOURAM, "^.-(%w+)$", "%1")
 local TIMEMANAGER_PM = gsub(TIME_TWELVEHOURPM, "^.-(%w+)$", "%1")
--- Libs
+--Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
 
@@ -94,15 +95,15 @@ function hooksecurefunc(arg1, arg2, arg3)
 	end
 end
 
---[[	issecurevariable
-Returns 1, nil for undefined variables. This is because an undefined variable is secure since you have not tainted it.
-Returns 1, nil for all untainted variables (i.e. Blizzard variables).
-Returns nil for any global variable that is hooked insecurely (tainted), even unprotected ones like UnitName().
-Returns nil for all user defined global variables.
-If a table is passed first, it checks table.variable (e.g. issecurevariable(PlayerFrame, "Show") checks PlayerFrame["Show"] or PlayerFrame.Show (they are the same thing)).
+--[[	issecurevariable([table], variable)
+	Returns 1, nil for undefined variables. This is because an undefined variable is secure since you have not tainted it.
+	Returns 1, nil for all untainted variables (i.e. Blizzard variables).
+	Returns nil for any global variable that is hooked insecurely (tainted), even unprotected ones like UnitName().
+	Returns nil for all user defined global variables.
+	If a table is passed first, it checks table.variable (e.g. issecurevariable(PlayerFrame, "Show") checks PlayerFrame["Show"] or PlayerFrame.Show (they are the same thing)).
 ]]
-function issecurevariable(tab, var)
---	assert(type(tab) == "table" and type(var) == "string", "Usage: issecurevariable([table,] \"variable\")")
+function issecurevariable(t, var)
+--	assert(type(t) == "table" and type(var) == "string", "Usage: issecurevariable([table,] \"variable\")")
 	return
 end
 
@@ -232,11 +233,7 @@ function GetCurrentMapAreaID()
 	if not IsInInstance() then return end
 	local zoneName = GetRealZoneText()
 
-	if zoneName ~= "" and zoneInfo[zoneName] then
-		return zoneInfo[zoneName].mapID
-	else
-		return 0
-	end
+	return zoneInfo[zoneName] and zoneInfo[zoneName].mapID or 0
 end
 
 function GetMapNameByID(id)
@@ -280,7 +277,7 @@ local function OnOrientationChanged(self, orientation)
 end
 
 local function OnSizeChanged()
-	local width, height = ElvUF_Player.Health:GetWidth(), ElvUF_Player.Health:GetHeight()
+	local width, height = this:GetWidth(), this:GetHeight()
 	this.texturePointer.width = width
 	this.texturePointer.height = height
 	this.texturePointer:SetWidth(width)
@@ -288,11 +285,13 @@ local function OnSizeChanged()
 end
 
 local function OnValueChanged()
+	local value = arg1
 	local _, max = this:GetMinMaxValues()
+
 	if this.texturePointer.verticalOrientation then
-		this.texturePointer:SetHeight(this.texturePointer.height * (arg1 / max))
+		this.texturePointer:SetHeight(this.texturePointer.height * (value / max))
 	else
-		this.texturePointer:SetWidth(this.texturePointer.width * (arg1 / max))
+		this.texturePointer:SetWidth(this.texturePointer.width * (value / max))
 	end
 end
 
@@ -342,7 +341,6 @@ function GetThreatStatus(currentThreat, maxThreat)
 	assert(type(currentThreat) == "number" and type(maxThreat) == "number", "Usage: GetThreatStatus(currentThreat, maxThreat)")
 
 	if not maxThreat or maxThreat == 0 then
-		maxThreat = 0
 		maxThreat = 1
 	end
 
@@ -356,5 +354,17 @@ function GetThreatStatus(currentThreat, maxThreat)
 		return 1, threatPercent
 	else
 		return 0, threatPercent
+	end
+end
+
+-- Credits: @Shagu - pfUI
+-- https://github.com/shagu/pfUI/blob/7999f612ad464261306bbf6f309bb63b54bd44af/api/api.lua#L123
+function GetItemLinkByName(name)
+	for itemID = 1, 25818 do
+		local itemName, itemLink, itemQuality = GetItemInfo(itemID)
+		if itemName and itemName == name then
+			local hex = select(4, GetItemQualityColor(tonumber(itemQuality)))
+			return hex.. "|H"..itemLink.."|h["..itemName.."]|h|r"
+		end
 	end
 end

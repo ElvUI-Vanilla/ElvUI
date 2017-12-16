@@ -1,8 +1,8 @@
 _G = getfenv()
 
--- Cache global variables
+--Cache global variables
 local strmatch = strmatch
--- WoW API
+--WoW API
 local GetCVar = GetCVar
 local IsAddOnLoaded = IsAddOnLoaded
 local LoadAddOn = LoadAddOn

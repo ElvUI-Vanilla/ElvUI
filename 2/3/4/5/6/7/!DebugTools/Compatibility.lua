@@ -3,7 +3,7 @@ local mod = math.mod
 local pairs = pairs
 local tostring = tostring
 local format, match = string.format, string.match
-local getn, tinsert, tsort, twipe = table.getn, table.insert, table.sort, table.wipe
+local getn, setn, tinsert, tsort, twipe = table.getn, table.setn, table.insert, table.sort, table.wipe
 -- WoW API
 local GetTime = GetTime
 
@@ -86,11 +86,7 @@ local function FrameStackSort(b, a)
 		return
 	end
 
-	if a and b then
-		return a < b
-	else
-		return
-	end
+	return a < b
 end
 
 function UpdateFrameStack(tooltip, showHidden)
@@ -99,6 +95,7 @@ function UpdateFrameStack(tooltip, showHidden)
 	for i = 1, getn(frameStackList) do
 		frameStackList[i] = nil
 	end
+	setn(frameStackList, 0)
 
 	for k in pairs(frameStackLevels) do
 		frameStackLevels[k] = nil

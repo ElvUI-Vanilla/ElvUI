@@ -1,21 +1,23 @@
--- Cache global variables
+--Cache global variables
 local strmatch = strmatch
+--WoW API
+local IsAddOnLoaded = IsAddOnLoaded
 
 local checked
 local function LoadDebugTools()
 	if checked then return end
 
-	local _, _, _, lod, _, reason = GetAddOnInfo("!DebugTools")
+	local _, _, _, loadable, _, reason = GetAddOnInfo("!DebugTools")
 	checked = true
 
 	if reason == "MISSING" then return end
 
-	if lod then
-	LoadAddOn("!DebugTools")
+	if loadable then
+		LoadAddOn("!DebugTools")
 	else
-	EnableAddOn("!DebugTools")
-	LoadAddOn("!DebugTools")
-	DisableAddOn("!DebugTools")
+		EnableAddOn("!DebugTools")
+		LoadAddOn("!DebugTools")
+		DisableAddOn("!DebugTools")
 	end
 end
 
@@ -41,11 +43,17 @@ SLASH_EVENTTRACE1 = "/eventtrace"
 SLASH_EVENTTRACE2 = "/etrace"
 SlashCmdList["EVENTTRACE"] = function(msg)
 	LoadDebugTools()
-	EventTraceFrame_HandleSlashCmd(msg)
+
+	if IsAddOnLoaded("!DebugTools") then
+		EventTraceFrame_HandleSlashCmd(msg)
+	end
 end
 
 SLASH_DUMP1 = "/dump"
 SlashCmdList["DUMP"] = function(msg)
 	LoadDebugTools()
-	DevTools_DumpCommand(msg)
+
+	if IsAddOnLoaded("!DebugTools") then
+		DevTools_DumpCommand(msg)
+	end
 end

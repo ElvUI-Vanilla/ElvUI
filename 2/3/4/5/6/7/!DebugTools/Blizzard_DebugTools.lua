@@ -106,12 +106,12 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			self.framesSinceLast[nextIndex] = 0;
 			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = select("#", arg);
+			local numArgs = select("#", unpack(arg));
 			for i=1, numArgs do
 				if (not self.args[i]) then
 					self.args[i] = {};
 				end
-				self.args[i][nextIndex] = select(i, arg);
+				self.args[i][nextIndex] = arg[i];
 			end
 
 			if (self.eventsToCapture) then
@@ -135,7 +135,7 @@ function EventTraceFrame_OnShow(self)
 	scrollBar:SetValue(maxValue);
 end
 
-function EventTraceFrame_OnUpdate ()
+function EventTraceFrame_OnUpdate (self, elapsed)
 	EventTraceFrame_Update();
 end
 
@@ -528,7 +528,7 @@ function ScriptErrorsFrame_OnLoad (self)
 	_ScriptErrorsFrame = self;
 end
 
-function ScriptErrorsFrame_OnShow ()
+function ScriptErrorsFrame_OnShow (self)
 	ScriptErrorsFrame_Update();
 end
 
@@ -669,7 +669,7 @@ function FrameStackTooltip_OnLoad(self)
 	self:RegisterEvent("DISPLAY_SIZE_CHANGED")
 end
 
-function FrameStackTooltip_OnEvent(self, event)
+function FrameStackTooltip_OnEvent(self, event, ...)
 	if (event == "DISPLAY_SIZE_CHANGED") then
 		FrameStackTooltip_OnDisplaySizeChanged(self)
 	end

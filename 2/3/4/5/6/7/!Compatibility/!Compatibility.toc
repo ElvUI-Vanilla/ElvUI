@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: !Compatibility
 ## Notes: Compatibility functions for Vanilla
-## Version: 1.1
+## Version: 1.0
 
 errorHandler.lua
 api\api.xml
