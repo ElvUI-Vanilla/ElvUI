@@ -3,8 +3,8 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
-local format = format
+local _G = _G
+local floor, format = math.floor, string.format
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
@@ -18,7 +18,7 @@ local function LoadSkin()
 
 		if frame.timeSinceUpdate >= 0.3 then
 			local minutes = frame.value / 60
-			local seconds = frame.value - math.floor(frame.value / 60) * 60
+			local seconds = frame.value - floor(frame.value / 60) * 60
 			local text = frame.label:GetText()
 
 			if frame.value > 0 then
@@ -38,14 +38,12 @@ local function LoadSkin()
 		local text = _G["MirrorTimer" .. i .. "Text"]
 
 		E:StripTextures(mirrorTimer)
-		-- mirrorTimer:Size(222, 18)
 		mirrorTimer:SetWidth(222)
 		mirrorTimer:SetHeight(18)
 		mirrorTimer.label = text
 		statusBar:SetStatusBarTexture(E["media"].normTex)
 		E:RegisterStatusBar(statusBar)
 		E:CreateBackdrop(statusBar)
-		-- statusBar:Size(222, 18)
 		statusBar:SetWidth(222)
 		statusBar:SetHeight(18)
 		text:Hide()
