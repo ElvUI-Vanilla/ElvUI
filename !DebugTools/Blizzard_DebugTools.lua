@@ -106,12 +106,12 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			self.framesSinceLast[nextIndex] = 0;
 			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = select("#", arg);
+			local numArgs = select("#", unpack(arg));
 			for i=1, numArgs do
 				if (not self.args[i]) then
 					self.args[i] = {};
 				end
-				self.args[i][nextIndex] = select(i, arg);
+				self.args[i][nextIndex] = arg[i];
 			end
 
 			if (self.eventsToCapture) then
