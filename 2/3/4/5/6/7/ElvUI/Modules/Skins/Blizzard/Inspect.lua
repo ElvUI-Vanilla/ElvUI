@@ -3,10 +3,14 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local pairs = pairs
+local find, split = string.find, string.split
 --WoW API / Variables
+local GetInventoryItemLink = GetInventoryItemLink
+local GetItemInfo = GetItemInfo
+local GetItemQualityColor = GetItemQualityColor
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -60,18 +64,20 @@ local function LoadSkin()
 	end
 
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
-		if(button.hasItem) then
-			local itemID = GetInventoryItemLink(InspectFrame.unit, button:GetID())
-			if(itemID) then
-				local _, _, quality = GetItemInfo(itemID)
-				if(not quality) then
+		if button.hasItem then
+			local itemLink = GetInventoryItemLink(InspectFrame.unit, button:GetID())
+			if itemLink then
+				local itemString = select(3, find(itemLink, "|H(.+)|h"))
+				local itemID = select(2, split(":", itemString))
+				local quality = select(3, GetItemInfo(itemID))
+				if not quality then
 					E:Delay(0.1, function()
-						if(InspectFrame.unit) then
+						if InspectFrame.unit then
 							InspectPaperDollItemSlotButton_Update(button)
 						end
 					end)
 					return
-				elseif(quality and quality > 1) then
+				elseif quality and quality > 1 then
 					button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					return
 				end
