@@ -5,11 +5,13 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local pairs = pairs
+local select = select
 local unpack = unpack
-local find = string.find
+local find, format, split = string.find, string.format, string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
+local HookScript
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -116,12 +118,9 @@ local function LoadSkin()
 
 	local function QuestQualityColors(frame, text, quality, link)
 		if link and not quality then
-			local itemEnchantID = select(3, find(link, "enchant:(%d+)"))
-			local itemItemID = select(3, find(link, "item:(%d+)"))
-			local itemID = itemEnchantID or itemItemID
-			if itemID then
-				_, _, quality = GetItemInfo(itemID)
-			end
+			local itemString = select(3, find(link, "|H(.+)|h"))
+			local itemID = select(2, split(":", itemString))
+			quality = select(3, GetItemInfo(itemID))
 		end
 
 		if quality and quality > 1 then
