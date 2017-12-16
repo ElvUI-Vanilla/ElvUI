@@ -1698,7 +1698,7 @@ end
 local old_CloseSpecialWindows
 
 
-local function RefreshOnUpdate(this)
+local function RefreshOnUpdate()
 	for appName in pairs(this.closing) do
 		if AceConfigDialog.OpenFrames[appName] then
 			AceConfigDialog.OpenFrames[appName]:Hide()
