@@ -233,11 +233,7 @@ function GetCurrentMapAreaID()
 	if not IsInInstance() then return end
 	local zoneName = GetRealZoneText()
 
-	if zoneName ~= "" and zoneInfo[zoneName] then
-		return zoneInfo[zoneName].mapID
-	else
-		return 0
-	end
+	return zoneInfo[zoneName] and zoneInfo[zoneName].mapID or 0
 end
 
 function GetMapNameByID(id)
@@ -345,7 +341,6 @@ function GetThreatStatus(currentThreat, maxThreat)
 	assert(type(currentThreat) == "number" and type(maxThreat) == "number", "Usage: GetThreatStatus(currentThreat, maxThreat)")
 
 	if not maxThreat or maxThreat == 0 then
-		maxThreat = 0
 		maxThreat = 1
 	end
 
