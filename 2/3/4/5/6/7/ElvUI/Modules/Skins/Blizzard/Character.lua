@@ -3,9 +3,10 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local getn = table.getn
+local _G = _G
 local unpack = unpack
 local pairs = pairs
+local getn = table.getn
 --WoW API / Variables
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetInventoryItemQuality = GetInventoryItemQuality
