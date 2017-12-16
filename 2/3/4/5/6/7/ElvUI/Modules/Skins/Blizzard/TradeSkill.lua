@@ -7,6 +7,7 @@ local _G = _G
 local unpack = unpack
 local select = select
 local find = string.find
+local split = string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
@@ -145,16 +146,15 @@ local function LoadSkin()
 		local skillLink = GetTradeSkillItemLink(id)
 		if skillLink then
 			TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
-			local skillID = select(3, find(skillLink, "item:(%d+)"))
-			if skillID then
-				local quality = select(3, GetItemInfo(skillID))
-				if quality and quality > 1 then
-					TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
-					TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
-				else
-					TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-					TradeSkillSkillName:SetTextColor(1, 1, 1)
-				end
+			local skillString = select(3, find(skillLink, "|H(.+)|h"))
+			local skillID = select(2, split(":", skillString))
+			local quality = select(3, GetItemInfo(skillID))
+			if quality and quality > 1 then
+				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
+				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
+			else
+				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				TradeSkillSkillName:SetTextColor(1, 1, 1)
 			end
 		end
 
@@ -166,19 +166,18 @@ local function LoadSkin()
 			local name = _G["TradeSkillReagent" .. i .. "Name"]
 
 			if reagentLink then
-				local reagentID = select(3, find(reagentLink, "item:(%d+)"))
-				if reagentID then
-					local quality = select(3, GetItemInfo(reagentID))
-					if quality and quality > 1 then
-						icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
-						if playerReagentCount < reagentCount then
-							name:SetTextColor(0.5, 0.5, 0.5)
-						else
-							name:SetTextColor(GetItemQualityColor(quality))
-						end
+				local reagentString = select(3, find(reagentLink, "|H(.+)|h"))
+				local reagentID = select(2, split(":", reagentString))
+				local quality = select(3, GetItemInfo(reagentID))
+				if quality and quality > 1 then
+					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+					if playerReagentCount < reagentCount then
+						name:SetTextColor(0.5, 0.5, 0.5)
 					else
-						icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						name:SetTextColor(GetItemQualityColor(quality))
 					end
+				else
+					icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 		end
