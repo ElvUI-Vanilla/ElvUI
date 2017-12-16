@@ -22,9 +22,9 @@ function difftime(time2, time1)
 end
 
 function select(n, ...)
-	assert(type(n) == "number" or type(n) == "string", format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
+	assert(type(n) == "number" or (type(n) == "string" and n == "#"), format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
 
-	if type(n) == "string" and n == "#" then
+	if type(n) == "string" then
 		if type(arg) == "table" then
 			return getn(arg)
 		else
@@ -71,9 +71,9 @@ function string.match(str, pattern, index)
 	assert(type(pattern) == "string", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
-	local _, _, match = find(index and sub(str, index) or str, "("..pattern..")")
+	local i, j = find(index and sub(str, index) or str, pattern)
 
-	return match
+	return i and sub(str, i, j)
 end
 strmatch = string.match
 
