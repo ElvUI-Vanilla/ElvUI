@@ -280,20 +280,22 @@ local function OnOrientationChanged(self, orientation)
 	end
 end
 
-local function OnSizeChanged(self, width, height)
-	self.texturePointer.width = width
-	self.texturePointer.height = height
-	self.texturePointer:SetWidth(width)
-	self.texturePointer:SetHeight(height)
+local function OnSizeChanged()
+	local width, height = this:GetWidth(), this:GetHeight()
+	this.texturePointer.width = width
+	this.texturePointer.height = height
+	this.texturePointer:SetWidth(width)
+	this.texturePointer:SetHeight(height)
 end
 
-local function OnValueChanged(self, value)
-	local _, max = self:GetMinMaxValues()
+local function OnValueChanged()
+	local value = arg1
+	local _, max = this:GetMinMaxValues()
 
-	if self.texturePointer.verticalOrientation then
-		self.texturePointer:SetHeight(self.texturePointer.height * (value / max))
+	if this.texturePointer.verticalOrientation then
+		this.texturePointer:SetHeight(this.texturePointer.height * (value / max))
 	else
-		self.texturePointer:SetWidth(self.texturePointer.width * (value / max))
+		this.texturePointer:SetWidth(this.texturePointer.width * (value / max))
 	end
 end
 
