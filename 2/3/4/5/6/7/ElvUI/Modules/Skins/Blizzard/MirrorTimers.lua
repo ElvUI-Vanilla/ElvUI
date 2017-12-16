@@ -54,7 +54,6 @@ local function LoadSkin()
 		mirrorTimer.TimerText = TimerText
 
 		mirrorTimer.timeSinceUpdate = 0.3
-		HookScript(mirrorTimer, "OnUpdate", MirrorTimerFrame_OnUpdate)
 
 		E:CreateMover(mirrorTimer, "MirrorTimer" .. i .. "Mover", L["MirrorTimer"] .. i, nil, nil, nil, "ALL,SOLO")
 	end
