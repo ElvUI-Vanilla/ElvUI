@@ -18,10 +18,10 @@ local function LoadSkin()
 	SpellBookFrame.backdrop:SetPoint("BOTTOMRIGHT", -31, 75)
 
 	for i = 1, 3 do
-		local tab = _G["SpellBookFrameTabButton" .. i]
+		local tab = _G["SpellBookFrameTabButton"..i]
 
-		tab:GetNormalTexture():SetTexture(nil)
-		tab:GetDisabledTexture():SetTexture(nil)
+		tab:GetNormalTexture():SetTexture("")
+		tab:GetDisabledTexture():SetTexture("")
 
 		S:HandleTab(tab)
 
@@ -35,13 +35,14 @@ local function LoadSkin()
 	S:HandleCloseButton(SpellBookCloseButton)
 
 	for i = 1, SPELLS_PER_PAGE do
-		local button = _G["SpellButton" .. i]
-		local iconTexture = _G["SpellButton" .. i .. "IconTexture"]
+		local button = _G["SpellButton"..i]
+		local iconTexture = _G["SpellButton"..i.."IconTexture"]
 		local cooldown = _G["SpellButton"..i.."Cooldown"]
 
 		button:DisableDrawLayer("BACKGROUND")
-		button:GetNormalTexture():SetTexture(nil)
-		button:GetPushedTexture():SetTexture(nil)
+		button:GetNormalTexture():SetTexture("")
+		button:GetPushedTexture():SetTexture("")
+		--E:StyleButton(button, true)
 
 		if iconTexture then
 			iconTexture:SetTexCoord(unpack(E.TexCoords))

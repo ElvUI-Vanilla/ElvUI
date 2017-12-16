@@ -156,21 +156,7 @@ function S:HandleTab(tab)
 end
 
 function S:HandleNextPrevButton(btn, buttonOverride)
-	local inverseDirection
-	if btn:GetName() then
-		for k in string.gfind(lower(btn:GetName()), "left") do
-			inverseDirection = k
-		end
-		for k in string.gfind(lower(btn:GetName()), "prev") do
-			inverseDirection = k
-		end
-		for k in string.gfind(lower(btn:GetName()), "decrement") do
-			inverseDirection = k
-		end
-		for k in string.gfind(lower(btn:GetName()), "promote") do
-			inverseDirection = k
-		end
-	end
+	local inverseDirection = btn:GetName() and (find(lower(btn:GetName()), "left") or find(lower(btn:GetName()), "prev") or find(lower(btn:GetName()), "decrement") or find(lower(btn:GetName()), "promote"))
 
 	E:StripTextures(btn)
 	btn:SetNormalTexture(nil)

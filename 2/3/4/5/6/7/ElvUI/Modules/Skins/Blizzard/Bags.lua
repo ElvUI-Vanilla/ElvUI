@@ -97,7 +97,7 @@ local function LoadSkin()
 		button = _G["BankFrameItem"..i]
 		buttonIcon = _G["BankFrameItem"..i.."IconTexture"]
 
-		button:SetNormalTexture(nil)
+		button:SetNormalTexture("")
 
 		E:SetTemplate(button, "Default", true)
 		E:StyleButton(button)
@@ -116,7 +116,7 @@ local function LoadSkin()
 		button = _G["BankFrameBag"..i]
 		buttonIcon = _G["BankFrameBag"..i.."IconTexture"]
 
-		button:SetNormalTexture(nil)
+		button:SetNormalTexture("")
 
 		E:SetTemplate(button, "Default", true)
 		E:StyleButton(button)

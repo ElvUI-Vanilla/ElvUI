@@ -7,6 +7,7 @@ local _G = _G
 local unpack = unpack
 local select = select
 local find = string.find
+local match = string.match
 local split = string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
@@ -49,7 +50,7 @@ local function LoadSkin()
 	TradeSkillCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(TradeSkillCollapseAllButton, "SetNormalTexture", function(self, texture)
-		if(find(texture, "MinusButton")) then
+		if find(texture, "MinusButton") then
 			self.Text:SetText("-")
 		else
 			self.Text:SetText("+")
@@ -68,12 +69,12 @@ local function LoadSkin()
 	TradeSkillFrameTitleText:SetPoint("TOP", TradeSkillFrame, "TOP", 0, -18)
 
 	for i = 1, TRADE_SKILLS_DISPLAYED do
-		local skillButton = _G["TradeSkillSkill" .. i]
+		local skillButton = _G["TradeSkillSkill"..i]
 		skillButton:SetNormalTexture("")
 		skillButton.SetNormalTexture = E.noop
 
-		_G["TradeSkillSkill" .. i .. "Highlight"]:SetTexture("")
-		_G["TradeSkillSkill" .. i .. "Highlight"].SetTexture = E.noop
+		_G["TradeSkillSkill"..i.."Highlight"]:SetTexture("")
+		_G["TradeSkillSkill"..i.."Highlight"].SetTexture = E.noop
 
 		skillButton.Text = skillButton:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(skillButton.Text, nil, 22)
@@ -102,10 +103,10 @@ local function LoadSkin()
 	E:SetTemplate(TradeSkillSkillIcon, "Default")
 
 	for i = 1, MAX_TRADE_SKILL_REAGENTS do
-		local reagent = _G["TradeSkillReagent" .. i]
-		local icon = _G["TradeSkillReagent" .. i .. "IconTexture"]
-		local count = _G["TradeSkillReagent" .. i .. "Count"]
-		local nameFrame = _G["TradeSkillReagent" .. i .. "NameFrame"]
+		local reagent = _G["TradeSkillReagent"..i]
+		local icon = _G["TradeSkillReagent"..i.."IconTexture"]
+		local count = _G["TradeSkillReagent"..i.."Count"]
+		local nameFrame = _G["TradeSkillReagent"..i.."NameFrame"]
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetDrawLayer("OVERLAY")
@@ -136,8 +137,10 @@ local function LoadSkin()
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
 		E:SetTemplate(TradeSkillSkillIcon, "Default", true)
 		E:StyleButton(TradeSkillSkillIcon, nil, true)
-		TradeSkillSkillIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		E:SetInside(TradeSkillSkillIcon:GetNormalTexture())
+		if TradeSkillSkillIcon:GetNormalTexture() then
+			TradeSkillSkillIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+			E:SetInside(TradeSkillSkillIcon:GetNormalTexture())
+		end
 
 		TradeSkillSkillIcon:SetWidth(40)
 		TradeSkillSkillIcon:SetHeight(40)
@@ -145,11 +148,8 @@ local function LoadSkin()
 
 		local skillLink = GetTradeSkillItemLink(id)
 		if skillLink then
-			TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
-			local skillString = select(3, find(skillLink, "|H(.+)|h"))
-			local skillID = select(2, split(":", skillString))
-			local quality = select(3, GetItemInfo(skillID))
-			if quality and quality > 1 then
+			local _, _, quality = GetItemInfo(match(skillLink, "item:(%d+)"))
+			if quality then
 				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
 			else
@@ -162,14 +162,12 @@ local function LoadSkin()
 		for i = 1, numReagents, 1 do
 			local _, _, reagentCount, playerReagentCount = GetTradeSkillReagentInfo(id, i)
 			local reagentLink = GetTradeSkillReagentItemLink(id, i)
-			local icon = _G["TradeSkillReagent" .. i .. "IconTexture"]
-			local name = _G["TradeSkillReagent" .. i .. "Name"]
+			local icon = _G["TradeSkillReagent"..i.."IconTexture"]
+			local name = _G["TradeSkillReagent"..i.."Name"]
 
 			if reagentLink then
-				local reagentString = select(3, find(reagentLink, "|H(.+)|h"))
-				local reagentID = select(2, split(":", reagentString))
-				local quality = select(3, GetItemInfo(reagentID))
-				if quality and quality > 1 then
+				local _, _, quality = GetItemInfo(match(reagentLink, "item:(%d+)"))
+				if quality then
 					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
