@@ -77,7 +77,7 @@ function E:SpawnTutorialFrame()
 
 	f.disableButton = CreateFrame("CheckButton", f:GetName().."DisableButton", f, "OptionsCheckButtonTemplate")
 	_G[f.disableButton:GetName() .. "Text"]:SetText(DISABLE)
-	f.disableButton:SetPoint("BOTTOMLEFT", -5, 5)
+	f.disableButton:SetPoint("BOTTOMLEFT", 1, 1)
 	S:HandleCheckBox(f.disableButton)
 	f.disableButton:SetScript("OnShow", function() this:SetChecked(E.db.hideTutorial) end)
 
