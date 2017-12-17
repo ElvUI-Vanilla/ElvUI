@@ -167,6 +167,14 @@ function TT:SetUnit(tt, unit)
 	self:UPDATE_MOUSEOVER_UNIT(nil, unit)
 end
 
+function TT:SetItemRef(link)
+	if string.find(link, "^item:") then
+		local id = tonumber(string.match(link, "(%d+)"))
+		ItemRefTooltip:AddLine(string.format("|cFFCA3C3C%s|r %d", ID, id))
+		ItemRefTooltip:Show()
+	end
+end
+
 function TT:CheckBackdropColor()
 	if not GameTooltip:IsShown() then return end
 
@@ -239,6 +247,7 @@ function TT:Initialize()
 	self:SetTooltipFonts()
 
 	self:SecureHook("GameTooltip_SetDefaultAnchor")
+	self:SecureHook("SetItemRef")
 	self:SecureHook(GameTooltip, "SetUnit")
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 end

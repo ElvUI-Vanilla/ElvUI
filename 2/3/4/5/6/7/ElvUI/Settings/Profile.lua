@@ -276,6 +276,39 @@ P["tooltip"] = {
 	}
 }
 
+P["bags"] = {
+	["sortInverted"] = true,
+	["bagSize"] = 34,
+	["bankSize"] = 34,
+	["bagWidth"] = 406,
+	["bankWidth"] = 406,
+	["currencyFormat"] = "ICON_TEXT",
+	["moneyFormat"] = "SMART",
+	["moneyCoins"] = true,
+	["ignoredItems"] = {},
+	["itemLevel"] = true,
+	["itemLevelThreshold"] = 1,
+	["itemLevelFont"] = "Homespun",
+	["itemLevelFontSize"] = 10,
+	["itemLevelFontOutline"] = "MONOCHROMEOUTLINE",
+	["countFont"] = "Homespun",
+	["countFontSize"] = 10,
+	["countFontOutline"] = "MONOCHROMEOUTLINE",
+	["countFontColor"] = {r = 1, g = 1, b = 1},
+	["clearSearchOnClose"] = false,
+	["disableBagSort"] = false,
+	["disableBankSort"] = false,
+	["bagBar"] = {
+		["growthDirection"] = "VERTICAL",
+		["sortDirection"] = "ASCENDING",
+		["size"] = 30,
+		["spacing"] = 4,
+		["backdropSpacing"] = 4,
+		["showBackdrop"] = false,
+		["mouseover"] = false
+	}
+};
+
 --UnitFrame
 P["unitframe"] = {
 	["smoothbars"] = false,

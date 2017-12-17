@@ -14,6 +14,11 @@ V["general"] = {
 	},
 }
 
+V["bags"] = {
+	["enable"] = true,
+	["bagBar"] = false,
+}
+
 V["auras"] = {
 	["enable"] = true,
 	["disableBlizzard"] = true,

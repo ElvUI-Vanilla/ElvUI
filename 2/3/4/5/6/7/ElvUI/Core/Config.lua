@@ -256,7 +256,7 @@ function E:CreateMoverPopup()
 		E:ToggleConfigMode(true)
 
 		if(IsAddOnLoaded("ElvUI_Config")) then
-			LibStub("AceConfigDialog-3.0-ElvUI"):Open("ElvUI")
+			LibStub("AceConfigDialog-3.0"):Open("ElvUI")
 		end
 
 		selectedValue = "ALL"

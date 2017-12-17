@@ -7,6 +7,7 @@
 	<Include file="Maps\Load_Maps.xml"/>
 	<Include file="Misc\Load_Misc.xml"/>
 	<Include file="Chat\Load_Chat.xml"/>
+	<Include file="Bags\Load_Bags.xml"/>
 	<Include file="Skins\Load_Skins.xml"/>
 	<Include file="DataBars\Load_DataBars.xml"/>
 </Ui>
