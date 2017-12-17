@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local match = string.match
 --WoW API / Variables
@@ -12,12 +12,12 @@ local GetContainerItemLink = GetContainerItemLink
 local BANK_CONTAINER = BANK_CONTAINER
 local NUM_CONTAINER_FRAMES = NUM_CONTAINER_FRAMES
 
-function S:ContainerFrame_Update(self)
-	local id = self:GetID()
-	local name = self:GetName()
+function S:ContainerFrame_Update()
+	local id = this:GetID()
+	local name = this:GetName()
 	local _, itemButton, itemLink, quality
 
-	for i = 1, self.size, 1 do
+	for i = 1, this.size, 1 do
 		itemButton = _G[name.."Item"..i]
 
 		itemLink = GetContainerItemLink(id, itemButton:GetID())
@@ -34,13 +34,18 @@ function S:ContainerFrame_Update(self)
 	end
 end
 
-function S:BankFrameItemButton_Update(button)
-	if not button.isBag then
-		local _, _, _, quality = GetContainerItemInfo(BANK_CONTAINER, button:GetID())
-		if quality then
-			button:SetBackdropBorderColor(GetItemQualityColor(quality))
+function S:BankFrameItemButton_OnUpdate()
+	if not this.isBag then
+		local itemLink = GetContainerItemLink(BANK_CONTAINER, this:GetID())
+		if itemLink then
+			local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
+			if quality then
+				this:SetBackdropBorderColor(GetItemQualityColor(quality))
+			else
+				this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			end
 		else
-			button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 		end
 	end
 end
@@ -82,6 +87,7 @@ local function LoadSkin()
 	end
 
 	S:SecureHook("ContainerFrame_Update")
+	S:SecureHookScript(ContainerFrame1, "OnShow", "ContainerFrame_Update")
 
 	-- BankFrame
 	E:CreateBackdrop(BankFrame, "Transparent")
@@ -136,7 +142,7 @@ local function LoadSkin()
 
 	S:HandleButton(BankFramePurchaseButton)
 
-	-- S:SecureHook("BankFrameItemButton_UpdateLock")
+	S:SecureHook("BankFrameItemButton_OnUpdate")
 end
 
 S:AddCallback("SkinBags", LoadSkin)
