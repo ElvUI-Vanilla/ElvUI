@@ -8,8 +8,8 @@ local tostring = tostring
 local type = type
 local unpack = unpack
 local ceil, floor = math.ceil, math.floor
-local getn, tinsert = table.getn, table.insert
 local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
+local getn, setn, tinsert = table.getn, table.setn, table.insert
 
 math.huge = 1/0
 string.gmatch = gfind
@@ -131,6 +131,10 @@ function table.wipe(t)
 
 	for k in pairs(t) do
 		t[k] = nil
+	end
+
+	if getn(t) ~= 0 then
+		setn(t, 0)
 	end
 
 	return t
