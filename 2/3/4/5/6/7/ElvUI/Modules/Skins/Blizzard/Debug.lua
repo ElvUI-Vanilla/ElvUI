@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local getn = table.getn
 --WoW API / Variables
@@ -56,12 +56,7 @@ local function LoadSkin()
 
 	local noscalemult = E.mult * GetCVar("uiScale")
 	HookScript(FrameStackTooltip, "OnShow", function()
-		this:SetBackdrop({
-			bgFile = E["media"].blankTex,
-			edgeFile = E["media"].blankTex,
-			tile = false, tileSize = 0, edgeSize = noscalemult,
-			insets = { left = -noscalemult, right = -noscalemult, top = -noscalemult, bottom = -noscalemult}
-		});
+		E:SetTemplate(this, "Transparent")
 		this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
 		this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 	end)

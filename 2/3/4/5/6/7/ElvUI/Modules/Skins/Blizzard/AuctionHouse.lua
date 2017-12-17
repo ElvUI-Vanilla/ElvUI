@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local pairs = pairs
 --WoW API / Variables
@@ -96,7 +96,7 @@ local function LoadSkin()
 			E:SetInside(this:GetNormalTexture())
 		end
 		local _, _, _, quality = GetAuctionSellItemInfo()
-		if quality and quality > 1 then
+		if quality then
 			AuctionsItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			AuctionsItemButtonName:SetTextColor(quality)
 		else

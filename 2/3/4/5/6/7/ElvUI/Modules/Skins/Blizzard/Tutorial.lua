@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 --WoW API / Variables
 local MAX_TUTORIAL_ALERTS = MAX_TUTORIAL_ALERTS
 
@@ -14,7 +14,6 @@ local function LoadSkin()
 		local button = _G["TutorialFrameAlertButton"..i]
 		local icon = button:GetNormalTexture()
 
-		-- button:Size(35, 45)
 		button:SetWidth(35)
 		button:SetHeight(45)
 		E:SetTemplate(button, "Default", true)

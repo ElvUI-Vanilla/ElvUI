@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local select = select
 --WoW API / Variables
 local GetItemQualityColor = GetItemQualityColor
 local GetTradePlayerItemInfo = GetTradePlayerItemInfo
@@ -28,12 +27,12 @@ local function LoadSkin()
 	S:HandleEditBox(TradePlayerInputMoneyFrameCopper)
 
 	for i = 1, MAX_TRADE_ITEMS do
-		local player = _G["TradePlayerItem" .. i]
-		local recipient = _G["TradeRecipientItem" .. i]
-		local playerButton = _G["TradePlayerItem" .. i .. "ItemButton"]
-		local playerButtonIcon = _G["TradePlayerItem" .. i .. "ItemButtonIconTexture"]
-		local recipientButton = _G["TradeRecipientItem" .. i .. "ItemButton"]
-		local recipientButtonIcon = _G["TradeRecipientItem" .. i .. "ItemButtonIconTexture"]
+		local player = _G["TradePlayerItem"..i]
+		local recipient = _G["TradeRecipientItem"..i]
+		local playerButton = _G["TradePlayerItem"..i.."ItemButton"]
+		local playerButtonIcon = _G["TradePlayerItem"..i.."ItemButtonIconTexture"]
+		local recipientButton = _G["TradeRecipientItem"..i.."ItemButton"]
+		local recipientButtonIcon = _G["TradeRecipientItem"..i.."ItemButtonIconTexture"]
 		local playerNameFrame = _G["TradePlayerItem"..i.."NameFrame"]
 		local recipientNameFrame = _G["TradeRecipientItem"..i.."NameFrame"]
 
@@ -91,14 +90,14 @@ local function LoadSkin()
 	S:HandleButton(TradeFrameCancelButton)
 
 	hooksecurefunc("TradeFrame_UpdatePlayerItem", function(id)
-		local tradeItemButton = _G["TradePlayerItem" .. id .. "ItemButton"]
-		local tradeItemName = _G["TradePlayerItem" .. id .. "Name"]
+		local tradeItemButton = _G["TradePlayerItem"..id.."ItemButton"]
+		local tradeItemName = _G["TradePlayerItem"..id.."Name"]
 
-		local name = select(1, GetTradePlayerItemInfo(id))
+		local name = GetTradePlayerItemInfo(id)
 		if name then
-			local quality = select(4, GetTradePlayerItemInfo(id))
+			local _, _, _, quality = GetTradePlayerItemInfo(id)
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
-			if quality and quality > 1 then
+			if quality then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
@@ -107,14 +106,14 @@ local function LoadSkin()
 	end)
 
 	hooksecurefunc("TradeFrame_UpdateTargetItem", function(id)
-		local tradeItemButton = _G["TradeRecipientItem" .. id .. "ItemButton"]
-		local tradeItemName = _G["TradeRecipientItem" .. id .. "Name"]
+		local tradeItemButton = _G["TradeRecipientItem"..id.."ItemButton"]
+		local tradeItemName = _G["TradeRecipientItem"..id.."Name"]
 
-		local name = select(1, GetTradeTargetItemInfo(id))
+		local name = GetTradeTargetItemInfo(id)
 		if name then
-			local quality = select(4, GetTradeTargetItemInfo(id))
+			local _, _, _, quality = GetTradeTargetItemInfo(id)
 			tradeItemName:SetTextColor(GetItemQualityColor(quality))
-			if quality and quality > 1 then
+			if quality then
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else

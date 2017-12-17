@@ -6,7 +6,7 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 local select = select
-local find, split = string.find, string.split
+local find, match, split = string.find, string.match, string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
@@ -49,10 +49,10 @@ local function LoadSkin()
 	S:HandleCloseButton(CraftFrameCloseButton)
 
 	for i = 1, MAX_CRAFT_REAGENTS do
-		local reagent = _G["CraftReagent" .. i]
-		local icon = _G["CraftReagent" .. i .. "IconTexture"]
-		local count = _G["CraftReagent" .. i .. "Count"]
-		local nameFrame = _G["CraftReagent" .. i .. "NameFrame"]
+		local reagent = _G["CraftReagent"..i]
+		local icon = _G["CraftReagent"..i.."IconTexture"]
+		local count = _G["CraftReagent"..i.."Count"]
+		local nameFrame = _G["CraftReagent"..i.."NameFrame"]
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetDrawLayer("OVERLAY")
@@ -72,8 +72,10 @@ local function LoadSkin()
 	hooksecurefunc("CraftFrame_SetSelection", function(id)
 		E:SetTemplate(CraftIcon, "Default", true)
 		E:StyleButton(CraftIcon, nil, true)
-		CraftIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		E:SetInside(CraftIcon:GetNormalTexture())
+		if CraftIcon:GetNormalTexture() then
+			CraftIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+			E:SetInside(CraftIcon:GetNormalTexture())
+		end
 
 		CraftIcon:SetWidth(40)
 		CraftIcon:SetHeight(40)
@@ -83,10 +85,8 @@ local function LoadSkin()
 
 		local skillLink = GetCraftItemLink(id)
 		if skillLink then
-			local skillString = select(3, find(skillLink, "|H(.+)|h"))
-			local skillID = select(2, split(":", skillString))
-			local quality = select(3, GetItemInfo(skillID))
-			if quality and quality > 1 then
+			local _, _, quality = GetItemInfo(match(skillLink, "enchant:(%d+)"))
+			if quality then
 				CraftIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				CraftName:SetTextColor(GetItemQualityColor(quality))
 			else
@@ -97,16 +97,14 @@ local function LoadSkin()
 
 		local numReagents = GetCraftNumReagents(id)
 		for i = 1, numReagents, 1 do
+			local icon = _G["CraftReagent"..i.."IconTexture"]
+			local name = _G["CraftReagent"..i.."Name"]
+
 			local _, _, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
 			local reagentLink = GetCraftReagentItemLink(id, i)
-			local icon = _G["CraftReagent" .. i .. "IconTexture"]
-			local name = _G["CraftReagent" .. i .. "Name"]
-
 			if reagentLink then
-				local reagentString = select(3, find(reagentLink, "|H(.+)|h"))
-				local reagentID = select(2, split(":", reagentString))
-				local quality = select(3, GetItemInfo(reagentID))
-				if quality and quality > 1 then
+				local _, _, quality = GetItemInfo(match(reagentLink, "item:(%d+)"))
+				if quality then
 					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
@@ -121,12 +119,12 @@ local function LoadSkin()
 	end)
 
 	for i = 1, CRAFTS_DISPLAYED do
-		local craftButton = _G["Craft" .. i]
+		local craftButton = _G["Craft"..i]
 		craftButton:SetNormalTexture("")
 		craftButton.SetNormalTexture = E.noop
 
-		_G["Craft" .. i .. "Highlight"]:SetTexture("")
-		_G["Craft" .. i .. "Highlight"].SetTexture = E.noop
+		_G["Craft"..i.."Highlight"]:SetTexture("")
+		_G["Craft"..i.."Highlight"].SetTexture = E.noop
 
 		craftButton.Text = craftButton:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(craftButton.Text, nil, 22)
@@ -134,9 +132,9 @@ local function LoadSkin()
 		craftButton.Text:SetText("+")
 
 		hooksecurefunc(craftButton, "SetNormalTexture", function(self, texture)
-			if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+			if find(texture, "MinusButton") then
 				self.Text:SetText("-")
-			elseif texture == "Interface\\Buttons\\UI-PlusButton-Up" then
+			elseif find(texture, "PlusButton") then
 				self.Text:SetText("+")
 			else
 				self.Text:SetText("")
@@ -157,7 +155,7 @@ local function LoadSkin()
 	CraftCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(CraftCollapseAllButton, "SetNormalTexture", function(self, texture)
-		if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+		if find(texture, "MinusButton") then
 			self.Text:SetText("-")
 		else
 			self.Text:SetText("+")

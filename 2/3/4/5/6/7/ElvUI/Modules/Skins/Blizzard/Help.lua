@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local getn = table.getn
 --WoW API / Variables
 
@@ -36,7 +36,7 @@ local function LoadSkin()
 	HelpFrameCloseButton:SetPoint("TOPRIGHT", -42, 0)
 
 	for i = 1, getn(helpFrameButtons) do
-		local helpButton = _G["HelpFrame" .. helpFrameButtons[i]]
+		local helpButton = _G["HelpFrame"..helpFrameButtons[i]]
 		S:HandleButton(helpButton)
 	end
 

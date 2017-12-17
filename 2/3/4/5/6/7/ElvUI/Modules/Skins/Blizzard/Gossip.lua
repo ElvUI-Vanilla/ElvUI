@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local select = select
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
@@ -34,7 +34,7 @@ local function LoadSkin()
 
 	for i = 1, NUMGOSSIPBUTTONS do
 		local obj = select(3,_G["GossipTitleButton"..i]:GetRegions())
-		obj:SetTextColor(1,1,1)
+		obj:SetTextColor(1, 1, 1)
 	end
 
 	GossipGreetingText:SetTextColor(1,1,1)

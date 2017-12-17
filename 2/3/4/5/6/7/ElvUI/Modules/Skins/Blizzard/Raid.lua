@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local pairs = pairs
 --WoW API / Variables
@@ -35,19 +35,19 @@ function LoadSkin()
 	S:HandleButton(RaidFrameRaidInfoButton)
 
 	for i = 1, NUM_RAID_GROUPS*5 do
-		S:HandleButton(_G["RaidGroupButton" .. i], true)
+		S:HandleButton(_G["RaidGroupButton"..i], true)
 	end
 
 	for i = 1, 8 do
 		for j = 1, 5 do
-			E:StripTextures(_G["RaidGroup" .. i .. "Slot" .. j])
-			E:SetTemplate(_G["RaidGroup" .. i .. "Slot" .. j], "Transparent")
+			E:StripTextures(_G["RaidGroup"..i.."Slot"..j])
+			E:SetTemplate(_G["RaidGroup"..i.."Slot"..j], "Transparent")
 		end
 	end
 
 	local function skinPulloutFrames()
 		for i = 1, NUM_RAID_PULLOUT_FRAMES do
-			local rp = _G["RaidPullout" .. i]
+			local rp = _G["RaidPullout"..i]
 			if not rp.backdrop then
 				_G["RaidPullout"..i.."MenuBackdrop"]:SetBackdrop(nil)
 				E:CreateBackdrop(rp, "Transparent")
@@ -64,28 +64,28 @@ function LoadSkin()
 	hooksecurefunc("RaidPullout_Update", function(pullOutFrame)
 		local pfName = pullOutFrame:GetName()
 		for i = 1, pullOutFrame.numPulloutButtons do
-			local pfBName = pfName .. "Button" .. i
+			local pfBName = pfName.."Button"..i
 			local pfBObj = _G[pfBName]
 			if not pfBObj.backdrop then
 				for _, v in pairs{"HealthBar", "ManaBar", "Target", "TargetTarget"} do
-					local sBar = pfBName .. v
+					local sBar = pfBName..v
 					E:StripTextures(_G[sBar])
 					_G[sBar]:SetStatusBarTexture(E["media"].normTex)
 				end
 
-				_G[pfBName .. "ManaBar"]:SetPoint("TOP", "$parentHealthBar", "BOTTOM", 0, 0)
-				_G[pfBName .. "Target"]:SetPoint("TOP", "$parentManaBar", "BOTTOM", 0, -1)
+				_G[pfBName.."ManaBar"]:SetPoint("TOP", "$parentHealthBar", "BOTTOM", 0, 0)
+				_G[pfBName.."Target"]:SetPoint("TOP", "$parentManaBar", "BOTTOM", 0, -1)
 
 				E:CreateBackdrop(pfBObj, "Default")
 				pfBObj.backdrop:SetPoint("TOPLEFT", E.PixelMode and 0 or -1, -(E.PixelMode and 10 or 9))
 				pfBObj.backdrop:SetPoint("BOTTOMRIGHT", E.PixelMode and 0 or 1, E.PixelMode and 1 or 0)
 			end
 
-			if not _G[pfBName .. "TargetTargetFrame"].backdrop then
-				E:StripTextures(_G[pfBName .. "TargetTargetFrame"])
-				E:CreateBackdrop(_G[pfBName .. "TargetTargetFrame"], "Default")
-				_G[pfBName .. "TargetTargetFrame"].backdrop:SetPoint("TOPLEFT", E.PixelMode and 10 or 9, -(E.PixelMode and 15 or 14))
-				_G[pfBName .. "TargetTargetFrame"].backdrop:SetPoint("BOTTOMRIGHT", -(E.PixelMode and 10 or 9), E.PixelMode and 8 or 7)
+			if not _G[pfBName.."TargetTargetFrame"].backdrop then
+				E:StripTextures(_G[pfBName.."TargetTargetFrame"])
+				E:CreateBackdrop(_G[pfBName.."TargetTargetFrame"], "Default")
+				_G[pfBName.."TargetTargetFrame"].backdrop:SetPoint("TOPLEFT", E.PixelMode and 10 or 9, -(E.PixelMode and 15 or 14))
+				_G[pfBName.."TargetTargetFrame"].backdrop:SetPoint("BOTTOMRIGHT", -(E.PixelMode and 10 or 9), E.PixelMode and 8 or 7)
 			end
 		end
 	end)

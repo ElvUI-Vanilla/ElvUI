@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local getn = table.getn
 --WoW API / Variables
@@ -43,7 +43,7 @@ local function LoadSkin()
 	end
 
 	for i = 1, 2 do
-		local tab = _G["MacroFrameTab" .. i]
+		local tab = _G["MacroFrameTab"..i]
 
 		tab:SetHeight(22)
 	end

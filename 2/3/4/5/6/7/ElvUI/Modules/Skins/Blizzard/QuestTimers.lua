@@ -20,7 +20,6 @@ local function LoadSkin()
 	QuestTimerFrame:SetAllPoints(QuestTimerFrameMover)
 
 	local QuestTimerFrameHolder = CreateFrame("Frame", "QuestTimerFrameHolder", E.UIParent)
-	-- QuestTimerFrameHolder:Size(150, 22)
 	QuestTimerFrameHolder:SetWidth(150)
 	QuestTimerFrameHolder:SetHeight(22)
 	QuestTimerFrameHolder:SetPoint("TOP", QuestTimerFrameMover, "TOP")

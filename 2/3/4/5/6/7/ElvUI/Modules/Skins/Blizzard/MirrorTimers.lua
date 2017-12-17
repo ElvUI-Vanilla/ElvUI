@@ -33,9 +33,9 @@ local function LoadSkin()
 	end)
 
 	for i = 1, MIRRORTIMER_NUMTIMERS do
-		local mirrorTimer = _G["MirrorTimer" .. i]
-		local statusBar = _G["MirrorTimer" .. i .. "StatusBar"]
-		local text = _G["MirrorTimer" .. i .. "Text"]
+		local mirrorTimer = _G["MirrorTimer"..i]
+		local statusBar = _G["MirrorTimer"..i.."StatusBar"]
+		local text = _G["MirrorTimer"..i.."Text"]
 
 		E:StripTextures(mirrorTimer)
 		mirrorTimer:SetWidth(222)
@@ -55,7 +55,7 @@ local function LoadSkin()
 
 		mirrorTimer.timeSinceUpdate = 0.3
 
-		E:CreateMover(mirrorTimer, "MirrorTimer" .. i .. "Mover", L["MirrorTimer"] .. i, nil, nil, nil, "ALL,SOLO")
+		E:CreateMover(mirrorTimer, "MirrorTimer"..i.."Mover", L["MirrorTimer"]..i, nil, nil, nil, "ALL,SOLO")
 	end
 end
 

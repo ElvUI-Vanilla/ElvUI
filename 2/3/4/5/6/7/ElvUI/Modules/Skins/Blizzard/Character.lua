@@ -6,7 +6,7 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 local pairs = pairs
-local getn = table.getn
+local find, getn = string.find, table.getn
 --WoW API / Variables
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetInventoryItemQuality = GetInventoryItemQuality
@@ -259,7 +259,7 @@ local function LoadSkin()
 	SkillFrameCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(SkillFrameCollapseAllButton, "SetNormalTexture", function(self, texture)
-		if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+		if find(texture, "MinusButton") then
 			self.Text:SetText("-")
 		else
 			self.Text:SetText("+")
@@ -288,7 +288,7 @@ local function LoadSkin()
 		label.Text:SetText("+")
 
 		hooksecurefunc(label, "SetNormalTexture", function(self, texture)
-			if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+			if find(texture, "MinusButton") then
 				self.Text:SetText("-")
 			else
 				self.Text:SetText("+")

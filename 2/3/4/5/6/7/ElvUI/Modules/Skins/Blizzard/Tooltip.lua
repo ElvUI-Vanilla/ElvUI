@@ -4,7 +4,7 @@ local TT = E:GetModule("Tooltip");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local pairs = pairs
 --WoW API / Variables
 

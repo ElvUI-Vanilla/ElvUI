@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
@@ -25,14 +25,14 @@ local function LoadSkin()
 	E:StripTextures(TabardFrameCustomizationFrame)
 
 	for i = 1, 5 do
-		local custom = "TabardFrameCustomization" .. i
+		local custom = "TabardFrameCustomization"..i
 		E:StripTextures(_G[custom])
-		S:HandleNextPrevButton(_G[custom .. "LeftButton"])
-		S:HandleNextPrevButton(_G[custom .. "RightButton"])
+		S:HandleNextPrevButton(_G[custom.."LeftButton"])
+		S:HandleNextPrevButton(_G[custom.."RightButton"])
 
 		if(i > 1) then
 			_G[custom]:ClearAllPoints()
-			_G[custom]:SetPoint("TOP", _G["TabardFrameCustomization" .. i-1], "BOTTOM", 0, -6)
+			_G[custom]:SetPoint("TOP", _G["TabardFrameCustomization"..i-1], "BOTTOM", 0, -6)
 		else
 			local point, anchor, point2, x, y = _G[custom]:GetPoint()
 			_G[custom]:SetPoint(point, anchor, point2, x, y+4)

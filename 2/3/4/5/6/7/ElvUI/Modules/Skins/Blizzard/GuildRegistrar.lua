@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local select = select
 --WoW API / Variables
 
@@ -20,6 +20,7 @@ local function LoadSkin()
 	S:HandleButton(GuildRegistrarFramePurchaseButton)
 	S:HandleCloseButton(GuildRegistrarFrameCloseButton)
 	S:HandleEditBox(GuildRegistrarFrameEditBox)
+
 	for i = 1, GuildRegistrarFrameEditBox:GetNumRegions() do
 		local region = select(i, GuildRegistrarFrameEditBox:GetRegions())
 		if region and region:GetObjectType() == "Texture" then

@@ -6,9 +6,7 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 local select = select
-local find = string.find
-local match = string.match
-local split = string.split
+local find, match, split = string.find, string.match, string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
@@ -82,9 +80,9 @@ local function LoadSkin()
 		skillButton.Text:SetText("+")
 
 		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
-			if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+			if find(texture, "MinusButton") then
 				self.Text:SetText("-")
-			elseif texture == "Interface\\Buttons\\UI-PlusButton-Up" then
+			elseif find(texture, "PlusButton") then
 				self.Text:SetText("+")
 			else
 				self.Text:SetText("")
@@ -144,7 +142,7 @@ local function LoadSkin()
 
 		TradeSkillSkillIcon:SetWidth(40)
 		TradeSkillSkillIcon:SetHeight(40)
-		TradeSkillSkillIcon:SetPoint("TOPLEFT", 4, -3)
+		TradeSkillSkillIcon:SetPoint("TOPLEFT", 2, -3)
 
 		local skillLink = GetTradeSkillItemLink(id)
 		if skillLink then

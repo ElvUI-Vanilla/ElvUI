@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local find = string.find
 --WoW API / Variables
@@ -47,12 +47,12 @@ local function LoadSkin()
 	end)
 
 	for i = 1, CLASS_TRAINER_SKILLS_DISPLAYED do
-		local skillButton = _G["ClassTrainerSkill" .. i]
+		local skillButton = _G["ClassTrainerSkill"..i]
 		skillButton:SetNormalTexture("")
 		skillButton.SetNormalTexture = E.noop
 
-		_G["ClassTrainerSkill" .. i .. "Highlight"]:SetTexture("")
-		_G["ClassTrainerSkill" .. i .. "Highlight"].SetTexture = E.noop
+		_G["ClassTrainerSkill"..i.."Highlight"]:SetTexture("")
+		_G["ClassTrainerSkill"..i.."Highlight"].SetTexture = E.noop
 
 		skillButton.Text = skillButton:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(skillButton.Text, nil, 22)
@@ -60,9 +60,9 @@ local function LoadSkin()
 		skillButton.Text:SetText("+")
 
 		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
-			if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+			if find(texture, "MinusButton") then
 				self.Text:SetText("-")
-			elseif texture == "Interface\\Buttons\\UI-PlusButton-Up" then
+			elseif find(texture, "PlusButton") then
 				self.Text:SetText("+")
 			else
 				self.Text:SetText("")
@@ -83,7 +83,7 @@ local function LoadSkin()
 	ClassTrainerCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(ClassTrainerCollapseAllButton, "SetNormalTexture", function(self, texture)
-		if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+		if find(texture, "MinusButton") then
 			self.Text:SetText("-")
 		else
 			self.Text:SetText("+")

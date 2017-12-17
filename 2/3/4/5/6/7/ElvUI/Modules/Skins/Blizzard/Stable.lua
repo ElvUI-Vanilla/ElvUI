@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 --WoW API / Variables
 local GetPetHappiness = GetPetHappiness
 local HasPetUI = HasPetUI
@@ -28,29 +28,28 @@ function LoadSkin()
 	_G["PetStableCurrentPetIconTexture"]:SetDrawLayer("OVERLAY")
 
 	for i = 1, NUM_PET_STABLE_SLOTS do
-		S:HandleItemButton(_G["PetStableStabledPet" .. i], true)
-		_G["PetStableStabledPet" .. i .. "IconTexture"]:SetDrawLayer("OVERLAY")
+		S:HandleItemButton(_G["PetStableStabledPet"..i], true)
+		_G["PetStableStabledPet"..i.."IconTexture"]:SetDrawLayer("OVERLAY")
 	end
 
 	PetStablePetInfo:GetRegions():SetTexCoord(0.04, 0.15, 0.06, 0.30)
 	PetStablePetInfo:SetFrameLevel(PetModelFrame:GetFrameLevel() + 2)
 	E:CreateBackdrop(PetStablePetInfo, "Default")
-	-- PetStablePetInfo:Size(24, 24)
 	PetStablePetInfo:SetWidth(24)
 	PetStablePetInfo:SetHeight(24)
 
 	hooksecurefunc("PetStable_Update", function()
 		local happiness = GetPetHappiness()
 		local hasPetUI, isHunterPet = HasPetUI()
-		if(UnitExists("pet") and hasPetUI and not isHunterPet) then
+		if UnitExists("pet") and hasPetUI and not isHunterPet then
 			return
 		end
 		local texture = PetStablePetInfo:GetRegions()
-		if(happiness == 1) then
+		if happiness == 1 then
 			texture:SetTexCoord(0.41, 0.53, 0.06, 0.30)
-		elseif(happiness == 2) then
+		elseif happiness == 2 then
 			texture:SetTexCoord(0.22, 0.345, 0.06, 0.30)
-		elseif(happiness == 3) then
+		elseif happiness == 3 then
 			texture:SetTexCoord(0.04, 0.15, 0.06, 0.30)
 		end
 	end)

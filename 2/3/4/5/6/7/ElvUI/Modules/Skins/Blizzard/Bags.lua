@@ -66,6 +66,8 @@ local function LoadSkin()
 
 		S:HandleCloseButton(containerFrameClose)
 
+		S:SecureHookScript(containerFrame, "OnShow", "ContainerFrame_Update")
+
 		local itemButton, itemButtonIcon
 		for k = 1, MAX_CONTAINER_ITEMS, 1 do
 			itemButton = _G["ContainerFrame"..i.."Item"..k]
@@ -87,7 +89,6 @@ local function LoadSkin()
 	end
 
 	S:SecureHook("ContainerFrame_Update")
-	S:SecureHookScript(ContainerFrame1, "OnShow", "ContainerFrame_Update")
 
 	-- BankFrame
 	E:CreateBackdrop(BankFrame, "Transparent")

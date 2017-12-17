@@ -1,25 +1,25 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0");
 
-local _G = getfenv();
-local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs, ipairs, select, type, pcall;
-local tinsert, wipe = table.insert, table.wipe;
+local _G = _G
+local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs, ipairs, select, type, pcall
+local tinsert, wipe = table.insert, table.wipe
 local lower = string.lower
 
-local CreateFrame = CreateFrame;
-local SetDesaturation = SetDesaturation;
-local hooksecurefunc = hooksecurefunc;
-local IsAddOnLoaded = IsAddOnLoaded;
-local GetCVarBool = GetCVarBool;
+local CreateFrame = CreateFrame
+local SetDesaturation = SetDesaturation
+local hooksecurefunc = hooksecurefunc
+local IsAddOnLoaded = IsAddOnLoaded
+local GetCVarBool = GetCVarBool
 
-E.Skins = S;
-S.addonsToLoad = {};
-S.nonAddonsToLoad = {};
-S.allowBypass = {};
-S.addonCallbacks = {};
-S.nonAddonCallbacks = {["CallPriority"] = {}};
+E.Skins = S
+S.addonsToLoad = {}
+S.nonAddonsToLoad = {}
+S.allowBypass = {}
+S.addonCallbacks = {}
+S.nonAddonCallbacks = {["CallPriority"] = {}}
 
-local find = string.find;
+local find = string.find
 
 S.SQUARE_BUTTON_TEXCOORDS = {
 	["UP"] = {     0.45312500,    0.64062500,     0.01562500,     0.20312500};
@@ -27,47 +27,47 @@ S.SQUARE_BUTTON_TEXCOORDS = {
 	["LEFT"] = {   0.23437500,    0.42187500,     0.01562500,     0.20312500};
 	["RIGHT"] = {  0.42187500,    0.23437500,     0.01562500,     0.20312500};
 	["DELETE"] = { 0.01562500,    0.20312500,     0.01562500,     0.20312500}
-};
+}
 
 function S:SquareButton_SetIcon(self, name)
-	local coords = S.SQUARE_BUTTON_TEXCOORDS[strupper(name)];
-	if(coords) then
-		self.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4]);
+	local coords = S.SQUARE_BUTTON_TEXCOORDS[strupper(name)]
+	if coords then
+		self.icon:SetTexCoord(coords[1], coords[2], coords[3], coords[4])
 	end
 end
 
 function S:SetModifiedBackdrop(self)
-	if(self.backdrop) then self = self.backdrop; end
-	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor));
+	if self.backdrop then self = self.backdrop end
+	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
 end
 
 function S:SetOriginalBackdrop(self)
-	if(self.backdrop) then self = self.backdrop; end
-	self:SetBackdropBorderColor(unpack(E["media"].bordercolor));
+	if self.backdrop then self = self.backdrop end
+	self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 end
 
 function S:HandleButton(f, strip)
-	local name = f:GetName();
-	if(name) then
-		local left = _G[name .."Left"];
-		local middle = _G[name .."Middle"];
-		local right = _G[name .."Right"];
+	local name = f:GetName()
+	if name then
+		local left = _G[name .."Left"]
+		local middle = _G[name .."Middle"]
+		local right = _G[name .."Right"]
 
-		if(left) then E:Kill(left); end
-		if(middle) then E:Kill(middle); end
-		if(right) then E:Kill(right); end
+		if left then E:Kill(left) end
+		if middle then E:Kill(middle) end
+		if right then E:Kill(right) end
 	end
 
-	if(f.Left) then E:Kill(f.Left); end
-	if(f.Middle) then E:Kill(f.Middle); end
-	if(f.Right) then E:Kill(f.Right); end
+	if f.Left then E:Kill(f.Left) end
+	if f.Middle then E:Kill(f.Middle) end
+	if f.Right then E:Kill(f.Right) end
 
-	if(f.SetNormalTexture) then f:SetNormalTexture(""); end
-	if(f.SetHighlightTexture) then f:SetHighlightTexture(""); end
-	if(f.SetPushedTexture) then f:SetPushedTexture(""); end
-	if(f.SetDisabledTexture) then f:SetDisabledTexture(""); end
+	if f.SetNormalTexture then f:SetNormalTexture("") end
+	if f.SetHighlightTexture then f:SetHighlightTexture("") end
+	if f.SetPushedTexture then f:SetPushedTexture("") end
+	if f.SetDisabledTexture then f:SetDisabledTexture("") end
 
-	if(strip) then E:StripTextures(f); end
+	if strip then E:StripTextures(f) end
 
 	E:SetTemplate(f, "Default", true)
 	HookScript(f, "OnEnter", function() S:SetModifiedBackdrop(this) end)
@@ -243,7 +243,7 @@ function S:HandleEditBox(frame)
 		if _G[frame:GetName() .."Mid"] then E:Kill(_G[frame:GetName() .."Mid"]) end
 
 		if string.gfind(frame:GetName(), "Silver") or string.gfind(frame:GetName(), "Copper") then
-			frame.backdrop:SetPoint("BOTTOMRIGHT", -12, -2);
+			frame.backdrop:SetPoint("BOTTOMRIGHT", -12, -2)
 		end
 	end
 end
@@ -301,10 +301,10 @@ function S:HandleIcon(icon, parent)
 end
 
 function S:HandleItemButton(b, shrinkIcon)
-	if(b.isSkinned) then return; end
+	if b.isSkinned then return end
 
-	local icon = b.icon or b.IconTexture or b.iconTexture;
-	local texture;
+	local icon = b.icon or b.IconTexture or b.iconTexture
+	local texture
 	if b:GetName() and _G[b:GetName() .."IconTexture"] then
 		icon = _G[b:GetName() .."IconTexture"]
 	elseif b:GetName() and _G[b:GetName() .."Icon"] then
@@ -448,7 +448,7 @@ function S:ADDON_LOADED()
 		return
 	end
 
-	if not E.initialized then return; end
+	if not E.initialized then return end
 
 	if self.addonsToLoad[arg1] then
 		self.addonsToLoad[arg1]()
@@ -508,7 +508,7 @@ function S:AddCallbackForAddon(addonName, eventName, loadFunc, forceLoad, bypass
 	end
 
 	--Register loadFunc to be called when event is fired
-	E.RegisterCallback(E, eventName, loadFunc);
+	E.RegisterCallback(E, eventName, loadFunc)
 
 	if forceLoad then
 		E.callbacks:Fire(eventName)
@@ -527,7 +527,7 @@ function S:AddCallback(eventName, loadFunc)
 		return
 	elseif not loadFunc or type(loadFunc) ~= "function" then
 		E:Print("Invalid argument #2 to S:AddCallback (function expected)")
-		return;
+		return
 	end
 
 	if self.nonAddonCallbacks[eventName] or E.ModuleCallbacks[eventName] or E.InitialModuleCallbacks[eventName] then
@@ -581,10 +581,10 @@ function S:Initialize()
 			ScriptErrorsFrame_OnError(catch, false)
 		end
 	end
-	wipe(self.nonAddonsToLoad);
+	wipe(self.nonAddonsToLoad)
 end
 
-S:RegisterEvent("ADDON_LOADED");
+S:RegisterEvent("ADDON_LOADED")
 
 local function InitializeCallback()
 	S:Initialize()

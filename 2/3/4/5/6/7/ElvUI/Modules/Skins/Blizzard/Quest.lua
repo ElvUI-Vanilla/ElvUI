@@ -7,7 +7,7 @@ local _G = _G
 local pairs = pairs
 local select = select
 local unpack = unpack
-local find, format, split = string.find, string.format, string.split
+local find, format, match,  split = string.find, string.format, string.match, string.split
 --WoW API / Variables
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
@@ -53,9 +53,9 @@ local function LoadSkin()
 	end
 
 	for i = 1, MAX_NUM_ITEMS do
-		local item = _G["QuestLogItem" .. i]
-		local icon = _G["QuestLogItem" .. i .. "IconTexture"]
-		local count = _G["QuestLogItem" .. i .. "Count"]
+		local item = _G["QuestLogItem"..i]
+		local icon = _G["QuestLogItem"..i.."IconTexture"]
+		local count = _G["QuestLogItem"..i.."Count"]
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
@@ -74,9 +74,9 @@ local function LoadSkin()
 	end
 
 	for i = 1, 6 do
-		local item = _G["QuestDetailItem" .. i]
-		local icon = _G["QuestDetailItem" .. i .. "IconTexture"]
-		local count = _G["QuestDetailItem" .. i .. "Count"]
+		local item = _G["QuestDetailItem"..i]
+		local icon = _G["QuestDetailItem"..i.."IconTexture"]
+		local count = _G["QuestDetailItem"..i.."Count"]
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
@@ -95,9 +95,9 @@ local function LoadSkin()
 	end
 
 	for i = 1, 6 do
-		local item = _G["QuestRewardItem" .. i]
-		local icon = _G["QuestRewardItem" .. i .. "IconTexture"]
-		local count = _G["QuestRewardItem" .. i .. "Count"]
+		local item = _G["QuestRewardItem"..i]
+		local icon = _G["QuestRewardItem"..i.."IconTexture"]
+		local count = _G["QuestRewardItem"..i.."Count"]
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
@@ -117,12 +117,10 @@ local function LoadSkin()
 
 	local function QuestQualityColors(frame, text, quality, link)
 		if link and not quality then
-			local itemString = select(3, find(link, "|H(.+)|h"))
-			local itemID = select(2, split(":", itemString))
-			quality = select(3, GetItemInfo(itemID))
+			_, _, quality = GetItemInfo(match(link, "item:(%d+)"))
 		end
 
-		if quality and quality > 1 then
+		if quality then
 			if frame then
 				frame:SetBackdropBorderColor(GetItemQualityColor(quality))
 				frame.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
@@ -150,8 +148,8 @@ local function LoadSkin()
 		_G[this:GetName() .. "Name"]:SetTextColor(1, 1, 0)
 
 		for i = 1, MAX_NUM_ITEMS do
-			local questItem = _G["QuestRewardItem" .. i]
-			local questName = _G["QuestRewardItem" .. i .. "Name"]
+			local questItem = _G["QuestRewardItem"..i]
+			local questName = _G["QuestRewardItem"..i.."Name"]
 			local link = questItem.type and GetQuestItemLink(questItem.type, questItem:GetID())
 
 			if questItem ~= this then
@@ -350,9 +348,9 @@ local function LoadSkin()
 	end)
 
 	for i = 1, 6 do
-		local item = _G["QuestProgressItem" .. i]
-		local icon = _G["QuestProgressItem" .. i .. "IconTexture"]
-		local count = _G["QuestProgressItem" .. i .. "Count"]
+		local item = _G["QuestProgressItem"..i]
+		local icon = _G["QuestProgressItem"..i.."IconTexture"]
+		local count = _G["QuestProgressItem"..i.."Count"]
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
@@ -392,13 +390,13 @@ local function LoadSkin()
 	end)
 
 	for i = 1, QUESTS_DISPLAYED do
-		local questLogTitle = _G["QuestLogTitle" .. i]
+		local questLogTitle = _G["QuestLogTitle"..i]
 
 		questLogTitle:SetNormalTexture("")
 		questLogTitle.SetNormalTexture = E.noop
 
-		_G["QuestLogTitle" .. i .. "Highlight"]:SetTexture("")
-		_G["QuestLogTitle" .. i .. "Highlight"].SetTexture = E.noop
+		_G["QuestLogTitle"..i.."Highlight"]:SetTexture("")
+		_G["QuestLogTitle"..i.."Highlight"].SetTexture = E.noop
 
 		questLogTitle.Text = questLogTitle:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(questLogTitle.Text, nil, 22)
@@ -406,9 +404,9 @@ local function LoadSkin()
 		questLogTitle.Text:SetText("+")
 
 		hooksecurefunc(questLogTitle, "SetNormalTexture", function(self, texture)
-			if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+			if find(texture, "MinusButton") then
 				self.Text:SetText("-")
-			elseif texture == "Interface\\Buttons\\UI-PlusButton-Up" then
+			elseif find(texture, "PlusButton") then
 				self.Text:SetText("+")
 			else
 				self.Text:SetText("")
@@ -431,7 +429,7 @@ local function LoadSkin()
 	QuestLogCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(QuestLogCollapseAllButton, "SetNormalTexture", function(self, texture)
-		if texture == "Interface\\Buttons\\UI-MinusButton-Up" then
+		if find(texture, "MinusButton") then
 			self.Text:SetText("-")
 		else
 			self.Text:SetText("+")

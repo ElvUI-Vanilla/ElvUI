@@ -123,9 +123,9 @@ function LoadSkin()
 	S:HandleDropDownBox(WhoFrameDropDown)
 
 	for i = 1, 17 do
-		local button = _G["WhoFrameButton" .. i]
-		local level = _G["WhoFrameButton" .. i .. "Level"]
-		local name = _G["WhoFrameButton" .. i .. "Name"]
+		local button = _G["WhoFrameButton"..i]
+		local level = _G["WhoFrameButton"..i.."Level"]
+		local name = _G["WhoFrameButton"..i.."Name"]
 
 		button.icon = button:CreateTexture("$parentIcon", "ARTWORK")
 		button.icon:SetPoint("LEFT", 45, 0)
@@ -145,7 +145,7 @@ function LoadSkin()
 		name:ClearAllPoints()
 		name:SetPoint("LEFT", 85, 0)
 
-		_G["WhoFrameButton" .. i .. "Class"]:Hide()
+		_G["WhoFrameButton"..i.."Class"]:Hide()
 	end
 
 	E:StripTextures(WhoListScrollFrame)
@@ -247,21 +247,21 @@ function LoadSkin()
 		E:CreateBackdrop(button, "Default", true)
 		button.backdrop:SetAllPoints(button.icon)
 
-		_G["GuildFrameButton" .. i .. "Level"]:ClearAllPoints()
-		_G["GuildFrameButton" .. i .. "Level"]:SetPoint("TOPLEFT", 10, -3)
+		_G["GuildFrameButton"..i.."Level"]:ClearAllPoints()
+		_G["GuildFrameButton"..i.."Level"]:SetPoint("TOPLEFT", 10, -3)
 
-		_G["GuildFrameButton" .. i .. "Name"]:SetWidth(100)
-		_G["GuildFrameButton" .. i .. "Name"]:SetHeight(14)
-		_G["GuildFrameButton" .. i .. "Name"]:ClearAllPoints()
-		_G["GuildFrameButton" .. i .. "Name"]:SetPoint("LEFT", 85, -3)
+		_G["GuildFrameButton"..i.."Name"]:SetWidth(100)
+		_G["GuildFrameButton"..i.."Name"]:SetHeight(14)
+		_G["GuildFrameButton"..i.."Name"]:ClearAllPoints()
+		_G["GuildFrameButton"..i.."Name"]:SetPoint("LEFT", 85, -3)
 
-		_G["GuildFrameButton" .. i .. "Class"]:Hide()
+		_G["GuildFrameButton"..i.."Class"]:Hide()
 	end
 
 	hooksecurefunc("GuildStatus_Update", function()
 		if FriendsFrame.playerStatusFrame then
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
-				local button = _G["GuildFrameButton" .. i]
+				local button = _G["GuildFrameButton"..i]
 				local _, _, _, level, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
 				if class == UNKNOWN then return end
 
@@ -273,9 +273,9 @@ function LoadSkin()
 					if online then
 						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 						levelTextColor = GetQuestDifficultyColor(level)
-						buttonText = _G["GuildFrameButton" .. i .. "Name"]
+						buttonText = _G["GuildFrameButton"..i.."Name"]
 						buttonText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
-						buttonText = _G["GuildFrameButton" .. i .. "Level"]
+						buttonText = _G["GuildFrameButton"..i.."Level"]
 						buttonText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 					end
 					button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
@@ -284,7 +284,7 @@ function LoadSkin()
 		else
 			local classFileName
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
-				button = _G["GuildFrameGuildStatusButton" .. i]
+				button = _G["GuildFrameGuildStatusButton"..i]
 				_, _, _, _, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
 				if class == UNKNOWN then return end
 
@@ -295,8 +295,8 @@ function LoadSkin()
 				if class then
 					if online then
 						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-						_G["GuildFrameGuildStatusButton" .. i .. "Name"]:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
-						_G["GuildFrameGuildStatusButton" .. i .. "Online"]:SetTextColor(1.0, 1.0, 1.0)
+						_G["GuildFrameGuildStatusButton"..i.."Name"]:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
+						_G["GuildFrameGuildStatusButton"..i.."Online"]:SetTextColor(1.0, 1.0, 1.0)
 					end
 				end
 			end

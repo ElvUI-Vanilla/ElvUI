@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local select = select
 local getn = table.getn
@@ -42,7 +42,6 @@ local function LoadSkin()
 		button:DisableDrawLayer("BACKGROUND")
 		button:GetNormalTexture():SetTexture("")
 		button:GetPushedTexture():SetTexture("")
-		--E:StyleButton(button, true)
 
 		if iconTexture then
 			iconTexture:SetTexCoord(unpack(E.TexCoords))

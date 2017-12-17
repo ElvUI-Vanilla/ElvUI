@@ -6,7 +6,7 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 local pairs = pairs
-local find, split = string.find, string.split
+local find, match, split = string.find, string.match, string.split
 --WoW API / Variables
 local GetInventoryItemLink = GetInventoryItemLink
 local GetItemInfo = GetItemInfo
@@ -67,9 +67,7 @@ local function LoadSkin()
 		if button.hasItem then
 			local itemLink = GetInventoryItemLink(InspectFrame.unit, button:GetID())
 			if itemLink then
-				local itemString = select(3, find(itemLink, "|H(.+)|h"))
-				local itemID = select(2, split(":", itemString))
-				local quality = select(3, GetItemInfo(itemID))
+				local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 				if not quality then
 					E:Delay(0.1, function()
 						if InspectFrame.unit then
@@ -77,7 +75,7 @@ local function LoadSkin()
 						end
 					end)
 					return
-				elseif quality and quality > 1 then
+				elseif quality then
 					button:SetBackdropBorderColor(GetItemQualityColor(quality))
 					return
 				end

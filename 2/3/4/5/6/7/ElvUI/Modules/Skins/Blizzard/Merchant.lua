@@ -93,11 +93,9 @@ local function LoadSkin()
 					local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 					if quality then
 						itemName:SetTextColor(GetItemQualityColor(quality))
-						if quality then
-							itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
-						else
-							itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-						end
+						itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+					else
+						itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
 				else
 					itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -111,14 +109,12 @@ local function LoadSkin()
 					local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 					if quality then
 						MerchantBuyBackItemName:SetTextColor(GetItemQualityColor(quality))
-						if quality then
-							MerchantBuyBackItemItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
-						else
-							MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-						end
+						MerchantBuyBackItemItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
 						MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
+				else
+					MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
 		end
@@ -138,14 +134,12 @@ local function LoadSkin()
 						local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
 						if quality then
 							itemName:SetTextColor(GetItemQualityColor(quality))
-							if quality then
-								itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
-							else
-								itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-							end
+							itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
 							itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 						end
+					else
+						itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
 				end
 			end

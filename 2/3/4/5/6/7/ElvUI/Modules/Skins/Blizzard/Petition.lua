@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 --WoW API / Variables
 
 local function LoadSkin()
@@ -27,7 +27,7 @@ local function LoadSkin()
 	PetitionFrameMemberTitle:SetTextColor(1, 1, 0)
 
 	for i = 1, 9 do
-		_G["PetitionFrameMemberName" .. i]:SetTextColor(1, 1, 1)
+		_G["PetitionFrameMemberName"..i]:SetTextColor(1, 1, 1)
 	end
 
 	PetitionFrameInstructions:SetTextColor(1, 1, 1)
