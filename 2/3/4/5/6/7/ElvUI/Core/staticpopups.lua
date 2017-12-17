@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI);
 
-local _G = getfenv();
+local _G = _G;
 local pairs, type, unpack, assert = pairs, type, unpack, assert;
 local tremove, tContains, tinsert, wipe = tremove, tContains, tinsert, table.wipe;
 local lower = string.lower;
@@ -462,7 +462,7 @@ end
 
 function E:StaticPopup_CollapseTable()
 	local displayedFrames = E.StaticPopup_DisplayedFrames;
-	local index = gent(displayedFrames);
+	local index = getn(displayedFrames);
 	while((index >= 1) and (not displayedFrames[index]:IsShown())) do
 		tremove(displayedFrames, index);
 		index = index - 1;
@@ -471,7 +471,7 @@ end
 
 function E:StaticPopup_SetUpPosition(dialog)
 	if(not tContains(E.StaticPopup_DisplayedFrames, dialog)) then
-		local lastFrame = E.StaticPopup_DisplayedFrames[gent(E.StaticPopup_DisplayedFrames)];
+		local lastFrame = E.StaticPopup_DisplayedFrames[getn(E.StaticPopup_DisplayedFrames)];
 		if(lastFrame) then
 			dialog:SetPoint("TOP", lastFrame, "BOTTOM", 0, -4);
 		else
@@ -495,7 +495,7 @@ function E:StaticPopupSpecial_Hide(frame)
 end
 
 function E:StaticPopup_IsLastDisplayedFrame(frame)
-	for i = gent(E.StaticPopup_DisplayedFrames), 1, -1 do
+	for i = getn(E.StaticPopup_DisplayedFrames), 1, -1 do
 		local popup = E.StaticPopup_DisplayedFrames[i];
 		if(popup:IsShown()) then
 			return frame == popup;
@@ -886,13 +886,13 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 	local button3 = _G[name .. "Button3"];
 
 	do
-		assert(gent(tempButtonLocs) == 0);
+		assert(getn(tempButtonLocs) == 0);
 
 		tinsert(tempButtonLocs, button1);
 		tinsert(tempButtonLocs, button2);
 		tinsert(tempButtonLocs, button3);
 
-		for i = gent(tempButtonLocs), 1, -1 do
+		for i = getn(tempButtonLocs), 1, -1 do
 			tempButtonLocs[i]:SetText(info["button"..i]);
 			tempButtonLocs[i]:Hide();
 			tempButtonLocs[i]:ClearAllPoints();
@@ -901,7 +901,7 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 			end
 		end
 
-		local numButtons = gent(tempButtonLocs);
+		local numButtons = getn(tempButtonLocs);
 		dialog.numButtons = numButtons;
 		if(numButtons == 3) then
 			tempButtonLocs[1]:SetPoint("BOTTOMRIGHT", dialog, "BOTTOM", -72, 16);
@@ -988,7 +988,7 @@ end
 
 function E:StaticPopup_CombineTables()
 	if(not tContains(E.StaticPopup_DisplayedFrames, dialog)) then
-		local lastFrame = E.StaticPopup_DisplayedFrames[gent(StaticPopup_DisplayedFrames)];
+		local lastFrame = E.StaticPopup_DisplayedFrames[getn(StaticPopup_DisplayedFrames)];
 		if(lastFrame) then
 			dialog:SetPoint("TOP", lastFrame, "BOTTOM", 0, -4);
 		else

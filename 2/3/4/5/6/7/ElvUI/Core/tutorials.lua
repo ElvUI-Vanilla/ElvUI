@@ -1,13 +1,13 @@
-local E, L, V, P, G = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
-local _G = getfenv();
+local _G = _G
 
-local CreateFrame = CreateFrame;
-local DISABLE = DISABLE;
-local HIDE = HIDE;
+local CreateFrame = CreateFrame
+local DISABLE = DISABLE
+local HIDE = HIDE
 
 E.TutorialList = {
-	L["For technical support visit us at https://github.com/ElvUI-WotLK/ElvUI"],
+	L["For technical support visit us at https://github.com/ElvUI-Vanilla/ElvUI"],
 	L["You can toggle the microbar by using your middle mouse button on the minimap you can also accomplish this by enabling the actual microbar located in the actionbar settings."],
 	L["A raid marker feature is available by pressing Escape -> Keybinds scroll to the bottom under ElvUI and setting a keybind for the raid marker."],
 	L["You can set your keybinds quickly by typing /kb."],
@@ -26,7 +26,7 @@ function E:SetNextTutorial()
 	self.db.currentTutorial = self.db.currentTutorial or 0
 	self.db.currentTutorial = self.db.currentTutorial + 1
 
-	if self.db.currentTutorial > gent(E.TutorialList) then
+	if self.db.currentTutorial > getn(E.TutorialList) then
 		self.db.currentTutorial = 1
 	end
 
@@ -38,7 +38,7 @@ function E:SetPrevTutorial()
 	self.db.currentTutorial = self.db.currentTutorial - 1
 
 	if self.db.currentTutorial <= 0 then
-		self.db.currentTutorial = gent(E.TutorialList)
+		self.db.currentTutorial = getn(E.TutorialList)
 	end
 
 	ElvUITutorialWindow.desc:SetText(E.TutorialList[self.db.currentTutorial])
@@ -63,7 +63,7 @@ function E:SpawnTutorialFrame()
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
 
 	local title = header:CreateFontString("OVERLAY")
-	title:FontTemplate()
+	E:FontTemplate(title)
 	title:SetPoint("CENTER", header, "CENTER")
 	title:SetText("ElvUI")
 
@@ -77,28 +77,28 @@ function E:SpawnTutorialFrame()
 
 	f.disableButton = CreateFrame("CheckButton", f:GetName().."DisableButton", f, "OptionsCheckButtonTemplate")
 	_G[f.disableButton:GetName() .. "Text"]:SetText(DISABLE)
-	f.disableButton:SetPoint("BOTTOMLEFT")
+	f.disableButton:SetPoint("BOTTOMLEFT", -5, 5)
 	S:HandleCheckBox(f.disableButton)
-	f.disableButton:SetScript("OnShow", function(self) self:SetChecked(E.db.hideTutorial) end)
+	f.disableButton:SetScript("OnShow", function() this:SetChecked(E.db.hideTutorial) end)
 
-	f.disableButton:SetScript("OnClick", function(self) E.db.hideTutorial = self:GetChecked() end)
+	f.disableButton:SetScript("OnClick", function() E.db.hideTutorial = this:GetChecked() end)
 
 	f.hideButton = CreateFrame("Button", f:GetName().."HideButton", f, "OptionsButtonTemplate")
 	f.hideButton:SetPoint("BOTTOMRIGHT", -5, 5)
 	S:HandleButton(f.hideButton)
 	_G[f.hideButton:GetName() .. "Text"]:SetText(HIDE)
-	f.hideButton:SetScript("OnClick", function(self) E:StaticPopupSpecial_Hide(self:GetParent()) end)
+	f.hideButton:SetScript("OnClick", function() E:StaticPopupSpecial_Hide(this:GetParent()) end)
 
 	f.nextButton = CreateFrame("Button", f:GetName().."NextButton", f, "OptionsButtonTemplate")
 	f.nextButton:SetPoint("RIGHT", f.hideButton, "LEFT", -4, 0)
-	f.nextButton:Width(20)
+	f.nextButton:SetWidth(20)
 	S:HandleButton(f.nextButton)
 	_G[f.nextButton:GetName() .. "Text"]:SetText(">")
 	f.nextButton:SetScript("OnClick", function() E:SetNextTutorial() end)
 
 	f.prevButton = CreateFrame("Button", f:GetName().."PrevButton", f, "OptionsButtonTemplate")
 	f.prevButton:SetPoint("RIGHT", f.nextButton, "LEFT", -4, 0)
-	f.prevButton:Width(20)
+	f.prevButton:SetWidth(20)
 	S:HandleButton(f.prevButton)
 	_G[f.prevButton:GetName() .. "Text"]:SetText("<")
 	f.prevButton:SetScript("OnClick", function() E:SetPrevTutorial() end)
@@ -107,7 +107,7 @@ function E:SpawnTutorialFrame()
 end
 
 function E:Tutorials(forceShow)
-	if (not forceShow and self.db.hideTutorial) or (not forceShow and not self.private.install_complete) then return; end
+	if (not forceShow and self.db.hideTutorial) or (not forceShow and not self.private.install_complete) then return end
 	local f = ElvUITutorialWindow
 	if not f then
 		f = E:SpawnTutorialFrame()
