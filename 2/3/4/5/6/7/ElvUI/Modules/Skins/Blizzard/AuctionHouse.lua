@@ -96,6 +96,7 @@ local function LoadSkin()
 			E:SetInside(this:GetNormalTexture())
 		end
 		local _, _, _, quality = GetAuctionSellItemInfo()
+		print(quality)
 		if quality then
 			AuctionsItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			AuctionsItemButtonName:SetTextColor(quality)
@@ -205,9 +206,7 @@ local function LoadSkin()
 			E:SetTemplate(icon, "Default")
 
 			hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-				if(r == 1 and g == 1 and b == 1) then
-					icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-				else
+				if r and g and b then
 					icon:SetBackdropBorderColor(r, g, b)
 				end
 			end)
