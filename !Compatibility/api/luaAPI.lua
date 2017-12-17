@@ -2,6 +2,7 @@
 local assert = assert
 local error = error
 local geterrorhandler = geterrorhandler
+local loadstring = loadstring
 local pairs = pairs
 local pcall = pcall
 local tostring = tostring
@@ -10,6 +11,36 @@ local unpack = unpack
 local ceil, floor = math.ceil, math.floor
 local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
 local getn, setn, tinsert = table.getn, table.setn, table.insert
+
+local escapeSequences = {
+	["\a"] = "\\a", -- Bell
+	["\b"] = "\\b", -- Backspace
+	["\t"] = "\\t", -- Horizontal tab
+	["\n"] = "\\n", -- Newline
+	["\v"] = "\\v", -- Vertical tab
+	["\f"] = "\\f", -- Form feed
+	["\r"] = "\\r", -- Carriage return
+	["\\"] = "\\\\", -- Backslash
+	["\""] = "\\\"", -- Quotation mark
+	["|"] = "||",
+	[" "] = "%s",
+
+	[" "] = "%s",
+	["!"] = "\\!",
+	["#"] = "\\#",
+	["$"] = "\\$",
+	["%"] = "\\%",
+	["&"] = "\\&",
+	["'"] = "\\'",
+	["("] = "\\(",
+	[")"] = "\\)",
+	["*"] = "\\*",
+	["+"] = "\\+",
+	[","] = "\\,",
+	["-"] = "\\-",
+	["."] = "\\.",
+	["/"] = "\\/"
+}
 
 math.huge = 1/0
 string.gmatch = gfind
@@ -92,37 +123,48 @@ end
 strsplit = string.split
 
 function string.trim(str, chars)
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
+	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"))
+	assert(not type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
---[[
+
 	if chars then
-		local size = string.len(chars)
-		local token = ""
+		chars = type(chars) == "number" and tostring(chars) or chars
+
+		local tokens = {}
+
+		for token in gfind(chars, "[%z\1-\255\"\\]") do
+			tinsert(tokens, token)
+		end
+
+		local pattern = ""
+		local size = getn(tokens)
 
 		for i = 1, size do
-			token = token .. string.sub(chars, i, i + 1) .. "*"
+			pattern = pattern..(escapeSequences[tokens[i]] or tokens[i]).."+"
 
 			if size > 1 and i < size then
-				token = token.."|"
+				pattern = pattern.."|"
 			end
 		end
 
-		token = "["..token.."]"
+		patternStart = "^["..pattern.."](.-)$"
+		patternEnd = "^(.-)["..pattern.."]$"
+		patternStart = loadstring("return \""..patternStart.."\"")()
+		patternEnd = loadstring("return \""..patternEnd.."\"")()
 
-		local trimed = 1
-		while trimed == 1 do
-			str, trimed = string.gsub(str, "^"..token.."(._)"..token.."$", "")
+		local trimed, x, y = 1
+		while trimed >= 1 do
+			str, x = gsub(str, patternStart, "%1")
+			str, y = gsub(str, patternEnd, "%1")
+			trimed = x + y
 		end
+
+		return str
 	else
 		-- remove leading/trailing [space][tab][return][newline]
-		str = string.gsub(str, "^%s*(.-)%s*$", "%1")
+		return string.gsub(str, "^%s*(.-)%s*$", "%1")
 	end
-
-	return str
-]]
-
-	return string.gsub(str, "^%s*(.-)%s*$", "%1")
 end
 strtrim = string.trim
 
