@@ -8,11 +8,11 @@ local tostring = tostring
 local type = type
 local unpack = unpack
 local ceil, floor = math.ceil, math.floor
-local find, format, gsub, sub = string.find, string.format, string.gsub, string.sub
 local getn, tinsert = table.getn, table.insert
+local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
 
 math.huge = 1/0
-string.gmatch = string.gfind
+string.gmatch = gfind
 
 function difftime(time2, time1)
 	assert(type(time2) == "number", format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"))
@@ -68,12 +68,12 @@ strjoin = string.join
 
 function string.match(str, pattern, index)
 	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
-	assert(type(pattern) == "string", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
+	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
-	local i, j = find(index and sub(str, index) or str, pattern)
+	pattern = type(pattern) == "number" and tostring(pattern) or pattern
 
-	return i and sub(str, i, j)
+	return gfind(index and sub(str, index) or str, pattern)()
 end
 strmatch = string.match
 
