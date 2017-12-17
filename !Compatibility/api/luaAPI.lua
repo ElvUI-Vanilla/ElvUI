@@ -133,7 +133,7 @@ function string.trim(str, chars)
 
 		local tokens = {}
 
-		for token in gfind(chars, "[%z\1-\255\"\\]") do
+		for token in gfind(chars, "[%z\1-\255]") do
 			tinsert(tokens, token)
 		end
 
