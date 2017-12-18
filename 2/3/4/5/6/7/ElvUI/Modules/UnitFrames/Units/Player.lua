@@ -23,6 +23,8 @@ function UF:Construct_PlayerFrame(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 
+	frame.InfoPanel = self:Construct_InfoPanel(frame)
+
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
 	E:CreateMover(frame, frame:GetName().."Mover", L["Player Frame"], nil, nil, nil, "ALL,SOLO")
 	frame.unitframeType = "player"
@@ -72,12 +74,14 @@ function UF:Update_PlayerFrame(frame, db)
 
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
-	--frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
+	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
 
 	frame:SetWidth(frame.UNIT_WIDTH)
 	frame:SetHeight(frame.UNIT_HEIGHT)
 	_G[frame:GetName().."Mover"]:SetWidth(frame:GetWidth())
 	_G[frame:GetName().."Mover"]:SetHeight(frame:GetHeight())
+
+	UF:Configure_InfoPanel(frame)
 
 	UF:Configure_HealthBar(frame)
 
