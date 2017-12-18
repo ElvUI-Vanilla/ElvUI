@@ -132,25 +132,29 @@ function UF:Configure_Power(frame)
 			power.backdrop:SetFrameLevel(49)
 		elseif frame.USE_POWERBAR_OFFSET then
 			if frame.ORIENTATION == "LEFT" then
+				power:SetWidth(frame.UNIT_WIDTH - frame.POWERBAR_OFFSET)
+				power:SetHeight(frame.UNIT_HEIGHT - frame.POWERBAR_OFFSET)
 				power:SetPoint("TOPRIGHT", frame.Health, "TOPRIGHT", frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
-				power:SetPoint("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			elseif frame.ORIENTATION == "MIDDLE" then
+				power:SetWidth(frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2))
+				power:SetHeight(frame.UNIT_HEIGHT - (frame.POWERBAR_OFFSET + frame.CLASSBAR_YOFFSET) - frame.BORDER)
 				power:SetPoint("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.POWERBAR_OFFSET -frame.CLASSBAR_YOFFSET)
-				power:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER)
 			else
+				power:SetWidth(frame.UNIT_WIDTH - frame.POWERBAR_OFFSET)
+				power:SetHeight(frame.UNIT_HEIGHT - frame.POWERBAR_OFFSET)
 				power:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
-				power:SetPoint("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			end
 			power:SetFrameLevel(frame.Health:GetFrameLevel() -5) --Health uses 10
 			power.backdrop:SetFrameLevel(frame.Health:GetFrameLevel() - 6)
 		elseif frame.USE_INSET_POWERBAR then
+			power:SetWidth(frame.UNIT_WIDTH - ((frame.BORDER + (frame.BORDER*2)) * 2) - ((frame.BORDER + frame.SPACING) * 2))
 			power:SetHeight(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2))
 			power:SetPoint("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.BORDER + (frame.BORDER*2), frame.BORDER + (frame.BORDER*2))
-			power:SetPoint("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -(frame.BORDER + (frame.BORDER*2)), frame.BORDER + (frame.BORDER*2))
+
 			power:SetFrameLevel(50)
 			power.backdrop:SetFrameLevel(49)
 		elseif frame.USE_MINI_POWERBAR then
-			power:SetHeight(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2))
+			power:SetHeight(frame.POWERBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
 
 			if frame.ORIENTATION == "LEFT" then
 				power:SetWidth(frame.POWERBAR_WIDTH - frame.BORDER*2)
@@ -159,16 +163,17 @@ function UF:Configure_Power(frame)
 				power:SetWidth(frame.POWERBAR_WIDTH - frame.BORDER*2)
 				power:SetPoint("LEFT", frame, "BOTTOMLEFT", (frame.BORDER*2 + 4), ((frame.POWERBAR_HEIGHT-frame.BORDER)/2))
 			else
+				power:SetWidth(frame.UNIT_WIDTH  - ((frame.BORDER*2 + 4) * 2))
+				power:SetHeight(frame.POWERBAR_HEIGHT - frame.BORDER*2)
 				power:SetPoint("LEFT", frame, "BOTTOMLEFT", (frame.BORDER*2 + 4), ((frame.POWERBAR_HEIGHT-frame.BORDER)/2))
-				power:SetPoint("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER*2 + 4), ((frame.POWERBAR_HEIGHT-frame.BORDER)/2))
 			end
 
 			power:SetFrameLevel(50)
 			power.backdrop:SetFrameLevel(49)
 		else
-			power:SetPoint("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER, -frame.SPACING*3)
-			power:SetPoint("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER, -frame.SPACING*3)
+			power:SetWidth(frame.UNIT_WIDTH - (frame.BORDER*2))
 			power:SetHeight(frame.POWERBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
+			power:SetPoint("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER, -frame.SPACING*3)
 
 			power:SetFrameLevel(frame.Health:GetFrameLevel() - 5)
 			power.backdrop:SetFrameLevel(frame.Health:GetFrameLevel() - 6)
