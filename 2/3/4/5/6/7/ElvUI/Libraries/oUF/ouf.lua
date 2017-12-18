@@ -163,7 +163,7 @@ for k, v in next, {
 	--]]
 	EnableElement = function(self, name, unit)
 		argcheck(name, 2, 'string')
-		argcheck(unit, 3, 'string', 'nil')
+		argcheck(unit or self.unit, 3, 'string', 'nil')
 
 		local element = elements[name]
 		if(not element or self:IsElementEnabled(name) or not activeElements[self]) then return end
