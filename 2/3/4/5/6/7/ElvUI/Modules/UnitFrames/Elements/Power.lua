@@ -132,22 +132,22 @@ function UF:Configure_Power(frame)
 			power.backdrop:SetFrameLevel(49)
 		elseif frame.USE_POWERBAR_OFFSET then
 			if frame.ORIENTATION == "LEFT" then
-				power:SetWidth(frame.UNIT_WIDTH - frame.POWERBAR_OFFSET)
+				power:SetWidth(frame.UNIT_WIDTH - frame.PORTRAIT_WIDTH - frame.POWERBAR_OFFSET)
 				power:SetHeight(frame.UNIT_HEIGHT - frame.POWERBAR_OFFSET)
 				power:SetPoint("TOPRIGHT", frame.Health, "TOPRIGHT", frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			elseif frame.ORIENTATION == "MIDDLE" then
-				power:SetWidth(frame.UNIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2))
+				power:SetWidth(frame.UNIT_WIDTH - frame.PORTRAIT_WIDTH - ((frame.BORDER + frame.SPACING) * 2))
 				power:SetHeight(frame.UNIT_HEIGHT - (frame.POWERBAR_OFFSET + frame.CLASSBAR_YOFFSET) - frame.BORDER)
 				power:SetPoint("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.POWERBAR_OFFSET -frame.CLASSBAR_YOFFSET)
 			else
-				power:SetWidth(frame.UNIT_WIDTH - frame.POWERBAR_OFFSET)
+				power:SetWidth(frame.UNIT_WIDTH - frame.PORTRAIT_WIDTH - frame.POWERBAR_OFFSET)
 				power:SetHeight(frame.UNIT_HEIGHT - frame.POWERBAR_OFFSET)
 				power:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
 			end
 			power:SetFrameLevel(frame.Health:GetFrameLevel() -5) --Health uses 10
 			power.backdrop:SetFrameLevel(frame.Health:GetFrameLevel() - 6)
 		elseif frame.USE_INSET_POWERBAR then
-			power:SetWidth(frame.UNIT_WIDTH - ((frame.BORDER + (frame.BORDER*2)) * 2) - ((frame.BORDER + frame.SPACING) * 2))
+			power:SetWidth(frame.UNIT_WIDTH - frame.PORTRAIT_WIDTH -  ((frame.BORDER + (frame.BORDER*2)) * 2) - ((frame.BORDER + frame.SPACING) * 2))
 			power:SetHeight(frame.POWERBAR_HEIGHT  - ((frame.BORDER + frame.SPACING)*2))
 			power:SetPoint("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.BORDER + (frame.BORDER*2), frame.BORDER + (frame.BORDER*2))
 
@@ -171,7 +171,7 @@ function UF:Configure_Power(frame)
 			power:SetFrameLevel(50)
 			power.backdrop:SetFrameLevel(49)
 		else
-			power:SetWidth(frame.UNIT_WIDTH - (frame.BORDER*2))
+			power:SetWidth(frame.UNIT_WIDTH - frame.PORTRAIT_WIDTH - (frame.BORDER*2))
 			power:SetHeight(frame.POWERBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
 			power:SetPoint("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER, -frame.SPACING*3)
 
