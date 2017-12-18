@@ -3,6 +3,7 @@
 	<Script file="Armor.lua"/>
 	<Script file="Avoidance.lua"/>
 	<Script file="Durability.lua"/>
+	<Script file="Friends.lua"/>
 	<Script file="Gold.lua"/>
 	<Script file="Guild.lua"/>
 	<Script file="System.lua"/>

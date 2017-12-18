@@ -23,8 +23,8 @@ local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
 
 -- //////////////////////////////////////////////////////////////
-L_UIDROPDOWNMENU_MINBUTTONS = 8;
-L_UIDROPDOWNMENU_MAXBUTTONS = 8;
+L_UIDROPDOWNMENU_MINBUTTONS = 32;
+L_UIDROPDOWNMENU_MAXBUTTONS = 32;
 L_UIDROPDOWNMENU_MAXLEVELS = 2;
 L_UIDROPDOWNMENU_BUTTON_HEIGHT = 16;
 L_UIDROPDOWNMENU_BORDER_HEIGHT = 15;
@@ -171,7 +171,6 @@ info.text = [STRING]  --  The text of the button
 info.value = [ANYTHING]  --  The value that L_UIDROPDOWNMENU_MENU_VALUE is set to when the button is clicked
 info.func = [function()]  --  The function that is called when you click the button
 info.checked = [nil, true, function]  --  Check the button if true or function returns true
-info.isNotRadio = [nil, true]  --  Check the button uses radial image if false check box image if true
 info.isTitle = [nil, true]  --  If it's a title the button is disabled and the font color is set to yellow
 info.disabled = [nil, true]  --  Disable the button and show an invisible button that still traps the mouseover event so menu doesn't time out
 info.tooltipWhileDisabled = [nil, 1] -- Show the tooltip, even when the button is disabled.
@@ -196,7 +195,6 @@ info.tooltipOnButton = [nil, 1] -- Show the tooltip attached to the button inste
 info.justifyH = [nil, "CENTER"] -- Justify button text
 info.arg1 = [ANYTHING] -- This is the first argument used by info.func
 info.arg2 = [ANYTHING] -- This is the second argument used by info.func
-info.fontObject = [FONT] -- font object replacement for Normal and Highlight
 info.menuTable = [TABLE] -- This contains an array of info tables to be displayed as a child menu
 info.noClickSound = [nil, 1]  --  Set to 1 to suppress the sound when clicking the button. The sound only plays if .func is set.
 info.padding = [nil, NUMBER] -- Number of pixels to pad the text on the right side
@@ -312,20 +310,20 @@ function L_UIDropDownMenu_AddButton(info, level)
 	local invisibleButton = _G[button:GetName().."InvisibleButton"];
 
 	-- Default settings
-	button:SetDisabledFontObject(GameFontDisableSmallLeft);
+	button:SetDisabledTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
 	invisibleButton:Hide();
 	button:Enable();
 
 	-- If not clickable then disable the button and set it white
 	if ( info.notClickable ) then
 		info.disabled = true;
-		button:SetDisabledFontObject(GameFontHighlightSmallLeft);
+		button:SetDisabledTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	end
 
 	-- Set the text color and disable it if its a title
 	if ( info.isTitle ) then
 		info.disabled = true;
-		button:SetDisabledFontObject(GameFontNormalSmallLeft);
+		button:SetDisabledTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 	end
 
 	-- Disable the button if disabled and turn off the color code
@@ -351,11 +349,7 @@ function L_UIDropDownMenu_AddButton(info, level)
 
 		-- Set icon
 		if ( info.icon ) then
-			icon:SetSize(16,16);
 			icon:SetTexture(info.icon);
-			icon:ClearAllPoints();
-			icon:SetPoint("RIGHT");
-
 			if ( info.tCoordLeft ) then
 				icon:SetTexCoord(info.tCoordLeft, info.tCoordRight, info.tCoordTop, info.tCoordBottom);
 			else
@@ -364,15 +358,6 @@ function L_UIDropDownMenu_AddButton(info, level)
 			icon:Show();
 		else
 			icon:Hide();
-		end
-
-		-- Check to see if there is a replacement font
-		if ( info.fontObject ) then
-			button:SetNormalFontObject(info.fontObject);
-			button:SetHighlightFontObject(info.fontObject);
-		else
-			--button:SetNormalFontObject(STANDARD_TEXT_FONT);
-			--button:SetHighlightFontObject(STANDARD_TEXT_FONT);
 		end
 	else
 		button:SetText("");
@@ -496,21 +481,9 @@ function L_UIDropDownMenu_AddButton(info, level)
 		if ( info.disabled ) then
 			_G[listFrameName.."Button"..index.."Check"]:SetDesaturated(true);
 			_G[listFrameName.."Button"..index.."Check"]:SetAlpha(0.5);
-			_G[listFrameName.."Button"..index.."UnCheck"]:SetDesaturated(true);
-			_G[listFrameName.."Button"..index.."UnCheck"]:SetAlpha(0.5);
 		else
 			_G[listFrameName.."Button"..index.."Check"]:SetDesaturated(false);
 			_G[listFrameName.."Button"..index.."Check"]:SetAlpha(1);
-			_G[listFrameName.."Button"..index.."UnCheck"]:SetDesaturated(false);
-			_G[listFrameName.."Button"..index.."UnCheck"]:SetAlpha(1);
-		end
-
-		if info.isNotRadio then
-			_G[listFrameName.."Button"..index.."Check"]:SetTexCoord(0.0, 0.5, 0.0, 0.5);
-			_G[listFrameName.."Button"..index.."UnCheck"]:SetTexCoord(0.5, 1.0, 0.0, 0.5);
-		else
-			_G[listFrameName.."Button"..index.."Check"]:SetTexCoord(0.0, 0.5, 0.5, 1.0);
-			_G[listFrameName.."Button"..index.."UnCheck"]:SetTexCoord(0.5, 1.0, 0.5, 1.0);
 		end
 
 		-- Checked can be a function now
@@ -523,15 +496,12 @@ function L_UIDropDownMenu_AddButton(info, level)
 		if ( checked ) then
 			button:LockHighlight();
 			_G[listFrameName.."Button"..index.."Check"]:Show();
-			_G[listFrameName.."Button"..index.."UnCheck"]:Hide();
 		else
 			button:UnlockHighlight();
 			_G[listFrameName.."Button"..index.."Check"]:Hide();
-			_G[listFrameName.."Button"..index.."UnCheck"]:Show();
 		end
 	else
 		_G[listFrameName.."Button"..index.."Check"]:Hide();
-		_G[listFrameName.."Button"..index.."UnCheck"]:Hide();
 	end	
 	button.checked = info.checked;
 
@@ -607,7 +577,7 @@ function L_UIDropDownMenu_GetButtonWidth(button)
 end
 
 function L_UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
-	local button, checked, checkImage, uncheckImage, normalText, width;
+	local button, checked, checkImage, normalText, width;
 	local maxWidth = 0;
 	local somethingChecked = nil; 
 	if ( not dropdownLevel ) then
@@ -644,7 +614,6 @@ function L_UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 		if not button.notCheckable and button:IsShown() then
 			-- If checked show check image
 			checkImage = _G["L_DropDownList"..dropdownLevel.."Button"..i.."Check"];
-			uncheckImage = _G["L_DropDownList"..dropdownLevel.."Button"..i.."UnCheck"];
 			if ( checked ) then
 				somethingChecked = true;
 				local icon = _G[frame:GetName().."Icon"];
@@ -659,11 +628,9 @@ function L_UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 				end
 				button:LockHighlight();
 				checkImage:Show();
-				uncheckImage:Hide();
 			else
 				button:UnlockHighlight();
 				checkImage:Hide();
-				uncheckImage:Show();
 			end
 		end
 
@@ -769,48 +736,46 @@ function L_UIDropDownMenu_GetSelectedValue(frame)
 	return frame.selectedValue;
 end
 
-function L_UIDropDownMenuButton_OnClick(self)
-	local checked = self.checked;
+function L_UIDropDownMenuButton_OnClick()
+	local checked = this.checked;
 	if ( type (checked) == "function" ) then
-		checked = checked(self);
+		checked = checked(this);
 	end
 
 
-	if ( self.keepShownOnClick ) then
-		if not self.notCheckable then
+	if ( this.keepShownOnClick ) then
+		if not this.notCheckable then
 			if ( checked ) then
-				_G[self:GetName().."Check"]:Hide();
-				_G[self:GetName().."UnCheck"]:Show();
+				_G[this:GetName().."Check"]:Hide();
 				checked = false;
 			else
-				_G[self:GetName().."Check"]:Show();
-				_G[self:GetName().."UnCheck"]:Hide();
+				_G[this:GetName().."Check"]:Show();
 				checked = true;
 			end
 		end
 	else
-		self:GetParent():Hide();
+		this:GetParent():Hide();
 	end
 
-	if ( type (self.checked) ~= "function" ) then
-		self.checked = checked;
+	if ( type (this.checked) ~= "function" ) then
+		this.checked = checked;
 	end
 
 	-- saving this here because func might use a dropdown, changing this self's attributes
 	local playSound = true;
-	if ( self.noClickSound ) then
+	if ( this.noClickSound ) then
 		playSound = false;
 	end
 
-	local func = self.func;
+	local func = this.func;
 	if ( func ) then
-		func(self, self.arg1, self.arg2, checked);
+		func(this.arg1, this.arg2, checked);
 	else
 		return;
 	end
 
 	if ( playSound ) then
-		PlaySound(PlaySoundKitID and "UChatScrollButton" or SOUNDKIT.U_CHAT_SCROLL_BUTTON); 
+		PlaySound("UChatScrollButton");
 	end
 end
 
@@ -823,6 +788,7 @@ function L_ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, 
 	if ( not level ) then
 		level = 1;
 	end
+
 	--UIDropDownMenuDelegate:SetAttribute("createframes-level", level);
 	--UIDropDownMenuDelegate:SetAttribute("createframes-index", 0);
 	--UIDropDownMenuDelegate:SetAttribute("createframes", true);
@@ -862,7 +828,7 @@ function L_ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, 
 		-- Display stuff
 		-- Level specific stuff
 		if ( level == 1 ) then
-			--UIDropDownMenuDelegate:SetAttribute("openmenu", dropDownFrame);
+			L_UIDROPDOWNMENU_OPEN_MENU = dropDownFrame;
 			listFrame:ClearAllPoints();
 			-- If there's no specified anchorName then use left side of the dropdown menu
 			if ( not anchorName ) then
@@ -1107,15 +1073,13 @@ function L_UIDropDownMenu_ClearAll(frame)
 	frame.selectedValue = nil;
 	L_UIDropDownMenu_SetText(frame, "");
 
-	local button, checkImage, uncheckImage;
+	local button, checkImage;
 	for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
 		button = _G["L_DropDownList"..L_UIDROPDOWNMENU_MENU_LEVEL.."Button"..i];
 		button:UnlockHighlight();
 
 		checkImage = _G["L_DropDownList"..L_UIDROPDOWNMENU_MENU_LEVEL.."Button"..i.."Check"];
 		checkImage:Hide();
-		uncheckImage = _G["L_DropDownList"..L_UIDROPDOWNMENU_MENU_LEVEL.."Button"..i.."UnCheck"];
-		uncheckImage:Hide();
 	end
 end
 
