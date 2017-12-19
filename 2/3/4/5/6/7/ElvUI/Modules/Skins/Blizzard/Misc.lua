@@ -31,6 +31,10 @@ local function LoadSkin()
 	    "DropDownList2MenuBackdrop",
 	    "DropDownList1Backdrop",
 	    "DropDownList2Backdrop",
+	    "L_DropDownList1MenuBackdrop",
+	    "L_DropDownList2MenuBackdrop",
+	    "L_DropDownList1Backdrop",
+	    "L_DropDownList2Backdrop",
 	}
 
 	for i = 1, getn(skins) do
