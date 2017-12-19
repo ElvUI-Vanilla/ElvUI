@@ -1,8 +1,8 @@
-local E, L, V, P, G = unpack(ElvUI); -- Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); -- Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local type, ipairs, tonumber = type, ipairs, tonumber
 local floor = math.floor
 --WoW API / Variables
@@ -146,7 +146,7 @@ end
 local function ConfigMode_OnClick(self)
 	selectedValue = self.value
 	E:ToggleConfigMode(false, self.value)
---	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, self.value)
+	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, self.value)
 end
 
 local function ConfigMode_Initialize()
@@ -159,7 +159,7 @@ local function ConfigMode_Initialize()
 		UIDropDownMenu_AddButton(info)
 	end
 
-	--UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, selectedValue)
+	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, selectedValue)
 end
 
 function E:NudgeMover(nudgeX, nudgeY)

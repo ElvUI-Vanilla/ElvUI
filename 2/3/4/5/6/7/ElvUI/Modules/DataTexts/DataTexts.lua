@@ -1,8 +1,8 @@
-local E, L, V, P, G = unpack(ElvUI)
-local DT = E:NewModule("DataTexts", "AceTimer-3.0", "AceHook-3.0", "AceEvent-3.0")
-local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
-local LSM = LibStub("LibSharedMedia-3.0")
-local TT = E:GetModule("Tooltip")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local DT = E:NewModule("DataTexts", "AceTimer-3.0", "AceHook-3.0", "AceEvent-3.0");
+local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
+local LSM = LibStub("LibSharedMedia-3.0");
+local TT = E:GetModule("Tooltip");
 
 local pairs, type, error = pairs, type, error
 local len = string.len

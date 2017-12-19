@@ -1,8 +1,10 @@
-local E, L, V, P, G = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
+--Cache global variables
+--Lua functions
 local abs, floor, min, max = math.abs, math.floor, math.min, math.max;
 local match = string.match;
-
+--WoW API / Variables
 local IsMacClient = IsMacClient;
 local GetCVar, SetCVar = GetCVar, SetCVar;
 local GetScreenHeight, GetScreenWidth = GetScreenHeight, GetScreenWidth;

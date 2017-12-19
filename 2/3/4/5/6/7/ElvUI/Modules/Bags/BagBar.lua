@@ -1,10 +1,12 @@
-local E, L, V, P, G = unpack(ElvUI)
-local B = E:GetModule("Bags")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local B = E:GetModule("Bags");
 
+--Cache global variables
+--Lua functions
 local _G = _G
 local unpack = unpack
 local tinsert = table.insert
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local NUM_BAG_FRAMES = NUM_BAG_FRAMES
 

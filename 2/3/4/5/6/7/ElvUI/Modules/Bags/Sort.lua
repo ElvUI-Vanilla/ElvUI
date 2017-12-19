@@ -1,14 +1,15 @@
-local E, L, V, P, G = unpack(ElvUI)
-local B = E:GetModule("Bags")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local B = E:GetModule("Bags");
+local Search = LibStub("LibItemSearch-1.2");
 
-local Search = LibStub("LibItemSearch-1.2")
-
+--Cache global variables
+--Lua functions
 local ipairs, pairs, tonumber, select, unpack = ipairs, pairs, tonumber, select, unpack
 local tinsert, tremove, tsort, twipe = table.insert, table.remove, table.sort, table.wipe
 local floor = math.floor
 local band = bit.band
 local match, gmatch, find = string.match, string.gmatch, string.find
-
+--WoW API / Variables
 local GetTime = GetTime
 local InCombatLockdown = InCombatLockdown
 local GetItemInfo = GetItemInfo

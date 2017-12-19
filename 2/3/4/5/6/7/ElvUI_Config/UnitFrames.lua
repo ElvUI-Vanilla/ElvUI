@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
 local ns = oUF
@@ -2724,7 +2724,7 @@ E.Options.args.unitframe = {
 								for filter in pairs(list) do
 									filters[filter] = filter
 								end
-								
+
 								return filters
 							end,
 							get = function(info) return E.global.unitframe.raidDebuffIndicator.instanceFilter end,
@@ -2741,7 +2741,7 @@ E.Options.args.unitframe = {
 								for filter in pairs(list) do
 									filters[filter] = filter
 								end
-								
+
 								return filters
 							end,
 							get = function(info) return E.global.unitframe.raidDebuffIndicator.otherFilter end,
@@ -3450,7 +3450,7 @@ E.Options.args.unitframe.args.targettarget = {
 						else
 							frame.forceShowAuras = true;
 						end
-		
+
 						UF:CreateAndUpdateUF("targettarget")
 					end,
 				},
@@ -6817,33 +6817,6 @@ if P.unitframe.colors.classResources[E.myclass] then
 		type = "description",
 		width = "full",
 	}
-
-	local ORDER = 20
-	if E.myclass == "DEATHKNIGHT" then
-		local names = {
-			[1] = L["Blood"],
-			[2] = L["Unholy"],
-			[3] = L["Frost"],
-			[4] = L["Death"]
-		}
-		for i = 1, 4 do
-			E.Options.args.unitframe.args.generalOptionsGroup.args.allColorsGroup.args.classResourceGroup.args["resource"..i] = {
-				type = "color",
-				name = names[i],
-				order = ORDER + i,
-				get = function(info)
-					local t = E.db.unitframe.colors.classResources.DEATHKNIGHT[i]
-					local d = P.unitframe.colors.classResources.DEATHKNIGHT[i]
-					return t.r, t.g, t.b, t.a, d.r, d.g, d.b
-				end,
-				set = function(info, r, g, b)
-					local t = E.db.unitframe.colors.classResources.DEATHKNIGHT[i]
-					t.r, t.g, t.b = r, g, b
-					UF:Update_AllFrames()
-				end,
-			}
-		end
-	end
 end
 
 --Custom Texts

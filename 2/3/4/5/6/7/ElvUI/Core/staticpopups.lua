@@ -1,10 +1,12 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
+--Cache global variables
+--Lua functions
 local _G = _G;
 local pairs, type, unpack, assert = pairs, type, unpack, assert;
 local tremove, tContains, tinsert, wipe = tremove, tContains, tinsert, table.wipe;
 local lower = string.lower;
-
+--WoW API / Variables
 local CreateFrame = CreateFrame;
 local UnitIsDeadOrGhost, InCinematic = UnitIsDeadOrGhost, InCinematic;
 local GetBindingFromClick, RunBinding = GetBindingFromClick, RunBinding;
@@ -23,13 +25,13 @@ E.PopupDialogs = {};
 E.StaticPopup_DisplayedFrames = {};
 
 E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
-	text = L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-WotLK/ElvUI/"],
+	text = L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"],
 	hasEditBox = 1,
 	OnShow = function(self)
 		self.editBox:SetAutoFocus(false);
 		self.editBox.width = self.editBox:GetWidth();
 		self.editBox:SetWidth(220);
-		self.editBox:SetText("https://github.com/ElvUI-WotLK/ElvUI");
+		self.editBox:SetText("https://github.com/ElvUI-Vanilla/ElvUI");
 		self.editBox:HighlightText();
 		ChatEdit_FocusActiveWindow();
 	end,
@@ -49,8 +51,8 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 		self:GetParent():Hide();
 	end,
 	EditBoxOnTextChanged = function(self)
-		if(self:GetText() ~= "https://github.com/ElvUI-WotLK/ElvUI") then
-			self:SetText("https://github.com/ElvUI-WotLK/ElvUI");
+		if(self:GetText() ~= "https://github.com/ElvUI-Vanilla/ElvUI") then
+			self:SetText("https://github.com/ElvUI-Vanilla/ElvUI");
 		end
 		self:HighlightText();
 		self:ClearFocus();

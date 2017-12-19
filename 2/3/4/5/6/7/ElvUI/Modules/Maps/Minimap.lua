@@ -1,10 +1,12 @@
-local E, L, V, P, G = unpack(ElvUI)
-local M = E:NewModule("Minimap", "AceEvent-3.0")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local M = E:NewModule("Minimap", "AceEvent-3.0");
 E.Minimap = M
 
+--Cache global variables
+--Lua functions
 local _G = _G
 local strsub = strsub
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local ToggleCharacter = ToggleCharacter
 local ToggleFrame = ToggleFrame

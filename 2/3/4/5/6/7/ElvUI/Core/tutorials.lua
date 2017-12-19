@@ -1,7 +1,9 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
+--Cache global variables
+--Lua functions
 local _G = _G
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local DISABLE = DISABLE
 local HIDE = HIDE

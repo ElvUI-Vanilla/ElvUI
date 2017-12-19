@@ -1,10 +1,12 @@
-local E, L, V, P, G = unpack(ElvUI) --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local Sticky = LibStub("LibSimpleSticky-1.0")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local Sticky = LibStub("LibSimpleSticky-1.0");
 
-local _G = getfenv()
+--Cache global variables
+--Lua functions
+local _G = _G
 local type, unpack, pairs = type, unpack, pairs
 local format, split, find = string.format, string.split, string.find
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 
 E.CreatedMovers = {}

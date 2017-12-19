@@ -1,10 +1,12 @@
-local E, L, V, P, G = unpack(ElvUI)
-local DT = E:GetModule("DataTexts")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local DT = E:GetModule("DataTexts");
 
+--Cache global variables
+--Lua functions
 local type, pairs, select = type, pairs, select
 local sort, wipe = table.sort, wipe
 local format, find, join, gsub = string.format, string.find, string.join, string.gsub
-
+--WoW API / Variables
 local UnitIsAFK = UnitIsAFK
 local UnitIsDND = UnitIsDND
 local SendChatMessage = SendChatMessage
