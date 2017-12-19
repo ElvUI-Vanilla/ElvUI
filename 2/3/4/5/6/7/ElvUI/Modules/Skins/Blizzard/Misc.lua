@@ -5,8 +5,7 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local find = string.find
-local getn = table.getn
+local find, getn = string.find, table.getn
 --WoW API / Variables
 local IsAddOnLoaded = IsAddOnLoaded
 local UnitIsUnit = UnitIsUnit
@@ -39,6 +38,15 @@ local function LoadSkin()
 
 	for i = 1, getn(skins) do
 		E:SetTemplate(_G[skins[i]], "Transparent")
+	end
+
+	for i = 1, OptionsFrame:GetNumRegions() do
+		local region = select(i, OptionsFrame:GetRegions())
+		if region:GetObjectType() == "Texture" then
+			if i == 3 then
+				E:Kill(region) -- Kill the nVidia logo
+			end
+		end
 	end
 
 	local r, g, b = 0.8, 0.8, 0.8
