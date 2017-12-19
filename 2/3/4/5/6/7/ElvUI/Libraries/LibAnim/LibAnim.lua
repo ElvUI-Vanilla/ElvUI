@@ -23,10 +23,9 @@ local Callbacks = {["onplay"] = {}, ["onpause"] = {}, ["onresume"] = {}, ["onsto
 
 -- Update all current animations
 local AnimationOnUpdate = function()
-local elapsed = arg1
 	for i = 1, getn(this) do
 		if this[i] then -- Double check the the index still exists, due to pauses/stops removing them on the fly
-			this[i]:Update(elapsed, i)
+			this[i]:Update(arg1, i)
 		end
 	end
 

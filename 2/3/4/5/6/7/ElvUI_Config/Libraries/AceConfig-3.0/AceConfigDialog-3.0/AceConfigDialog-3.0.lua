@@ -369,7 +369,7 @@ local function CleanUserData(widget, event)
 		end
 	end
 
-	if widget.type == "TabGroup" then
+	if widget.type == "TabGroup-ElvUI" then
 		widget:SetTabs(nil)
 		if user.tablist then
 			del(user.tablist)
@@ -1440,7 +1440,7 @@ local function TreeOnButtonEnter(widget, event, _, uniquevalue, button)
 	local desc = GetOptionsMemberValue("desc", group, options, feedpath, appName)
 
 	GameTooltip:SetOwner(button, "ANCHOR_NONE")
-	if widget.type == "TabGroup" then
+	if widget.type == "TabGroup-ElvUI" then
 		GameTooltip:SetPoint("BOTTOM",button,"TOP")
 	else
 		GameTooltip:SetPoint("LEFT",button,"RIGHT")
@@ -1604,7 +1604,7 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 		local name = GetOptionsMemberValue("name", group, options, path, appName)
 		if grouptype == "tab" then
 
-			local tab = gui:Create("TabGroup")
+			local tab = gui:Create("TabGroup-ElvUI")
 			InjectInfo(tab, options, group, path, rootframe, appName)
 			tab:SetCallback("OnGroupSelected", GroupSelected)
 			tab:SetCallback("OnTabEnter", TreeOnButtonEnter)
@@ -1650,7 +1650,7 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 
 			local firstgroup = orderlist[1]
 			if firstgroup then
-				select:SetGroup((GroupExists(appName, options, path, status.groups.selected) and status.groups.selected) or firstgroup)
+				select:SetGroup((GroupExists(appName, options, path,status.groups.selected) and status.groups.selected) or firstgroup)
 			end
 
 			select.width = "fill"

@@ -20,7 +20,7 @@ local ToggleDropDownMenu = ToggleDropDownMenu
 local Minimap_OnClick = Minimap_OnClick
 local GetMinimapZoneText = GetMinimapZoneText
 
-local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", E.UIParent, "UIDropDownMenuTemplate")
+local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", E.UIParent, "L_UIDropDownMenuTemplate")
 local menuList = {
 	{text = "CHARACTER_BUTTON",
 	func = function() ToggleCharacter("PaperDollFrame") end},

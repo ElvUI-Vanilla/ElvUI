@@ -24,19 +24,19 @@ local function GetPoint(obj)
 	return format("%s,%s,%s,%d,%d", point, anchor:GetName(), secondaryPoint, E:Round(x), E:Round(y))
 end
 
-local function UpdateCoords()
-	local mover = this.child
-	local x, y, _, nudgePoint, nudgeInversePoint = E:CalculateMoverPoints(mover)
+local function UpdateCoords(self)
+	local mover = self.child;
+	local x, y, _, nudgePoint, nudgeInversePoint = E:CalculateMoverPoints(mover);
 
-	local coordX, coordY = E:GetXYOffset(nudgeInversePoint, 1)
-	ElvUIMoverNudgeWindow:ClearAllPoints()
-	ElvUIMoverNudgeWindow:SetPoint(nudgePoint, mover, nudgeInversePoint, coordX, coordY)
-	E:UpdateNudgeFrame(mover, x, y)
+	local coordX, coordY = E:GetXYOffset(nudgeInversePoint, 1);
+	ElvUIMoverNudgeWindow:ClearAllPoints();
+	ElvUIMoverNudgeWindow:SetPoint(nudgePoint, mover, nudgeInversePoint, coordX, coordY);
+	E:UpdateNudgeFrame(mover, x, y);
 end
 
 local isDragging = false
 local coordFrame = CreateFrame("Frame")
-coordFrame:SetScript("OnUpdate", UpdateCoords)
+coordFrame:SetScript("OnUpdate", function() UpdateCoords(this) end)
 coordFrame:Hide()
 
 local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, shouldDisable)
@@ -164,7 +164,8 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 		ElvUIMoverNudgeWindow:Show()
 		E.AssignFrameToNudge(this)
 		coordFrame.child = this
-		coordFrame:GetScript("OnUpdate")(coordFrame)
+		UpdateCoords(coordFrame)
+		--coordFrame:GetScript("OnUpdate")(coordFrame)
 	end
 
 	local function OnMouseDown(button)
@@ -332,7 +333,7 @@ function E:CreateMover(parent, name, text, overlay, snapoffset, postdrag, moverT
 		E.CreatedMovers[name]["text"] = text
 		E.CreatedMovers[name]["overlay"] = overlay
 		E.CreatedMovers[name]["postdrag"] = postdrag
-		E.CreatedMovers[name]["snapoffset"] = snapOffset
+		E.CreatedMovers[name]["snapoffset"] = snapoffset
 		E.CreatedMovers[name]["point"] = GetPoint(parent)
 		E.CreatedMovers[name]["shouldDisable"] = shouldDisable
 

@@ -9,4 +9,7 @@
 Libraries\Load_Libraries.xml
 locales\load_locales.xml
 core.lua
+actionbars.lua
+General.lua
+DataBars.lua
 UnitFrames.lua
