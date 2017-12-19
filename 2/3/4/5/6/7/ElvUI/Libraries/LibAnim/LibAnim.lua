@@ -5,7 +5,7 @@ if (_LibAnim and _LibAnim >= Version) then
 	return
 end
 
-local _G = getfenv()
+local _G = _G
 local cos = cos
 local sin = sin
 local pairs = pairs
@@ -22,15 +22,16 @@ local UpdateFuncs = {}
 local Callbacks = {["onplay"] = {}, ["onpause"] = {}, ["onresume"] = {}, ["onstop"] = {}, ["onreset"] = {}, ["onfinished"] = {}}
 
 -- Update all current animations
-local AnimationOnUpdate = function(self, elapsed)
-	for i = 1, getn(self) do
-		if self[i] then -- Double check the the index still exists, due to pauses/stops removing them on the fly
-			self[i]:Update(elapsed, i)
+local AnimationOnUpdate = function()
+local elapsed = arg1
+	for i = 1, getn(this) do
+		if this[i] then -- Double check the the index still exists, due to pauses/stops removing them on the fly
+			this[i]:Update(elapsed, i)
 		end
 	end
 
-	if (getn(self) == 0) then
-		self:SetScript("OnUpdate", nil)
+	if (getn(this) == 0) then
+		this:SetScript("OnUpdate", nil)
 	end
 end
 

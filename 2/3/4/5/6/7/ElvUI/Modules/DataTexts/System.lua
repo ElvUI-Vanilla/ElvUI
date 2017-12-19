@@ -161,6 +161,8 @@ local function OnLeave()
 end
 
 local function OnUpdate(self, t)
+	if not arg1 or not t then return end
+
 	int = int - (arg1 or t)
 	int2 = int2 - (arg1 or t)
 

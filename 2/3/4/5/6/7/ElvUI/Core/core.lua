@@ -812,30 +812,30 @@ function E:UpdateAll(ignoreInstall)
 
 	self:SetMoversPositions()
 	self:UpdateMedia()
-	--self:UpdateCooldownSettings()
+	self:UpdateCooldownSettings()
 
-	--local UF = self:GetModule("UnitFrames")
-	--UF.db = self.db.unitframe
-	--UF:Update_AllFrames()
+	local UF = self:GetModule("UnitFrames")
+	UF.db = self.db.unitframe
+	UF:Update_AllFrames()
 
-	--local CH = self:GetModule("Chat")
-	--CH.db = self.db.chat
-	--CH:PositionChat(true)
-	--CH:SetupChat()
-	--CH:UpdateAnchors()
+	local CH = self:GetModule("Chat")
+	CH.db = self.db.chat
+	CH:PositionChat(true)
+	CH:SetupChat()
+	CH:UpdateAnchors()
 
 	local AB = self:GetModule("ActionBars")
 	AB.db = self.db.actionbar
-	--AB:UpdateButtonSettings()
+	AB:UpdateButtonSettings()
 	AB:UpdateMicroPositionDimensions()
 
-	--local bags = E:GetModule("Bags")
-	--bags.db = self.db.bags
-	--bags:Layout()
-	--bags:Layout(true)
-	--bags:SizeAndPositionBagBar()
-	--bags:UpdateItemLevelDisplay()
-	--bags:UpdateCountDisplay()
+	local bags = E:GetModule("Bags")
+	bags.db = self.db.bags
+	bags:Layout()
+	bags:Layout(true)
+	bags:SizeAndPositionBagBar()
+	bags:UpdateItemLevelDisplay()
+	bags:UpdateCountDisplay()
 
 	self:GetModule("Layout"):ToggleChatPanels()
 
@@ -869,7 +869,7 @@ function E:UpdateAll(ignoreInstall)
 	end
 
 	self:GetModule("Minimap"):UpdateSettings()
-	--self:GetModule("AFK"):Toggle()
+	self:GetModule("AFK"):Toggle()
 
 	self:UpdateBorderColors()
 	self:UpdateBackdropColors()

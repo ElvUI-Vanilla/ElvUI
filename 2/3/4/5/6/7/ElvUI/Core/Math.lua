@@ -261,7 +261,8 @@ function E:Delay(delay, func, arg)
 	end
 	if waitFrame == nil then
 		waitFrame = CreateFrame("Frame","WaitFrame", E.UIParent)
-		waitFrame:SetScript("onUpdate",function (_, elapse)
+		waitFrame:SetScript("OnUpdate", function ()
+			local elapse = arg1
 			local count = getn(waitTable)
 			local i = 1
 			while i <= count do
