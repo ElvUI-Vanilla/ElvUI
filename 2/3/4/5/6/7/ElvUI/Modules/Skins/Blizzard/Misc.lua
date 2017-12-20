@@ -74,12 +74,73 @@ local function LoadSkin()
 		right:SetHeight(16)
 	end
 
-	for i = 1, 32 do
+	for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
 		StyleButton(_G["ChatMenuButton"..i])
 		StyleButton(_G["EmoteMenuButton"..i])
 		StyleButton(_G["LanguageMenuButton"..i])
 		StyleButton(_G["VoiceMacroMenuButton"..i])
 	end
+
+	-- Dropdown Menus
+	hooksecurefunc("UIDropDownMenu_Initialize", function()
+		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
+			local buttonBackdrop = _G["DropDownList"..i.."Backdrop"]
+			local buttonBackdropMenu = _G["DropDownList"..i.."MenuBackdrop"]
+
+			E:SetTemplate(buttonBackdrop, "Transparent")
+			E:SetTemplate(buttonBackdropMenu, "Transparent")
+
+			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
+				local button = _G["DropDownList"..i.."Button"..j]
+				local buttonHighlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
+
+				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
+				buttonHighlight:SetTexture(1, 1, 1, 0.3)
+				buttonHighlight:ClearAllPoints()
+				buttonHighlight:SetHeight(16)
+
+				if i == 1 then
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -8, 0)
+				else
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -4, 0)
+				end
+			end
+		end
+	end)
+
+	hooksecurefunc("L_UIDropDownMenu_Initialize", function()
+		for i = 1, 2 do
+			local buttonBackdrop = _G["L_DropDownList"..i.."Backdrop"]
+			local buttonBackdropMenu = _G["L_DropDownList"..i.."MenuBackdrop"]
+
+			E:SetTemplate(buttonBackdrop, "Transparent")
+			E:SetTemplate(buttonBackdropMenu, "Transparent")
+
+			if i == 2 then
+				buttonBackdropMenu:SetPoint("TOPRIGHT", -4, 0)
+			end
+
+			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
+				local button = _G["L_DropDownList"..i.."Button"..j]
+				local buttonHighlight = _G["L_DropDownList"..i.."Button"..j.."Highlight"]
+
+				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
+				buttonHighlight:SetTexture(1, 1, 1, 0.3)
+				buttonHighlight:ClearAllPoints()
+				buttonHighlight:SetHeight(16)
+
+				if i == 1 then
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 4, 0)
+				else
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
+				end
+			end
+		end
+	end)
 
 	for i = 1, OptionsFrame:GetNumRegions() do
 		local region = select(i, OptionsFrame:GetRegions())
@@ -315,63 +376,6 @@ local function LoadSkin()
 	E:SetTemplate(OpacityFrame, "Transparent")
 
 	S:HandleSliderFrame(OpacityFrameSlider)
-
-	--DROPDOWN MENU
-	hooksecurefunc("UIDropDownMenu_Initialize", function()
-		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
-			local buttonBackdrop = _G["DropDownList"..i.."Backdrop"]
-			local buttonBackdropMenu = _G["DropDownList"..i.."MenuBackdrop"]
-
-			E:SetTemplate(buttonBackdrop, "Transparent")
-			E:SetTemplate(buttonBackdropMenu, "Transparent")
-
-			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
-				local button = _G["DropDownList"..i.."Button"..j]
-				local buttonHighlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
-
-				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
-				buttonHighlight:SetTexture(1, 1, 1, 0.3)
-				buttonHighlight:ClearAllPoints()
-				buttonHighlight:SetHeight(16)
-
-				if i == 1 then
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -8, 0)
-				else
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -4, 0)
-				end
-			end
-		end
-	end)
-
-	hooksecurefunc("L_UIDropDownMenu_Initialize", function()
-		for i = 1, 2 do
-			local buttonBackdrop = _G["L_DropDownList"..i.."Backdrop"]
-			local buttonBackdropMenu = _G["L_DropDownList"..i.."MenuBackdrop"]
-
-			E:SetTemplate(buttonBackdrop, "Transparent")
-			E:SetTemplate(buttonBackdropMenu, "Transparent")
-
-			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
-				local button = _G["L_DropDownList"..i.."Button"..j]
-				local buttonHighlight = _G["L_DropDownList"..i.."Button"..j.."Highlight"]
-
-				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
-				buttonHighlight:SetTexture(1, 1, 1, 0.3)
-				buttonHighlight:ClearAllPoints()
-				buttonHighlight:SetHeight(16)
-
-				if i == 1 then
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 4, 0)
-				else
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -4, 0)
-				end
-			end
-		end
-	end)
 
 	-- Interface Options
 	UIOptionsFrame:SetScript("OnShow", function()
