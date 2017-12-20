@@ -34,10 +34,8 @@ E.version = GetAddOnMetadata("ElvUI", "Version")
 E.myrealm = GetRealmName()
 E.wowbuild = GetBuildInfo() E.wowbuild = tonumber(E.wowbuild)
 E.resolution = GetCVar("gxResolution")
-for screenwidth, screenheight in string.gfind(E.resolution, "(.+)x(.+)") do
-	E.screenheight = tonumber(screenheight)
-	E.screenwidth = tonumber(screenwidth)
-end
+E.screenheight = tonumber(match(E.resolution, "%d+x(%d+)"));
+E.screenwidth = tonumber(match(E.resolution, "(%d+)x+%d"));
 E.isMacClient = IsMacClient()
 E.LSM = LSM
 
