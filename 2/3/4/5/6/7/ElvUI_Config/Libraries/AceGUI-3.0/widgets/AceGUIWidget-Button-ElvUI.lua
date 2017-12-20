@@ -28,7 +28,8 @@ local function dragdrop_OnMouseDown(frame, ...)
 	if frame.obj.dragOnMouseDown then
 		dragdropButton.mouseDownFrame = frame
 		dragdropButton:SetText(frame.obj.value or "Unknown")
-		dragdropButton:SetSize(frame:GetSize())
+		dragdropButton:SetWidth(frame:GetWidth())
+		dragdropButton:SetHeight(frame:SetHeight())
 		frame.obj.dragOnMouseDown(frame, unpack(arg))
 	end
 end
@@ -110,7 +111,7 @@ local methods = {
 			self:SetWidth(self.text:GetStringWidth() + 30)
 		end
 	end,
-	
+
 	["SetAutoWidth"] = function(self, autoWidth)
 		self.autoWidth = autoWidth
 		if self.autoWidth then
