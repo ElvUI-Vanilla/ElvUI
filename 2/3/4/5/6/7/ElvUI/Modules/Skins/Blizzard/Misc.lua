@@ -32,6 +32,7 @@ local function LoadSkin()
 		E:SetTemplate(_G[skins[i]], "Transparent")
 	end
 
+	-- ChatMenus
 	local ChatMenus = {
 		"ChatMenu",
 		"EmoteMenu",
@@ -45,22 +46,13 @@ local function LoadSkin()
 				E:SetTemplate(this, "Transparent", true)
 				this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
 				this:ClearAllPoints()
-				this:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 30)
+				this:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 35)
 			end)
 		else
 			HookScript(_G[ChatMenus[i]], "OnShow", function()
 				E:SetTemplate(this, "Transparent", true)
 				this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
 			end)
-		end
-	end
-
-	for i = 1, OptionsFrame:GetNumRegions() do
-		local region = select(i, OptionsFrame:GetRegions())
-		if region:GetObjectType() == "Texture" then
-			if i == 3 then
-				E:Kill(region) -- Kill the nVidia logo
-			end
 		end
 	end
 
@@ -87,6 +79,15 @@ local function LoadSkin()
 		StyleButton(_G["EmoteMenuButton"..i])
 		StyleButton(_G["LanguageMenuButton"..i])
 		StyleButton(_G["VoiceMacroMenuButton"..i])
+	end
+
+	for i = 1, OptionsFrame:GetNumRegions() do
+		local region = select(i, OptionsFrame:GetRegions())
+		if region:GetObjectType() == "Texture" then
+			if i == 3 then
+				E:Kill(region) -- Kill the nVidia logo
+			end
+		end
 	end
 
 	-- Static Popups
