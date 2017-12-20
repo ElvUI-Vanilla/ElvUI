@@ -5,7 +5,8 @@
 ## Notes: User Interface replacement AddOn for World of Warcraft.
 ## SavedVariables: ElvDB, ElvPrivateDB
 ## SavedVariablesPerCharacter: ElvCharacterDB
-## OptionalDeps: SharedMedia
+## Dependencies: !Compatibility
+## OptionalDeps: !DebugTools, SharedMedia, Tukui, ButtonFacade
 
 Developer\Load_Developer.xml
 Libraries\Load_Libraries.xml
