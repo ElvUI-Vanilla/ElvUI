@@ -60,13 +60,7 @@ function E:UIScale(event)
 		self.eyefinity = width;
 	end
 
-	for screenwidth, screenheight in string.gfind(GetCVar("gxResolution"), "(.+)x(.+)") do
-		self.mult = 768/screenheight/scale
-
-		self.UIParent:SetWidth(screenwidth)
-		self.UIParent:SetHeight(screenheight)
-	end
-	--self.mult = 1;
+	self.mult = 768/match(GetCVar("gxResolution"), "%d+x(%d+)")/scale;
 	self.Spacing = self.PixelMode and 0 or self.mult;
 	self.Border = (self.PixelMode and self.mult or self.mult*2);
 	--Set UIScale, NOTE: SetCVar for UIScale can cause taints so only do this when we need to..
@@ -106,8 +100,8 @@ function E:UIScale(event)
 			]]
 			--self.UIParent:SetSize(UIParent:GetWidth() - 250, UIParent:GetHeight() - 250);
 
-			--self.UIParent:SetWidth(UIParent:GetWidth());
-			--self.UIParent:SetHeight(UIParent:GetHeight());
+			self.UIParent:SetWidth(GetScreenWidth());
+			self.UIParent:SetHeight(GetScreenHeight());
 		end
 
 		self.UIParent:ClearAllPoints();
