@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(ElvUI)
 local B = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
 local Search = LibStub("LibItemSearch-1.2", true)
-local LIP = LibStub("ItemPrice-1.1", true)
+-- local LIP = LibStub("ItemPrice-1.1", true)
 
 --Cache global variables
 --Lua functions
@@ -168,7 +168,7 @@ function B:SetSearch(query)
 			for slotID = 1, GetContainerNumSlots(bagID) do
 				local link = GetContainerItemLink(bagID, slotID)
 				local button = bagFrame.Bags[bagID][slotID]
-				local success, result = pcall(Search.Matches, Search, link, query)
+				-- local success, result = pcall(Search.Matches, Search, link, query)
 				if(empty or (success and result)) then
 					SetItemButtonDesaturated(button)
 					button:SetAlpha(1)
@@ -185,7 +185,7 @@ function B:SetSearch(query)
 		for slotID = 1, numKey do
 			local link = GetContainerItemLink(KEYRING_CONTAINER, slotID)
 			local button = _G["ElvUIKeyFrameItem"..slotID]
-			local success, result = pcall(Search.Matches, Search, link, query)
+			-- local success, result = pcall(Search.Matches, Search, link, query)
 			if(empty or (success and result)) then
 				SetItemButtonDesaturated(button)
 				button:SetAlpha(1)
@@ -460,8 +460,7 @@ function B:Layout(isBank)
 			f.ContainerHolder:SetHeight(buttonSize + (buttonSpacing * 2))
 
 			if isBank then
-				BankFrameItemButton_Update(f.ContainerHolder[i])
-				BankFrameItemButton_UpdateLocked(f.ContainerHolder[i])
+				BankFrameItemButton_OnUpdate(f.ContainerHolder[i])
 			end
 
 			f.ContainerHolder[i]:SetWidth(buttonSize)
@@ -879,13 +878,13 @@ function B:ContructContainerFrame(name, isBank)
 		f.sortButton:SetPoint("RIGHT", f.bagText, "LEFT", -5, E.Border * 2)
 		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
 		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetNormalTexture():SetInside()
+		E:SetInside(f.sortButton:GetNormalTexture())
 		f.sortButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
 		f.sortButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetPushedTexture():SetInside()
+		E:SetInside(f.sortButton:GetPushedTexture())
 		f.sortButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
 		f.sortButton:GetDisabledTexture():SetTexCoord(unpack(E.TexCoords))
-		f.sortButton:GetDisabledTexture():SetInside()
+		E:SetInside(f.sortButton:GetDisabledTexture())
 		f.sortButton:GetDisabledTexture():SetDesaturated(true)
 		E:StyleButton(f.sortButton, nil, true)
 		f.sortButton.ttText = L["Sort Bags"]
