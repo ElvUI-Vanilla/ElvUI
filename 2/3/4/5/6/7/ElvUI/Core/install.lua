@@ -42,7 +42,7 @@ local function SetupChat()
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
 
-	FCF_OpenNewWindow(LOOT)
+	-- FCF_OpenNewWindow(LOOT)
 	FCF_UnDockFrame(ChatFrame3)
 	FCF_SetLocked(ChatFrame3, 1)
 	ChatFrame3:Show()

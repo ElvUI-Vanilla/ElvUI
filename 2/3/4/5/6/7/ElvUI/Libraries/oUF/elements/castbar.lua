@@ -432,13 +432,13 @@ local function onUpdate(self, elapsed)
 				if(self.CustomDelayText) then
 					self:CustomDelayText(duration)
 				else
-					self.Time:SetFormattedText('%.1f|cffff0000-%.1f|r', duration, self.delay)
+					self.Time:SetText(format('%.1f|cffff0000-%.1f|r', duration, self.delay))
 				end
 			else
 				if(self.CustomTimeText) then
 					self:CustomTimeText(duration)
 				else
-					self.Time:SetFormattedText('%.1f', duration)
+					self.Time:SetText(format('%.1f', duration))
 				end
 			end
 		end
@@ -465,13 +465,13 @@ local function onUpdate(self, elapsed)
 				if(self.CustomDelayText) then
 					self:CustomDelayText(duration)
 				else
-					self.Time:SetFormattedText('%.1f|cffff0000-%.1f|r', duration, self.delay)
+					self.Time:SetText(format('%.1f|cffff0000-%.1f|r', duration, self.delay))
 				end
 			else
 				if(self.CustomTimeText) then
 					self:CustomTimeText(duration)
 				else
-					self.Time:SetFormattedText('%.1f', duration)
+					self.Time:SetText(format('%.1f', duration))
 				end
 			end
 		end

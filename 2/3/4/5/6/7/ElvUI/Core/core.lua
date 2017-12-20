@@ -812,7 +812,7 @@ function E:UpdateAll(ignoreInstall)
 
 	self:SetMoversPositions()
 	self:UpdateMedia()
-	self:UpdateCooldownSettings()
+	-- self:UpdateCooldownSettings()
 
 	local UF = self:GetModule("UnitFrames")
 	UF.db = self.db.unitframe
@@ -827,13 +827,13 @@ function E:UpdateAll(ignoreInstall)
 	local AB = self:GetModule("ActionBars")
 	AB.db = self.db.actionbar
 	AB:UpdateButtonSettings()
-	AB:UpdateMicroPositionDimensions()
+	-- AB:UpdateMicroPositionDimensions()
 
 	local bags = E:GetModule("Bags")
 	bags.db = self.db.bags
 	bags:Layout()
 	bags:Layout(true)
-	bags:SizeAndPositionBagBar()
+	-- bags:SizeAndPositionBagBar()
 	bags:UpdateItemLevelDisplay()
 	bags:UpdateCountDisplay()
 
@@ -884,60 +884,6 @@ function E:UpdateAll(ignoreInstall)
 	LO:SetDataPanelStyle()
 
 	--self:GetModule("Blizzard"):SetWatchFrameHeight()
-end
-
-function E:EnterVehicleHideFrames(_, unit)
-	if(unit ~= "player") then return end
-
-	for object in pairs(E.VehicleLocks) do
-		object:SetParent(E.HiddenFrame)
-	end
-end
-
-function E:ExitVehicleShowFrames(_, unit)
-	if(unit ~= "player") then return end
-
-	for object, originalParent in pairs(E.VehicleLocks) do
-		object:SetParent(originalParent)
-	end
-end
-
-function E:RegisterObjectForVehicleLock(object, originalParent)
-	if(not object or not originalParent) then
-		E:Print("Error. Usage: RegisterObjectForVehicleLock(object, originalParent)")
-		return
-	end
-
-	object = _G[object] or object
-	if(object.IsProtected and object:IsProtected()) then
-		E:Print("Error. Object is protected and cannot be changed in combat.")
-		return
-	end
-
-	if(UnitHasVehicleUI("player")) then
-		object:SetParent(E.HiddenFrame)
-	end
-
-	E.VehicleLocks[object] = originalParent
-end
-
-function E:UnregisterObjectForVehicleLock(object)
-	if(not object) then
-		E:Print("Error. Usage: UnregisterObjectForVehicleLock(object)")
-		return
-	end
-
-	object = _G[object] or object
-	if(not E.VehicleLocks[object]) then
-		return
-	end
-
-	local originalParent = E.VehicleLocks[object]
-	if(originalParent) then
-		object:SetParent(originalParent)
-	end
-
-	E.VehicleLocks[object] = nil
 end
 
 function E:ResetAllUI()
@@ -1169,7 +1115,7 @@ function E:Initialize()
 	self.initialized = true
 
 	if(self.private.install_complete == nil) then
-	--	self:Install()
+		self:Install()
 	end
 
 	if(not find(date(), "04/01/")) then

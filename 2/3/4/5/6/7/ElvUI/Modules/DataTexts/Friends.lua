@@ -44,14 +44,14 @@ end
 
 local menuFrame = CreateFrame("Frame", "FriendDatatextRightClickMenu", E.UIParent, "L_UIDropDownMenuTemplate")
 local menuList = {
-	{text = "OPTIONS_MENU", isTitle = true, notCheckable = true},
-	{text = "INVITE", hasArrow = true, notCheckable = true},
-	{text = "CHAT_MSG_WHISPER_INFORM", hasArrow = true, notCheckable= true},
-	{text = "PLAYER_STATUS", hasArrow = true, notCheckable = true,
+	{text = OPTIONS_MENU, isTitle = true, notCheckable = true},
+	{text = INVITE, hasArrow = true, notCheckable = true},
+	{text = CHAT_MSG_WHISPER_INFORM, hasArrow = true, notCheckable = true},
+	{text = PLAYER_STATUS, hasArrow = true, notCheckable = true,
 		menuList = {
-			{text = "|cff2BC226" .. "AVAILABLE" .. "|r", notCheckable = true, func = function()  end},
-			{text = "|cffE7E716" .. "AFK" .. "|r", notCheckable = true, func = function()  end},
-			{text = "|cffFF0000" .. "DND" .. "|r", notCheckable = true, func = function()  end}
+			{text = "|cff2BC226" .. AVAILABLE .. "|r", notCheckable = true, func = function() end},
+			{text = "|cffE7E716" .. CHAT_MSG_AFK .. "|r", notCheckable = true, func = function() end},
+			{text = "|cffFF0000" .. CHAT_MSG_DND .. "|r", notCheckable = true, func = function() end}
 		}
 	}
 }
@@ -95,9 +95,9 @@ local function BuildFriendTable(total)
 	for i = 1, total do
 		name, level, class, area, connected, status, note = GetFriendInfo(i)
 
-		if status == "<" .. "AFK" .. ">" then
+		if status == CHAT_FLAG_AFK then
 			status = "|cffFFFFFF[|r|cffFF0000" .. L["AFK"] .. "|r|cffFFFFFF]|r"
-		elseif status == "<" .. "DND" .. ">" then
+		elseif status == CHAT_FLAG_DND then
 			status = "|cffFFFFFF[|r|cffFF0000" .. L["DND"] .. "|r|cffFFFFFF]|r"
 		end
 

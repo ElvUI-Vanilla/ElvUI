@@ -4,7 +4,7 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 --Lua functions
 local _G = _G
 local tonumber, type = tonumber, type
-local format, lower = string.format, string.lower
+local format, lower, match = string.format, string.lower, string.match
 --WoW API / Variables
 local InCombatLockdown = InCombatLockdown
 local UIFrameFadeOut, UIFrameFadeIn = UIFrameFadeOut, UIFrameFadeIn

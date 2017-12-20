@@ -79,7 +79,7 @@ function DT:SetupObjectLDB(name, obj)
 		if value == nil or (len(value) >= 3) or value == "n/a" or name == value then
 			curFrame.text:SetText(value ~= "n/a" and value or name)
 		else
-			curFrame.text:SetFormattedText("%s: %s%s|r", name, hex, value)
+			curFrame.text:SetText(format("%s: %s%s|r", name, hex, value))
 		end
 	end
 
