@@ -297,11 +297,23 @@ local function LoadSkin()
 	--DROPDOWN MENU
 	hooksecurefunc("UIDropDownMenu_Initialize", function()
 		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
-			E:SetTemplate(_G["DropDownList"..i.."Backdrop"], "Transparent")
-			E:SetTemplate(_G["DropDownList"..i.."MenuBackdrop"], "Transparent")
+			local buttonBackdrop = _G["DropDownList"..i.."Backdrop"]
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
-				_G["DropDownList"..i.."Button"..j]:SetFrameLevel(_G["DropDownList"..i.."Backdrop"]:GetFrameLevel() + 1)
-				_G["DropDownList"..i.."Button"..j.."Highlight"]:SetTexture(1, 1, 1, 0.3)
+				local button = _G["DropDownList"..i.."Button"..j]
+				local buttonHighlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
+
+				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
+				buttonHighlight:SetTexture(1, 1, 1, 0.3)
+				buttonHighlight:ClearAllPoints()
+				buttonHighlight:SetHeight(16)
+
+				if i == 1 then
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -10, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -5, 0)
+				else
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -5, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -3, 0)
+				end
 			end
 		end
 	end)
