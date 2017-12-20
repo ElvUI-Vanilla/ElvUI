@@ -22,41 +22,24 @@ local GetMinimapZoneText = GetMinimapZoneText
 
 local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", E.UIParent, "L_UIDropDownMenuTemplate")
 local menuList = {
-	{text = "CHARACTER_BUTTON",
+	{text = CHARACTER_BUTTON,
 	func = function() ToggleCharacter("PaperDollFrame") end},
-	{text = "SPELLBOOK_ABILITIES_BUTTON",
+	{text = SPELLBOOK_ABILITIES_BUTTON,
 	func = function() ToggleFrame(SpellBookFrame) end},
-	{text = "TALENTS_BUTTON",
+	{text = TALENTS_BUTTON,
 	func = ToggleTalentFrame},
-	{text = "ACHIEVEMENT_BUTTON",
-	func = ToggleAchievementFrame},
-	{text = "QUESTLOG_BUTTON",
+	{text = QUESTLOG_BUTTON,
 	func = function() ToggleFrame(QuestLogFrame) end},
-	{text = "SOCIAL_BUTTON",
+	{text = SOCIAL_BUTTON,
 	func = function() ToggleFriendsFrame(1) end},
-	{text = L["Calendar"],
-	func = function() GameTimeFrame:Click() end},
 	{text = L["Farm Mode"],
 	func = FarmMode},
-	{text = "BATTLEFIELD_MINIMAP",
+	{text = BATTLEFIELD_MINIMAP,
 	func = ToggleBattlefieldMinimap},
-	{text = "TIMEMANAGER_TITLE",
-	func = ToggleTimeManager},
-	{text = "PLAYER_V_PLAYER",
-	func = function() ToggleFrame(PVPParentFrame) end},
-	{text = "LFG_TITLE",
-	func = function() ToggleFrame(LFDParentFrame) end},
-	{text = "L_LFRAID",
-	func = function() ToggleFrame(LFRParentFrame) end},
-	{text = "HELP_BUTTON",
-	func = ToggleHelpFrame},
-	{text = "L_CALENDAR",
-	func = function()
-		if(not CalendarFrame) then
-			LoadAddOn("Blizzard_Calendar")
-		end
-		Calendar_Toggle()
-	end}
+	{text = HELPFRAME_HOME_ISSUE3_HEADER,
+	func = function() ToggleCharacter("HonorFrame") end},
+	{text = HELP_BUTTON,
+	func = ToggleHelpFrame}
 }
 
 function GetMinimapShape()
@@ -241,15 +224,6 @@ function M:UpdateSettings()
 		MiniMapMailFrame:SetScale(scale)
 	end
 
-	if MiniMapLFGFrame then
-		local pos = E.db.general.minimap.icons.lfgEye.position or "BOTTOMRIGHT"
-		local scale = E.db.general.minimap.icons.lfgEye.scale or 1
-		MiniMapLFGFrame:ClearAllPoints()
-		MiniMapLFGFrame:Point(pos, Minimap, pos, E.db.general.minimap.icons.lfgEye.xOffset or 3, E.db.general.minimap.icons.lfgEye.yOffset or 0)
-		MiniMapLFGFrame:SetScale(scale)
-		LFDSearchStatus:SetScale(scale)
-	end
-
 	if MiniMapBattlefieldFrame then
 		local pos = E.db.general.minimap.icons.battlefield.position or "BOTTOMRIGHT"
 		local scale = E.db.general.minimap.icons.battlefield.scale or 1
@@ -364,12 +338,12 @@ function M:Initialize()
 	FarmModeMap:SetScript("OnShow", function()
 		if(BuffsMover and not E:HasMoverBeenMoved("BuffsMover")) then
 			BuffsMover:ClearAllPoints()
-			BuffsMover:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
+			BuffsMover:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
 		end
 
 		if(DebuffsMover and not E:HasMoverBeenMoved("DebuffsMover")) then
 			DebuffsMover:ClearAllPoints()
-			DebuffsMover:Point("TOPRIGHT", ElvUIPlayerBuffs, "BOTTOMRIGHT", 0, -3)
+			DebuffsMover:SetPoint("TOPRIGHT", ElvUIPlayerBuffs, "BOTTOMRIGHT", 0, -3)
 		end
 
 		MinimapCluster:ClearAllPoints()
