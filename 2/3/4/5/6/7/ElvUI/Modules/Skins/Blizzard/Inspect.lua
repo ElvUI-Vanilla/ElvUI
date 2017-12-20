@@ -91,6 +91,9 @@ local function LoadSkin()
 	InspectModelRotateRightButton:SetPoint("TOPLEFT", InspectModelRotateLeftButton, "TOPRIGHT", 3, 0)
 
 	E:StripTextures(InspectHonorFrame)
+
+	InspectHonorFrameProgressBar:SetStatusBarTexture(E.media.normTex)
+	E:RegisterStatusBar(InspectHonorFrameProgressBar)
 end
 
 S:AddCallbackForAddon("Blizzard_InspectUI", "Inspect", LoadSkin)
