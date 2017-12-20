@@ -20,7 +20,6 @@ E.ConfigModeLayouts = {
 	"GENERAL",
 	"SOLO",
 	"PARTY",
-	"ARENA",
 	"RAID",
 	"ACTIONBARS"
 }
@@ -30,7 +29,6 @@ E.ConfigModeLocalizedStrings = {
 	GENERAL = GENERAL,
 	SOLO = SOLO,
 	PARTY = PARTY,
-	ARENA = ARENA,
 	RAID = RAID,
 	ACTIONBARS = ACTIONBARS_LABEL
 }
@@ -143,10 +141,10 @@ function E:Grid_Create()
 	end
 end
 
-local function ConfigMode_OnClick(self)
-	selectedValue = self.value
-	E:ToggleConfigMode(false, self.value)
-	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, self.value)
+local function ConfigMode_OnClick()
+	selectedValue = this.value
+	E:ToggleConfigMode(false, this.value)
+	UIDropDownMenu_SetSelectedValue(ElvUIMoverPopupWindowDropDown, this.value)
 end
 
 local function ConfigMode_Initialize()
@@ -322,7 +320,7 @@ function E:CreateMoverPopup()
 	configMode.text:SetPoint("RIGHT", configMode.backdrop, "LEFT", -2, 0)
 	configMode.text:SetText(L["Config Mode:"])
 
-	--UIDropDownMenu_Initialize(configMode, ConfigMode_Initialize)
+	UIDropDownMenu_Initialize(configMode, ConfigMode_Initialize)
 
 	local nudgeFrame = CreateFrame("Frame", "ElvUIMoverNudgeWindow", E.UIParent)
 	nudgeFrame:SetFrameStrata("DIALOG")
@@ -334,7 +332,7 @@ function E:CreateMoverPopup()
 	nudgeFrame:Hide()
 	nudgeFrame:EnableMouse(true)
 	nudgeFrame:SetClampedToScreen(true)
-	--ElvUIMoverPopupWindow:HookScript("OnHide", function() ElvUIMoverNudgeWindow:Hide() end)
+	HookScript(ElvUIMoverPopupWindow, "OnHide", function() ElvUIMoverNudgeWindow:Hide() end)
 
 	header = CreateFrame("Button", "ElvUIMoverNudgeWindowHeader", nudgeFrame)
 	E:SetTemplate(header, "Default", true)
