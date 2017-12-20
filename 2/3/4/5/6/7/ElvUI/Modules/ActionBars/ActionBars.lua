@@ -4,7 +4,7 @@ local LSM = LibStub("LibSharedMedia-3.0");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local gsub, split = string.gsub, string.split
 local ceil = math.ceil
 local mod = math.mod
@@ -422,7 +422,7 @@ function AB:Initialize()
 	--self:LoadKeyBinder()
 
 	self:SecureHook("ActionButton_Update")
-	--self:SecureHook("PetActionBar_Update", "UpdatePet")
+	-- self:SecureHook("PetActionBar_Update", "UpdatePet")
 end
 
 local function InitializeCallback()

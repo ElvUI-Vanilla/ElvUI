@@ -203,6 +203,77 @@ local function BuildABConfig()
 			}
 		}
 	}
+	group["microbar"] = {
+		order = 4,
+		type = "group",
+		name = L["Micro Bar"],
+		get = function(info) return E.db.actionbar.microbar[ info[getn(info)] ] end,
+		set = function(info, value) E.db.actionbar.microbar[ info[getn(info)] ] = value AB:UpdateMicroPositionDimensions() end,
+		disabled = function() return not E.private.actionbar.enable end,
+		args = {
+			info = {
+				order = 1,
+				type = "header",
+				name = L["Micro Bar"]
+			},
+			enabled = {
+				order = 2,
+				type = "toggle",
+				name = L["Enable"]
+			},
+			restorePosition = {
+				order = 3,
+				type = "execute",
+				name = L["Restore Bar"],
+				desc = L["Restore the actionbars default settings"],
+				func = function() E:CopyTable(E.db.actionbar["microbar"], P.actionbar["microbar"]) E:ResetMovers(L["Micro Bar"]) AB:UpdateMicroPositionDimensions() end,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			spacer = {
+				order = 4,
+				type = "description",
+				name = " "
+			},
+			buttonsPerRow = {
+				order = 5,
+				type = "range",
+				name = L["Buttons Per Row"],
+				desc = L["The amount of buttons to display per row."],
+				min = 1, max = 8, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			xOffset = {
+				order = 6,
+				type = "range",
+				name = L["xOffset"],
+				min = -1, max = 10, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			yOffset = {
+				order = 7,
+				type = "range",
+				name = L["yOffset"],
+				min = -1, max = 10, step = 1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			alpha = {
+				order = 8,
+				type = "range",
+				isPercent = true,
+				name = L["Alpha"],
+				desc = L["Change the alpha level of the frame."],
+				min = 0, max = 1, step = 0.1,
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			},
+			mouseover = {
+				order = 9,
+				type = "toggle",
+				name = L["Mouse Over"],
+				desc = L["The frame is not shown unless you mouse over the frame."],
+				disabled = function() return not E.db.actionbar.microbar.enabled end
+			}
+		}
+	}
 end
 
 local function BuildBarConfig(i)
@@ -418,7 +489,7 @@ E.Options.args.actionbar = {
 			order = 9,
 			type = "execute",
 			name = L["Micro Bar"],
-			--buttonElvUI = true,
+			-- buttonElvUI = true,
 			func = function() ACD:SelectGroup("ElvUI", "actionbar", "microbar") end,
 			disabled = function() return not E.private.actionbar.enable end
 		},
@@ -426,7 +497,7 @@ E.Options.args.actionbar = {
 			order = 10,
 			type = "execute",
 			name = L["Bar "]..1,
-			--buttonElvUI = true,
+			-- buttonElvUI = true,
 			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar1") end,
 			disabled = function() return not E.private.actionbar.enable end
 		},
