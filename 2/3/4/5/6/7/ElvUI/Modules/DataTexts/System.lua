@@ -33,7 +33,6 @@ local enteredFrame = false
 local homeLatencyString = "%d ms"
 local kiloByteString = "%d kb"
 local megaByteString = "%.2f mb"
-local totalMemory = 0
 
 local function formatMem(memory)
 	local mult = 10 ^ 1
@@ -66,16 +65,6 @@ local function RebuildAddonList()
 	end
 end
 
-local function UpdateMemory()
-	--UpdateAddOnMemoryUsage()
-	--[[totalMemory = 0
-	for i = 1, getn(memoryTable) do
-		memoryTable[i][3] = GetAddOnMemoryUsage(memoryTable[i][1])
-		totalMemory = totalMemory + memoryTable[i][3]
-	end
-	sort(memoryTable, sortByMemoryOrCPU)]]
-end
-
 local function UpdateCPU()
 	UpdateAddOnCPUUsage()
 	local addonCPU = 0
@@ -103,8 +92,8 @@ end
 
 local function OnClick(_, btn)
 	if(btn == "RightButton") then
-		collectgarbage("collect")
-		ResetCPUUsage()
+		-- collectgarbage("collect")
+		-- ResetCPUUsage()
 	elseif(btn == "LeftButton") then
 		ToggleGameMenuFrame()
 	end
@@ -115,7 +104,7 @@ local function OnEnter(self)
 	local cpuProfiling = false
 	DT:SetupTooltip(self)
 
-	UpdateMemory()
+	local totalMemory = gcinfo()
 
 	local _, _, latency = GetNetStats()
 	DT.tooltip:AddDoubleLine(L["Home Latency:"], format(homeLatencyString, latency), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
