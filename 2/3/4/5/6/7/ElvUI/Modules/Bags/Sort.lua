@@ -281,7 +281,7 @@ end
 local function IterateBackwards(bagList, i)
 	i = i + 1
 	local step = 1
-	for ii = #bagList, 1, -1 do
+	for ii = getn(bagList), 1, -1 do
 		local bag = bagList[ii]
 		local slots = B:GetNumSlots(bag, bagRole)
 		if i > slots + step then
@@ -466,7 +466,7 @@ function B.Stack(sourceBags, targetBags, canMove)
 		local sourceSlot = B:Encode_BagSlot(bag, slot)
 		local itemID = bagIDs[sourceSlot]
 		if itemID and targetItems[itemID] and canMove(itemID, bag, slot) then
-			for i = #targetSlots, 1, -1 do
+			for i = getn(targetSlots), 1, -1 do
 				local targetedSlot = targetSlots[i]
 				if bagIDs[sourceSlot] and bagIDs[targetedSlot] == itemID and targetedSlot ~= sourceSlot and not (bagStacks[targetedSlot] == bagMaxStacks[targetedSlot]) and not sourceUsed[targetedSlot] then
 					B:AddMove(sourceSlot, targetedSlot)
@@ -503,7 +503,7 @@ local function buildBlacklist(...)
 			if(find(entry, "%[") and find(entry, "%]")) then
 				entry = match(entry, "%[(.*)%]")
 			end
-			blackListQueries[#blackListQueries+1] = entry
+			blackListQueries[getn(blackListQueries)+1] = entry
 		end
 	end
 end
@@ -583,7 +583,7 @@ function B.FillBags(from, to)
 			tinsert(specialtyBags, bag)
 		end
 	end
-	if #specialtyBags > 0 then
+	if getn(specialtyBags) > 0 then
 		B:Fill(from, specialtyBags)
 	end
 
@@ -608,7 +608,7 @@ function B.Fill(sourceBags, targetBags, reverse, canMove)
 	end
 
 	for _, bag, slot in B.IterateBags(sourceBags, not reverse, "withdraw") do
-		if #emptySlots == 0 then break end
+		if getn(emptySlots) == 0 then break end
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		local targetBag = B:Decode_BagSlot(emptySlots[1])
 		local link = B:GetItemLink(bag, slot)
@@ -661,7 +661,7 @@ function B:StartStacking()
 	twipe(bagQualities)
 	twipe(moveTracker)
 
-	if #moves > 0 then
+	if getn(moves) > 0 then
 		self.SortUpdateTimer:Show()
 	else
 		B:StopStacking()
@@ -792,8 +792,8 @@ function B:DoMoves()
 	twipe(moveTracker)
 
 	local success, moveID, targetID, moveSource, moveTarget, wasGuild
-	if #moves > 0 then
-		for i = #moves, 1, -1 do
+	if getn(moves) > 0 then
+		for i = getn(moves), 1, -1 do
 			success, moveID, moveSource, targetID, moveTarget, wasGuild = B:DoMove(moves[i])
 			if not success then
 				WAIT_TIME = wasGuild and 0.3 or 0.1
@@ -838,7 +838,7 @@ function B:CommandDecorator(func, groupsDefaults)
 		end
 
 		twipe(bagGroups)
-		if not groups or #groups == 0 then
+		if not groups or getn(groups) == 0 then
 			groups = groupsDefaults
 		end
 		for bags in (groups or ""):gmatch("[^%s]+") do

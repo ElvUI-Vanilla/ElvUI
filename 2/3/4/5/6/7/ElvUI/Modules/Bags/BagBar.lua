@@ -14,7 +14,7 @@ local TOTAL_BAGS = NUM_BAG_FRAMES + 2
 
 local ElvUIKeyRing = CreateFrame("CheckButton", "ElvUIKeyRingButton", UIParent, "ItemButtonTemplate")
 ElvUIKeyRing:RegisterForClicks("anyUp")
-ElvUIKeyRing:StripTextures()
+E:StripTextures(ElvUIKeyRing)
 ElvUIKeyRing:SetScript("OnClick", function() if CursorHasItem() then PutKeyInKeyRing() else ToggleKeyRing() end end)
 ElvUIKeyRing:SetScript("OnReceiveDrag", function() if CursorHasItem() then PutKeyInKeyRing() end end)
 ElvUIKeyRing:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_LEFT") local color = HIGHLIGHT_FONT_COLOR GameTooltip:SetText(KEYRING, color.r, color.g, color.b) GameTooltip:AddLine() end)
@@ -36,12 +36,12 @@ function B:SkinBag(bag)
 	local icon = _G[bag:GetName().."IconTexture"]
 	bag.oldTex = icon:GetTexture()
 
-	bag:StripTextures()
-	bag:CreateBackdrop("Default", true)
+	E:StripTextures(bag)
+	E:CreateBackdrop(bag, "Default", true)
 	bag.backdrop:SetAllPoints()
-	bag:StyleButton(true)
+	E:StyleButton(bag, true)
 	icon:SetTexture(bag.oldTex)
-	icon:SetInside()
+	E:SetInside(icon)
 	icon:SetTexCoord(unpack(E.TexCoords))
 end
 
@@ -67,49 +67,51 @@ function B:SizeAndPositionBagBar()
 		ElvUIBags.backdrop:Hide()
 	end
 
-	ElvUIKeyRingButton:Size(bagBarSize)
+	ElvUIKeyRingButton:SetWidth(bagBarSize)
+	ElvUIKeyRingButton:SetHeight(bagBarSize)
 	ElvUIKeyRingButton:ClearAllPoints()
 
-	for i = 1, #ElvUIBags.buttons do
+	for i = 1, getn(ElvUIBags.buttons) do
 		local button = ElvUIBags.buttons[i]
 		local prevButton = ElvUIBags.buttons[i-1]
-		button:Size(E.db.bags.bagBar.size)
+		button:SetWidth(E.db.bags.bagBar.size)
+		button:SetHeight(E.db.bags.bagBar.size)
 		button:ClearAllPoints()
 		button:Show()
 
 		if growthDirection == "HORIZONTAL" and sortDirection == "ASCENDING" then
 			if i == 1 then
-				button:Point("LEFT", ElvUIBags, "LEFT", (showBackdrop and (backdropSpacing + E.Border) or 0), 0)
+				button:SetPoint("LEFT", ElvUIBags, "LEFT", (showBackdrop and (backdropSpacing + E.Border) or 0), 0)
 			elseif prevButton then
-				button:Point("LEFT", prevButton, "RIGHT", buttonSpacing, 0)
+				button:SetPoint("LEFT", prevButton, "RIGHT", buttonSpacing, 0)
 			end
 		elseif growthDirection == "VERTICAL" and sortDirection == "ASCENDING" then
 			if i == 1 then
-				button:Point("TOP", ElvUIBags, "TOP", 0, -(showBackdrop and (backdropSpacing + E.Border) or 0))
+				button:SetPoint("TOP", ElvUIBags, "TOP", 0, -(showBackdrop and (backdropSpacing + E.Border) or 0))
 			elseif prevButton then
-				button:Point("TOP", prevButton, "BOTTOM", 0, -buttonSpacing)
+				button:SetPoint("TOP", prevButton, "BOTTOM", 0, -buttonSpacing)
 			end
 		elseif growthDirection == "HORIZONTAL" and sortDirection == "DESCENDING" then
 			if i == 1 then
-				button:Point("RIGHT", ElvUIBags, "RIGHT", -(showBackdrop and (backdropSpacing + E.Border) or 0), 0)
+				button:SetPoint("RIGHT", ElvUIBags, "RIGHT", -(showBackdrop and (backdropSpacing + E.Border) or 0), 0)
 			elseif prevButton then
-				button:Point("RIGHT", prevButton, "LEFT", -buttonSpacing, 0)
+				button:SetPoint("RIGHT", prevButton, "LEFT", -buttonSpacing, 0)
 			end
 		else
 			if i == 1 then
-				button:Point("BOTTOM", ElvUIBags, "BOTTOM", 0, (showBackdrop and (backdropSpacing + E.Border) or 0))
+				button:SetPoint("BOTTOM", ElvUIBags, "BOTTOM", 0, (showBackdrop and (backdropSpacing + E.Border) or 0))
 			elseif prevButton then
-				button:Point("BOTTOM", prevButton, "TOP", 0, buttonSpacing)
+				button:SetPoint("BOTTOM", prevButton, "TOP", 0, buttonSpacing)
 			end
 		end
 	end
 
 	if growthDirection == "HORIZONTAL" then
-		ElvUIBags:Width(bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
-		ElvUIBags:Height(bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
+		ElvUIBags:SetWidth(bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
+		ElvUIBags:SetHeight(bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
 	else
-		ElvUIBags:Height(bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
-		ElvUIBags:Width(bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
+		ElvUIBags:SetHeight(bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
+		ElvUIBags:SetWidth(bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
 	end
 end
 
@@ -119,7 +121,7 @@ function B:LoadBagBar()
 	local ElvUIBags = CreateFrame("Frame", "ElvUIBags", E.UIParent)
 	ElvUIBags:SetPoint("TOPRIGHT", RightChatPanel, "TOPLEFT", -4, 0)
 	ElvUIBags.buttons = {}
-	ElvUIBags:CreateBackdrop()
+	E:CreateBackdrop(ElvUIBags)
 	ElvUIBags.backdrop:SetAllPoints()
 	ElvUIBags:EnableMouse(true)
 	ElvUIBags:SetScript("OnEnter", OnEnter)
@@ -128,11 +130,11 @@ function B:LoadBagBar()
 	MainMenuBarBackpackButton:SetParent(ElvUIBags)
 	MainMenuBarBackpackButton.SetParent = E.dummy
 	MainMenuBarBackpackButton:ClearAllPoints()
-	MainMenuBarBackpackButtonCount:FontTemplate(nil, 10)
+	E:FontTemplate(MainMenuBarBackpackButtonCount, nil, 10)
 	MainMenuBarBackpackButtonCount:ClearAllPoints()
-	MainMenuBarBackpackButtonCount:Point("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -1, 4)
-	MainMenuBarBackpackButton:HookScript("OnEnter", OnEnter)
-	MainMenuBarBackpackButton:HookScript("OnLeave", OnLeave)
+	MainMenuBarBackpackButtonCount:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -1, 4)
+	HookScript(MainMenuBarBackpackButton, "OnEnter", OnEnter)
+	HookScript(MainMenuBarBackpackButton, "OnLeave", OnLeave)
 	tinsert(ElvUIBags.buttons, MainMenuBarBackpackButton)
 	self:SkinBag(MainMenuBarBackpackButton)
 
@@ -147,13 +149,13 @@ function B:LoadBagBar()
 		tinsert(ElvUIBags.buttons, b)
 	end
 
-	ElvUIKeyRingButton:SetTemplate()
-	ElvUIKeyRingButton:StyleButton(true)
-	_G[ElvUIKeyRingButton:GetName().."IconTexture"]:SetInside()
+	E:SetTemplate(ElvUIKeyRingButton)
+	E:StyleButton(ElvUIKeyRingButton, true)
+	E:SetInside(_G[ElvUIKeyRingButton:GetName().."IconTexture"])
 	ElvUIKeyRingButton:SetParent(ElvUIBags)
 	ElvUIKeyRingButton.SetParent = E.dummy
-	ElvUIKeyRingButton:HookScript("OnEnter", OnEnter)
-	ElvUIKeyRingButton:HookScript("OnLeave", OnLeave)
+	HookScript(ElvUIKeyRingButton, "OnEnter", OnEnter)
+	HookScript(ElvUIKeyRingButton, "OnLeave", OnLeave)
 	tinsert(ElvUIBags.buttons, ElvUIKeyRingButton)
 
 	self:SizeAndPositionBagBar()
