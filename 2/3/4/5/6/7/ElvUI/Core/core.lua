@@ -230,14 +230,14 @@ function E:UpdateMedia()
 	self["media"].bordercolor = {border.r, border.g, border.b}
 
 	-- UnitFrame Border Color
---[[	border = E.db["unitframe"].colors.borderColor
+	border = E.db["unitframe"].colors.borderColor
 	if self:CheckClassColor(border.r, border.g, border.b) then
 		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
 		E.db["unitframe"].colors.borderColor.r = classColor.r
 		E.db["unitframe"].colors.borderColor.g = classColor.g
 		E.db["unitframe"].colors.borderColor.b = classColor.b
 	end
-	self["media"].unitframeBorderColor = {border.r, border.g, border.b}]]
+	self["media"].unitframeBorderColor = {border.r, border.g, border.b}
 
 	-- Backdrop Color
 	self["media"].backdropcolor = E:GetColorTable(self.db["general"].backdropcolor)
