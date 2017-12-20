@@ -1141,7 +1141,7 @@ function E:Initialize()
 	self:Tutorials()
 	self:GetModule("Minimap"):UpdateSettings()
 	self:RefreshModulesDB()
---	collectgarbage("collect")
+	collectgarbage()
 
 	if(self.db.general.loginmessage) then
 --		print(select(2, E:GetModule("Chat"):FindURL("CHAT_MSG_DUMMY", format(L["LOGIN_MSG"], self["media"].hexvaluecolor, self["media"].hexvaluecolor, self.version)))..".")

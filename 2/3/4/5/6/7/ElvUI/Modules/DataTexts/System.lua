@@ -7,18 +7,9 @@ local select, collectgarbage = select, collectgarbage
 local sort, wipe = table.sort, wipe
 local floor = math.floor
 local format = string.format
+local gcinfo = gcinfo
 --WoW API / Variables
-local GetNumAddOns = GetNumAddOns
-local GetAddOnInfo = GetAddOnInfo
-local IsAddOnLoaded = IsAddOnLoaded
-local UpdateAddOnMemoryUsage = UpdateAddOnMemoryUsage
-local UpdateAddOnCPUUsage = UpdateAddOnCPUUsage
-local GetAddOnMemoryUsage = GetAddOnMemoryUsage
-local GetAddOnCPUUsage = GetAddOnCPUUsage
-local ResetCPUUsage = ResetCPUUsage
-local GetCVar = GetCVar
 local GetNetStats = GetNetStats
-local IsShiftKeyDown = IsShiftKeyDown
 local GetFramerate = GetFramerate
 
 local int, int2 = 6, 5
@@ -45,41 +36,6 @@ local function formatMem(memory)
 	end
 end
 
-local function sortByMemoryOrCPU(a, b)
-	if(a and b) then
-		return a[3] > b[3]
-	end
-end
-
-local memoryTable = {}
-local cpuTable = {}
-local function RebuildAddonList()
-	local addOnCount = GetNumAddOns()
-	if(addOnCount == getn(memoryTable)) then return end
-
-	wipe(memoryTable)
-	wipe(cpuTable)
-	for i = 1, addOnCount do
-		memoryTable[i] = {i, GetAddOnInfo(i), 0, IsAddOnLoaded(i)}
-		cpuTable[i] = {i, GetAddOnInfo(i), 0, IsAddOnLoaded(i)}
-	end
-end
-
-local function UpdateCPU()
-	UpdateAddOnCPUUsage()
-	local addonCPU = 0
-	local totalCPU = 0
-	for i = 1, getn(cpuTable) do
-		addonCPU = GetAddOnCPUUsage(cpuTable[i][1])
-		cpuTable[i][3] = addonCPU
-		totalCPU = totalCPU + addonCPU
-	end
-
-	sort(cpuTable, sortByMemoryOrCPU)
-
-	return totalCPU
-end
-
 local function ToggleGameMenuFrame()
 	if GameMenuFrame:IsShown() then
 		PlaySound("igMainMenuQuit")
@@ -91,55 +47,21 @@ local function ToggleGameMenuFrame()
 end
 
 local function OnClick(_, btn)
-	if(btn == "RightButton") then
-		-- collectgarbage("collect")
-		-- ResetCPUUsage()
-	elseif(btn == "LeftButton") then
+	if btn == "RightButton" then
+		collectgarbage()
+	elseif btn == "LeftButton" then
 		ToggleGameMenuFrame()
 	end
 end
 
 local function OnEnter(self)
 	enteredFrame = true
-	local cpuProfiling = false
 	DT:SetupTooltip(self)
 
 	local totalMemory = gcinfo()
-
 	local _, _, latency = GetNetStats()
 	DT.tooltip:AddDoubleLine(L["Home Latency:"], format(homeLatencyString, latency), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
-
-	local totalCPU = nil
 	DT.tooltip:AddDoubleLine(L["Total Memory:"], formatMem(totalMemory), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
-	if(cpuProfiling) then
-		totalCPU = UpdateCPU()
-		DT.tooltip:AddDoubleLine(L["Total CPU:"], format(homeLatencyString, totalCPU), 0.69, 0.31, 0.31, 0.84, 0.75, 0.65)
-	end
-
-	local red, green
-	if(IsShiftKeyDown() or not cpuProfiling) then
-		DT.tooltip:AddLine(" ")
-		for i = 1, getn(memoryTable) do
-			if(memoryTable[i][4]) then
-				red = memoryTable[i][3] / totalMemory
-				green = 1 - red
-				DT.tooltip:AddDoubleLine(memoryTable[i][2], formatMem(memoryTable[i][3]), 1, 1, 1, red, green + .5, 0)
-			end
-		end
-	end
-
-	if(cpuProfiling and not IsShiftKeyDown()) then
-		DT.tooltip:AddLine(" ")
-		for i = 1, getn(cpuTable) do
-			if(cpuTable[i][4]) then
-				red = cpuTable[i][3] / totalCPU
-				green = 1 - red
-				DT.tooltip:AddDoubleLine(cpuTable[i][2], format(homeLatencyString, cpuTable[i][3]), 1, 1, 1, red, green + .5, 0)
-			end
-		end
-		DT.tooltip:AddLine(" ")
-		DT.tooltip:AddLine(L["(Hold Shift) Memory Usage"])
-	end
 
 	DT.tooltip:Show()
 end
@@ -151,13 +73,8 @@ end
 
 local function OnUpdate(self, t)
 	int = int - t
-	int2 = int2 - t
 
 	if int < 0 then
-		RebuildAddonList()
-		int = 10
-	end
-	if int2 < 0 then
 		local framerate = floor(GetFramerate())
 		local _, _, latency = GetNetStats()
 
@@ -166,7 +83,7 @@ local function OnUpdate(self, t)
 			framerate,
 			statusColors[latency < 150 and 1 or (latency >= 150 and latency < 300) and 2 or (latency >= 300 and latency < 500) and 3 or 4],
 			latency))
-		int2 = 1
+		int = 1
 		if enteredFrame then
 			OnEnter(this)
 		end
