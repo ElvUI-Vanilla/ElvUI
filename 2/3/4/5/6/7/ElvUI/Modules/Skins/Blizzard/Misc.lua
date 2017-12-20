@@ -25,19 +25,34 @@ local function LoadSkin()
 		"OptionsFrameMiscellaneous",
 		"SoundOptionsFrame",
 		"TicketStatusFrame",
-		"StackSplitFrame",
-	    "DropDownList1MenuBackdrop",
-	    "DropDownList2MenuBackdrop",
-	    "DropDownList1Backdrop",
-	    "DropDownList2Backdrop",
-	    "L_DropDownList1MenuBackdrop",
-	    "L_DropDownList2MenuBackdrop",
-	    "L_DropDownList1Backdrop",
-	    "L_DropDownList2Backdrop",
+		"StackSplitFrame"
 	}
 
 	for i = 1, getn(skins) do
 		E:SetTemplate(_G[skins[i]], "Transparent")
+	end
+
+	local ChatMenus = {
+		"ChatMenu",
+		"EmoteMenu",
+		"LanguageMenu",
+		"VoiceMacroMenu",
+	}
+
+	for i = 1, getn(ChatMenus) do
+		if _G[ChatMenus[i]] == _G["ChatMenu"] then
+			HookScript(_G[ChatMenus[i]], "OnShow", function()
+				E:SetTemplate(this, "Transparent", true)
+				this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
+				this:ClearAllPoints()
+				this:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 30)
+			end)
+		else
+			HookScript(_G[ChatMenus[i]], "OnShow", function()
+				E:SetTemplate(this, "Transparent", true)
+				this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
+			end)
+		end
 	end
 
 	for i = 1, OptionsFrame:GetNumRegions() do
@@ -49,23 +64,29 @@ local function LoadSkin()
 		end
 	end
 
-	local r, g, b = 0.8, 0.8, 0.8
 	local function StyleButton(f)
-		local width, height = (f:GetWidth() * .6), f:GetHeight()
+		local width, height = (f:GetWidth() * .54), f:GetHeight()
 
-		local leftGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		leftGrad:SetWidth(width)
-		leftGrad:SetHeight(height)
-		leftGrad:SetPoint("LEFT", f, "CENTER")
-		leftGrad:SetTexture(E.media.blankTex)
-		leftGrad:SetGradientAlpha("Horizontal", r, g, b, 0.35, r, g, b, 0)
+		local left = f:CreateTexture(nil, "HIGHLIGHT")
+		left:SetWidth(width)
+		left:SetHeight(height)
+		left:SetPoint("LEFT", f, "CENTER")
+		left:SetTexture(1, 1, 1, 0.3)
+		left:SetHeight(16)
 
-		local rightGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		rightGrad:SetWidth(width)
-		rightGrad:SetHeight(height)
-		rightGrad:SetPoint("RIGHT", f, "CENTER")
-		rightGrad:SetTexture(E.media.blankTex)
-		rightGrad:SetGradientAlpha("Horizontal", r, g, b, 0, r, g, b, 0.35)
+		local right = f:CreateTexture(nil, "HIGHLIGHT")
+		right:SetWidth(width)
+		right:SetHeight(height)
+		right:SetPoint("RIGHT", f, "CENTER")
+		right:SetTexture(1, 1, 1, 0.3)
+		right:SetHeight(16)
+	end
+
+	for i = 1, 32 do
+		StyleButton(_G["ChatMenuButton"..i])
+		StyleButton(_G["EmoteMenuButton"..i])
+		StyleButton(_G["LanguageMenuButton"..i])
+		StyleButton(_G["VoiceMacroMenuButton"..i])
 	end
 
 	-- Static Popups
@@ -298,6 +319,11 @@ local function LoadSkin()
 	hooksecurefunc("UIDropDownMenu_Initialize", function()
 		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
 			local buttonBackdrop = _G["DropDownList"..i.."Backdrop"]
+			local buttonBackdropMenu = _G["DropDownList"..i.."MenuBackdrop"]
+
+			E:SetTemplate(buttonBackdrop, "Transparent")
+			E:SetTemplate(buttonBackdropMenu, "Transparent")
+
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
 				local button = _G["DropDownList"..i.."Button"..j]
 				local buttonHighlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
@@ -308,11 +334,39 @@ local function LoadSkin()
 				buttonHighlight:SetHeight(16)
 
 				if i == 1 then
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -10, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -5, 0)
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -8, 0)
 				else
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -5, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -3, 0)
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -4, 0)
+				end
+			end
+		end
+	end)
+
+	hooksecurefunc("L_UIDropDownMenu_Initialize", function()
+		for i = 1, 2 do
+			local buttonBackdrop = _G["L_DropDownList"..i.."Backdrop"]
+			local buttonBackdropMenu = _G["L_DropDownList"..i.."MenuBackdrop"]
+
+			E:SetTemplate(buttonBackdrop, "Transparent")
+			E:SetTemplate(buttonBackdropMenu, "Transparent")
+
+			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
+				local button = _G["L_DropDownList"..i.."Button"..j]
+				local buttonHighlight = _G["L_DropDownList"..i.."Button"..j.."Highlight"]
+
+				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
+				buttonHighlight:SetTexture(1, 1, 1, 0.3)
+				buttonHighlight:ClearAllPoints()
+				buttonHighlight:SetHeight(16)
+
+				if i == 1 then
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 4, 0)
+				else
+					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
+					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -4, 0)
 				end
 			end
 		end

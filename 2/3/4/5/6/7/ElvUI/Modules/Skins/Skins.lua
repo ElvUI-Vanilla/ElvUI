@@ -1,11 +1,13 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0");
 
+--Cache global variables
+--Lua functions
 local _G = _G
 local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs, ipairs, select, type, pcall
 local tinsert, wipe = table.insert, table.wipe
 local lower = string.lower
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local SetDesaturation = SetDesaturation
 local hooksecurefunc = hooksecurefunc
