@@ -1499,6 +1499,7 @@ function CH:DelayGuildMOTD()
 		local msg = GetGuildRosterMOTD()
 		for i = 1, NUM_CHAT_WINDOWS do
 			chat = _G["ChatFrame"..i]
+			if i == 1 then -- TEMPORARY UNTIL FURTHER FIX
 			--if chat and chat:IsEventRegistered("CHAT_MSG_GUILD") then
 				if msg and strlen(msg) > 0 then
 					local info = ChatTypeInfo["GUILD"]
@@ -1507,6 +1508,7 @@ function CH:DelayGuildMOTD()
 				end
 				chat:RegisterEvent("GUILD_MOTD")
 			--end
+			end
 		end
 		this:SetScript("OnUpdate", nil)
 	end)
