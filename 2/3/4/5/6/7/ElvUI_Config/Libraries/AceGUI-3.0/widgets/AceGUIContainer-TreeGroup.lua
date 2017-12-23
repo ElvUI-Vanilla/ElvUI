@@ -84,7 +84,6 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	local normalTexture = button:GetNormalTexture()
 	local line = button.line
 	button.level = level
-
 	if ( level == 1 ) then
 		button.text:SetFontObject("GameFontNormal")
 		button:SetHighlightFontObject("GameFontHighlight")
@@ -227,7 +226,7 @@ local function Button_OnEnter()
 	if self.enabletooltips then
 		GameTooltip:SetOwner(this, "ANCHOR_NONE")
 		GameTooltip:SetPoint("LEFT",this,"RIGHT")
-		GameTooltip:SetText(this.text:GetText() or "", 1, .82, 0, true)
+		GameTooltip:SetText(this.text:GetText() or "", 1, .82, 0, 1)
 
 		GameTooltip:Show()
 	end
@@ -284,14 +283,14 @@ end
 local function Dragger_OnMouseUp()
 	local treeframe = this:GetParent()
 	local self = treeframe.obj
-	local this = treeframe:GetParent()
+	local frame = treeframe:GetParent()
 	treeframe:StopMovingOrSizing()
 	--treeframe:SetScript("OnUpdate", nil)
 	treeframe:SetUserPlaced(false)
 	--Without this :GetHeight will get stuck on the current height, causing the tree contents to not resize
 	treeframe:SetHeight(0)
-	treeframe:SetPoint("TOPLEFT", this, "TOPLEFT",0,0)
-	treeframe:SetPoint("BOTTOMLEFT", this, "BOTTOMLEFT",0,0)
+	treeframe:SetPoint("TOPLEFT", frame, "TOPLEFT",0,0)
+	treeframe:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",0,0)
 
 	local status = self.status or self.localstatus
 	status.treewidth = treeframe:GetWidth()
