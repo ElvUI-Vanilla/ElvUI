@@ -4,7 +4,10 @@ local TT = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0");
 --Cache global variables
 --Lua functions
 local unpack = unpack
+local twipe, tinsert, tconcat = table.wipe, table.insert, table.concat
 --WoW API / Variables
+
+local targetList, inspectCache = {}, {}
 
 local classification = {
 	worldboss = format("|cffAF5050 %s|r", BOSS),
@@ -146,6 +149,37 @@ function TT:UPDATE_MOUSEOVER_UNIT(_, unit)
 			end
 
 			levelLine:SetText(format("|cff%02x%02x%02x%s|r%s %s%s", diffColor.r * 255, diffColor.g * 255, diffColor.b * 255, level > 0 and level or "??", classification[creatureClassification] or "", creatureType or "", pvpFlag))
+		end
+	end
+
+	local unitTarget = unit.."target"
+	if self.db.targetInfo and unit ~= "player" and UnitExists(unitTarget) then
+		local targetColor;
+		if UnitIsPlayer(unitTarget) then
+			local _, class = UnitClass(unitTarget);
+			targetColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class];
+		else
+			local reaction = UnitReaction(unitTarget, "player") or 4
+			targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[reaction] or FACTION_BAR_COLORS[reaction]
+		end
+
+		GameTooltip:AddDoubleLine(format("%s:", TARGET), format("|cff%02x%02x%02x%s|r", targetColor.r * 255, targetColor.g * 255, targetColor.b * 255, UnitName(unitTarget)))
+	end
+
+	local numParty, numRaid = GetNumPartyMembers(), GetNumRaidMembers()
+	if self.db.targetInfo and (numParty > 0 or numRaid > 0) then
+		for i = 1, (numRaid > 0 and numRaid or numParty) do
+			local groupUnit = (numRaid > 0 and "raid"..i or "party"..i)
+			if UnitIsUnit(groupUnit.."target", unit) and (not UnitIsUnit(groupUnit,"player")) then
+				local _, class = UnitClass(groupUnit)
+				local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+				tinsert(targetList, format("%s%s", E:RGBToHex(color.r, color.g, color.b), UnitName(groupUnit)))
+			end
+		end
+		local numList = getn(targetList)
+		if numList > 0 then
+			GameTooltip:AddLine(format("%s (|cffffffff%d|r): %s", L["Targeted By:"], numList, tconcat(targetList, ", ")), nil, nil, nil, true)
+			twipe(targetList)
 		end
 	end
 

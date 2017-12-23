@@ -61,7 +61,7 @@ function LoadSkin()
 		skinPulloutFrames()
 	end)
 
-	hooksecurefunc("RaidPullout_Update", function(pullOutFrame)
+	--[[hooksecurefunc("RaidPullout_Update", function(pullOutFrame)
 		local pfName = pullOutFrame:GetName()
 		for i = 1, pullOutFrame.numPulloutButtons do
 			local pfBName = pfName.."Button"..i
@@ -88,7 +88,7 @@ function LoadSkin()
 				_G[pfBName.."TargetTargetFrame"].backdrop:SetPoint("BOTTOMRIGHT", -(E.PixelMode and 10 or 9), E.PixelMode and 8 or 7)
 			end
 		end
-	end)
+	end)]]
 
 	-- ReadyCheckFrame
 	E:StripTextures(ReadyCheckFrame)

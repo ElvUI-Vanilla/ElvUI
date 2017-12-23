@@ -65,11 +65,6 @@ UF["headerGroupBy"] = {
 		header:SetAttribute("sortMethod", "NAME")
 		header:SetAttribute("groupBy", "CLASS")
 	end,
-	["MTMA"] = function(header)
-		header:SetAttribute("groupingOrder", "MAINTANK,MAINASSIST,NONE")
-		header:SetAttribute("sortMethod", "NAME")
-		header:SetAttribute("groupBy", "ROLE")
-	end,
 	["NAME"] = function(header)
 		header:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
 		header:SetAttribute("sortMethod", "NAME")
@@ -577,11 +572,12 @@ function UF.groupPrototype:Configure_Groups(self)
 
 	if self.mover then
 		self.mover.positionOverride = DIRECTION_TO_GROUP_ANCHOR_POINT[direction]
-		E:UpdatePositionOverride(self.mover:GetName())
-		self:GetScript("OnSizeChanged")(self) --Mover size is not updated if frame is hidden, so call an update manually
+		--E:UpdatePositionOverride(self.mover:GetName())
+		--self:GetScript("OnSizeChanged")(self) --Mover size is not updated if frame is hidden, so call an update manually
 	end
 
-	self:SetSize(width - db.horizontalSpacing, height - db.verticalSpacing)
+	self:SetWidth(width - db.horizontalSpacing)
+	self:SetHeight(height - db.verticalSpacing)
 end
 
 function UF.groupPrototype:Update(self)
@@ -603,7 +599,7 @@ function UF.groupPrototype:AdjustVisibility(self)
 				group:Show()
 			else
 				if group.forceShow then
-					group:Hide()
+					--group:Hide()
 					UF:UnshowChildUnits(group, group:GetChildren())
 					group:SetAttribute("startingIndex", 1)
 				else
@@ -650,7 +646,7 @@ function UF.headerPrototype:Update(isForced)
 end
 
 function UF.headerPrototype:Reset()
-	self:Hide()
+	--self:Hide()
 
 	self:SetAttribute("showPlayer", true)
 
@@ -685,7 +681,7 @@ function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName,
 			"groupFilter", groupFilter,
 			"showParty", true,
 			"showRaid", true,
-			"showSolo", true,
+			"showSolo", false,
 			template and "template", template)
 
 	header.groupName = group
@@ -761,7 +757,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 		if headerUpdate or not self[group].mover then
 			UF["headerFunctions"][group]:Configure_Groups(self[group])
 			if not self[group].isForced and not self[group].blockVisibilityChanges then
-				RegisterStateDriver(self[group], "visibility", db.visibility)
+			--	RegisterStateDriver(self[group], "visibility", db.visibility)
 			end
 		else
 			UF["headerFunctions"][group]:Configure_Groups(self[group])
@@ -774,8 +770,8 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 				E:EnableMover(self[group].mover:GetName())
 			end
 		else
-			UnregisterStateDriver(self[group], "visibility")
-			self[group]:Hide()
+		--	UnregisterStateDriver(self[group], "visibility")
+		--	self[group]:Hide()
 			if self[group].mover then
 				E:DisableMover(self[group].mover:GetName())
 			end
@@ -789,7 +785,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 			local db = UF.db["units"][group]
 			if db.enable ~= true then
 				UnregisterStateDriver(UF[group], "visibility")
-				UF[group]:Hide()
+				--UF[group]:Hide()
 				if(UF[group].mover) then
 					E:DisableMover(UF[group].mover:GetName())
 				end
@@ -904,10 +900,11 @@ function UF:UpdateAllHeaders(event)
 			shouldUpdateHeader = true
 		end
 		self:CreateAndUpdateHeaderGroup(group, nil, nil, shouldUpdateHeader)
-
+header:Hide()
+header:Show()
 		if group == "party" or group == "raid" or group == "raid40" then
 			--Update BuffIndicators on profile change as they might be using profile specific data
-			self:UpdateAuraWatchFromHeader(group)
+			--self:UpdateAuraWatchFromHeader(group)
 		end
 	end
 end

@@ -11,16 +11,8 @@ local registerEvent = frame_metatable.__index.RegisterEvent
 local unregisterEvent = frame_metatable.__index.UnregisterEvent
 
 function Private.UpdateUnits(frame, unit, realUnit)
-	if(unit == realUnit) then
-		realUnit = nil
-	end
 
-	if(frame.unit ~= unit or frame.realUnit ~= realUnit) then
-		frame.unit = unit
-		frame.realUnit = realUnit
-		frame.id = string.match(unit, '^.-(%d+)')
-		return true
-	end
+	return true
 end
 
 local function onEvent()

@@ -14,64 +14,6 @@ local callback, units, objects, headers = {}, {}, {}, {}
 local elements = {}
 local activeElements = {}
 
-local pairs = pairs
-
-local unitExistsWatchers = {}
-local unitExistsCache = setmetatable({},{
-	__index = function(t, k)
-		local v = UnitExists(k) or false
-		t[k] = v
-		return v
-	end
-})
-
-local function updateUnitWatch(frame)
-    local unit = frame.unit
-    local exists = (unit and unitExistsCache[unit])
-	if exists then
-		frame:Show()
-	else
-		frame:Hide()
-	end
-end
-
-local unitWatch = CreateFrame("Frame")
-unitWatch:Hide()
-
-local timer = 0
-unitWatch:SetScript("OnUpdate", function()
-	timer = timer - arg1
-    if timer <= 0 then
-        timer = 0.2
-
-        for k in pairs(unitExistsCache) do
-            unitExistsCache[k] = nil
-        end
-        for frame in pairs(unitExistsWatchers) do
-            updateUnitWatch(frame)
-        end
-    end
-end)
-unitWatch:SetScript("OnEvent", function() timer = 0 end)
-
-unitWatch:RegisterEvent("PLAYER_TARGET_CHANGED")
-unitWatch:RegisterEvent("PLAYER_FOCUS_CHANGED")
-unitWatch:RegisterEvent("PLAYER_REGEN_DISABLED")
-unitWatch:RegisterEvent("PLAYER_REGEN_ENABLED")
-unitWatch:RegisterEvent("UNIT_PET")
-unitWatch:RegisterEvent("RAID_ROSTER_UPDATE")
-unitWatch:RegisterEvent("PARTY_MEMBERS_CHANGED")
-
-local function RegisterUnitWatch(frame)
-	unitExistsWatchers[frame] = true
-	unitWatch:Show()
-	updateUnitWatch(frame)
-end
-
-local function UnregisterUnitWatch(frame)
-    unitExistsWatchers[frame] = nil
-end
-
 -- updating of "invalid" units.
 local function enableTargetUpdate(object)
 	object.onUpdateFrequency = object.onUpdateFrequency or .5
@@ -267,6 +209,12 @@ for k, v in next, {
 			self:PostUpdate(event)
 		end
 	end,
+
+	SetUnit = function(self, unit)
+		if unit ~= unit then
+			self.unit = unit
+		end
+	end,
 } do
 	frame_metatable.__index[k] = v
 end
@@ -335,7 +283,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 	for i = 1, num do
 		local object = arg[i]
 		local objectUnit = object.guessUnit or unit
-		local suffix = "ery"
+		local suffix = string.match(objectUnit or unit, '%w+target')
 
 		object.__elements = {}
 		object.__registeredEvents = {}
@@ -352,19 +300,21 @@ local function initObject(unit, style, styleFunc, header, ...)
 			-- No header means it's a frame created through :Spawn().
 			object.menu = togglemenu
 			object:SetScript("OnClick", function()
-				TargetUnit(unit)
+				TargetUnit(object.unit)
 			end)
 
 			-- Other target units are handled by :HandleUnit().
 			if(suffix == 'target') then
 				enableTargetUpdate(object)
 			else
-				oUF:HandleUnit(object)
+				oUF:HandleUnit(object, unit)
 			end
 		else
 			-- Used to update frames when they change position in a group.
 			object:RegisterEvent('RAID_ROSTER_UPDATE', object.UpdateAllElements)
-
+			object:SetScript("OnClick", function()
+				TargetUnit(object.unit)
+			end)
 			if(num > 1) then
 				if(object:GetParent() == header) then
 					object.hasChildren = true
@@ -410,7 +360,7 @@ local function walkObject(object, unit)
 	-- Check if we should leave the main frame blank.
 	if(object.onlyProcessChildren) then
 		object.hasChildren = true
-		object:SetScript('OnAttributeChanged', onAttributeChanged)
+		--object:SetScript('OnAttributeChanged', onAttributeChanged)
 		return initObject(unit, style, styleFunc, header, object:GetChildren())
 	end
 
@@ -581,56 +531,47 @@ do
 	-- There has to be an easier way to do this.
 	local initialConfigFunction = function(self)
 		local header = self:GetParent()
-		for i = 1, select('#', self), 1 do
-			local frame = select(i, self)
-			local unit
-			-- There's no need to do anything on frames with onlyProcessChildren
-			if(not frame.onlyProcessChildren) then
-				-- Attempt to guess what the header is set to spawn.
-				local groupFilter = header:GetAttribute('groupFilter')
 
-				if(type(groupFilter) == 'string' and groupFilter:match('MAIN[AT]')) then
-					local role = groupFilter:match('MAIN([AT])')
-					if(role == 'T') then
-						unit = 'maintank'
-					else
-						unit = 'mainassist'
-					end
-				elseif(header:GetAttribute('showRaid')) then
-					unit = 'raid'
-				elseif(header:GetAttribute('showParty')) then
-					unit = 'party'
-				end
+		local unit
+		if(not self.onlyProcessChildren) then
+			local groupFilter = header:GetAttribute('groupFilter')
 
-				local headerType = header.headerType
-				local suffix = frame:GetAttribute('unitsuffix')
-				if(unit and suffix) then
-					if(headerType == 'pet' and suffix == 'target') then
-						unit = unit .. headerType .. suffix
-					else
-						unit = unit .. suffix
-					end
-				elseif(unit and headerType == 'pet') then
-					unit = unit .. headerType
-				end
-
-				frame.menu = togglemenu
-				frame:SetAttribute('type1', 'target')
-				frame:SetAttribute('type2', 'menu')
-				frame.guessUnit = unit
+			if(header:GetAttribute('showRaid')) then
+				unit = 'raid'
+			elseif(header:GetAttribute('showParty')) then
+				unit = 'party'
 			end
+		
+			self.menu = togglemenu
+			--self:SetAttribute('type1', 'target')
+			--self:SetAttribute('type2', 'menu')
+			self.guessUnit = unit
+			self.unit = "player"
+		--	self.onlyProcessChildren =true
 		end
 
-		header:styleFunction(self:GetName())
+		styleProxy(nil, self:GetName())
 	end
 
+	local setAttribute = function(self, name, value)
+		if self.attributes[name] ~= value then
+			self.attributes[name] = value
+
+			if self:IsVisible() then
+				SecureGroupHeader_Update(self)
+			end
+		end
+	end
+	local getAttribute = function(self, name)
+		return self.attributes[name]
+	end
 	--[[ oUF:SpawnHeader(overrideName, template, visibility, ...)
 	Used to create a group header and apply the currently active style to it.
 
 	* self         - the global oUF object
 	* overrideName - unique global name to be used for the header. Defaults to an auto-generated name based on the name
 	                 of the active style and other arguments passed to `:SpawnHeader` (string?)
-	* template     - name of a template to be used for creating the header. Defaults to `'SecureGroupHeaderTemplate'`
+	* template     - name of a template to be used for creating the header. Defaults to `'oUF_GroupHeaderTemplate'`
 	                 (string?)
 	* visibility   - macro conditional(s) which define when to display the header (string).
 	* ...          - further argument pairs. Consult [Group Headers](http://wowprogramming.com/docs/secure_template/Group_Headers)
@@ -646,16 +587,22 @@ do
 	function oUF:SpawnHeader(overrideName, template, visibility, ...)
 		if(not style) then return error('Unable to create frame. No styles have been registered.') end
 
-		template = (template or 'SecureGroupHeaderTemplate')
+		template = (template or 'oUF_GroupHeaderTemplate')
 
 		local isPetHeader = string.match(template, 'PetHeader')
 		local name = overrideName or generateName(nil, unpack(arg))
 		local header = CreateFrame('Frame', name, UIParent, template)
+		header:Hide()
 
-		header:SetAttribute('template', 'SecureUnitButtonTemplate')
-		for i = 1, select('#', arg), 2 do
+		header.attributes = {}
+		header.SetAttribute = setAttribute
+		header.GetAttribute = getAttribute
+		
+		--header:SetAttribute('template', 'SecureUnitButtonTemplate')
+		for i = 1, getn(arg), 2 do
 			local att, val = select(i, unpack(arg))
 			if(not att) then break end
+
 			header:SetAttribute(att, val)
 		end
 
@@ -673,7 +620,8 @@ do
 			self:DisableBlizzard('party')
 		end
 
-		if(visibility) then
+
+		--[[if(visibility) then
 			local type, list = string.split(' ', visibility, 2)
 			if(list and type == 'custom') then
 				RegisterStateDriver(header, 'visibility', list)
@@ -683,7 +631,7 @@ do
 				RegisterStateDriver(header, 'visibility', condition)
 				header.visibility = condition
 			end
-		end
+		end]]
 
 		return header
 	end
