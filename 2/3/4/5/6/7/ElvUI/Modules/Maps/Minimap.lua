@@ -116,6 +116,12 @@ function M:UpdateSettings()
 	E.MinimapWidth = E.MinimapSize
 	E.MinimapHeight = E.MinimapSize
 
+	if E.db.general.reminder.enable then
+		E.RBRWidth = (E.MinimapHeight + ((E.Border - E.Spacing*3) * 5) + E.Border*2) / 6
+	else
+		E.RBRWidth = 0
+	end
+
 	if E.private.general.minimap.enable then
 		Minimap:SetScale(E.MinimapSize / 140)
 	end
@@ -240,6 +246,15 @@ function M:UpdateSettings()
 		MiniMapInstanceDifficulty:ClearAllPoints()
 		MiniMapInstanceDifficulty:SetPoint(pos, Minimap, pos, x, y)
 		MiniMapInstanceDifficulty:SetScale(scale)
+	end
+
+	if ElvConfigToggle then
+		if E.db.general.reminder.enable and E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
+			ElvConfigToggle:Show()
+			ElvConfigToggle:SetWidth(E.RBRWidth)
+		else
+			ElvConfigToggle:Hide()
+		end
 	end
 end
 
