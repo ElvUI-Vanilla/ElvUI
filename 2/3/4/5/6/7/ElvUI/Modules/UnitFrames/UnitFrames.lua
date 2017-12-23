@@ -28,13 +28,11 @@ ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 UF["headerstoload"] = {}
-UF["unitgroupstoload"] = {}
 UF["unitstoload"] = {}
 
 UF["groupPrototype"] = {}
 UF["headerPrototype"] = {}
 UF["headers"] = {}
-UF["groupunits"] = {}
 UF["units"] = {}
 
 UF["statusbars"] = {}
@@ -194,6 +192,7 @@ function UF:ConvertGroupDB(group)
 end
 
 function UF:Construct_UF(frame, unit)
+	frame:SetFrameStrata("LOW")
 	frame:SetScript("OnEnter", UnitFrame_OnEnter)
 	frame:SetScript("OnLeave", UnitFrame_OnLeave)
 
@@ -208,22 +207,17 @@ function UF:Construct_UF(frame, unit)
 	frame.SHADOW_SPACING = 3
 	frame.CLASSBAR_YOFFSET = 0	--placeholder
 	frame.BOTTOM_OFFSET = 0 --placeholder
-	frame:SetFrameStrata("LOW")
 
 	frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
 	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent.TextureParent:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 1)
 
-	if not self["groupunits"][unit] then
-		local stringTitle = E:StringTitle(unit)
-		if string.find(stringTitle, "target") then
-			stringTitle = gsub(stringTitle, "target", "Target")
-		end
-		self["Construct_"..stringTitle.."Frame"](self, frame, unit)
-	else
-		UF["Construct_"..E:StringTitle(self["groupunits"][unit]).."Frames"](self, frame, unit)
+	local stringTitle = E:StringTitle(unit)
+	if string.find(stringTitle, "target") then
+		stringTitle = gsub(stringTitle, "target", "Target")
 	end
+	self["Construct_"..stringTitle.."Frame"](self, frame, unit)
 
 	self:Update_StatusBars()
 	self:Update_FontStrings()
@@ -282,10 +276,6 @@ function UF:GetAuraAnchorFrame(frame, attachTo, isConflict)
 
 	if isConflict or attachTo == "FRAME" then
 		return frame
-	elseif attachTo == "TRINKET" then
-		if select(2, IsInInstance()) == "arena" then
-			return frame.Trinket
-		end
 	elseif attachTo == "BUFFS" then
 		return frame.Buffs
 	elseif attachTo == "DEBUFFS" then
@@ -296,13 +286,6 @@ function UF:GetAuraAnchorFrame(frame, attachTo, isConflict)
 		return frame.Power
 	else
 		return frame
-	end
-end
-
-function UF:ClearChildPoints(...)
-	for i = 1, select("#", unpack(arg)) do
-		local child = select(i, unpack(arg))
-		child:ClearAllPoints()
 	end
 end
 
@@ -391,51 +374,7 @@ function UF:Update_AllFrames()
 		end
 	end
 
-	for unit, group in pairs(self["groupunits"]) do
-		if self.db["units"][group].enable then
-			self[unit]:Enable()
-			self[unit]:Update()
-			E:EnableMover(self[unit].mover:GetName())
-		else
-			self[unit]:Disable()
-			E:DisableMover(self[unit].mover:GetName())
-		end
-	end
-
 	self:UpdateAllHeaders()
-end
-
-function UF:CreateAndUpdateUFGroup(group, numGroup)
-	for i = 1, numGroup do
-		local unit = group..i
-		local frameName = E:StringTitle(unit)
-		frameName = frameName:gsub("t(arget)", "T%1")
-		if not self[unit] then
-			self["groupunits"][unit] = group
-			self[unit] = ElvUF:Spawn(unit, "ElvUF_"..frameName)
-			self[unit].index = i
-			self[unit]:SetID(i)
-		end
-
-		local frameName = E:StringTitle(group)
-		frameName = frameName:gsub("t(arget)", "T%1")
-		self[unit].Update = function()
-			UF["Update_"..E:StringTitle(frameName).."Frames"](self, self[unit], self.db["units"][group])
-		end
-
-		if self.db["units"][group].enable then
-			self[unit]:Enable()
-			self[unit].Update()
-
-			if self[unit].isForced then
-				self:ForceShow(self[unit])
-			end
-			E:EnableMover(self[unit].mover:GetName())
-		else
-			self[unit]:Disable()
-			E:DisableMover(self[unit].mover:GetName())
-		end
-	end
 end
 
 function UF:HeaderUpdateSpecificElement(group, elementName)
@@ -677,8 +616,6 @@ function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName,
 	local db = UF.db["units"][group]
 	ElvUF:SetActiveStyle("ElvUF_"..E:StringTitle(group))
 	local header = ElvUF:SpawnHeader(overrideName, headerTemplate, nil,
-			"initial-width", db.width,
-			"initial-height", db.height,
 			"groupFilter", groupFilter,
 			"showParty", true,
 			"showRaid", true,
@@ -698,23 +635,7 @@ end
 
 function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdate, headerTemplate)
 	local db = self.db["units"][group]
-	local raidFilter = UF.db.smartRaidFilter
 	local numGroups = db.numGroups
-	if(raidFilter and numGroups and (self[group] and not self[group].blockVisibilityChanges)) then
-		local inInstance, instanceType = IsInInstance()
-		if(inInstance and (instanceType == "raid" or instanceType == "pvp")) then
-			local _, _, _, _, maxPlayers = GetInstanceInfo()
-			local mapID = GetCurrentMapAreaID()
-
-			if UF.mapIDs[mapID] then
-				maxPlayers = UF.mapIDs[mapID]
-			end
-
-			if maxPlayers > 0 then
-				numGroups = E:Round(maxPlayers/5)
-			end
-		end
-	end
 
 	if not self[group] then
 		local stringTitle = E:StringTitle(group)
@@ -768,6 +689,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 		end
 
 		if db.enable then
+			self[group]:Show()
 			if self[group].mover then
 				E:EnableMover(self[group].mover:GetName())
 			end
@@ -854,12 +776,6 @@ function UF:LoadUnits()
 	end
 	self["unitstoload"] = nil
 
-	for group, groupOptions in pairs(self["unitgroupstoload"]) do
-		local numGroup, template = unpack(groupOptions)
-		self:CreateAndUpdateUFGroup(group, numGroup, template)
-	end
-	self["unitgroupstoload"] = nil
-
 	for group, groupOptions in pairs(self["headerstoload"]) do
 		local groupFilter, template, headerTemplate
 		if type(groupOptions) == "table" then
@@ -888,23 +804,11 @@ function UF:UpdateAllHeaders(event)
 		ElvUF:DisableBlizzard("party")
 	end
 
-	local smartRaidFilterEnabled = self.db.smartRaidFilter
 	for group, header in pairs(self["headers"]) do
 		if header.numGroups then
 			UF["headerFunctions"][group]:UpdateHeader(header)
 		end
 		UF["headerFunctions"][group]:Update(header)
-
-		local shouldUpdateHeader
-		if header.numGroups == nil or smartRaidFilterEnabled then
-			shouldUpdateHeader = false
-		elseif header.numGroups ~= nil and not smartRaidFilterEnabled then
-			shouldUpdateHeader = true
-		end
-		self:CreateAndUpdateHeaderGroup(group, nil, nil, shouldUpdateHeader)
-
-header:Hide()
-header:Show()
 
 		if group == "party" or group == "raid" then
 			--Update BuffIndicators on profile change as they might be using profile specific data

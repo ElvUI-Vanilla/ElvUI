@@ -43,9 +43,7 @@ function UF:Construct_PartyFrames()
 	return self;
 end
 
-function UF:Update_PartyHeader(header, db)
-	header.db = db
-
+function UF:Update_PartyHeader(header)
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)

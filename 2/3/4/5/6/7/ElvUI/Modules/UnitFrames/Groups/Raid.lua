@@ -42,9 +42,7 @@ function UF:Construct_RaidFrames()
 	return self
 end
 
-function UF:Update_RaidHeader(header, db)
-	header.db = db
-
+function UF:Update_RaidHeader(header)
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
@@ -52,7 +50,6 @@ function UF:Update_RaidHeader(header, db)
 		E:CreateMover(header, header:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID")
 		header.positioned = true
 	end
-
 end
 
 function UF:Update_RaidFrames(frame, db)
