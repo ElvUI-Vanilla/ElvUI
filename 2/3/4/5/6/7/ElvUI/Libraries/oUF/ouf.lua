@@ -104,6 +104,9 @@ for k, v in next, {
 	* unit - unit to be passed to the element's Enable function. Defaults to the frame's unit (string?)
 	--]]
 	EnableElement = function(self, name, unit)
+		local unit = unit or self.unit
+		if not unit then return end
+
 		argcheck(name, 2, 'string')
 		argcheck(unit or self.unit, 3, 'string', 'nil')
 
@@ -312,9 +315,11 @@ local function initObject(unit, style, styleFunc, header, ...)
 		else
 			-- Used to update frames when they change position in a group.
 			object:RegisterEvent('RAID_ROSTER_UPDATE', object.UpdateAllElements)
+
 			object:SetScript("OnClick", function()
 				TargetUnit(object.unit)
 			end)
+
 			if(num > 1) then
 				if(object:GetParent() == header) then
 					object.hasChildren = true

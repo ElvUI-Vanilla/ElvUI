@@ -1,12 +1,12 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Bags");
-local Search = LibStub("LibItemSearch-1.2");
+local Search = LibStub("LibItemSearch-1.2", true);
 
 --Cache global variables
 --Lua functions
 local ipairs, pairs, tonumber, select, unpack = ipairs, pairs, tonumber, select, unpack
 local tinsert, tremove, tsort, twipe = table.insert, table.remove, table.sort, table.wipe
-local floor = math.floor
+local floor, mod = math.floor, math.mod
 local band = bit.band
 local match, gmatch, find = string.match, string.gmatch, string.find
 --WoW API / Variables
@@ -371,7 +371,7 @@ function B:Encode_BagSlot(bag, slot)
 end
 
 function B:Decode_BagSlot(int)
-	return floor(int/100), int % 100
+	return floor(int/100), mod(int, 100)
 end
 
 function B:IsPartial(bag, slot)
@@ -385,7 +385,7 @@ end
 
 function B:DecodeMove(move)
 	local s = floor(move/10000)
-	local t = move%10000
+	local t = mod(move,10000)
 	s = (t>9000) and (s+1) or s
 	t = (t>9000) and (t-10000) or t
 	return s, t
@@ -444,8 +444,8 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 end
 
 function B.Compress(...)
-	for i=1, select("#", ...) do
-		local bags = select(i, ...)
+	for i=1, getn(arg) do
+		local bags = arg[i]
 		B.Stack(bags, bags, B.IsPartial)
 	end
 end
@@ -495,7 +495,7 @@ local blackList = {}
 local blackListQueries = {}
 
 local function buildBlacklist(...)
-	for entry in pairs(...) do
+	for entry in pairs(arg) do
 		local itemName = GetItemInfo(entry)
 		if(itemName) then
 			blackList[itemName] = true
@@ -625,8 +625,8 @@ function B.Fill(sourceBags, targetBags, reverse, canMove)
 end
 
 function B.SortBags(...)
-	for i=1, select("#", ...) do
-		local bags = select(i, ...)
+	for i=1, getn(arg) do
+		local bags = arg[i]
 		for _, slotNum in ipairs(bags) do
 			local bagType = B:IsSpecialtyBag(slotNum)
 			if bagType == false then bagType = "Normal" end

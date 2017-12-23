@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(ElvUI)
 local UF = E:GetModule("UnitFrames")
 
-local tinsert = table.insert;
+local tinsert = table.insert
 
 local CreateFrame = CreateFrame
 local InCombatLockdown = InCombatLockdown
@@ -22,83 +22,36 @@ function UF:Construct_RaidFrames()
 	self.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, self.RaisedElementParent)
 	self.RaisedElementParent:SetFrameLevel(self:GetFrameLevel() + 100)
 
-	self.Health = UF:Construct_HealthBar(self, true, true, "RIGHT");
-	self.Power = UF:Construct_PowerBar(self, true, true, "LEFT");
-	self.Power.frequentUpdates = false;
-	self.Portrait3D = UF:Construct_Portrait(self, "model");
-	self.Portrait2D = UF:Construct_Portrait(self, "texture");
-	self.Name = UF:Construct_NameText(self);
+	self.Health = UF:Construct_HealthBar(self, true, true, "RIGHT")
+	self.Power = UF:Construct_PowerBar(self, true, true, "LEFT")
+	self.Power.frequentUpdates = false
+	self.Portrait3D = UF:Construct_Portrait(self, "model")
+	self.Portrait2D = UF:Construct_Portrait(self, "texture")
+	self.Name = UF:Construct_NameText(self)
+	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
+	self.RaidTargetIndicator = UF:Construct_RaidIcon(self);
 
-	self.InfoPanel = UF:Construct_InfoPanel(self);
-	UF:Update_StatusBars();
-	UF:Update_FontStrings();
-	self.unitframeType = "raid";
+	self.InfoPanel = UF:Construct_InfoPanel(self)
+	UF:Update_StatusBars()
+	UF:Update_FontStrings()
+	self.unitframeType = "raid"
 
-	UF:Update_RaidFrames(self, UF.db["units"]["raid"]);
+	UF:Update_RaidFrames(self, UF.db["units"]["raid"])
 
-	return self;
-end
-
-function UF:RaidSmartVisibility(event)
-	--[[if(not self.db or (self.db and not self.db.enable) or (UF.db and not UF.db.smartRaidFilter) or self.isForced) then
-		self.blockVisibilityChanges = false;
-		return;
-	end
-
-	if(event == "PLAYER_REGEN_ENABLED") then self:UnregisterEvent("PLAYER_REGEN_ENABLED"); end
-
-	if(not InCombatLockdown()) then
-		self.isInstanceForced = nil;
-		local inInstance, instanceType = IsInInstance();
-		if(inInstance and (instanceType == "raid" or instanceType == "pvp")) then
-			local _, _, _, _, maxPlayers = GetInstanceInfo();
-			local mapID = GetCurrentMapAreaID();
-			if(UF.mapIDs[mapID]) then
-				maxPlayers = UF.mapIDs[mapID];
-			end
-
-			UnregisterStateDriver(self, "visibility");
-
-			if(maxPlayers < 40) then
-				self:Show();
-				self.isInstanceForced = true;
-				self.blockVisibilityChanges = false;
-				if(ElvUF_Raid.numGroups ~= E:Round(maxPlayers/5) and event) then
-					UF:CreateAndUpdateHeaderGroup("raid");
-				end
-			else
-				self:Hide();
-				self.blockVisibilityChanges = true;
-			end
-		elseif(self.db.visibility) then
-			RegisterStateDriver(self, "visibility", self.db.visibility);
-			self.blockVisibilityChanges = false;
-			if(ElvUF_Raid.numGroups ~= self.db.numGroups) then
-				UF:CreateAndUpdateHeaderGroup("raid");
-			end
-		end
-	else
-		self:RegisterEvent("PLAYER_REGEN_ENABLED");
-		return;
-	end]]
+	return self
 end
 
 function UF:Update_RaidHeader(header, db)
-	header.db = db;
+	header.db = db
 
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
 		E:CreateMover(header, header:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID")
-
-	--	header:RegisterEvent("PLAYER_LOGIN")
-	--	header:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-	--	header:SetScript("OnEvent", UF["RaidSmartVisibility"])
 		header.positioned = true
 	end
 
-	--UF.RaidSmartVisibility(header)
 end
 
 function UF:Update_RaidFrames(frame, db)
@@ -160,6 +113,10 @@ function UF:Update_RaidFrames(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:Configure_RaidIcon(frame)
+
+	UF:Configure_RaidRoleIcons(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

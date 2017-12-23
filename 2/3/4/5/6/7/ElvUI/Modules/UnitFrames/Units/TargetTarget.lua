@@ -15,7 +15,7 @@ function UF:Construct_TargetTargetFrame(frame)
 	frame.Name = self:Construct_NameText(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
-
+	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOM", E.UIParent, "BOTTOM", 0, 75)
@@ -71,6 +71,8 @@ function UF:Update_TargetTargetFrame(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:Configure_RaidIcon(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + self.db["units"].player.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

@@ -22,7 +22,7 @@ function UF:Construct_PlayerFrame(frame)
 
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
-
+	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
@@ -90,6 +90,8 @@ function UF:Update_PlayerFrame(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:Configure_RaidIcon(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + db.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

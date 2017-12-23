@@ -42,7 +42,7 @@ local function Update(self, event)
 	end
 
 	local unit = self.unit
-	local isAssistant = UnitInRaid(unit) and UnitIsRaidOfficer(unit) and not UnitIsPartyLeader(unit)
+	local isAssistant = UnitInRaid(unit) and not UnitIsPartyLeader(unit)
 	if(isAssistant) then
 		element:Show()
 	else
@@ -68,7 +68,7 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* ...   - the arguments accompanying the event (string)
 	--]]
-	return (self.AssistantIndicator.Override or Update) (self, ...)
+	return (self.AssistantIndicator.Override or Update) (self, unpack(arg))
 end
 
 local function ForceUpdate(element)

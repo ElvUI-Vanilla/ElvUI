@@ -92,15 +92,13 @@ function SecureGroupHeader_OnEvent()
 	end
 end
 
--- relativePoint, xMultiplier, yMultiplier = getRelativePointAnchor( point )
+-- relativePoint, xMultiplier, yMultiplier = getRelativePointAnchor(point)
 -- Given a point return the opposite point and which axes the point
 -- depends on.
-local function getRelativePointAnchor( point )
-	if not point then return end
-
+local function getRelativePointAnchor(point)
 	point = strupper(point)
 	if point == "TOP" then
-		return "BOTTOM", 0, -1;
+		return "BOTTOM", 0, -1
 	elseif point == "BOTTOM" then
 		return "TOP", 0, 1
 	elseif point == "LEFT" then
@@ -120,21 +118,8 @@ local function getRelativePointAnchor( point )
 	end
 end
 
-function ApplyUnitButtonConfiguration( frame )
-   -- for i = 1, getn(arg), 1 do
-	--	  local frame = arg[i];
-
-		--if ( unitWatch ) then
-	   --	  if ( unitWatch == "state" ) then
-		--		  RegisterUnitWatch(frame, true);
-		--	  else
-				RegisterUnitWatch(frame);
-	   --	  end
-		--end
-
-		-- call this function recursively for the current frame's children
-   --	  ApplyUnitButtonConfiguration(frame:GetChildren());
-   -- end
+function ApplyUnitButtonConfiguration(frame)
+	RegisterUnitWatch(frame)
 end
 
 local function ApplyConfig(header, newChild, defaultConfigFunction)
@@ -185,7 +170,7 @@ local function configureChildren(self)
 	local xMultiplier, yMultiplier =  abs(xOffsetMult), abs(yOffsetMult)
 	local xOffset = self:GetAttribute("xOffset") or 0 --default of 0
 	local yOffset = self:GetAttribute("yOffset") or 0 --default of 0
-	local sortDir = self:GetAttribute("sortDir") or "ASC"; --sort ascending by default
+	local sortDir = self:GetAttribute("sortDir") or "ASC" --sort ascending by default
 	local columnSpacing = self:GetAttribute("columnSpacing") or 0
 	local startingIndex = self:GetAttribute("startingIndex") or 1
 
@@ -248,7 +233,7 @@ local function configureChildren(self)
 			columnNum = columnNum + 1
 		end
 
-		local unitButton = self:GetAttribute("child"..buttonNum);
+		local unitButton = self:GetAttribute("child"..buttonNum)
 		unitButton:Hide()
 		unitButton:ClearAllPoints()
 		if buttonNum == 1 then
@@ -304,7 +289,7 @@ local function GetGroupHeaderType(self)
 	local nRaid = GetNumRaidMembers()
 	local nParty = GetNumPartyMembers()
 	if nRaid > 0 and self:GetAttribute("showRaid") then
-		type = "RAID";
+		type = "RAID"
 	elseif (nRaid > 0 or nParty > 0) and self:GetAttribute("showParty") then
 		type = "PARTY"
 	elseif self:GetAttribute("showSolo") then
@@ -366,13 +351,13 @@ function SecureGroupHeader_Update(self)
 	end
 
 	if not groupFilter and not nameList then
-		groupFilter = "1,2,3,4,5,6,7,8";
+		groupFilter = "1,2,3,4,5,6,7,8"
 	end
 
 	if groupFilter then
 		-- filtering by a list of group numbers and/or classes
-		fillTable(tokenTable, strsplit(",", groupFilter));
-		local strictFiltering = self:GetAttribute("strictFiltering"); -- non-strict by default
+		fillTable(tokenTable, strsplit(",", groupFilter))
+		local strictFiltering = self:GetAttribute("strictFiltering") -- non-strict by default
 		for i = start, stop, 1 do
 			local unit, name, subgroup, className = GetGroupRosterInfo(type, i)
 			if name and ((not strictFiltering) and (tokenTable[subgroup] or tokenTable[className])) or (tokenTable[subgroup] and tokenTable[className]) then

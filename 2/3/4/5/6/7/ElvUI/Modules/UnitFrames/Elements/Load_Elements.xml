@@ -4,4 +4,6 @@
 	<Script file="Portrait.lua"/>
 	<Script file="Power.lua"/>
 	<Script file="InfoPanel.lua"/>
+	<Script file="RaidIcon.lua"/>
+	<Script file="RaidRoleIcons.lua"/>
 </Ui>

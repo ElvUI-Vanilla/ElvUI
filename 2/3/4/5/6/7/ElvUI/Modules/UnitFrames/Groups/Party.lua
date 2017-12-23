@@ -4,11 +4,11 @@ local UF = E:GetModule("UnitFrames")
 local _G = _G
 local tinsert = table.insert
 
-local CreateFrame = CreateFrame;
-local InCombatLockdown = InCombatLockdown;
-local UnregisterStateDriver = UnregisterStateDriver;
-local RegisterStateDriver = RegisterStateDriver;
-local IsInInstance = IsInInstance;
+local CreateFrame = CreateFrame
+local InCombatLockdown = InCombatLockdown
+local UnregisterStateDriver = UnregisterStateDriver
+local RegisterStateDriver = RegisterStateDriver
+local IsInInstance = IsInInstance
 
 local ns = oUF
 local ElvUF = ns.oUF
@@ -21,17 +21,16 @@ function UF:Construct_PartyFrames()
 	self.RaisedElementParent = CreateFrame("Frame", nil, self)
 	self.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, self.RaisedElementParent)
 	self.RaisedElementParent:SetFrameLevel(self:GetFrameLevel() + 100)
-	self.BORDER = E.Border
-	self.SPACING = E.Spacing
-	self.SHADOW_SPACING = 3
 
-	self.Health = UF:Construct_HealthBar(self, true, true, "RIGHT");
-	self.Power = UF:Construct_PowerBar(self, true, true, "LEFT");
-	self.Power.frequentUpdates = false;
-	self.Portrait3D = UF:Construct_Portrait(self, "model");
-	self.Portrait2D = UF:Construct_Portrait(self, "texture");
-	self.InfoPanel = UF:Construct_InfoPanel(self);
-	self.Name = UF:Construct_NameText(self);
+	self.Health = UF:Construct_HealthBar(self, true, true, "RIGHT")
+	self.Power = UF:Construct_PowerBar(self, true, true, "LEFT")
+	self.Power.frequentUpdates = false
+	self.Portrait3D = UF:Construct_Portrait(self, "model")
+	self.Portrait2D = UF:Construct_Portrait(self, "texture")
+	self.InfoPanel = UF:Construct_InfoPanel(self)
+	self.Name = UF:Construct_NameText(self)
+	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
+	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 
 	self.unitframeType = "party"
 
@@ -52,37 +51,9 @@ function UF:Update_PartyHeader(header, db)
 
 		E:CreateMover(header, header:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY,ARENA")
 		header.positioned = true
-
-		header:RegisterEvent("PLAYER_LOGIN")
-		header:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		header:SetScript("OnEvent", UF["PartySmartVisibility"])
 	end
-
-	UF.PartySmartVisibility(header)
 end
 
-function UF:PartySmartVisibility(event)
-	--if(not self.db or (self.db and not self.db.enable) or (UF.db and not UF.db.smartRaidFilter) or self.isForced) then
-	--	self.blockVisibilityChanges = false;
-	--	return;
-	--end
-
-	--if(event == "PLAYER_REGEN_ENABLED") then self:UnregisterEvent("PLAYER_REGEN_ENABLED"); end
---self.blockVisibilityChanges = true;
-	--if(not InCombatLockdown()) then
-	--	local inInstance, instanceType = IsInInstance();
-	--	if(inInstance and (instanceType == "raid" or instanceType == "pvp")) then
-		--	UnregisterStateDriver(self, "visibility");
-		--	self:Hide();
-	--		self.blockVisibilityChanges = true;
-	--	elseif(self.db.visibility) then
-		--	RegisterStateDriver(self, "visibility", self.db.visibility);
-	--		self.blockVisibilityChanges = false;
-	--	end
-	--else
-	--	self:RegisterEvent("PLAYER_REGEN_ENABLED");
-	--end
-end
 
 function UF:Update_PartyFrames(frame, db)
 	frame.db = db
@@ -142,8 +113,11 @@ function UF:Update_PartyFrames(frame, db)
 
 	UF:Configure_Portrait(frame)
 
+	UF:Configure_RaidIcon(frame)
 
-	frame:UpdateAllElements("ElvUI_UpdateAllElements");
+	UF:Configure_RaidRoleIcons(frame)
+
+	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
 UF["headerstoload"]["party"] = true

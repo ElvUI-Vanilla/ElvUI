@@ -66,7 +66,7 @@ local function Path(self, ...)
 	* self  - the parent object
 	* event - the event triggering the update (string)
 	--]]
-	return (self.RaidTargetIndicator.Override or Update) (self, ...)
+	return (self.RaidTargetIndicator.Override or Update) (self, unpack(arg))
 end
 
 local function ForceUpdate(element)
