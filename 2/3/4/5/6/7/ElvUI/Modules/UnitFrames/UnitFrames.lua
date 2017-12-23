@@ -573,8 +573,8 @@ function UF.groupPrototype:Configure_Groups(self)
 
 	if self.mover then
 		self.mover.positionOverride = DIRECTION_TO_GROUP_ANCHOR_POINT[direction]
-		--E:UpdatePositionOverride(self.mover:GetName())
-		--self:GetScript("OnSizeChanged")(self) --Mover size is not updated if frame is hidden, so call an update manually
+		E:UpdatePositionOverride(self.mover:GetName())
+		self:GetScript("OnSizeChanged")(self) --Mover size is not updated if frame is hidden, so call an update manually
 	end
 
 	self:SetWidth(width - db.horizontalSpacing)
@@ -600,7 +600,7 @@ function UF.groupPrototype:AdjustVisibility(self)
 				group:Show()
 			else
 				if group.forceShow then
-					--group:Hide()
+					group:Hide()
 					UF:UnshowChildUnits(group, group:GetChildren())
 					group:SetAttribute("startingIndex", 1)
 				else
@@ -647,7 +647,7 @@ function UF.headerPrototype:Update(isForced)
 end
 
 function UF.headerPrototype:Reset()
-	--self:Hide()
+	self:Hide()
 
 	self:SetAttribute("showPlayer", true)
 
@@ -767,13 +767,13 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 			UF["headerFunctions"][group]:Update(self[group])
 		end
 
-		if(db.enable) then
+		if db.enable then
 			if self[group].mover then
 				E:EnableMover(self[group].mover:GetName())
 			end
 		else
 		--	UnregisterStateDriver(self[group], "visibility")
-		--	self[group]:Hide()
+			self[group]:Hide()
 			if self[group].mover then
 				E:DisableMover(self[group].mover:GetName())
 			end
@@ -902,9 +902,11 @@ function UF:UpdateAllHeaders(event)
 			shouldUpdateHeader = true
 		end
 		self:CreateAndUpdateHeaderGroup(group, nil, nil, shouldUpdateHeader)
+
 header:Hide()
 header:Show()
-		if group == "party" or group == "raid" or group == "raid40" then
+
+		if group == "party" or group == "raid" then
 			--Update BuffIndicators on profile change as they might be using profile specific data
 			--self:UpdateAuraWatchFromHeader(group)
 		end

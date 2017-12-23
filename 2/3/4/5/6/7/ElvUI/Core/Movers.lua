@@ -12,9 +12,9 @@ local CreateFrame = CreateFrame
 E.CreatedMovers = {}
 E.DisabledMovers = {}
 
-local function SizeChanged()
-	this.mover:SetWidth(this.dirtyWidth and this.dirtyWidth or this:GetWidth())
-	this.mover:SetHeight(this.dirtyHeight and this.dirtyHeight or this:GetHeight())
+local function SizeChanged(self)
+	self.mover:SetWidth(self.dirtyWidth and self.dirtyWidth or self:GetWidth())
+	self.mover:SetHeight(self.dirtyHeight and self.dirtyHeight or self:GetHeight())
 end
 
 local function GetPoint(obj)
@@ -106,56 +106,56 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 		f:SetPoint(point, anchor, secondaryPoint, x, y)
 	end
 
-	local function OnDragStart()
+	local function OnDragStart(self)
 		if E.db["general"].stickyFrames then
-			Sticky:StartMoving(this, E["snapBars"], f.snapOffset, f.snapOffset, f.snapOffset, f.snapOffset)
+			Sticky:StartMoving(self, E["snapBars"], f.snapOffset, f.snapOffset, f.snapOffset, f.snapOffset)
 		else
-			this:StartMoving()
+			self:StartMoving()
 		end
-		coordFrame.child = this
+		coordFrame.child = self
 		coordFrame:Show()
 		isDragging = true
 	end
 
-	local function OnDragStop()
+	local function OnDragStop(self)
 		isDragging = false
 		if E.db["general"].stickyFrames then
-			Sticky:StopMoving(this)
+			Sticky:StopMoving(self)
 		else
-			this:StopMovingOrSizing()
+			self:StopMovingOrSizing()
 		end
 
-		local x, y, point = E:CalculateMoverPoints(this)
-		this:ClearAllPoints()
+		local x, y, point = E:CalculateMoverPoints(self)
+		self:ClearAllPoints()
 		local overridePoint
-		if(this.positionOverride) then
-			if(this.positionOverride == "BOTTOM" or this.positionOverride == "TOP") then
+		if(self.positionOverride) then
+			if(self.positionOverride == "BOTTOM" or self.positionOverride == "TOP") then
 				overridePoint = "BOTTOM"
 			else
 				overridePoint = "BOTTOMLEFT"
 			end
 		end
 
-		this:SetPoint(this.positionOverride or point, E.UIParent, overridePoint and overridePoint or point, x, y)
-		if(this.positionOverride) then
-			this.parent:ClearAllPoints()
-			this.parent:SetPoint(this.positionOverride, this, this.positionOverride)
+		self:SetPoint(self.positionOverride or point, E.UIParent, overridePoint and overridePoint or point, x, y)
+		if(self.positionOverride) then
+			self.parent:ClearAllPoints()
+			self.parent:SetPoint(self.positionOverride, self, self.positionOverride)
 		end
 
 		E:SaveMoverPosition(name)
 
 		if ElvUIMoverNudgeWindow then
-			E:UpdateNudgeFrame(this, x, y)
+			E:UpdateNudgeFrame(self, x, y)
 		end
 
 		coordFrame.child = nil
 		coordFrame:Hide()
 
 		if postdrag ~= nil and type(postdrag) == "function" then
-			postdrag(this, E:GetScreenQuadrant(this))
+			postdrag(self, E:GetScreenQuadrant(self))
 		end
 
-		this:SetUserPlaced(false)
+		self:SetUserPlaced(false)
 	end
 
 	local function OnEnter()
@@ -201,16 +201,16 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 		end
 	end
 
-	f:SetScript("OnDragStart", OnDragStart)
+	f:SetScript("OnDragStart", function() OnDragStart(f) end)
 	f:SetScript("OnMouseUp", E.AssignFrameToNudge)
-	f:SetScript("OnDragStop", OnDragStop)
+	f:SetScript("OnDragStop", function() OnDragStop(f) end)
 	f:SetScript("OnEnter", OnEnter)
 	f:SetScript("OnMouseDown", OnMouseDown)
 	f:SetScript("OnLeave", OnLeave)
 	f:SetScript("OnShow", OnShow)
 	f:SetScript("OnMouseWheel", OnMouseWheel)
 
-	parent:SetScript("OnSizeChanged", SizeChanged)
+	parent:SetScript("OnSizeChanged", function() SizeChanged(parent) end)
 	parent.mover = f
 
 	parent:ClearAllPoints()

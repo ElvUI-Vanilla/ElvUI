@@ -30,7 +30,7 @@ E.ConfigModeLocalizedStrings = {
 	SOLO = SOLO,
 	PARTY = PARTY,
 	RAID = RAID,
-	ACTIONBARS = ACTIONBARS_LABEL
+	ACTIONBARS = ACTIONBAR_LABEL
 }
 
 function E:Grid_Show()
@@ -148,7 +148,7 @@ local function ConfigMode_OnClick()
 end
 
 local function ConfigMode_Initialize()
-	local info = UIDropDownMenu_CreateInfo()
+	local info = {}
 	info.func = ConfigMode_OnClick
 
 	for _, configMode in ipairs(E.ConfigModeLayouts) do
