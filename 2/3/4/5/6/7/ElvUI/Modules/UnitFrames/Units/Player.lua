@@ -23,6 +23,8 @@ function UF:Construct_PlayerFrame(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
+	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
@@ -82,6 +84,10 @@ function UF:Update_PlayerFrame(frame, db)
 	_G[frame:GetName().."Mover"]:SetHeight(frame:GetHeight())
 
 	UF:Configure_InfoPanel(frame)
+
+	UF:Configure_RestingIndicator(frame)
+
+	UF:Configure_CombatIndicator(frame)
 
 	UF:Configure_HealthBar(frame)
 

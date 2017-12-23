@@ -232,19 +232,12 @@ local function InitializeSecureMenu()
 	local menu
 	if(unitType == 'party') then
 		menu = 'PARTY'
-	elseif(unitType == 'focus') then
-		menu = 'RAID_TARGET_ICON'
---	elseif(unitType == 'arenapet' or unitType == 'arena') then
-	elseif(unitType == 'arena') then
-		menu = 'RAID_TARGET_ICON'
 	elseif(UnitIsUnit(unit, 'player')) then
 		menu = 'SELF'
 	elseif(UnitIsUnit(unit, 'pet')) then
 		menu = 'PET'
 	elseif(UnitIsPlayer(unit)) then
-		if(UnitInRaid(unit)) then
-			menu = 'RAID_PLAYER'
-		elseif(UnitInParty(unit)) then
+		if(UnitInRaid(unit) or UnitInParty(unit)) then
 			menu = 'PARTY'
 		else
 			menu = 'PLAYER'
@@ -299,13 +292,15 @@ local function initObject(unit, style, styleFunc, header, ...)
 		-- We have to force update the frames when PEW fires.
 		object:RegisterEvent('PLAYER_ENTERING_WORLD', object.UpdateAllElements)
 
-		if(not header) then
-			-- No header means it's a frame created through :Spawn().
-			object.menu = togglemenu
-			object:SetScript("OnClick", function()
-				TargetUnit(object.unit)
-			end)
+		object:SetScript("OnClick", function()
+			if arg1 == "RightButton" then
+				togglemenu(this, object.unit)
+			else
+				TargetUnit(this.unit)
+			end
+		end)
 
+		if(not header) then
 			-- Other target units are handled by :HandleUnit().
 			if(suffix == 'target') then
 				enableTargetUpdate(object)
@@ -315,10 +310,6 @@ local function initObject(unit, style, styleFunc, header, ...)
 		else
 			-- Used to update frames when they change position in a group.
 			object:RegisterEvent('RAID_ROSTER_UPDATE', object.UpdateAllElements)
-
-			object:SetScript("OnClick", function()
-				TargetUnit(object.unit)
-			end)
 
 			if(num > 1) then
 				if(object:GetParent() == header) then

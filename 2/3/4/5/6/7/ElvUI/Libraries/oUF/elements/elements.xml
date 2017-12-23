@@ -4,9 +4,9 @@
 	<Script file="health.lua"/>
 	<Script file="raidtargetindicator.lua"/>
 	<Script file="leaderindicator.lua"/>
-	<!--<Script file="combatindicator.lua"/>
+	<Script file="combatindicator.lua"/>
 	<Script file="restingindicator.lua"/>
-	<Script file="pvpindicator.lua"/>-->
+	<!--<Script file="pvpindicator.lua"/>-->
 	<Script file="portrait.lua"/>
 <!--
 	<Script file="range.lua"/>
