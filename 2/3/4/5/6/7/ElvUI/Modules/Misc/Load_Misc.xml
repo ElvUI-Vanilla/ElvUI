@@ -2,5 +2,4 @@
 	<Script file="Misc.lua"/>
 	<Script file="AFK.lua"/>
 	<Script file="ChatBubbles.lua"/>
-	<Script file="RaidBuffReminder.lua"/>
 </Ui>

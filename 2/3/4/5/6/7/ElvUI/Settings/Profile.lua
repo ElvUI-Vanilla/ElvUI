@@ -76,15 +76,6 @@ P["general"] = {
 			},
 		}
 	},
-	["reminder"] = {
-		["enable"] = false,
-		["durations"] = true,
-		["reverse"] = true,
-		["position"] = "RIGHT",
-		["font"] = "Homespun",
-		["fontSize"] = 10,
-		["fontOutline"] = "MONOCHROMEOUTLINE"
-	},
 }
 
 -- Data Bars
