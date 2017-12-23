@@ -3,11 +3,43 @@ local TT = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0");
 
 --Cache global variables
 --Lua functions
+local _G = _G
 local unpack = unpack
 local twipe, tinsert, tconcat = table.wipe, table.insert, table.concat
+local floor = math.floor
+local find, format, match = string.find, string.format, string.match
 --WoW API / Variables
+local IsShiftKeyDown = IsShiftKeyDown
+local UnitExists = UnitExists
+local UnitLevel = UnitLevel
+local UnitIsPlayer = UnitIsPlayer
+local UnitClass = UnitClass
+local UnitName = UnitName
+local GetGuildInfo = GetGuildInfo
+local UnitPVPName = UnitPVPName
+local GetQuestDifficultyColor = GetQuestDifficultyColor
+local UnitRace = UnitRace
+local UnitIsTapped = UnitIsTapped
+local UnitIsTappedByPlayer = UnitIsTappedByPlayer
+local UnitReaction = UnitReaction
+local UnitClassification = UnitClassification
+local UnitCreatureType = UnitCreatureType
+local UnitIsPVP = UnitIsPVP
+local GetNumPartyMembers = GetNumPartyMembers
+local GetNumRaidMembers = GetNumRaidMembers
+local UnitIsUnit = UnitIsUnit
+local SetTooltipMoney = SetTooltipMoney
+local TARGET = TARGET
+local DEAD = DEAD
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
+local FACTION_ALLIANCE = FACTION_ALLIANCE
+local FACTION_HORDE = FACTION_HORDE
+local LEVEL = LEVEL
+local FACTION_BAR_COLORS = FACTION_BAR_COLORS
+local ID = ID
 
-local targetList, inspectCache = {}, {}
+local targetList = {}
 
 local classification = {
 	worldboss = format("|cffAF5050 %s|r", BOSS),
@@ -18,8 +50,6 @@ local classification = {
 
 function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 	if E.private.tooltip.enable ~= true then return end
-	if not self.db.visibility then return; end
-
 	if tt:GetAnchorType() ~= "ANCHOR_NONE" then return end
 
 	if parent then
@@ -89,9 +119,9 @@ function TT:RemoveTrashLines(tt)
 end
 
 function TT:GetLevelLine(tt, offset)
-	for i=offset, tt:NumLines() do
+	for i = offset, tt:NumLines() do
 		local tipText = _G["GameTooltipTextLeft"..i]
-		if tipText:GetText() and string.find(tipText:GetText(), LEVEL) then
+		if tipText:GetText() and find(tipText:GetText(), LEVEL) then
 			return tipText
 		end
 	end
@@ -201,10 +231,24 @@ function TT:SetUnit(tt, unit)
 	self:UPDATE_MOUSEOVER_UNIT(nil, unit)
 end
 
+function TT:GameTooltipStatusBar_OnValueChanged()
+	if not arg1 or not self.db.healthBar.text or not this.text then return end
+
+	local _, max = this:GetMinMaxValues()
+	if arg1 > 0 and max == 1 then
+		this.text:SetFormattedText("%d%%", floor(arg1 * 100));
+		this:SetStatusBarColor(TAPPED_COLOR.r, TAPPED_COLOR.g, TAPPED_COLOR.b) --most effeciant?
+	elseif arg1 == 0 then
+		this.text:SetText(DEAD)
+	else
+		this.text:SetText(E:ShortValue(arg1).." / "..E:ShortValue(max))
+	end
+end
+
 function TT:SetItemRef(link)
-	if string.find(link, "^item:") then
-		local id = tonumber(string.match(link, "(%d+)"))
-		ItemRefTooltip:AddLine(string.format("|cFFCA3C3C%s|r %d", ID, id))
+	if find(link, "^item:") then
+		local id = tonumber(match(link, "(%d+)"))
+		ItemRefTooltip:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
 		ItemRefTooltip:Show()
 	end
 end
@@ -269,6 +313,7 @@ function TT:Initialize()
 	E.Tooltip = TT
 
 	GameTooltipStatusBar:SetHeight(self.db.healthBar.height)
+	GameTooltipStatusBar:SetScript("OnValueChanged", nil)
 	GameTooltipStatusBar.text = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
 	GameTooltipStatusBar.text:SetPoint("CENTER", GameTooltipStatusBar, 0, -3)
 	E:FontTemplate(GameTooltipStatusBar.text, E.LSM:Fetch("font", self.db.healthBar.font), self.db.healthBar.fontSize, self.db.healthBar.fontOutline)
@@ -284,6 +329,8 @@ function TT:Initialize()
 	self:SecureHook("SetItemRef")
 	self:SecureHook(GameTooltip, "SetUnit")
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+
+	self:HookScript(GameTooltipStatusBar, "OnValueChanged", "GameTooltipStatusBar_OnValueChanged")
 end
 
 local function InitializeCallback()
