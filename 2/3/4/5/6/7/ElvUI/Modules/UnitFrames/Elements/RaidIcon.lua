@@ -3,7 +3,7 @@ local UF = E:GetModule("UnitFrames");
 
 function UF:Construct_RaidIcon(frame)
 	local tex = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
-	tex:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+	tex:SetTexture([[Interface\AddOns\ElvUI\media\textures\raidicons]])
 	tex:SetWidth(18)
 	tex:SetHeight(18)
 	tex:SetPoint("CENTER", frame.Health, "TOP", 0, 2)

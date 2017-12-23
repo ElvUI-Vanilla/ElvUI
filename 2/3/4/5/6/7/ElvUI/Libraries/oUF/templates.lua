@@ -208,6 +208,7 @@ local function configureChildren(self)
 			local childAttr = "child"..i
 			if not self:GetAttribute(childAttr) then
 				local newButton = CreateFrame("Button", name.."UnitButton"..i, self)
+				newButton:SetFrameStrata("LOW")
 				SetupUnitButtonConfiguration(self, newButton)
 				self:SetAttribute(childAttr, newButton)
 			end

@@ -211,8 +211,9 @@ function UF:Construct_UF(frame, unit)
 	frame:SetFrameStrata("LOW")
 
 	frame.RaisedElementParent = CreateFrame("Frame", nil, frame)
-	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 100)
+	frame.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, frame.RaisedElementParent)
+	frame.RaisedElementParent.TextureParent:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 1)
 
 	if not self["groupunits"][unit] then
 		local stringTitle = E:StringTitle(unit)
@@ -722,6 +723,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 
 		if db.numGroups then
 			self[group] = CreateFrame("Frame", "ElvUF_"..stringTitle, E.UIParent)
+			self[group]:SetFrameStrata("LOW")
 			self[group].groups = {}
 			self[group].groupName = group
 			self[group].template = self[group].template or template
