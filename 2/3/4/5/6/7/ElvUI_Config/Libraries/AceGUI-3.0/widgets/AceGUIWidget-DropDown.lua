@@ -17,8 +17,27 @@ local _G = AceCore._G
 -- List them here for Mikk's FindGlobals script
 -- GLOBALS: CLOSE
 
-local fixlevels = AceGUI.fixlevels
-local fixstrata = AceGUI.fixstrata
+local function fixlevels(parent,...)
+	local i = 1
+	local child = arg[i]
+	while child do
+		child:SetFrameLevel(parent:GetFrameLevel()+1)
+		fixlevels(child, child:GetChildren())
+		i = i + 1
+		child = arg[i]
+	end
+end
+
+local function fixstrata(strata, parent, ...)
+	local i = 1
+	local child = arg[i]
+	parent:SetFrameStrata(strata)
+	while child do
+		fixstrata(strata, child, child:GetChildren())
+		i = i + 1
+		child = arg[i]
+	end
+end
 
 do
 	local widgetType = "Dropdown-Pullout"
@@ -187,7 +206,7 @@ do
 			height = height + 16
 		end
 		itemFrame:SetHeight(height)
-		fixstrata("TOOLTIP", frame)
+		fixstrata("TOOLTIP", frame, frame:GetChildren())
 		frame:Show()
 		self:Fire("OnOpen")
 	end
@@ -447,7 +466,7 @@ do
 		pullout:SetCallback("OnOpen", OnPulloutOpen)
 		self.pullout.frame:SetFrameLevel(self.frame:GetFrameLevel() + 1)
 		local frame = self.pullout.frame
-		fixlevels(frame)
+		fixlevels(self.pullout.frame, self.pullout.frame:GetChildren())
 
 		self:SetHeight(44)
 		self:SetWidth(200)

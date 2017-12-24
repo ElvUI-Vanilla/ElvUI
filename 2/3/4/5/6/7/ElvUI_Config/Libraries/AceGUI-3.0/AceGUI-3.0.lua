@@ -105,36 +105,16 @@ do
 	end
 end
 
--- Ace3v: when a container contains many children, we can only use the variable arguments
-local function _fixlevels(parent, ...)
-	local lv = parent:GetFrameLevel() + 1
-	for i = 1, tgetn(arg) do
-		local child = arg[i]
-		child:SetFrameLevel(lv)
-		_fixlevels(child, child:GetChildren())
+local function fixlevels(parent,...)
+	local i = 1
+	local child = arg[i]
+	while child do
+		child:SetFrameLevel(parent:GetFrameLevel() + (parent.backdrop and -1 or 2))
+		fixlevels(child, child:GetChildren())
+		i = i + 1
+		child = arg[i]
 	end
 end
-
-local function fixlevels(parent)
-	return _fixlevels(parent, parent:GetChildren())
-end
-AceGUI.fixlevels = fixlevels
-
--- Ace3v: attention! this function is recursive
-local function _fixstrata(strata, parent, ...)
-	parent:SetFrameStrata(strata)
-	for i = 1, tgetn(arg) do
-		local child = arg[i]
-		_fixstrata(strata, child, child:GetChildren())
-	end
-end
-
-local function fixstrata(strata, parent)
-	return _fixstrata(strata, parent, parent:GetChildren())
-end
-AceGUI.fixstrata = fixstrata
-
-
 -------------------
 -- API Functions --
 -------------------
@@ -266,7 +246,7 @@ do
 		frame:SetParent(nil)
 		frame:SetParent(parent.content)
 		self.parent = parent
-		fixlevels(frame)
+		fixlevels(frame, frame:GetChildren())
 	end
 
 	WidgetBase.SetCallback = function(self, name, func)
@@ -463,8 +443,8 @@ do
 		end
 	end
 
-	WidgetContainerBase.SetParent = function(self, parent)
-		WidgetBase.SetParent(self, parent)
+	--[[WidgetContainerBase.SetParent = function(self, parent)
+		--WidgetBase.SetParent(self, parent)
 
 		local lv = self.frame:GetFrameLevel()
 		self.content:SetFrameLevel(lv+1)
@@ -473,7 +453,7 @@ do
 			local child = children[i]
 			child:SetParent(self)
 		end
-	end
+	end]]
 
 	WidgetContainerBase.SetLayout = function(self, Layout)
 		self.LayoutFunc = AceGUI:GetLayout(Layout)

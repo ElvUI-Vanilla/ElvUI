@@ -2085,21 +2085,14 @@ E.Options.args.unitframe = {
 								["FILL"] = L["Fill"]
 							},
 						},
-						smartRaidFilter = {
-							order = 4,
-							name = L["Smart Raid Filter"],
-							desc = L["Override any custom visibility setting in certain situations, EX: Only show groups 1 and 2 inside a 10 man instance."],
-							type = "toggle",
-							set = function(info, value) E.db.unitframe[ info[getn(info)] ] = value; UF:UpdateAllHeaders() end
-						},
 						targetOnMouseDown = {
-							order = 5,
+							order = 4,
 							name = L["Target On Mouse-Down"],
 							desc = L["Target units on mouse down rather than mouse up. \n\n|cffFF0000Warning: If you are using the addon 'Clique' you may have to adjust your clique settings when changing this."],
 							type = "toggle",
 						},
 						auraBlacklistModifier = {
-							order = 6,
+							order = 5,
 							type = "select",
 							name = L["Blacklist Modifier"],
 							desc = L["You need to hold this modifier down in order to blacklist an aura by right-clicking the icon. Set to None to disable the blacklist functionality."],
@@ -2111,7 +2104,7 @@ E.Options.args.unitframe = {
 							},
 						},
 						resetFilters = {
-							order = 7,
+							order = 6,
 							name = L["Reset Aura Filters"],
 							type = "execute",
 							func = function(info, value)

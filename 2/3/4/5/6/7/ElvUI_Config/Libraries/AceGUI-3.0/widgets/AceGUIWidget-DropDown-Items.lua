@@ -12,8 +12,16 @@ local tgetn = table.getn
 local PlaySound = PlaySound
 local CreateFrame = CreateFrame
 
-local fixlevels = AceGUI.fixlevels
-local fixstrata = AceGUI.fixstrata
+local function fixlevels(parent,...)
+	local i = 1
+	local child = arg[i]
+	while child do
+		child:SetFrameLevel(parent:GetFrameLevel()+1)
+		fixlevels(child, child:GetChildren())
+		i = i + 1
+		child = arg[i]
+	end
+end
 
 -- ItemBase is the base "class" for all dropdown items.
 -- Each item has to use ItemBase.Create(widgetType) to
@@ -78,7 +86,7 @@ function ItemBase.SetPullout(self, pullout)
 	local itemFrame = pullout.itemFrame
 	self.frame:SetParent(itemFrame)
 	self.parent = itemFrame
-	fixlevels(itemFrame)
+	fixlevels(pullout.itemFrame, pullout.itemFrame:GetChildren())
 end
 
 -- exported

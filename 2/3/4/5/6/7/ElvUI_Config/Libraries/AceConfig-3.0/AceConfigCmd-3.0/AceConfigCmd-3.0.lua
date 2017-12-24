@@ -23,7 +23,7 @@ if not AceConfigCmd then return end
 local AceCore = LibStub("AceCore-3.0")
 local Dispatchers = AceCore.Dispatchers
 local strtrim = AceCore.strtrim
-local strsplit = AceCore.strsplit
+--local strsplit = AceCore.strsplit
 local new, del = AceCore.new, AceCore.del
 local wipe = AceCore.wipe
 

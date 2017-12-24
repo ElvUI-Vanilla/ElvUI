@@ -29,17 +29,9 @@ local GetNumPartyMembers = GetNumPartyMembers
 local GetNumRaidMembers = GetNumRaidMembers
 local UnitIsUnit = UnitIsUnit
 local SetTooltipMoney = SetTooltipMoney
-local TARGET = TARGET
-local DEAD = DEAD
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
-local FACTION_ALLIANCE = FACTION_ALLIANCE
-local FACTION_HORDE = FACTION_HORDE
-local LEVEL = LEVEL
-local FACTION_BAR_COLORS = FACTION_BAR_COLORS
-local ID = ID
 
 local targetList = {}
+local TAPPED_COLOR = {r = 0.6, g = 0.6, b = 0.6}
 
 local classification = {
 	worldboss = format("|cffAF5050 %s|r", BOSS),
@@ -236,7 +228,7 @@ function TT:GameTooltipStatusBar_OnValueChanged()
 
 	local _, max = this:GetMinMaxValues()
 	if arg1 > 0 and max == 1 then
-		this.text:SetFormattedText("%d%%", floor(arg1 * 100));
+		this.text:SetText(format("%d%%", floor(arg1 * 100)))
 		this:SetStatusBarColor(TAPPED_COLOR.r, TAPPED_COLOR.g, TAPPED_COLOR.b) --most effeciant?
 	elseif arg1 == 0 then
 		this.text:SetText(DEAD)

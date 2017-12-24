@@ -6,14 +6,11 @@ local Type, Version = "TreeGroup", 40
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local AceCore = LibStub("AceCore-3.0")
-local strsplit = AceCore.strsplit
-local _G = AceCore._G
-
 -- Lua APIs
 local next, pairs, ipairs, assert, type = next, pairs, ipairs, assert, type
 local math_min, math_max, floor = math.min, math.max, floor
-local tgetn, tremove, unpack, tconcat = table.getn, table.remove, unpack, table.concat
+local select, tremove, unpack, tconcat = select, table.remove, unpack, table.concat
+local tgetn = table.getn
 local strfmt = string.format
 
 -- WoW APIs
@@ -170,22 +167,13 @@ local function FirstFrameUpdate()
 	self:RefreshTree()
 end
 
-local BuildUniqueValue
-do
-local args = {nil,nil,nil,nil,nil,nil,nil,nil,nil,nil}
-function BuildUniqueValue(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-	args[1] = a1
-	args[2] = a2
-	args[3] = a3
-	args[4] = a4
-	args[5] = a5
-	args[6] = a6
-	args[7] = a7
-	args[8] = a8
-	args[9] = a9
-	args[10] = a10
-	return tconcat(tmp, "\001", 1, tgetn(args))
-end
+local function BuildUniqueValue(...)
+	local n = tgetn(arg)
+	if n == 1 then
+		return arg[1]
+	else
+		return (unpack(arg)).."\001"..BuildUniqueValue(select(2, unpack(arg)))
+	end
 end
 
 --[[-----------------------------------------------------------------------------
@@ -226,7 +214,7 @@ local function Button_OnEnter()
 	if self.enabletooltips then
 		GameTooltip:SetOwner(this, "ANCHOR_NONE")
 		GameTooltip:SetPoint("LEFT",this,"RIGHT")
-		GameTooltip:SetText(this.text:GetText() or "", 1, .82, 0, 1)
+		GameTooltip:SetText(this.text:GetText() or "", 1, .82, 0, true)
 
 		GameTooltip:Show()
 	end
@@ -283,14 +271,14 @@ end
 local function Dragger_OnMouseUp()
 	local treeframe = this:GetParent()
 	local self = treeframe.obj
-	local frame = treeframe:GetParent()
+	local this = treeframe:GetParent()
 	treeframe:StopMovingOrSizing()
 	--treeframe:SetScript("OnUpdate", nil)
 	treeframe:SetUserPlaced(false)
 	--Without this :GetHeight will get stuck on the current height, causing the tree contents to not resize
 	treeframe:SetHeight(0)
-	treeframe:SetPoint("TOPLEFT", frame, "TOPLEFT",0,0)
-	treeframe:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",0,0)
+	treeframe:SetPoint("TOPLEFT", this, "TOPLEFT",0,0)
+	treeframe:SetPoint("BOTTOMLEFT", this, "BOTTOMLEFT",0,0)
 
 	local status = self.status or self.localstatus
 	status.treewidth = treeframe:GetWidth()
@@ -305,10 +293,7 @@ end
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
-local methods
-do
-local select_args = {nil,nil,nil,nil,nil,nil,nil,nil,nil,nil}
-methods = {
+local methods = {
 	["OnAcquire"] = function(self)
 		self:SetTreeWidth(DEFAULT_TREE_WIDTH, DEFAULT_TREE_SIZABLE)
 		self:EnableButtonTooltips(true)
@@ -343,17 +328,14 @@ methods = {
 		button:SetWidth(175)
 		button:SetHeight(18)
 
-		local toggle = CreateFrame("Button", nil, button)
-		toggle.obj = button
-		button.toggle = toggle
+		local toggle = CreateFrame("Button", "$parentToggle", button)
 		toggle:SetWidth(14)
 		toggle:SetHeight(14)
-		toggle:ClearAllPoints()
 		toggle:SetPoint("TOPRIGHT", button, "TOPRIGHT", -6, -1)
-		toggle:SetScript("OnClick", Button_OnClick)
 		toggle:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-UP")
 		toggle:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-DOWN")
 		toggle:SetHighlightTexture("Interface\Buttons\UI-PlusButton-Hilight", "ADD")
+		button.toggle = toggle
 
 		local text = button:CreateFontString()
 		button.text = text
@@ -437,6 +419,7 @@ methods = {
 	end,
 
 	["RefreshTree"] = function(self,scrollToSelection)
+		local t = GetTime()
 		local buttons = self.buttons
 		local lines = self.lines
 
@@ -545,7 +528,6 @@ methods = {
 			button:Show()
 			buttonnum = buttonnum + 1
 		end
-
 	end,
 
 	["SetSelected"] = function(self, value)
@@ -556,30 +538,20 @@ methods = {
 		end
 	end,
 
-	["Select"] = function(self, uniquevalue, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	["Select"] = function(self, uniquevalue, ...)
 		self.filter = false
 		local status = self.status or self.localstatus
 		local groups = status.groups
-		select_args[1] = a1
-		select_args[2] = a2
-		select_args[3] = a3
-		select_args[4] = a4
-		select_args[5] = a5
-		select_args[6] = a6
-		select_args[7] = a7
-		select_args[8] = a8
-		select_args[9] = a9
-		select_args[10] = a10
-		for i = 1, tgetn(select_args) do
-			groups[tconcat(select_args, "\001", 1, i)] = true
+		for i = 1, tgetn(arg) do
+			groups[tconcat(arg, "\001", 1, i)] = true
 		end
 		status.selected = uniquevalue
 		self:RefreshTree(true)
 		self:Fire("OnGroupSelected", 1, uniquevalue)
 	end,
 
-	["SelectByPath"] = function(self, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-		self:Select(BuildUniqueValue(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10), a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	["SelectByPath"] = function(self, ...)
+		self:Select(BuildUniqueValue(unpack(arg)), unpack(arg))
 	end,
 
 	["SelectByValue"] = function(self, uniquevalue)
@@ -667,7 +639,6 @@ methods = {
 		self:SetHeight((height or 0) + 20)
 	end
 }
-end -- method
 
 --[[-----------------------------------------------------------------------------
 Constructor

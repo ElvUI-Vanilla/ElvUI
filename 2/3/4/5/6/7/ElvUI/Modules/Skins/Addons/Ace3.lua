@@ -354,7 +354,7 @@ function S:SkinAce3()
 					button.toggle.SetPushedTexture = E.noop
 					button.toggleText = button.toggle:CreateFontString(nil, "OVERLAY")
 					E:FontTemplate(button.toggleText, nil, 19)
-					-- button.toggleText:SetPoint("CENTER")
+					button.toggleText:SetPoint("CENTER", 0, 0)
 					button.toggleText:SetText("+")
 					return button
 				end

@@ -6,8 +6,6 @@ local Type, Version = "ScrollFrame", 24
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local fixlevels = AceGUI.fixlevels
-
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
 local min, max, floor, abs = math.min, math.max, math.floor, math.abs
@@ -150,6 +148,7 @@ local methods = {
 
 	["OnWidthSet"] = function(self, width)
 		local content = self.content
+		content:SetWidth(width)
 		content.width = width
 	end,
 
@@ -170,7 +169,7 @@ local function Constructor()
 	scrollframe:SetPoint("BOTTOMRIGHT",0,0)
 	scrollframe:EnableMouseWheel(true)
 	scrollframe:SetScript("OnMouseWheel", ScrollFrame_OnMouseWheel)
-	scrollframe:SetScript("OnSizeChanged", ScrollFrame_OnSizeChanged)
+--	scrollframe:SetScript("OnSizeChanged", ScrollFrame_OnSizeChanged)
 
 	local scrollbar = CreateFrame("Slider", format("AceConfigDialogScrollFrame%dScrollBar", num), scrollframe, "UIPanelScrollBarTemplate")
 	scrollbar:SetPoint("TOPLEFT", scrollframe, "TOPRIGHT", 4, -16)

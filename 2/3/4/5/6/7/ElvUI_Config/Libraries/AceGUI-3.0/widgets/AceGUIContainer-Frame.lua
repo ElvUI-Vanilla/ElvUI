@@ -105,7 +105,7 @@ local methods = {
 
 	["OnHeightSet"] = function(self, height)
 		local content = self.content
-		local contentheight = height - 57
+		local contentheight = height - 67
 		if contentheight < 0 then
 			contentheight = 0
 		end
@@ -278,7 +278,7 @@ local function Constructor()
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", 17, -27)
-	content:SetPoint("BOTTOMRIGHT", -17, 40)
+	--content:SetPoint("BOTTOMRIGHT", -17, 40)
 
 	local widget = {
 		localstatus = {},

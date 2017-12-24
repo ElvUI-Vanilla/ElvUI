@@ -8,8 +8,16 @@
 
 Libraries\Load_Libraries.xml
 locales\load_locales.xml
-core.lua
-actionbars.lua
+Core.lua
 General.lua
+ActionBars.lua
+Auras.lua
+Bags.lua
+Chat.lua
+DataTexts.lua
+Filters.lua
+NamePlates.lua
+Skins.lua
+Tooltip.lua
 DataBars.lua
-UnitFrames.lua
+Maps.lua

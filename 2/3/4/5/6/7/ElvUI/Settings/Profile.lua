@@ -319,7 +319,6 @@ P["unitframe"] = {
 	["fontOutline"] = "MONOCHROMEOUTLINE",
 	["OORAlpha"] = 0.35,
 	["debuffHighlighting"] = "FILL",
-	["smartRaidFilter"] = true,
 	["targetOnMouseDown"] = false,
 	["auraBlacklistModifier"] = "SHIFT",
 	["thinBorders"] = false,
@@ -2364,7 +2363,7 @@ P["actionbar"] = {
 		["showGrid"] = true,
 	},
 	["bar6"] = {
-		["enabled"] = false,
+		["enabled"] = true,
 		["mouseover"] = false,
 		["buttons"] = 12,
 		["buttonsPerRow"] = 12,

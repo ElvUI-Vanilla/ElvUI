@@ -10,7 +10,7 @@ local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AceConfigDialog then return end
 
 local AceCore = LibStub("AceCore-3.0")
-local wipe, strsplit = AceCore.wipe, AceCore.strsplit
+local wipe = AceCore.wipe
 local safecall = AceCore.safecall
 local Dispatchers = AceCore.Dispatchers
 local countargs = AceCore.countargs
@@ -1423,11 +1423,9 @@ local function TreeOnButtonEnter(widget, event, _, uniquevalue, button)
 	local appName = user.appName
 
 	local feedpath = new()
-	local l = tgetn(path)
-	for i = 1, l do
+	for i = 1, tgetn(path) do
 		feedpath[i] = path[i]
 	end
-	tsetn(feedpath,l)
 
 	BuildPath(feedpath, strsplit("\001", uniquevalue))
 	local group = options
