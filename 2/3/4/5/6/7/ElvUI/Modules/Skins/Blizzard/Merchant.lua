@@ -4,7 +4,6 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local select = select
 local unpack = unpack
 local match, split = string.match, string.split
 --WoW API / Variables
@@ -52,13 +51,14 @@ local function LoadSkin()
 
 	E:StyleButton(MerchantRepairItemButton)
 	E:SetTemplate(MerchantRepairItemButton, "Default", true)
-	for i = 1, MerchantRepairItemButton:GetNumRegions() do
+
+	--[[for i = 1, MerchantRepairItemButton:GetNumRegions() do
 		local region = select(i, MerchantRepairItemButton:GetRegions())
 		if region:GetObjectType() == "Texture" then
 			region:SetTexCoord(0.04, 0.24, 0.06, 0.5)
 			E:SetInside(region)
 		end
-	end
+	end]]
 
 	E:StyleButton(MerchantRepairAllButton)
 	E:SetTemplate(MerchantRepairAllButton, "Default", true)

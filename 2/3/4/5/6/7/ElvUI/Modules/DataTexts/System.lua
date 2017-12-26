@@ -3,7 +3,7 @@ local DT = E:GetModule("DataTexts");
 
 --Cache global variables
 --Lua functions
-local select, collectgarbage = select, collectgarbage
+local collectgarbage = collectgarbage
 local sort, wipe = table.sort, wipe
 local floor = math.floor
 local format = string.format

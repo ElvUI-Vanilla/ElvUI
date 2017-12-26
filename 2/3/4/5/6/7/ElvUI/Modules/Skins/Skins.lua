@@ -4,7 +4,7 @@ local S = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0");
 --Cache global variables
 --Lua functions
 local _G = _G
-local unpack, assert, pairs, ipairs, select, type, pcall = unpack, assert, pairs, ipairs, select, type, pcall
+local unpack, assert, pairs, ipairs, type, pcall = unpack, assert, pairs, ipairs, type, pcall
 local tinsert, wipe = table.insert, table.wipe
 local lower = string.lower
 --WoW API / Variables

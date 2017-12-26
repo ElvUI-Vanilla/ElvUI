@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local pairs = pairs
-local select = select
 local unpack = unpack
 local find, format, match,  split = string.find, string.format, string.match, string.split
 --WoW API / Variables

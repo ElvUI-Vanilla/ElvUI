@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local select = select
 local match = string.match
 --WoW API / Variables
 local UnitName = UnitName
@@ -30,18 +29,18 @@ local function LoadSkin()
 
 	S:HandleCloseButton(LootCloseButton)
 
-	for i = 1, LootFrame:GetNumRegions() do
+	--[[for i = 1, LootFrame:GetNumRegions() do
 		local region = select(i, LootFrame:GetRegions())
 		if region:GetObjectType() == "FontString" then
 			if region:GetText() == ITEMS then
 				LootFrame.Title = region
 			end
 		end
-	end
+	end]]
 
-	LootFrame.Title:ClearAllPoints()
+	--[[LootFrame.Title:ClearAllPoints()
 	LootFrame.Title:SetPoint("TOPLEFT", LootFrame.backdrop, "TOPLEFT", 4, -4)
-	LootFrame.Title:SetJustifyH("LEFT")
+	LootFrame.Title:SetJustifyH("LEFT")]]
 
 	S:HandleNextPrevButton(LootFrameDownButton)
 	S:HandleNextPrevButton(LootFrameUpButton)

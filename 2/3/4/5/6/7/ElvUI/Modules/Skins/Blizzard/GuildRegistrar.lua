@@ -4,7 +4,6 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local select = select
 --WoW API / Variables
 
 local function LoadSkin()
@@ -21,14 +20,7 @@ local function LoadSkin()
 	S:HandleCloseButton(GuildRegistrarFrameCloseButton)
 	S:HandleEditBox(GuildRegistrarFrameEditBox)
 
-	for i = 1, GuildRegistrarFrameEditBox:GetNumRegions() do
-		local region = select(i, GuildRegistrarFrameEditBox:GetRegions())
-		if region and region:GetObjectType() == "Texture" then
-			if region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Left" or region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Right" then
-				E:Kill(region)
-			end
-		end
-	end
+	GuildRegistrarFrameEditBox:DisableDrawLayer("BACKGROUND")
 
 	GuildRegistrarFrameEditBox:SetHeight(20)
 

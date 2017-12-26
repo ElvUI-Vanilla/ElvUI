@@ -4,7 +4,6 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local select = select
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
@@ -32,10 +31,10 @@ local function LoadSkin()
 	S:HandleButton(GossipFrameGreetingGoodbyeButton)
 	GossipFrameGreetingGoodbyeButton:SetPoint("BOTTOMRIGHT", GossipFrame, -34, 71)
 
-	for i = 1, NUMGOSSIPBUTTONS do
+	--[[for i = 1, NUMGOSSIPBUTTONS do
 		local obj = select(3,_G["GossipTitleButton"..i]:GetRegions())
 		obj:SetTextColor(1, 1, 1)
-	end
+	end]]
 
 	GossipGreetingText:SetTextColor(1,1,1)
 	E:CreateBackdrop(GossipFrame, "Transparent")

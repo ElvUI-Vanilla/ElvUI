@@ -3,7 +3,7 @@ local DT = E:GetModule("DataTexts");
 
 --Cache global variables
 --Lua functions
-local select, unpack = select, unpack
+local unpack = unpack
 local format, join = string.format, string.join
 local sort, wipe = table.sort, wipe
 --WoW API / Variables

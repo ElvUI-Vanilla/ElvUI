@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = getfenv()
 local unpack = unpack
-local select = select
 local pairs = pairs
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -328,14 +327,23 @@ function S:SkinAce3()
 				if(not E.GUIFrame) then
 					E.GUIFrame = frame
 				end
-				for i=1, frame:GetNumChildren() do
-					local child = select(i, frame:GetChildren())
+				
+				for _, child in ipairs({frame:GetChildren()}) do
 					if child:GetObjectType() == "Button" and child:GetText() then
 						SkinButton(child)
 					else
 						E:StripTextures(child)
 					end
 				end
+
+				--[[for i=1, frame:GetNumChildren() do
+					local child = select(i, frame:GetChildren())
+					if child:GetObjectType() == "Button" and child:GetText() then
+						SkinButton(child)
+					else
+						E:StripTextures(child)
+					end
+				end]]
 			elseif TYPE == "Window" then
 				E:StripTextures(frame)
 				S:HandleCloseButton(frame.obj.closebutton)

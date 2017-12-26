@@ -1,7 +1,7 @@
 --Cache global variables
 --Lua functions
 local _G = getfenv()
-local print, tostring, select = print, tostring, select
+local print, tostring = print, tostring
 local format = string.format
 --WoW API / Variables
 local GetMouseFocus = GetMouseFocus

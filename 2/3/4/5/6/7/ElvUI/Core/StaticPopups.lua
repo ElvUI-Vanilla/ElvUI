@@ -929,15 +929,10 @@ function E:Contruct_StaticPopups()
 		E.StaticPopupFrames[index].text = _G[name.."Text"]
 		E.StaticPopupFrames[index].editBox = _G[name.."EditBox"]
 
+		_G[name.."EditBox"]:DisableDrawLayer("BACKGROUND")
+
 		S:HandleEditBox(_G[name.."EditBox"])
-		--[[for k = 1, _G[name.."EditBox"]:GetNumRegions() do
-			local region = select(k, _G[name.."EditBox"]:GetRegions())
-			if(region and region:IsObjectType("Texture")) then
-				if(region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Left" or region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Right") then
-					E:kill(region)
-				end
-			end
-		end]]
+
 		S:HandleEditBox(_G[name.."MoneyInputFrameGold"])
 		S:HandleEditBox(_G[name.."MoneyInputFrameSilver"])
 		S:HandleEditBox(_G[name.."MoneyInputFrameCopper"])

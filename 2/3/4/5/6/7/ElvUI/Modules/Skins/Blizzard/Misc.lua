@@ -142,13 +142,10 @@ local function LoadSkin()
 		end
 	end)
 
-	for i = 1, OptionsFrame:GetNumRegions() do
-		local region = select(i, OptionsFrame:GetRegions())
-		if region:GetObjectType() == "Texture" then
-			if i == 3 then
-				E:Kill(region) -- Kill the nVidia logo
-			end
-		end
+	-- Kill the nVidia logo
+	local _, _, nVidiaLogo = OptionsFrame:GetRegions()
+	if nVidiaLogo:GetObjectType() == "Texture" then
+		E:Kill(nVidiaLogo)
 	end
 
 	-- Static Popups
@@ -160,23 +157,16 @@ local function LoadSkin()
 
 		E:SetTemplate(staticPopup, "Transparent")
 
+		itemFrameBox:DisableDrawLayer("BACKGROUND")
+
 		S:HandleEditBox(itemFrameBox)
 		itemFrameBox.backdrop:SetPoint("TOPLEFT", -2, -4)
 		itemFrameBox.backdrop:SetPoint("BOTTOMRIGHT", 2, 4)
 
-		for k = 1, itemFrameBox:GetNumRegions() do
-			local region = select(k, itemFrameBox:GetRegions())
-			if(region and region:GetObjectType() == "Texture") then
-				if region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Left" or region:GetTexture() == "Interface\\ChatFrame\\UI-ChatInputBorder-Right" then
-					E:Kill(region)
-				end
-			end
-		end
-
 		E:StripTextures(closeButton)
 		S:HandleCloseButton(closeButton)
 
-		select(8, wideBox:GetRegions()):Hide()
+		--select(8, wideBox:GetRegions()):Hide()
 		S:HandleEditBox(wideBox)
 		wideBox:SetHeight(22)
 

@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local select = select
 local getn = table.getn
 --WoW API / Variables
 
