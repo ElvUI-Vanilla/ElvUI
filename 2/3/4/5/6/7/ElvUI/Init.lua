@@ -67,7 +67,7 @@ function AddOn:OnInitialize()
 	self:UpdateMedia()
 
 	self:RegisterEvent("PLAYER_LOGIN", "Initialize")
-	--self:Contruct_StaticPopups()
+	self:Contruct_StaticPopups()
 	self:InitializeInitialModules()
 
 	if IsAddOnLoaded("Tukui") then
