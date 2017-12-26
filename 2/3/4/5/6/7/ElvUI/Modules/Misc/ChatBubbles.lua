@@ -193,7 +193,7 @@ function M:LoadChatBubbles()
 			for i = numChildren + 1, count do
 				local frame = select(i, WorldFrame:GetChildren())
 
-				if M:IsChatBubble(frame) then
+				if frame.GetObjectType and frame:GetObjectType() == "Frame" and M:IsChatBubble(frame) then
 					M:SkinBubble(frame)
 				end
 			end
