@@ -26,6 +26,10 @@ V["bags"] = {
 V["auras"] = {
 	["enable"] = true,
 	["disableBlizzard"] = true,
+	["lbf"] = {
+		enable = false,
+		skin = "Blizzard"
+	},
 }
 
 V["chat"] = {
@@ -59,7 +63,11 @@ V["unitframe"] = {
 }
 
 V["actionbar"] = {
-	["enable"] = true
+	["enable"] = true,
+	["lbf"] = {
+		enable = false,
+		skin = "Blizzard"
+	},
 }
 
 V["cooldown"] = {
