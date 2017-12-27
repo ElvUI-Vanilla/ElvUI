@@ -100,11 +100,16 @@ strjoin = string.join
 function string.match(str, pattern, index)
 	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
 	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
+	assert(not index or type(index) == "number" or type(index) == "string", format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
 	pattern = type(pattern) == "number" and tostring(pattern) or pattern
 
-	return gfind(index and sub(str, index) or str, pattern)()
+	if type(index) == "string" then
+		index = index ~= "" and tonumber(index) or nil
+	end
+
+	return gfind(index and sub(str, index) or str, gsub(pattern, "%^", ""))() or ""
 end
 strmatch = string.match
 
