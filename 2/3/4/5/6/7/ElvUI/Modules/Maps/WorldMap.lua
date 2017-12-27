@@ -85,13 +85,13 @@ function M:Initialize()
 		self:PositionCoords()
 	end
 
-	--if E.global.general.smallerWorldMap then
+	if E.global.general.smallerWorldMap then
 		BlackoutWorld:SetTexture(nil)
 
-		--WorldMapFrame:SetParent(UIParent)
+		WorldMapFrame:SetParent(UIParent)
 		WorldMapFrame:EnableKeyboard(false)
 		HookScript(WorldMapFrame, "OnShow", function()
-			WorldMapFrame:SetScale(UIParent:GetScale())
+			WorldMapFrame:SetScale(E.UIParent:GetScale())
 		end)
 		WorldMapFrame:EnableMouse(false)
 
@@ -102,7 +102,7 @@ function M:Initialize()
 				DropDownList1:SetScale(UIParent:GetScale())
 			end
 		end)
-	--end
+	end
 end
 
 local function InitializeCallback()
