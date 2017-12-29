@@ -258,7 +258,14 @@ local function LoadSkin()
 	S:HandleButton(CoinPickupOkayButton)
 	S:HandleButton(CoinPickupCancelButton)
 
+	-- Stack Split Frame
 	StackSplitFrame:GetRegions():Hide()
+
+	StackSplitFrame.bg1 = CreateFrame("Frame", nil, StackSplitFrame)
+	E:SetTemplate(StackSplitFrame.bg1, "Transparent")
+	StackSplitFrame.bg1:SetPoint("TOPLEFT", 10, -15)
+	StackSplitFrame.bg1:SetPoint("BOTTOMRIGHT", -10, 55)
+	StackSplitFrame.bg1:SetFrameLevel(StackSplitFrame.bg1:GetFrameLevel() - 1)
 
 	-- Declension frame
 	if GetLocale() == "ruRU" then
