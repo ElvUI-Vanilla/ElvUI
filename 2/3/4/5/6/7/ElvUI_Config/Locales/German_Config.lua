@@ -16,7 +16,7 @@ L["SKINS_DESC"] = "Passe die Einstellungen für externe Addon Skins/Optionen an.
 L["TOGGLESKIN_DESC"] = "Aktiviere/Deaktiviere diesen Skin."
 L["TOOLTIP_DESC"] = "Konfiguriere die Einstellungen für Tooltips."
 L["UNITFRAME_DESC"] = "Konfiguriere die Einstellungen für die Einheitenfenster."
-L["SEARCH_SYNTAX_DESC"] = [=[Mit der Ergänzung von LibItemSearch, kannst du jetzt erweitert nach Gegenständen suchen. Nachfolgend findest du eine Dokumentation des Suchsyntax. Die volle Erklärung findest du hier: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
+L["SEARCH_SYNTAX_DESC"] = [[Mit der Ergänzung von LibItemSearch, kannst du jetzt erweitert nach Gegenständen suchen. Nachfolgend findest du eine Dokumentation des Suchsyntax. Die volle Erklärung findest du hier: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
 
 Spezifische Suche:
     • q:[quality] oder quality:[quality]. Beispielsweise q:episch findet alle epischen Gegenstände.
@@ -39,8 +39,8 @@ Die folgenden Suchbegriffe können auch benutzt werden:
     • bou : Beim Benutzen gebundene Gegenstände.
     • boe : Beim Ausrüsten gebundene Gegenstände.
     • boa : An den Account gebundene Gegenstände.
-    • quest : Gebundene Quest Gegenstände.]=];
-L["TEXT_FORMAT_DESC"] = [=[Wähle eine Zeichenfolge um das Textformat zu ändern.
+    • quest : Gebundene Quest Gegenstände.]];
+L["TEXT_FORMAT_DESC"] = [[Wähle eine Zeichenfolge um das Textformat zu ändern.
 
 Beispiele:
 [namecolor][name] [difficultycolor][smartlevel] [shortclassification]
@@ -60,7 +60,7 @@ Namensformate:
 "name:medium" - Name auf 15 Zeichen beschränkt
 "name:long" - Name auf 20 Zeichen beschränkt
 
-Zum Deaktvieren lasse das Feld leer. Brauchst du mehr Informationen besuche http://www.tukui.org]=];
+Zum Deaktvieren lasse das Feld leer. Brauchst du mehr Informationen besuche http://www.tukui.org]];
 
 --ActionBars
 L["Action Paging"] = "Seitenwechsel der Aktionsleisten"
@@ -128,12 +128,12 @@ L["Transparency level when not in combat, no target exists, full health, not cas
 L["Usable"] = "Nutzbar"
 L["Visibility State"] = "Sichbarkeitszustand"
 L["Width Multiplier"] = "Breitenmultiplikator"
-L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = [=[Dieses funktioniert wie ein Makro, du kannst verschiedene Situationen haben um die Aktionsleiste zu wechseln.
- Beispiel: [combat] 2;]=]
-L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = [=[Dieses funktioniert wie ein Makro, du kannst verschiedene Situationen haben um die Aktionsleiste ein-/auszublenden.
- Beispiel: [combat] show;hide]=]
+L[ [[This works like a macro, you can run different situations to get the actionbar to page differently.
+ Example: [combat] 2;]] ] = [[Dieses funktioniert wie ein Makro, du kannst verschiedene Situationen haben um die Aktionsleiste zu wechseln.
+ Beispiel: [combat] 2;]]
+L[ [[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
+ Example: [combat] show;hide]] ] = [[Dieses funktioniert wie ein Makro, du kannst verschiedene Situationen haben um die Aktionsleiste ein-/auszublenden.
+ Beispiel: [combat] show;hide]]
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = "Füge ein Gegenstand oder ein Suchoperator zu der Ignorierliste hinzu. Gegenstände die auf den Suchoperator zutreffen werden ignoriert."
@@ -193,6 +193,7 @@ L["Top to Bottom"] = "Von oben nach unten"
 L["Use coin icons instead of colored text."] = "Benutze Währungssymbole anstatt von farbigem Text."
 
 --Buffs and Debuffs
+L["Buffs and Debuffs"] = "Buffs und Debuffs";
 L["Begin a new row or column after this many auras."] = "Beginne nach so vielen Stärkungszaubern eine neue Reihe oder Spalte."
 L["Count xOffset"] = "Den Versatz auf der X-Achse zählen"
 L["Count yOffset"] = "Den Versatz auf der Y-Achse zählen"
@@ -293,7 +294,7 @@ L["Use Alt Key"] = "Benutze Alt-Taste"
 L["Use class color for the names of players when they are mentioned."] = "Benutze Klassenfarben von Spielernamen, wenn sie erwähnt werden."
 L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."] = "Beim Öffnen der Texteingabeleiste wird dem Kanal beigetreten, in den zu letzt geschrieben wurde. Wenn diese Option deaktiviert ist, wird standardmäßig der SAGEN-Kanal beim öffnen der Texteingabeleiste aufgerufen."
 L["Whisper Alert"] = "Flüster Alarm"
-L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
+L[ [[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
 -The image size recommended is 256x128
@@ -302,7 +303,7 @@ Please Note:
 
 Example: Interface\AddOns\ElvUI\media\textures\copy
 
-Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]=] ] = [=[Gib einen Dateinamen im World of Warcraft Verzeichnis an. Textures Ordner, den du als Fensterhintergrund eingestellt haben willst.
+Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]] ] = [[Gib einen Dateinamen im World of Warcraft Verzeichnis an. Textures Ordner, den du als Fensterhintergrund eingestellt haben willst.
 
 Bitte beachten:
 -Als Bildgröße 256x128 wird empfohlen.
@@ -311,7 +312,7 @@ Bitte beachten:
 
 Zum Beispiel: Interface\AddOns\ElvUI\media\textures\copy
 
-Für die meisten Anwender ist es allerdigns einfacher, eine tga-Datei in ihren WoW-Ordner abzulegen. Anschließend kann man den Namen der Datei hier eingeben.]=]
+Für die meisten Anwender ist es allerdigns einfacher, eine tga-Datei in ihren WoW-Ordner abzulegen. Anschließend kann man den Namen der Datei hier eingeben.]]
 
 --Credits
 L["Coding:"] = "Programmierung:"

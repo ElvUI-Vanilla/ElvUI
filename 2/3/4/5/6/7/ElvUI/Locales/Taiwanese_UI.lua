@@ -194,6 +194,7 @@ L["Experience"] = "經驗/聲望條"
 L["Farm Mode"] = true;
 L["Fishy Loot"] = "貪婪"
 L["Left Click:"] = "滑鼠左鍵：" --layout\layout.lua
+L["Mouse"] = "滑鼠"
 L["Raid Menu"] = "團隊選單"
 L["Remaining:"] = "剩餘:"
 L["Rested:"] = "休息:"

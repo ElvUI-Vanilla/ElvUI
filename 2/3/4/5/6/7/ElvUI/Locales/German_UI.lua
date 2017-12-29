@@ -194,6 +194,7 @@ L["Experience"] = "Erfahrung"
 L["Farm Mode"] = true;
 L["Fishy Loot"] = "Faule Beute"
 L["Left Click:"] = "Linksklick:" --layout\layout.lua
+L["Mouse"] = "Maus"
 L["Raid Menu"] = "Schlachtzugsmenü"
 L["Remaining:"] = "Verbleibend:"
 L["Rested:"] = "Ausgeruht:"

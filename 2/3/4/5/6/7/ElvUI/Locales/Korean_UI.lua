@@ -194,6 +194,7 @@ L["Experience"] = "경험치"
 L["Farm Mode"] = true;
 L["Fishy Loot"] = "낚시 전리품"
 L["Left Click:"] = "왼 클릭 :"
+L["Mouse"] = "쥐"
 L["Raid Menu"] = "공대 도구"
 L["Remaining:"] = "다음 레벨까지: "
 L["Rested:"] = "휴식 경험치:"

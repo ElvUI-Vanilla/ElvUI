@@ -16,13 +16,13 @@ L["SKINS_DESC"] = "Adjust Skin settings."
 L["TOGGLESKIN_DESC"] = "Enable/Disable this skin."
 L["TOOLTIP_DESC"] = "Setup options for the Tooltip."
 L["UNITFRAME_DESC"] = "Modify the unitframe settings."
-L["SEARCH_SYNTAX_DESC"] = [=[With the new addition of LibItemSearch, you now have access to much more advanced item searches. The following is a documentation of the search syntax. See the full explanation at: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
+L["SEARCH_SYNTAX_DESC"] = [[With the new addition of LibItemSearch, you now have access to much more advanced item searches. The following is a documentation of the search syntax. See the full explanation at: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
 
 Specific Searching:
     • q:[quality] or quality:[quality]. For instance, q:epic will find all epic items.
     • l:[level], lvl:[level] or level:[level]. For example, l:30 will find all items with level 30.
     • t:[search], type:[search] or slot:[search]. For instance, t:weapon will find all weapons.
-    • n:[name] or name:[name]. For instance, typing n:muffins will find all items with names containing "muffins".
+    • n:[name] or name:[name]. For instance, typing n:muffins will find all items with names containing 'muffins'.
     • s:[set] or set:[set]. For example, s:fire will find all items in equipment sets you have with names that start with fire.
     • tt:[search], tip:[search] or tooltip:[search]. For instance, tt:binds will find all items that can be bound to account, on equip, or on pickup.
 
@@ -39,8 +39,8 @@ The following search keywords can also be used:
     • bou : Bind on use items.
     • boe : Bind on equip items.
     • boa : Bind on account items.
-    • quest : Quest bound items.]=];
-L["TEXT_FORMAT_DESC"] = [=[Provide a string to change the text format.
+    • quest : Quest bound items."]];
+L["TEXT_FORMAT_DESC"] = [[Provide a string to change the text format.
 
 Examples:
 [namecolor][name] [difficultycolor][smartlevel] [shortclassification]
@@ -60,7 +60,7 @@ Name Formats:
 "name:medium" - Name restricted to 15 characters
 "name:long" - Name restricted to 20 characters
 
-To disable leave the field blank, if you need more information visit http://www.tukui.org]=];
+To disable leave the field blank, if you need more information visit http://www.tukui.org]];
 
 --ActionBars
 L["Action Paging"] = true;
@@ -128,10 +128,10 @@ L["Transparency level when not in combat, no target exists, full health, not cas
 L["Usable"] = true;
 L["Visibility State"] = true;
 L["Width Multiplier"] = true;
-L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = true;
-L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = true;
+L[ [[This works like a macro, you can run different situations to get the actionbar to page differently.
+ Example: [combat] 2;]] ] = true;
+L[ [[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
+ Example: [combat] show;hide]] ] = true;
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = true;
@@ -191,6 +191,7 @@ L["Top to Bottom"] = true;
 L["Use coin icons instead of colored text."] = true;
 
 --Buffs and Debuffs
+L["Buffs and Debuffs"] = true;
 L["Begin a new row or column after this many auras."] = true;
 L["Count xOffset"] = true;
 L["Count yOffset"] = true;
@@ -291,7 +292,7 @@ L["Use Alt Key"] = true;
 L["Use class color for the names of players when they are mentioned."] = true;
 L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."] = true;
 L["Whisper Alert"] = true;
-L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
+L[ [[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
 -The image size recommended is 256x128
@@ -300,7 +301,7 @@ Please Note:
 
 Example: Interface\AddOns\ElvUI\media\textures\copy
 
-Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]=] ] = true;
+Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]] ] = true;
 
 --Credits
 L["Coding:"] = true;

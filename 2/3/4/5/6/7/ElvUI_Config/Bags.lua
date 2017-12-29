@@ -401,7 +401,7 @@ E.Options.args.bags = {
 						GameTooltip:Hide();
 					end
 				},
-				ignoredEntriesGlobal = {
+				--[[ignoredEntriesGlobal = {
 					order = 6,
 					type = "multiselect",
 					name = L["Ignored Items and Search Syntax (Global)"],
@@ -411,7 +411,7 @@ E.Options.args.bags = {
 						E.global.bags.ignoredItems[value] = nil;
 						GameTooltip:Hide();
 					end
-				}
+				}--]]
 			}
 		},
 		search_syntax = {

@@ -194,6 +194,7 @@ L["Experience"] = true;
 L["Farm Mode"] = true;
 L["Fishy Loot"] = true;
 L["Left Click:"] = true; --layout\layout.lua
+L["Mouse"] = true;
 L["Raid Menu"] = true;
 L["Remaining:"] = true;
 L["Rested:"] = true;

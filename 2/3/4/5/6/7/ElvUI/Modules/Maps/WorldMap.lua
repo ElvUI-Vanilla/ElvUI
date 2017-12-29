@@ -43,7 +43,7 @@ function M:UpdateCoords()
 	if adjustedX >= 0 and adjustedY >= 0 and adjustedX <= 1 and adjustedY <= 1 then
 		adjustedX = E:Round(100 * adjustedX, 2)
 		adjustedY = E:Round(100 * adjustedY, 2)
-		CoordsHolder.mouseCoords:SetText("MOUSE_LABEL"..":  "..format("%.2f, %.2f", adjustedX, adjustedY))
+		CoordsHolder.mouseCoords:SetText(L["Mouse"]..":  "..format("%.2f, %.2f", adjustedX, adjustedY))
 	else
 		CoordsHolder.mouseCoords:SetText("")
 	end

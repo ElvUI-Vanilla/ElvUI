@@ -194,6 +194,7 @@ L["Experience"] = "Experiência"
 L["Farm Mode"] = true;
 L["Fishy Loot"] = "Saque de Peixes"
 L["Left Click:"] = "Clique Esquerdo:"
+L["Mouse"] = "rato"
 L["Raid Menu"] = "Menu de Raide"
 L["Remaining:"] = "Restante:"
 L["Rested:"] = "Descansado:"

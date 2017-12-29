@@ -169,7 +169,7 @@ local function GetOptionsMemberValue(membername, option, options, path, appName,
 				member = group[membername]
 			end
 		end
-	else
+	elseif option then
 		member = option[membername]
 	end
 
@@ -1444,7 +1444,9 @@ local function TreeOnButtonEnter(widget, event, _, uniquevalue, button)
 		GameTooltip:SetPoint("LEFT",button,"RIGHT")
 	end
 
-	GameTooltip:SetText(name, 1, .82, 0, true)
+	if name then
+		GameTooltip:SetText(name, 1, .82, 0, true)
+	end
 
 	if type(desc) == "string" then
 		GameTooltip:AddLine(desc, 1, 1, 1, true)

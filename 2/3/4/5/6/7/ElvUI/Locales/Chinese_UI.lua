@@ -194,6 +194,7 @@ L["Experience"] = "经验/声望条"
 L["Farm Mode"] = true;
 L["Fishy Loot"] = "贪婪"
 L["Left Click:"] = "鼠标左键:"
+L["Mouse"] = "老鼠"
 L["Raid Menu"] = "团队菜单"
 L["Remaining:"] = "剩余:"
 L["Rested:"] = "休息:"

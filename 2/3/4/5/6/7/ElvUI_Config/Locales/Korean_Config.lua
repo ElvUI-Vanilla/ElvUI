@@ -16,7 +16,7 @@ L["SKINS_DESC"] = "다른 애드온이나 게임 내 여러 프레임에 체크 
 L["TOGGLESKIN_DESC"] = "체크 시 해당 프레임에 스킨을 사용합니다."
 L["TOOLTIP_DESC"] = "툴팁에 관련된 옵션들입니다."
 L["UNITFRAME_DESC"] = "Modify the unitframe settings."
-L["SEARCH_SYNTAX_DESC"] = [=[
+L["SEARCH_SYNTAX_DESC"] = [[
 
   각종 가방에서 검색기능을 사용할 때, 다음의 명령어들을 활용하면
   자신이 원하는 조건에 맞는 아이템들만 검색하도록 할 수 있습니다.
@@ -64,9 +64,9 @@ L["SEARCH_SYNTAX_DESC"] = [=[
      - bou : 사용시 귀속 아이템을 표시합니다.
      - boe : 착용 시 귀속 아이템을 표시합니다.
      - boa : 계정 귀속 아이템을 표시합니다.
-     - quest : 퀘스트 아이템을 표시합니다.]=]
+     - quest : 퀘스트 아이템을 표시합니다.]]
 
-L["TEXT_FORMAT_DESC"] = [=[글자가 표시되는 형식을 변경할 수 있습니다.
+L["TEXT_FORMAT_DESC"] = [[글자가 표시되는 형식을 변경할 수 있습니다.
 
 
 |cff2eb7e4< 예시 >|r
@@ -96,7 +96,7 @@ L["TEXT_FORMAT_DESC"] = [=[글자가 표시되는 형식을 변경할 수 있습
 |cffceff00name:medium|r : 최대 15글자
 |cffceff00name:long|r : 최대 20글자
 
-표시하고 싶지 않으면 빈칸으로 두면 되며, 자세한 정보는 |cff2eb7e4www.tukui.org|r 에서 확인하세요.]=];
+표시하고 싶지 않으면 빈칸으로 두면 되며, 자세한 정보는 |cff2eb7e4www.tukui.org|r 에서 확인하세요.]];
 
 --ActionBars
 L["Action Paging"] = "페이지 자동전환 조건"
@@ -164,22 +164,22 @@ L["Transparency level when not in combat, no target exists, full health, not cas
 L["Usable"] = true;
 L["Visibility State"] = "표시 자동전환 조건"
 L["Width Multiplier"] = "배경 가로길이 배율"
-L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = [=[이곳에 작성한 조건(예를 들어 전투여부)에 따라 이 행동단축바의 페이지를 자동으로 전환시킬 수 있습니다.
+L[ [[This works like a macro, you can run different situations to get the actionbar to page differently.
+ Example: [combat] 2;]] ] = [[이곳에 작성한 조건(예를 들어 전투여부)에 따라 이 행동단축바의 페이지를 자동으로 전환시킬 수 있습니다.
 
 매크로처럼 작성하세요.
 
 |cff2eb7e4< 예시 >|r
 |cffceff00[combat]2;1|r
- : 전투에 돌입하면 2번 페이지로 변경, 전투가 끝나면 1번 페이지로 변경 ]=]
-L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = [=[이곳에 작성한 조건(예를 들어 전투여부)에 따라 이 행동단축바를 자동으로 숨기거나 표시할 수 있게 해줍니다.
+ : 전투에 돌입하면 2번 페이지로 변경, 전투가 끝나면 1번 페이지로 변경 ]]
+L[ [[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
+ Example: [combat] show;hide]] ] = [[이곳에 작성한 조건(예를 들어 전투여부)에 따라 이 행동단축바를 자동으로 숨기거나 표시할 수 있게 해줍니다.
 
 매크로처럼 작성하세요.
 
 |cff2eb7e4< 예시 >|r
 |cffceff00[combat]show;hide|r
- : 전투에 돌입하면 표시, 전투가 끝나면 숨김]=]
+ : 전투에 돌입하면 표시, 전투가 끝나면 숨김]]
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = true;
@@ -239,6 +239,7 @@ L["Top to Bottom"] = "위에서 아래로"
 L["Use coin icons instead of colored text."] = "골드 이미지를 글자가 아닌 아이콘으로 표시합니다."
 
 --Buffs and Debuffs
+L["Buffs and Debuffs"] = "버프와 디버프";
 L["Begin a new row or column after this many auras."] = "한 줄에 아이콘이 이 값보다 많으면 다음 줄에 배치합니다."
 L["Count xOffset"] = "중첩수 x 좌표"
 L["Count yOffset"] = "중첩수 y 좌표"
@@ -338,7 +339,7 @@ L["Use Alt Key"] = true;
 L["Use class color for the names of players when they are mentioned."] = true;
 L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."] = "이전에 말한 채널을 계속 유지할지 여부를 결정합니다.|n|n체크 해제 시 대화입력창을 열 때마다 일반 채널로 설정됩니다."
 L["Whisper Alert"] = "귓말이 오면 소리로 알림"
-L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
+L[ [[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
 -The image size recommended is 256x128
@@ -347,7 +348,7 @@ Please Note:
 
 Example: Interface\AddOns\ElvUI\media\textures\copy
 
-Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]=] ] = [=[패널 배경에 그림을 입히고 싶으면 위치와 파일명를 이곳에 입력해야 합니다.
+Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]] ] = [[패널 배경에 그림을 입히고 싶으면 위치와 파일명를 이곳에 입력해야 합니다.
 
 |cff2eb7e4< 예시 >|r
 |cffceff00Interface/AddOns/ElvUI/media/textures/|cff2eb7e4TestImage|r
@@ -359,7 +360,7 @@ Or for most users it would be easier to simply put a tga file into your WoW fold
 - 그림을 와우 설치 폴더 안에 넣고 게임을 재시작해야 적용 가능
 - 확장자는 .tga 포맷만 가능
 
-간단히는 그림을 와우 설치 폴더에 넣은후 파일명만 적으세요.]=]
+간단히는 그림을 와우 설치 폴더에 넣은후 파일명만 적으세요.]]
 
 --Credits
 L["Coding:"] = "|cff2eb7e4< 개발자 >|r"

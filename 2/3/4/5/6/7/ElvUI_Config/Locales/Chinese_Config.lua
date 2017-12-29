@@ -16,7 +16,7 @@ L["SKINS_DESC"] = "调整外观设定"
 L["TOGGLESKIN_DESC"] = "启用/停用此外观"
 L["TOOLTIP_DESC"] = "鼠标提示信息设定选项"
 L["UNITFRAME_DESC"] = "修改单位框架设定"
-L["SEARCH_SYNTAX_DESC"] = [=[With the new addition of LibItemSearch, you now have access to much more advanced item searches. The following is a documentation of the search syntax. See the full explanation at: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
+L["SEARCH_SYNTAX_DESC"] = [[With the new addition of LibItemSearch, you now have access to much more advanced item searches. The following is a documentation of the search syntax. See the full explanation at: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
 
 Specific Searching:
     • q:[quality] or quality:[quality]. For instance, q:epic will find all epic items.
@@ -39,8 +39,8 @@ The following search keywords can also be used:
     • bou : Bind on use items.
     • boe : Bind on equip items.
     • boa : Bind on account items.
-    • quest : Quest bound items.]=];
-L["TEXT_FORMAT_DESC"] = [=[提供一个更改文字格式的方式
+    • quest : Quest bound items.]];
+L["TEXT_FORMAT_DESC"] = [[提供一个更改文字格式的方式
 
 例如:
 [namecolor][name] [difficultycolor][smartlevel] [shortclassification]
@@ -60,7 +60,7 @@ L["TEXT_FORMAT_DESC"] = [=[提供一个更改文字格式的方式
 "name:medium" -姓名显示限制于15字节内
 "name:long" - 姓名显示限制于20字节内
 
-空白则为禁用. 如需技术支援请至 http://www.tukui.org]=];
+空白则为禁用. 如需技术支援请至 http://www.tukui.org]];
 
 --ActionBars
 L["Action Paging"] = "动作条翻页"
@@ -128,12 +128,12 @@ L["Transparency level when not in combat, no target exists, full health, not cas
 L["Usable"] = "可用"
 L["Visibility State"] = "可见状态"
 L["Width Multiplier"] = "宽度倍增"
-L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = [=[和宏写法类似, 能根据不同姿态切换动作条.
- 例如: [combat] 2;]=]
-L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = [=[和宏写法类似, 能根据不同姿态切换动作条显示或隐藏.
- 例如: [combat] show;hide]=]
+L[ [[This works like a macro, you can run different situations to get the actionbar to page differently.
+ Example: [combat] 2;]] ] = [[和宏写法类似, 能根据不同姿态切换动作条.
+ 例如: [combat] 2;]]
+L[ [[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
+ Example: [combat] show;hide]] ] = [[和宏写法类似, 能根据不同姿态切换动作条显示或隐藏.
+ 例如: [combat] show;hide]]
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = "添加一个物品或者匹配语法到屏蔽列表.符合匹配语法的物品将被忽略"
@@ -193,6 +193,7 @@ L["Top to Bottom"] = "顶部到底部"
 L["Use coin icons instead of colored text."] = "显示硬币图标而不是颜色文字"
 
 --Buffs and Debuffs
+L["Buffs and Debuffs"] = "魔法增益和减法";
 L["Begin a new row or column after this many auras."] = "在这些光环旁开始新的行或列"
 L["Count xOffset"] = "计数X偏移"
 L["Count yOffset"] = "计数Y偏移"
@@ -293,7 +294,7 @@ L["Use Alt Key"] = "对话历史Alt键"
 L["Use class color for the names of players when they are mentioned."] = "当玩家名字被提及时使用职业颜色"
 L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."] = "当你开始输入消息时此选项的启用将会让你保留最后一次对话的频道, 如果关闭将始终使用说话频道"
 L["Whisper Alert"] = "密语警报"
-L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
+L[ [[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
 -The image size recommended is 256x128
@@ -302,7 +303,7 @@ Please Note:
 
 Example: Interface\AddOns\ElvUI\media\textures\copy
 
-Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]=] ] = [=[若要设定聊天框背景, 请将你希望设定为背景的档案置放于 WoW 目录底下的「Textures」资料夹中, 并指定该档名.
+Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]] ] = [[若要设定聊天框背景, 请将你希望设定为背景的档案置放于 WoW 目录底下的「Textures」资料夹中, 并指定该档名.
 
 请注意：
 - 影像尺寸建议为 256 x 128
@@ -311,7 +312,7 @@ Or for most users it would be easier to simply put a tga file into your WoW fold
 
 范例：Interface\AddOns\ElvUI\media\textures\copy
 
-对多数玩家来说, 较简易的方式是将 tga 档放入 WoW 资料夹中, 然后在此处输入档案名称.]=]
+对多数玩家来说, 较简易的方式是将 tga 档放入 WoW 资料夹中, 然后在此处输入档案名称.]]
 
 --Credits
 L["Coding:"] = "编码:"

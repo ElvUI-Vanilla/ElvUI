@@ -16,7 +16,7 @@ L["SKINS_DESC"] = "Configura los Ajustes de Cubiertas."
 L["TOGGLESKIN_DESC"] = "Activa/Desactiva esta cubierta."
 L["TOOLTIP_DESC"] = "Configuración para las Descripciones Emergentes."
 L["UNITFRAME_DESC"] = "Modify the unitframe settings."
-L["SEARCH_SYNTAX_DESC"] = [=[With the new addition of LibItemSearch, you now have access to much more advanced item searches. The following is a documentation of the search syntax. See the full explanation at: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
+L["SEARCH_SYNTAX_DESC"] = [[With the new addition of LibItemSearch, you now have access to much more advanced item searches. The following is a documentation of the search syntax. See the full explanation at: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
 
 Specific Searching:
     • q:[quality] or quality:[quality]. For instance, q:epic will find all epic items.
@@ -39,8 +39,8 @@ The following search keywords can also be used:
     • bou : Bind on use items.
     • boe : Bind on equip items.
     • boa : Bind on account items.
-    • quest : Quest bound items.]=];
-L["TEXT_FORMAT_DESC"] = [=[Proporciona una cadena para cambiar el formato de texto.
+    • quest : Quest bound items.]];
+L["TEXT_FORMAT_DESC"] = [[Proporciona una cadena para cambiar el formato de texto.
 
 Ejemplos:
 [namecolor][name] [difficultycolor][smartlevel] [shortclassification]
@@ -60,7 +60,7 @@ Formatos de Nombre:
 "name:medium" - Nombre restringido a 15 caracteres
 "name:long" - Nombre restringido a 20 caracteres
 
-Para desactivarlo dejar el campo en blanco, si necesitas más información visita http://www.tukui.org]=];
+Para desactivarlo dejar el campo en blanco, si necesitas más información visita http://www.tukui.org]];
 
 --ActionBars
 L["Action Paging"] = "Paginación"
@@ -128,12 +128,12 @@ L["Transparency level when not in combat, no target exists, full health, not cas
 L["Usable"] = true;
 L["Visibility State"] = "Estado de Visibilidad"
 L["Width Multiplier"] = "Multiplicador de Anchura"
-L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = [=[Esto funciona como una macro. Puedes ejecutar diferentes situaciones para paginar la barra de acción de forma diferente.
- Ejemplo: [combat] 2;]=]
-L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = [=[Esto funciona como una macro. Puede ejecutar diferentes situaciones para mostrar u ocultar la barra de acción de forma diferente.
- Ejemplo: [combat] show;hide]=]
+L[ [[This works like a macro, you can run different situations to get the actionbar to page differently.
+ Example: [combat] 2;]] ] = [[Esto funciona como una macro. Puedes ejecutar diferentes situaciones para paginar la barra de acción de forma diferente.
+ Ejemplo: [combat] 2;]]
+L[ [[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
+ Example: [combat] show;hide]] ] = [[Esto funciona como una macro. Puede ejecutar diferentes situaciones para mostrar u ocultar la barra de acción de forma diferente.
+ Ejemplo: [combat] show;hide]]
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = true;
@@ -193,6 +193,7 @@ L["Top to Bottom"] = "De Arriba hacia Abajo"
 L["Use coin icons instead of colored text."] = true;
 
 --Buffs and Debuffs
+L["Buffs and Debuffs"] = "Buffs y Debuffs";
 L["Begin a new row or column after this many auras."] = "Empieza una nueva fila o columna después de estas auras."
 L["Count xOffset"] = true;
 L["Count yOffset"] = true;
@@ -293,7 +294,7 @@ L["Use Alt Key"] = true;
 L["Use class color for the names of players when they are mentioned."] = true;
 L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."] = "Cuando abres el Cuadro de Edición del chat para escribir un mensaje teniendo esta opción activa significa que recordará el último canal en el que habló. Si esta opción esta desactivada siempre hablarás por defecto en el canal DECIR."
 L["Whisper Alert"] = "Alerta de Susurro"
-L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
+L[ [[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
 -The image size recommended is 256x128
@@ -302,7 +303,7 @@ Please Note:
 
 Example: Interface\AddOns\ElvUI\media\textures\copy
 
-Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]=] ] = [=[Especifica un archivo ubicado en el directorio texture de World of Warcraft que deseas tener establecido como fondo de panel.
+Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]] ] = [[Especifica un archivo ubicado en el directorio texture de World of Warcraft que deseas tener establecido como fondo de panel.
 
 Nota:
 -El tamaño de imagen recomendada es 256x128
@@ -311,7 +312,7 @@ Nota:
 
 Ejemplo: Interface\AddOns\ElvUI\media\textures\copy
 
-O también puedes simplemente colocar un archivo tga en la carpeta de WoW, y escribir aquí el nombre del archivo.]=]
+O también puedes simplemente colocar un archivo tga en la carpeta de WoW, y escribir aquí el nombre del archivo.]]
 
 --Credits
 L["Coding:"] = "Codificación:"

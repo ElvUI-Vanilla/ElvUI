@@ -194,6 +194,7 @@ L["Experience"] = "Опыт"
 L["Farm Mode"] = "Режим фарма"
 L["Fishy Loot"] = "Улов"
 L["Left Click:"] = "ЛКМ:" --layout\layout.lua
+L["Mouse"] = "мышь"
 L["Raid Menu"] = "Рейдовое меню"
 L["Remaining:"] = "Осталось:"
 L["Rested:"] = "Бодрость:"

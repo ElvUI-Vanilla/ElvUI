@@ -399,7 +399,7 @@ E.Options.args.general = {
 				}
 			}
 		},
-		totems = {
+		--[[totems = {
 			order = 7,
 			type = "group",
 			name = TUTORIAL_TITLE47,
@@ -448,7 +448,7 @@ E.Options.args.general = {
 					}
 				}
 			}
-		},
+		},--]]
 		cooldown = {
 			type = "group",
 			order = 8,
@@ -607,7 +607,7 @@ E.Options.args.general = {
 				}
 			}
 		},
-		threatGroup = {
+		--[[threatGroup = {
 			order = 11,
 			type = "group",
 			name = L["Threat"],
@@ -645,6 +645,6 @@ E.Options.args.general = {
 					set = function(info, value) E.db.general.threat.textSize = value; E:GetModule("Threat"):UpdatePosition(); end
 				}
 			}
-		}
+		}--]]
 	}
 };

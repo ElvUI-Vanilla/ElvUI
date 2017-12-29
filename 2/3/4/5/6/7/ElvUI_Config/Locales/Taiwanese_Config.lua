@@ -16,7 +16,7 @@ L["SKINS_DESC"] = "調整外觀設定."
 L["TOGGLESKIN_DESC"] = "啟用/停用此外觀."
 L["TOOLTIP_DESC"] = "浮動提示資訊設定選項."
 L["UNITFRAME_DESC"] = "Modify the unitframe settings."
-L["SEARCH_SYNTAX_DESC"] = [=[因為新增加的 LibItemSearch，你現在可以使用更進階的物品搜尋. 下面是一份搜尋語法的文件. 想要看更完整的解釋請到: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
+L["SEARCH_SYNTAX_DESC"] = [[因為新增加的 LibItemSearch，你現在可以使用更進階的物品搜尋. 下面是一份搜尋語法的文件. 想要看更完整的解釋請到: https://github.com/Jaliborc/LibItemSearch-1.2/wiki/Search-Syntax.
 
 條件搜尋:
     • q:[品質] 或 quality:[品質]. 舉例，q:史詩 會搜尋所有史詩物品.
@@ -39,8 +39,8 @@ L["SEARCH_SYNTAX_DESC"] = [=[因為新增加的 LibItemSearch，你現在可以�
     • bou : 使用後綁定.
     • boe : 裝備後綁定.
     • boa : 帳號綁定.
-    • quest : 任務綁定.]=];
-L["TEXT_FORMAT_DESC"] = [=[請填入代碼以變更文字格式。
+    • quest : 任務綁定.]];
+L["TEXT_FORMAT_DESC"] = [[請填入代碼以變更文字格式。
 
 範例：
 [namecolor][name] [difficultycolor][smartlevel] [shortclassification]
@@ -60,7 +60,7 @@ L["TEXT_FORMAT_DESC"] = [=[請填入代碼以變更文字格式。
 "name:medium" - 名稱上限為 15 個字元
 "name:long" - 名稱上限為 20 個字元
 
-若要停用此功能，此欄位請留空。如需更多資訊，請至 http://www.tukui.org]=];
+若要停用此功能，此欄位請留空。如需更多資訊，請至 http://www.tukui.org]];
 
 --ActionBars
 L["Action Paging"] = "快捷列翻頁"
@@ -128,12 +128,12 @@ L["Transparency level when not in combat, no target exists, full health, not cas
 L["Usable"] = "可以使用"
 L["Visibility State"] = "顯示狀態"
 L["Width Multiplier"] = "寬度倍數"
-L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
- Example: [combat] 2;]=] ] = [=[此功能與巨集概念類似, 可根據不同情況切換至不同的快捷列設定。
-例如：[combat] 2;]=]
-L[ [=[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
- Example: [combat] show;hide]=] ] = [=[此功能與巨集概念類似, 可根據不同情境, 切換顯示/隱藏快捷列。
-例如：[combat] show;hide]=]
+L[ [[This works like a macro, you can run different situations to get the actionbar to page differently.
+ Example: [combat] 2;]] ] = [[此功能與巨集概念類似, 可根據不同情況切換至不同的快捷列設定。
+例如：[combat] 2;]]
+L[ [[This works like a macro, you can run different situations to get the actionbar to show/hide differently.
+ Example: [combat] show;hide]] ] = [[此功能與巨集概念類似, 可根據不同情境, 切換顯示/隱藏快捷列。
+例如：[combat] show;hide]]
 
 --Bags
 L["Add an item or search syntax to the ignored list. Items matching the search syntax will be ignored."] = "增加一個物品或是搜尋語法到忽略清單. 符合搜尋語法的物品將會被忽略"
@@ -193,6 +193,7 @@ L["Top to Bottom"] = "頂部至底部"
 L["Use coin icons instead of colored text."] = "使用硬幣圖示取代上色文字"
 
 --Buffs and Debuffs
+L["Buffs and Debuffs"] = "愛好者和減";
 L["Begin a new row or column after this many auras."] = "在這些光環旁開始新的行或列."
 L["Count xOffset"] = "層數X偏移"
 L["Count yOffset"] = "層數Y偏移"
@@ -293,7 +294,7 @@ L["Use Alt Key"] = "對話歷史Alt鍵"
 L["Use class color for the names of players when they are mentioned."] = "當玩家名字被提及時使用職業顏色"
 L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."] = "打開此選項將會保存你的輸入框為上一次輸入的頻道, 關閉此選項輸入框將始終保持在說的頻道."
 L["Whisper Alert"] = "密語警報"
-L[ [=[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
+L[ [[Specify a filename located inside the World of Warcraft directory. Textures folder that you wish to have set as a panel background.
 
 Please Note:
 -The image size recommended is 256x128
@@ -302,7 +303,7 @@ Please Note:
 
 Example: Interface\AddOns\ElvUI\media\textures\copy
 
-Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]=] ] = [=[若要設定對話框背景, 請將你希望設定為背景的檔案置放於WoW 目錄底下的「Textures」資料夾中, 並指定該檔名.
+Or for most users it would be easier to simply put a tga file into your WoW folder, then type the name of the file here.]] ] = [[若要設定對話框背景, 請將你希望設定為背景的檔案置放於WoW 目錄底下的「Textures」資料夾中, 並指定該檔名.
 
 請注意：
 - 影像尺寸建議為 256 x 128
@@ -311,7 +312,7 @@ Or for most users it would be easier to simply put a tga file into your WoW fold
 
 範例：Interface\AddOns\ElvUI\media\textures\copy
 
-對多數玩家來說, 較簡易的方式是將 tga 檔放入 WoW 資料夾中, 然後在此處輸入檔案名稱.]=]
+對多數玩家來說, 較簡易的方式是將 tga 檔放入 WoW 資料夾中, 然後在此處輸入檔案名稱.]]
 
 --Credits
 L["Coding:"] = "編碼:"
