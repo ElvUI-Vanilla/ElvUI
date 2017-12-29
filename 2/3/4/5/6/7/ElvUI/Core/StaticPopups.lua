@@ -334,14 +334,12 @@ E.PopupDialogs["APPLY_FONT_WARNING"] = {
 		E.db.bags.itemLevelFontSize = fontSize
 		E.db.bags.countFont = font
 		E.db.bags.countFontSize = fontSize
-		E.db.nameplates.font = font
-		--E.db.nameplates.fontSize = fontSize
+		-- E.db.nameplates.font = font
+		-- E.db.nameplates.fontSize = fontSize
 		E.db.actionbar.font = font
-		--E.db.actionbar.fontSize = fontSize
+		E.db.actionbar.fontSize = fontSize
 		E.db.auras.font = font
 		E.db.auras.fontSize = fontSize
-		E.db.general.reminder.font = font
-		--E.db.general.reminder.fontSize = fontSize
 		E.db.chat.font = font
 		E.db.chat.fontSize = fontSize
 		E.db.chat.tabFont = font
@@ -354,10 +352,10 @@ E.PopupDialogs["APPLY_FONT_WARNING"] = {
 		E.db.tooltip.textFontSize = fontSize
 		E.db.tooltip.smallTextFontSize = fontSize
 		E.db.tooltip.healthBar.font = font
-		--E.db.tooltip.healthbar.fontSize = fontSize
+		E.db.tooltip.healthBar.fontSize = fontSize
 		E.db.unitframe.font = font
-		--E.db.unitframe.fontSize = fontSize
-		--E.db.unitframe.units.party.rdebuffs.font = font
+		E.db.unitframe.fontSize = fontSize
+		E.db.unitframe.units.party.rdebuffs.font = font
 		E.db.unitframe.units.raid.rdebuffs.font = font
 		E.db.unitframe.units.raid40.rdebuffs.font = font
 
@@ -440,7 +438,7 @@ function E:StaticPopupSpecial_Show(frame)
 	if(frame.exclusive) then
 		E:StaticPopup_HideExclusive()
 	end
-	-- E:StaticPopup_SetUpPosition(frame)
+	E:StaticPopup_SetUpPosition(frame)
 	frame:Show()
 end
 
@@ -874,7 +872,7 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 		button1:Enable()
 	end
 
-	-- E:StaticPopup_SetUpPosition(dialog)
+	E:StaticPopup_SetUpPosition(dialog)
 	dialog:Show()
 
 	E:StaticPopup_Resize(dialog, which)
@@ -913,7 +911,7 @@ function E:Contruct_StaticPopups()
 			local button = _G[name.."Button"..i]
 			S:HandleButton(button)
 
-			button:SetScript("OnClick", function(this)
+			button:SetScript("OnClick", function()
 				E.StaticPopup_OnClick(this:GetParent(), this:GetID())
 			end)
 
