@@ -78,13 +78,6 @@ function B:SizeAndPositionBagBar()
 		button:SetWidth(E.db.bags.bagBar.size)
 		button:SetHeight(E.db.bags.bagBar.size)
 		button:ClearAllPoints()
-		-- if E.db.bags.bagBar.mouseover then
-		-- 	button:SetAlpha(0)
-		-- 	button:Show()
-		-- else
-		-- 	button:SetAlpha(1)
-		-- 	button:Show()
-		-- end
 
 		if growthDirection == "HORIZONTAL" and sortDirection == "ASCENDING" then
 			if i == 1 then
