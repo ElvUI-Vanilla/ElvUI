@@ -528,7 +528,6 @@ L["Left"] = "왼쪽"
 L["LFG Queue"] = "파티찾기 표시기"
 L["Location Text"] = "지역이름 표시 방법"
 L["Make the world map smaller."] = "월드맵을 작게 표시합니다."
-L["Map Opacity When Moving"] = true;
 L["Maps"] = true;
 L["Minimap Buttons"] = "미니맵 버튼"
 L["Minimap Mouseover"] = "마우스오버 때만 표시"

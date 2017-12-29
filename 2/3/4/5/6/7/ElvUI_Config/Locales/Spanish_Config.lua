@@ -480,7 +480,6 @@ L["Left"] = "Izquierda"
 L["LFG Queue"] = true;
 L["Location Text"] = "Texto de Ubicación"
 L["Make the world map smaller."] = true;
-L["Map Opacity When Moving"] = true;
 L["Maps"] = "Mapas"
 L["Minimap Buttons"] = true;
 L["Minimap Mouseover"] = "Ratón por encima del Minimapa"

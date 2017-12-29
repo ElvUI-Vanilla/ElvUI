@@ -480,7 +480,6 @@ L["Left"] = "Gauche"
 L["LFG Queue"] = "Outil raid"
 L["Location Text"] = "Texte de localisation"
 L["Make the world map smaller."] = "Rendre la carte du monde plus petite"
-L["Map Opacity When Moving"] = true;
 L["Maps"] = "Cartes"
 L["Minimap Buttons"] = "Bouton de la minimap"
 L["Minimap Mouseover"] = "Au survol de la Minicarte"

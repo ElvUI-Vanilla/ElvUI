@@ -469,7 +469,6 @@ L["Left"] = true;
 L["LFG Queue"] = true;
 L["Location Text"] = true;
 L["Make the world map smaller."] = true;
-L["Map Opacity When Moving"] = true;
 L["Maps"] = true;
 L["Minimap Buttons"] = true;
 L["Minimap Mouseover"] = true;
