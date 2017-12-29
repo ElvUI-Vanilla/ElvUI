@@ -17,19 +17,19 @@ ElvUIKeyRing:RegisterForClicks("anyUp")
 E:StripTextures(ElvUIKeyRing)
 ElvUIKeyRing:SetScript("OnClick", function() if CursorHasItem() then PutKeyInKeyRing() else ToggleKeyRing() end end)
 ElvUIKeyRing:SetScript("OnReceiveDrag", function() if CursorHasItem() then PutKeyInKeyRing() end end)
-ElvUIKeyRing:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_LEFT") local color = HIGHLIGHT_FONT_COLOR GameTooltip:SetText(KEYRING, color.r, color.g, color.b) GameTooltip:AddLine() end)
+ElvUIKeyRing:SetScript("OnEnter", function() GameTooltip:SetOwner(this, "ANCHOR_LEFT") local color = HIGHLIGHT_FONT_COLOR GameTooltip:SetText(KEYRING, color.r, color.g, color.b) GameTooltip:AddLine() end)
 ElvUIKeyRing:SetScript("OnLeave", function() GameTooltip:Hide() end)
 _G[ElvUIKeyRing:GetName().."IconTexture"]:SetTexture("Interface\\ContainerFrame\\KeyRing-Bag-Icon")
 _G[ElvUIKeyRing:GetName().."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
 
 local function OnEnter()
 	if not E.db.bags.bagBar.mouseover then return end
-	E:UIFrameFadeOut(ElvUIBags, 0.2, ElvUIBags:GetAlpha(), 1)
+	UIFrameFadeIn(ElvUIBags, 0.2, ElvUIBags:GetAlpha(), 1)
 end
 
 local function OnLeave()
 	if not E.db.bags.bagBar.mouseover then return end
-	E:UIFrameFadeOut(ElvUIBags, 0.2, ElvUIBags:GetAlpha(), 0)
+	UIFrameFadeOut(ElvUIBags, 0.2, ElvUIBags:GetAlpha(), 0)
 end
 
 function B:SkinBag(bag)
@@ -41,6 +41,7 @@ function B:SkinBag(bag)
 	bag.backdrop:SetAllPoints()
 	E:StyleButton(bag, true)
 	icon:SetTexture(bag.oldTex)
+	icon:Show()
 	E:SetInside(icon)
 	icon:SetTexCoord(unpack(E.TexCoords))
 end
@@ -77,7 +78,13 @@ function B:SizeAndPositionBagBar()
 		button:SetWidth(E.db.bags.bagBar.size)
 		button:SetHeight(E.db.bags.bagBar.size)
 		button:ClearAllPoints()
-		button:Show()
+		-- if E.db.bags.bagBar.mouseover then
+		-- 	button:SetAlpha(0)
+		-- 	button:Show()
+		-- else
+		-- 	button:SetAlpha(1)
+		-- 	button:Show()
+		-- end
 
 		if growthDirection == "HORIZONTAL" and sortDirection == "ASCENDING" then
 			if i == 1 then
@@ -133,6 +140,8 @@ function B:LoadBagBar()
 	E:FontTemplate(MainMenuBarBackpackButtonCount, nil, 10)
 	MainMenuBarBackpackButtonCount:ClearAllPoints()
 	MainMenuBarBackpackButtonCount:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -1, 4)
+	MainMenuBarBackpackButton:Show()
+	MainMenuBarBackpackButton:SetAlpha(1)
 	HookScript(MainMenuBarBackpackButton, "OnEnter", OnEnter)
 	HookScript(MainMenuBarBackpackButton, "OnLeave", OnLeave)
 	tinsert(ElvUIBags.buttons, MainMenuBarBackpackButton)
@@ -142,8 +151,11 @@ function B:LoadBagBar()
 		local b = _G["CharacterBag"..i.."Slot"]
 		b:SetParent(ElvUIBags)
 		b.SetParent = E.dummy
-		b:HookScript("OnEnter", OnEnter)
-		b:HookScript("OnLeave", OnLeave)
+		b:Show()
+		b:SetAlpha(1)
+
+		HookScript(b, "OnEnter", OnEnter)
+		HookScript(b, "OnLeave", OnLeave)
 
 		self:SkinBag(b)
 		tinsert(ElvUIBags.buttons, b)
