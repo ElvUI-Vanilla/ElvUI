@@ -390,7 +390,6 @@ function SetDefaultModuleLibraries(self,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
 		error("Usage: SetDefaultModuleLibraries(...): cannot change the module defaults after a module has been registered.", 2)
 	end
 	local args = self.defaultModuleLibraries or {}
-
 	args[1] = a1
 	args[2] = a2
 	args[3] = a3
@@ -401,7 +400,6 @@ function SetDefaultModuleLibraries(self,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
 	args[8] = a8
 	args[9] = a9
 	args[10] = a10
-	truncate(tmp,10)
 
 	self.defaultModuleLibraries = args
 end

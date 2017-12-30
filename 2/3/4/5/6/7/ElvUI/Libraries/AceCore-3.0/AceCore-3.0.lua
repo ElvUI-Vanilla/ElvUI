@@ -72,7 +72,6 @@ end
 
 local SafeDispatchers = setmetatable({}, {__index=function(self, argCount)
 	local dispatcher
-	if not tonumber(argCount) then dbg(debugstack()) end
 	if argCount > 0 then
 		dispatcher = CreateSafeDispatcher(argCount)
 	else

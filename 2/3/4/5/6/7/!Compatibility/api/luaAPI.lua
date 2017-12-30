@@ -56,17 +56,17 @@ function select(n, ...)
 	assert(type(n) == "number" or (type(n) == "string" and n == "#"), format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
 
 	if type(n) == "string" then
-		if type(arg) == "table" then
-			return getn(arg)
-		else
-			return 1
-		end
+		return getn(arg)
+	end
+
+	if n == 1 then
+		return unpack(arg)
 	end
 
 	local args = {}
 
 	for i = n, getn(arg) do
-		args[(i-n)+1] = arg[i]
+		args[i-n+1] = arg[i]
 	end
 
 	return unpack(args)
@@ -100,6 +100,7 @@ strjoin = string.join
 function string.match(str, pattern, index)
 	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
 	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
+	assert(not index or type(index) == "number" or type(index) == "string", format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
 	pattern = type(pattern) == "number" and tostring(pattern) or pattern
@@ -110,13 +111,12 @@ strmatch = string.match
 
 function string.split(delimiter, str)
 	assert(type(delimiter) == "string" or type(str) == "number", format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
-	assert(type(str) == "string", format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"))
-
-	local fields = {}
-	local pattern = format("([^%s]+)", delimiter)
+	assert(type(str) == "string" or type(str) == "number", format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
-	gsub(str, pattern, function(c) fields[getn(fields) + 1] = c end)
+
+	local fields = {}
+	gsub(str, format("([^%s]+)", delimiter), function(c) fields[getn(fields) + 1] = c end)
 
 	return unpack(fields)
 end
@@ -124,7 +124,7 @@ strsplit = string.split
 
 function string.trim(str, chars)
 	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"))
-	assert(not type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
+	assert(not chars or type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
 
 	str = type(str) == "number" and tostring(str) or str
 
@@ -148,10 +148,8 @@ function string.trim(str, chars)
 			end
 		end
 
-		patternStart = "^["..pattern.."](.-)$"
-		patternEnd = "^(.-)["..pattern.."]$"
-		patternStart = loadstring("return \""..patternStart.."\"")()
-		patternEnd = loadstring("return \""..patternEnd.."\"")()
+		local patternStart = loadstring("return \"^["..pattern.."](.-)$\"")()
+		local patternEnd = loadstring("return \"^(.-)["..pattern.."]$\"")()
 
 		local trimed, x, y = 1
 		while trimed >= 1 do
@@ -163,7 +161,7 @@ function string.trim(str, chars)
 		return str
 	else
 		-- remove leading/trailing [space][tab][return][newline]
-		return string.gsub(str, "^%s*(.-)%s*$", "%1")
+		return gsub(str, "^%s*(.-)%s*$", "%1")
 	end
 end
 strtrim = string.trim

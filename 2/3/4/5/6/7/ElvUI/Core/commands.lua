@@ -6,7 +6,6 @@ local _G = _G
 local tonumber, type = tonumber, type
 local format, lower, match = string.format, string.lower, string.match
 --WoW API / Variables
-local InCombatLockdown = InCombatLockdown
 local UIFrameFadeOut, UIFrameFadeIn = UIFrameFadeOut, UIFrameFadeIn
 local EnableAddOn, DisableAddOn, DisableAllAddOns = EnableAddOn, DisableAddOn, DisableAllAddOns
 local SetCVar = SetCVar
@@ -15,7 +14,6 @@ local debugprofilestart, debugprofilestop = debugprofilestart, debugprofilestop
 local UpdateAddOnCPUUsage, GetAddOnCPUUsage = UpdateAddOnCPUUsage, GetAddOnCPUUsage
 local ResetCPUUsage = ResetCPUUsage
 local GetAddOnInfo = GetAddOnInfo
-local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 
 function E:EnableAddon(addon)
 	local _, _, _, _, _, reason, _ = GetAddOnInfo(addon)
@@ -54,8 +52,8 @@ function FarmMode()
 end
 
 function E:FarmMode(msg)
-	if(E.private.general.minimap.enable ~= true) then return end
-	if(msg and type(tonumber(msg)) == "number" and tonumber(msg) <= 500 and tonumber(msg) >= 20 and not InCombatLockdown()) then
+	if E.private.general.minimap.enable ~= true then return end
+	if msg and type(tonumber(msg)) == "number" and tonumber(msg) <= 500 and tonumber(msg) >= 20 then
 		E.db.farmSize = tonumber(msg)
 		FarmModeMap:Size(tonumber(msg))
 	end

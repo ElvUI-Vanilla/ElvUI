@@ -10,7 +10,6 @@ local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
 local floor = floor
 local format, find, match, strrep, len, sub, gsub = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub
 --WoW API / Variables
-local UnitGUID = UnitGUID
 local CreateFrame = CreateFrame
 local GetActiveTalentGroup = GetActiveTalentGroup
 local GetCVar = GetCVar
@@ -138,22 +137,25 @@ E.DEFAULT_FILTER = {
 E.noop = function() end
 
 local colorizedName
-local length = len("ElvUI")
-for i = 1, length do
-	local letter = sub("ElvUI", i, i)
-	if(i == 1) then
-		colorizedName = format("|cffA11313%s", letter)
-	elseif(i == 2) then
-		colorizedName = format("%s|r|cffC4C4C4%s", colorizedName, letter)
-	elseif(i == length) then
-		colorizedName = format("%s%s|r|cffA11313:|r ", colorizedName, letter)
-	else
-		colorizedName = colorizedName .. letter
+function E:ColorizedName(name, colon)
+	local length = len(name)
+	for i = 1, length do
+		local letter = sub(name, i, i)
+		if i == 1 then
+			colorizedName = format("|cffA11313%s", letter)
+		elseif i == 2 then
+			colorizedName = format("%s|r|cffC4C4C4%s", colorizedName, letter)
+		elseif i == length and colon then
+			colorizedName = format("%s%s|r|cffA11313:|r", colorizedName, letter)
+		else
+			colorizedName = colorizedName..letter
+		end
 	end
+	return colorizedName
 end
 
-function E:Print(...)
-	print(colorizedName, unpack(arg))
+function E:Print(msg)
+	print(self:ColorizedName("ElvUI", true), msg)
 end
 
 E.PriestColors = {
@@ -623,7 +625,7 @@ function E:TableToLuaString(inTable)
 			if(type(v) == "number") then
 				ret = ret .. v .. ",\n"
 			elseif(type(v) == "string") then
-				ret = ret .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"") .. "\",\n"
+				ret = ret .. "\"" .. gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"") .. "\",\n"
 			elseif(type(v) == "boolean") then
 				if(v) then
 					ret = ret .. "true,\n"
@@ -710,7 +712,7 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 				if(type(v) == "number") then
 					returnString = returnString .. v .. "\n"
 				elseif(type(v) == "string") then
-					returnString = returnString .. "\"" .. v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"") .. "\"\n"
+					returnString = returnString .. "\"" .. gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"") .. "\"\n"
 				elseif(type(v) == "boolean") then
 					if(v) then
 						returnString = returnString .. "true\n"
@@ -1091,7 +1093,6 @@ function E:Initialize()
 	twipe(self.global)
 	twipe(self.private)
 
-	--self.myguid = UnitGUID("player")
 	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF)
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
