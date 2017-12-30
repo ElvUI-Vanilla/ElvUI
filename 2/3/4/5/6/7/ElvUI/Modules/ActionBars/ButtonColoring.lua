@@ -8,16 +8,13 @@ local E, L, V, P, G = unpack(ElvUI)
 
 local _G = getfenv()
 local UPDATE_DELAY = 0.1
-local ATTACK_BUTTON_FLASH_TIME = ATTACK_BUTTON_FLASH_TIME
 
-local ActionButton_GetPagedID = ActionButton_GetPagedID
-local ActionButton_IsFlashing = ActionButton_IsFlashing
 local ActionHasRange = ActionHasRange
 local IsActionInRange = IsActionInRange
 local IsUsableAction = IsUsableAction
 local HasAction = HasAction
 
-local tullaRange = CreateFrame("Frame", "tullaRange", UIParent); tullaRange:Hide()
+local tullaRange = CreateFrame("Frame", "tullaRange", UIParent)
 
 function tullaRange:Load()
 	self:SetScript("OnUpdate", self.OnUpdate)
@@ -91,8 +88,7 @@ function tullaRange:UpdateButtons(elapsed)
 end
 
 function tullaRange:UpdateButton(button, elapsed)
-	tullaRange.UpdateButtonUsable(button)
-	tullaRange.UpdateFlash(button, elapsed)
+	tullaRange:UpdateButtonUsable(button)
 end
 
 function tullaRange:UpdateButtonStatus()
@@ -121,16 +117,16 @@ function tullaRange.OnButtonHide()
 	tullaRange:UpdateButtonStatus(this)
 end
 
-function tullaRange.OnUpdateButtonUsable()
+function tullaRange:OnUpdateButtonUsable()
 	this.tullaRangeColor = nil
-	tullaRange.UpdateButtonUsable(this)
+	tullaRange:UpdateButtonUsable(this)
 end
 
 function tullaRange.OnButtonUpdate()
 	tullaRange:UpdateButtonStatus(this)
 end
 
-function tullaRange.UpdateButtonUsable(button)
+function tullaRange:UpdateButtonUsable(button)
 	local action = ActionButton_GetPagedID(button)
 	local isUsable, notEnoughMana = IsUsableAction(action)
 
@@ -155,29 +151,6 @@ function tullaRange.SetButtonColor(button, colorType)
 
 		local icon = _G[button:GetName() .. "Icon"]
 		icon:SetVertexColor(r, g, b)
-	end
-end
-
-function tullaRange.UpdateFlash(button, elapsed)
-	if ActionButton_IsFlashing(button) then
-		local flashtime = button.flashtime - elapsed
-
-		if flashtime <= 0 then
-			local overtime = -flashtime
-			if overtime >= ATTACK_BUTTON_FLASH_TIME then
-				overtime = 0
-			end
-			flashtime = ATTACK_BUTTON_FLASH_TIME - overtime
-
-			local flashTexture = _G[button:GetName() .. "Flash"]
-			if flashTexture:IsShown() then
-				flashTexture:Hide()
-			else
-				flashTexture:Show()
-			end
-		end
-
-		button.flashtime = flashtime
 	end
 end
 

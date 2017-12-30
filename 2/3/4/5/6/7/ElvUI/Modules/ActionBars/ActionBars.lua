@@ -105,9 +105,7 @@ function AB:PositionAndSizeBar(barName)
 		lastColumnButton = bar.buttons[i-buttonsPerRow]
 		button:ClearAllPoints()
 
-		if barName == "bar1" then
-			button:SetParent(bar)
-		end
+		button:SetParent(bar)
 
 		button:SetWidth(size)
 		button:SetHeight(size)
@@ -153,6 +151,12 @@ function AB:PositionAndSizeBar(barName)
 			button:SetScale(1)
 			button:SetAlpha(1)
 		end
+
+		if self.db[barName].mouseover then
+			button:SetAlpha(0)
+		else
+			button:SetAlpha(self.db[barName].alpha)
+		end
 	end
 
 	if self.db[barName].enabled or not bar.initialized then
@@ -187,17 +191,64 @@ function AB:CreateBar(id)
 	bar.buttons = {}
 	self:HookScript(bar, "OnEnter", "Bar_OnEnter")
 	self:HookScript(bar, "OnLeave", "Bar_OnLeave")
-	for i = 1, NUM_ACTIONBAR_BUTTONS do
-		local button = _G[self["barDefaults"]["bar"..id].name.."Button"..i]
-		bar.buttons[i] = button
-		bar.buttons[i].id = id
 
-		self:HookScript(button, "OnEnter", "Button_OnEnter")
-		self:HookScript(button, "OnLeave", "Button_OnLeave")
-	end
+	if id == 1 then
+		bar.actionButtons = {}
+		bar.bonusButtons = {}
 
-	if id ~= 1 then
-		_G[self["barDefaults"]["bar"..id].name]:SetParent(bar)
+		local button
+		for i = 1, NUM_ACTIONBAR_BUTTONS do
+			button = _G["ActionButton"..i]
+			button:SetParent(bar)
+			bar.actionButtons[i] = button
+			self:HookScript(button, "OnEnter", "Button_OnEnter")
+			self:HookScript(button, "OnLeave", "Button_OnLeave")
+
+			button = _G["BonusActionButton"..i]
+			button:SetParent(bar)
+			bar.bonusButtons[i] = button
+			self:HookScript(button, "OnEnter", "Button_OnEnter")
+			self:HookScript(button, "OnLeave", "Button_OnLeave")
+		end
+
+		MainMenuBar:SetParent(bar)
+		BonusActionBarFrame:SetParent(bar)
+
+		bar.buttons = bar.actionButtons
+
+		bar:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
+		bar:SetScript("OnEvent", function()
+			if GetBonusBarOffset() > 0 then
+				bar.lastBonusBar = GetBonusBarOffset()
+
+				for i = 1, NUM_ACTIONBAR_BUTTONS do
+					bar.buttons[i]:SetParent(E.HiddenFrame)
+				end
+
+				bar.buttons = bar.bonusButtons
+
+				ShowBonusActionBar()
+			else
+				HideBonusActionBar()
+
+				for i = 1, NUM_ACTIONBAR_BUTTONS do
+					bar.buttons[i]:SetParent(E.HiddenFrame)
+				end
+	
+				bar.buttons = bar.actionButtons
+			end
+
+			AB:PositionAndSizeBar("bar1")
+		end)
+	else
+		for i = 1, NUM_ACTIONBAR_BUTTONS do
+			local button = _G[self["barDefaults"]["bar"..id].name.."Button"..i]
+			bar.buttons[i] = button
+			bar.buttons[i].id = id
+
+			self:HookScript(button, "OnEnter", "Button_OnEnter")
+			self:HookScript(button, "OnLeave", "Button_OnLeave")
+		end
 	end
 
 	self["handledBars"]["bar"..id] = bar
@@ -303,29 +354,36 @@ function AB:Bar_OnLeave()
 end
 
 function AB:Button_OnEnter()
-	local bar = self["handledBars"]["bar"..this.id]
+	local bar = (this:GetParent() == BonusActionBarFrame or this:GetParent() == MainMenuBarArtFrame) and ElvUI_Bar1 or this:GetParent()
 	if bar.mouseover then
 		UIFrameFadeIn(bar, 0.2, bar:GetAlpha(), bar.db.alpha)
 	end
 end
 
 function AB:Button_OnLeave()
-	local bar = self["handledBars"]["bar"..this.id]
+	local bar = (this:GetParent() == BonusActionBarFrame or this:GetParent() == MainMenuBarArtFrame) and ElvUI_Bar1 or this:GetParent()
 	if bar.mouseover then
 		UIFrameFadeOut(bar, 0.2, bar:GetAlpha(), 0)
 	end
 end
 
 function AB:DisableBlizzard()
-	MainMenuBar:SetScale(0.00001)
 	MainMenuBar:EnableMouse(false)
+	E:Kill(MainMenuExpBar)
+	E:Kill(MainMenuBarMaxLevelBar)
+	E:Kill(MainMenuBarPerformanceBarFrame)
+
+	BonusActionBarFrame:EnableMouse(false)
+	BonusActionBarFrame:DisableDrawLayer("OVERLAY")
+
 	PetActionBarFrame:EnableMouse(false)
+
 	ShapeshiftBarFrame:EnableMouse(false)
 
 	local elements = {
-		MainMenuBar,
+		--MainMenuBar,
 		MainMenuBarArtFrame,
-		BonusActionBarFrame,
+		--BonusActionBarFrame,
 		PetActionBarFrame,
 		ShapeshiftBarFrame,
 		ShapeshiftBarLeft,
@@ -409,6 +467,29 @@ function AB:Initialize()
 	self.db = E.db.actionbar
 
 	if E.private.actionbar.enable ~= true then return end
+
+	function ActionButton_GetPagedID(button)
+		if button.isBonus and CURRENT_ACTIONBAR_PAGE == 1 then
+			local offset = GetBonusBarOffset()
+			if offset == 0 and ElvUI_Bar1 and ElvUI_Bar1.lastBonusBar then
+				offset = ElvUI_Bar1.lastBonusBar
+			end
+			return button:GetID() + ((NUM_ACTIONBAR_PAGES + offset - 1) * NUM_ACTIONBAR_BUTTONS)
+		end
+
+		local parentName = button:GetParent():GetName()
+		if parentName == "ElvUI_Bar5" then
+			return button:GetID() + ((BOTTOMLEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		elseif parentName == "ElvUI_Bar2" then
+			return button:GetID() + ((BOTTOMRIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		elseif parentName == "ElvUI_Bar4" then
+			return button:GetID() + ((LEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		elseif parentName == "ElvUI_Bar3" then
+			return button:GetID() + ((RIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		else
+			return button:GetID() + ((CURRENT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		end
+	end
 
 	self:DisableBlizzard()
 
