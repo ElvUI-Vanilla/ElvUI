@@ -211,9 +211,6 @@ function AB:CreateBar(id)
 			self:HookScript(button, "OnLeave", "Button_OnLeave")
 		end
 
-		MainMenuBar:SetParent(bar)
-		BonusActionBarFrame:SetParent(bar)
-
 		bar.buttons = bar.actionButtons
 
 		bar:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
@@ -226,11 +223,9 @@ function AB:CreateBar(id)
 				end
 
 				bar.buttons = bar.bonusButtons
-
-				ShowBonusActionBar()
-			else
-				HideBonusActionBar()
-
+		--	ShowBonusActionBar();
+		else
+		--	HideBonusActionBar();
 				for i = 1, NUM_ACTIONBAR_BUTTONS do
 					bar.buttons[i]:SetParent(E.HiddenFrame)
 				end
@@ -244,7 +239,6 @@ function AB:CreateBar(id)
 		for i = 1, NUM_ACTIONBAR_BUTTONS do
 			local button = _G[self["barDefaults"]["bar"..id].name.."Button"..i]
 			bar.buttons[i] = button
-			bar.buttons[i].id = id
 
 			self:HookScript(button, "OnEnter", "Button_OnEnter")
 			self:HookScript(button, "OnLeave", "Button_OnLeave")
@@ -369,21 +363,13 @@ end
 
 function AB:DisableBlizzard()
 	MainMenuBar:EnableMouse(false)
-	E:Kill(MainMenuExpBar)
-	E:Kill(MainMenuBarMaxLevelBar)
-	E:Kill(MainMenuBarPerformanceBarFrame)
-
-	BonusActionBarFrame:EnableMouse(false)
-	BonusActionBarFrame:DisableDrawLayer("OVERLAY")
-
 	PetActionBarFrame:EnableMouse(false)
-
 	ShapeshiftBarFrame:EnableMouse(false)
 
 	local elements = {
-		--MainMenuBar,
+		MainMenuBar,
 		MainMenuBarArtFrame,
-		--BonusActionBarFrame,
+		BonusActionBarFrame,
 		PetActionBarFrame,
 		ShapeshiftBarFrame,
 		ShapeshiftBarLeft,
@@ -463,33 +449,33 @@ function AB:ActionButton_Update()
 	self:StyleButton(this)
 end
 
+function AB:ActionButton_GetPagedID(button)
+	if button.isBonus and CURRENT_ACTIONBAR_PAGE == 1 then
+		local offset = GetBonusBarOffset()
+		if offset == 0 and ElvUI_Bar1 and ElvUI_Bar1.lastBonusBar then
+			offset = ElvUI_Bar1.lastBonusBar
+		end
+		return button:GetID() + ((NUM_ACTIONBAR_PAGES + offset - 1) * NUM_ACTIONBAR_BUTTONS)
+	end
+
+	local parentName = button:GetParent():GetName()
+	if parentName == "ElvUI_Bar5" then
+		return button:GetID() + ((BOTTOMLEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+	elseif parentName == "ElvUI_Bar2" then
+		return button:GetID() + ((BOTTOMRIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+	elseif parentName == "ElvUI_Bar4" then
+		return button:GetID() + ((LEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+	elseif parentName == "ElvUI_Bar3" then
+		return button:GetID() + ((RIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+	else
+		return button:GetID() + ((CURRENT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+	end
+end
+
 function AB:Initialize()
 	self.db = E.db.actionbar
 
 	if E.private.actionbar.enable ~= true then return end
-
-	function ActionButton_GetPagedID(button)
-		if button.isBonus and CURRENT_ACTIONBAR_PAGE == 1 then
-			local offset = GetBonusBarOffset()
-			if offset == 0 and ElvUI_Bar1 and ElvUI_Bar1.lastBonusBar then
-				offset = ElvUI_Bar1.lastBonusBar
-			end
-			return button:GetID() + ((NUM_ACTIONBAR_PAGES + offset - 1) * NUM_ACTIONBAR_BUTTONS)
-		end
-
-		local parentName = button:GetParent():GetName()
-		if parentName == "ElvUI_Bar5" then
-			return button:GetID() + ((BOTTOMLEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-		elseif parentName == "ElvUI_Bar2" then
-			return button:GetID() + ((BOTTOMRIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-		elseif parentName == "ElvUI_Bar4" then
-			return button:GetID() + ((LEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-		elseif parentName == "ElvUI_Bar3" then
-			return button:GetID() + ((RIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-		else
-			return button:GetID() + ((CURRENT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-		end
-	end
 
 	self:DisableBlizzard()
 
@@ -503,6 +489,7 @@ function AB:Initialize()
 	--self:LoadKeyBinder()
 
 	self:SecureHook("ActionButton_Update")
+	self:RawHook("ActionButton_GetPagedID")
 	-- self:SecureHook("PetActionBar_Update", "UpdatePet")
 end
 
