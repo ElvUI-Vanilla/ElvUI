@@ -63,13 +63,13 @@ function select(n, ...)
 		end
 	end
 
-	local temp = {}
+	local args = {}
 
 	for i = n, getn(arg) do
-		tinsert(temp, arg[i])
+		args[(i-n)+1] = arg[i]
 	end
 
-	return unpack(temp)
+	return unpack(args)
 end
 
 function math.modf(i)

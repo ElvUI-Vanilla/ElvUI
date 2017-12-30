@@ -23,6 +23,10 @@ V["bags"] = {
 	["bagBar"] = false,
 }
 
+V["nameplates"] = {
+	["enable"] = true,
+}
+
 V["auras"] = {
 	["enable"] = true,
 	["disableBlizzard"] = true,
