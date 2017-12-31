@@ -972,7 +972,7 @@ function E:InitializeInitialModules()
 		module = self:GetModule(module, true)
 		if(module and module.Initialize) then
 			local _, catch = pcall(module.Initialize, module)
-			--if(catch and GetCVarBool("scriptErrors") == "1") then
+			--if(catch and GetCVarBool("ShowErrors") == "1") then
 				ScriptErrorsFrame_OnError(catch, false)
 			--end
 		end
@@ -998,7 +998,7 @@ function E:InitializeModules()
 		module = self:GetModule(module)
 		if(module.Initialize) then
 			local _, catch = pcall(module.Initialize, module)
-			--if(catch and GetCVarBool("scriptErrors") == "1") then
+			--if(catch and GetCVarBool("ShowErrors") == "1") then
 				ScriptErrorsFrame_OnError(catch, false)
 			--end
 		end

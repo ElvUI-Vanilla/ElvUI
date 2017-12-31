@@ -1,6 +1,3 @@
---Cache global variables
-local pairs, unpack = pairs, unpack
-
 BINDING_HEADER_ELVUI = GetAddOnMetadata("ElvUI", "Title")
 
 local AddOnName, Engine = "ElvUI", {}

@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local getn = table.getn
 --WoW API / Variables
 
 local function LoadSkin()
@@ -42,17 +41,11 @@ local function LoadSkin()
 		button:GetNormalTexture():SetTexture("")
 		button:GetPushedTexture():SetTexture("")
 
-		if iconTexture then
-			iconTexture:SetTexCoord(unpack(E.TexCoords))
+		E:CreateBackdrop(button, "Default", true)
 
-			if not button.backdrop then
-				E:CreateBackdrop(button, "Default", true)
-			end
-		end
+		iconTexture:SetTexCoord(unpack(E.TexCoords))
 
-		if cooldown then
-			E:RegisterCooldown(cooldown)
-		end
+		E:RegisterCooldown(cooldown)
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function()
@@ -75,9 +68,9 @@ local function LoadSkin()
 	for i = 1, MAX_SKILLLINE_TABS do
 		local tab = _G["SpellBookSkillLineTab"..i]
 
-		E:StripTextures(tab)
-		E:StyleButton(tab, nil, true)
+		tab:DisableDrawLayer("BACKGROUND")
 		E:SetTemplate(tab, "Default", true)
+		E:StyleButton(tab, nil, true)
 
 		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(tab:GetNormalTexture())

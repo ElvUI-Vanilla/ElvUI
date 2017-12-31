@@ -4,7 +4,6 @@ local DT = E:GetModule("DataTexts");
 --Cache global variables
 --Lua functions
 local collectgarbage = collectgarbage
-local sort, wipe = table.sort, wipe
 local floor = math.floor
 local format = string.format
 local gcinfo = gcinfo
@@ -12,7 +11,7 @@ local gcinfo = gcinfo
 local GetNetStats = GetNetStats
 local GetFramerate = GetFramerate
 
-local int, int2 = 6, 5
+local int = 6
 local statusColors = {
 	"|cff0CD809",
 	"|cffE8DA0F",
