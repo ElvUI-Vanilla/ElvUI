@@ -109,7 +109,15 @@ function string.match(str, pattern, index)
 		index = index ~= "" and tonumber(index) or nil
 	end
 
-	return gfind(index and sub(str, index) or str, gsub(pattern, "%^", ""))() or ""
+	local i1, i2, match, match2 = find(str, pattern, index)
+
+	if not match and i2 and i2 >= i1 then
+		return sub(str, i1, i2)
+	elseif match2 then
+		return select(3, find(str, pattern, index))
+	end
+
+	return match
 end
 strmatch = string.match
 
