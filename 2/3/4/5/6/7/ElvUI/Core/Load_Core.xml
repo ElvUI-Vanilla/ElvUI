@@ -5,7 +5,7 @@
 	<Script file="install.lua"/>
 	<Script file="pixelperfect.lua"/>
 	<Script file="toolkit.lua"/>
-	<Script file="commands.lua"/>
+	<Script file="Commands.lua"/>
 	<Script file="StaticPopups.lua"/>
 	<Script file="Movers.lua"/>
 	<Script file="Config.lua"/>
