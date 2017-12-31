@@ -16,8 +16,6 @@ local function updateUnitWatch(frame)
 	if exists then
 		if not frame:IsShown() then
 			frame:Show()
-		else
-		--	frame:UpdateAllElements('RefreshUnit')
 		end
 	elseif frame:IsShown() then
 		frame:Hide()

@@ -253,32 +253,31 @@ end
 
 local waitTable = {}
 local waitFrame
-function E:Delay(delay, func, arg)
-	if type(delay) ~= "number" or type(func) ~= "function" then
+function E:Delay(delay, func, ...)
+	if (type(delay) ~= "number") or (type(func) ~= "function") then
 		return false
 	end
 	if waitFrame == nil then
 		waitFrame = CreateFrame("Frame","WaitFrame", E.UIParent)
-		waitFrame:SetScript("OnUpdate", function ()
-			local elapse = arg1
-			local count = getn(waitTable)
-			local i = 1
+		waitFrame:SetScript("onUpdate", function()
+			local waitRecord, waitDelay, waitFunc, waitParams
+			local i, count = 1, getn(waitTable)
 			while i <= count do
-				local waitRecord = tremove(waitTable, i)
-				local d = tremove(waitRecord, 1)
-				local f = tremove(waitRecord, 1)
-				local p = tremove(waitRecord, 1)
-				if d > elapse then
-					tinsert(waitTable, i, {d-elapse, f, p})
+				waitRecord = tremove(waitTable, i)
+				waitDelay = tremove(waitRecord, 1)
+				waitFunc = tremove(waitRecord, 1)
+				waitParams = tremove(waitRecord, 1)
+				if waitDelay > arg1 then
+					tinsert(waitTable, i, {waitDelay - arg1, waitFunc, waitParams})
 					i = i + 1
 				else
 					count = count - 1
-					f(unpack(p))
+					waitFunc(unpack(waitParams))
 				end
 			end
 		end)
 	end
-	tinsert(waitTable, {delay, func, {arg}})
+	tinsert(waitTable, {delay, func, arg})
 	return true
 end
 
