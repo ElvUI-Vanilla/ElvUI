@@ -258,8 +258,8 @@ function E:Delay(delay, func, ...)
 		return false
 	end
 	if waitFrame == nil then
-		waitFrame = CreateFrame("Frame","WaitFrame", E.UIParent)
-		waitFrame:SetScript("onUpdate", function()
+		waitFrame = CreateFrame("Frame", "WaitFrame", E.UIParent)
+		waitFrame:SetScript("OnUpdate", function()
 			local waitRecord, waitDelay, waitFunc, waitParams
 			local i, count = 1, getn(waitTable)
 			while i <= count do

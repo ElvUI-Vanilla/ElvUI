@@ -223,9 +223,7 @@ function AB:CreateBar(id)
 				end
 
 				bar.buttons = bar.bonusButtons
-		--	ShowBonusActionBar();
-		else
-		--	HideBonusActionBar();
+			else
 				for i = 1, NUM_ACTIONBAR_BUTTONS do
 					bar.buttons[i]:SetParent(E.HiddenFrame)
 				end

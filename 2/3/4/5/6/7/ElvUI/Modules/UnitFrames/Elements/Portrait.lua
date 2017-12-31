@@ -49,12 +49,16 @@ function UF:Configure_Portrait(frame, dontHide)
 		portrait.backdrop:ClearAllPoints();
 		if(frame.USE_PORTRAIT_OVERLAY) then
 			if(db.portrait.style == "3D") then
-				portrait:SetFrameLevel(frame.Health:GetFrameLevel());
+				portrait:SetFrameLevel(frame.Health:GetFrameLevel() + 1);
 			else
 				portrait:SetParent(frame.Health);
 			end
 
 			portrait:SetAllPoints(frame.Health);
+
+			portrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", - frame.BORDER - frame.SPACING, -(frame.BORDER + frame.SPACING))
+			portrait:SetPoint("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", - frame.BORDER - frame.SPACING, -(frame.BORDER + frame.SPACING))
+	
 			portrait:SetAlpha(0.35);
 			if(not dontHide) then
 				portrait:Show();
