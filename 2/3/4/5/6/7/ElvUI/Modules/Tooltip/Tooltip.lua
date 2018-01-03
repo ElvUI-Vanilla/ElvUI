@@ -49,8 +49,8 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 			if GameTooltipStatusBar.anchoredToTop then
 				GameTooltipStatusBar:ClearAllPoints()
 				E:Point(GameTooltipStatusBar, "TOPLEFT", GameTooltip, "BOTTOMLEFT", E.Border, -(E.Spacing * 3))
-				E:PointGameTooltipStatusBar, "TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
-				E:PointGameTooltipStatusBar.text, "CENTER", GameTooltipStatusBar, 0, -3)
+				E:Point(GameTooltipStatusBar, "TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
+				E:Point(GameTooltipStatusBar.text, "CENTER", GameTooltipStatusBar, 0, -3)
 				GameTooltipStatusBar.anchoredToTop = nil
 			end
 		else
