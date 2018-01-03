@@ -48,17 +48,17 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 		if self.db.healthBar.statusPosition == "BOTTOM" then
 			if GameTooltipStatusBar.anchoredToTop then
 				GameTooltipStatusBar:ClearAllPoints()
-				GameTooltipStatusBar:Point("TOPLEFT", GameTooltip, "BOTTOMLEFT", E.Border, -(E.Spacing * 3))
-				GameTooltipStatusBar:Point("TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
-				GameTooltipStatusBar.text:Point("CENTER", GameTooltipStatusBar, 0, -3)
+				E:Point(GameTooltipStatusBar, "TOPLEFT", GameTooltip, "BOTTOMLEFT", E.Border, -(E.Spacing * 3))
+				E:PointGameTooltipStatusBar, "TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
+				E:PointGameTooltipStatusBar.text, "CENTER", GameTooltipStatusBar, 0, -3)
 				GameTooltipStatusBar.anchoredToTop = nil
 			end
 		else
 			if not GameTooltipStatusBar.anchoredToTop then
 				GameTooltipStatusBar:ClearAllPoints()
-				GameTooltipStatusBar:Point("BOTTOMLEFT", GameTooltip, "TOPLEFT", E.Border, (E.Spacing * 3))
-				GameTooltipStatusBar:Point("BOTTOMRIGHT", GameTooltip, "TOPRIGHT", -E.Border, (E.Spacing * 3))
-				GameTooltipStatusBar.text:Point("CENTER", GameTooltipStatusBar, 0, 3)
+				E:Point(GameTooltipStatusBar, "BOTTOMLEFT", GameTooltip, "TOPLEFT", E.Border, (E.Spacing * 3))
+				E:Point(GameTooltipStatusBar, "BOTTOMRIGHT", GameTooltip, "TOPRIGHT", -E.Border, (E.Spacing * 3))
+				E:Point(GameTooltipStatusBar.text, "CENTER", GameTooltipStatusBar, 0, 3)
 				GameTooltipStatusBar.anchoredToTop = true
 			end
 		end

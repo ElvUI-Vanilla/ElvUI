@@ -84,7 +84,7 @@ E.Options.args.tooltip = {
 				colorAlpha = {
 					order = 8,
 					type = "range",
-					name = "OPACITY",
+					name = OPACITY,
 					isPercent = true,
 					min = 0, max = 1, step = 0.01
 				},
@@ -224,12 +224,6 @@ E.Options.args.tooltip = {
 						--["ALT"] = ALT_KEY,
 						--["CTRL"] = CTRL_KEY
 					}
-				},
-				combat = {
-					order = 4,
-					type = "toggle",
-					name = "COMBAT",
-					desc = L["Hide tooltip while in combat."]
 				}
 			}
 		},
