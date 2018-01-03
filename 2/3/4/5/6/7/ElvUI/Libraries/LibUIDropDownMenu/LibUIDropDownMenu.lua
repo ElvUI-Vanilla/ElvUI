@@ -2,7 +2,7 @@
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
-local _G = getfenv(0)
+local _G = _G
 local strsub, strlen, strmatch, gsub = strsub, strlen, strmatch, gsub
 local max, match = max, match
 local securecall, issecure = securecall, issecure
@@ -477,7 +477,7 @@ function L_UIDropDownMenu_AddButton(info, level)
 	end
 
 
-	if not info.notCheckable then 
+	if not info.notCheckable then
 		if ( info.disabled ) then
 			_G[listFrameName.."Button"..index.."Check"]:SetDesaturated(true);
 			_G[listFrameName.."Button"..index.."Check"]:SetAlpha(0.5);
@@ -502,7 +502,7 @@ function L_UIDropDownMenu_AddButton(info, level)
 		end
 	else
 		_G[listFrameName.."Button"..index.."Check"]:Hide();
-	end	
+	end
 	button.checked = info.checked;
 
 	-- If has a colorswatch, show it and vertex color it
@@ -579,7 +579,7 @@ end
 function L_UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	local button, checked, checkImage, normalText, width;
 	local maxWidth = 0;
-	local somethingChecked = nil; 
+	local somethingChecked = nil;
 	if ( not dropdownLevel ) then
 		dropdownLevel = L_UIDROPDOWNMENU_MENU_LEVEL;
 	end

@@ -109,7 +109,7 @@ local function BuildABConfig()
 			colorGroup = {
 				order = 12,
 				type = "group",
-				name = "COLORS",
+				name = L["Colors"],
 				guiInline = true,
 				get = function(info)
 					local t = E.db.actionbar[ info[getn(info)] ]

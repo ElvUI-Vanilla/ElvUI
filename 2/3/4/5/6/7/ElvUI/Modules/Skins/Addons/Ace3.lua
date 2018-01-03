@@ -3,7 +3,7 @@ local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local _G = getfenv()
+local _G = _G
 local unpack = unpack
 local pairs = pairs
 --WoW API / Variables
@@ -327,7 +327,7 @@ function S:SkinAce3()
 				if(not E.GUIFrame) then
 					E.GUIFrame = frame
 				end
-				
+
 				for _, child in ipairs({frame:GetChildren()}) do
 					if child:GetObjectType() == "Button" and child:GetText() then
 						SkinButton(child)

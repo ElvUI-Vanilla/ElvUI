@@ -6,7 +6,7 @@
 
 local E, L, V, P, G = unpack(ElvUI)
 
-local _G = getfenv()
+local _G = _G
 local UPDATE_DELAY = 0.1
 
 local ActionHasRange = ActionHasRange
