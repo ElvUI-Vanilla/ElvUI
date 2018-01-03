@@ -1,3 +1,5 @@
+local _G = _G
+
 BINDING_HEADER_ELVUI = GetAddOnMetadata("ElvUI", "Title")
 
 local AddOnName, Engine = "ElvUI", {}
@@ -75,7 +77,7 @@ function AddOn:OnInitialize()
 	GameMenuButton:SetWidth(GameMenuButtonLogout:GetWidth())
 	GameMenuButton:SetHeight(GameMenuButtonLogout:GetHeight())
 
-	GameMenuButton:SetText(AddOnName)
+	GameMenuButton:SetText(self:ColorizedName(AddOnName))
 	GameMenuButton:SetScript("OnClick", function()
 		AddOn:ToggleConfig()
 		HideUIPanel(GameMenuFrame)
