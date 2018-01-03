@@ -7,7 +7,7 @@ local S = E:GetModule("Skins");
 local SetDressUpBackground = SetDressUpBackground
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.dressingroom ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.dressingroom ~= true then return end
 
 	E:StripTextures(DressUpFrame)
 	E:CreateBackdrop(DressUpFrame, "Transparent")

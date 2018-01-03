@@ -11,7 +11,7 @@ local hooksecurefunc = hooksecurefunc
 local UnitExists = UnitExists
 
 function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.stable ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.stable ~= true then return end
 
 	E:StripTextures(PetStableFrame)
 	E:Kill(PetStableFramePortrait)

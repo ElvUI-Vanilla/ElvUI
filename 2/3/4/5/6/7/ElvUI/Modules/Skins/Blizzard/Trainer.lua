@@ -10,7 +10,7 @@ local find = string.find
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trainer ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trainer ~= true then return end
 
 	E:CreateBackdrop(ClassTrainerFrame, "Transparent")
 	ClassTrainerFrame.backdrop:SetPoint("TOPLEFT", 10, -11)

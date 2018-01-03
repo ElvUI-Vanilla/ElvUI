@@ -15,7 +15,7 @@ local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local hooksecurefunc = hooksecurefunc
 
 function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.friends ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.friends ~= true then return end
 
 	-- Friends Frame
 	E:StripTextures(FriendsFrame, true)

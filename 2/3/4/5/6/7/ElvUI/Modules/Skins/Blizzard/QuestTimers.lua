@@ -7,7 +7,7 @@ local S = E:GetModule("Skins");
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.questtimer ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.questtimers ~= true then return end
 
 	E:StripTextures(QuestTimerFrame)
 	E:SetTemplate(QuestTimerFrame, "Transparent")

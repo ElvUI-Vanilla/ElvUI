@@ -14,7 +14,7 @@ local GetCraftItemLink = GetCraftItemLink
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or not E.private.skins.blizzard.craft ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or not E.private.skins.blizzard.craft ~= true then return end
 
 	E:StripTextures(CraftFrame, true)
 	E:CreateBackdrop(CraftFrame, "Transparent")

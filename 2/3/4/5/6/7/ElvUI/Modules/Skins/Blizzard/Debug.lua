@@ -10,7 +10,7 @@ local getn = table.getn
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.debug ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.debug ~= true then return end
 
 	-- ScriptErrorsFrame:SetParent(E.UIParent)
 	ScriptErrorsFrame:SetScale(UIParent:GetScale())

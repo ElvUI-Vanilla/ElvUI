@@ -51,7 +51,7 @@ function S:BankFrameItemButton_OnUpdate()
 end
 
 local function LoadSkin()
-	-- if not E.private.skins.blizzard.enable and E.private.skins.blizzard.bags and not E.private.bags.enable then return end
+	if not E.private.skins.blizzard.enable and E.private.skins.blizzard.bags and not E.private.bags.enable then return end
 
 	-- ContainerFrame
 	local containerFrame, containerFrameClose

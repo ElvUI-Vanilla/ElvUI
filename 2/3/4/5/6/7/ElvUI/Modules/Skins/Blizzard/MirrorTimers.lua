@@ -9,7 +9,7 @@ local floor, format = math.floor, string.format
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mirrorTimers ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mirrorTimers ~= true then return end
 
 	hooksecurefunc("MirrorTimerFrame_OnUpdate", function(frame, elapsed)
 		if frame.paused then

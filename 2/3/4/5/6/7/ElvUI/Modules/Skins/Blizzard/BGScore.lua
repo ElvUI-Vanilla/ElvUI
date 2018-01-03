@@ -9,7 +9,7 @@ local split = string.split
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bgscore ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bgscore ~= true then return end
 
 	E:CreateBackdrop(WorldStateScoreFrame, "Transparent")
 	WorldStateScoreFrame.backdrop:SetPoint("TOPLEFT", 10, -15)

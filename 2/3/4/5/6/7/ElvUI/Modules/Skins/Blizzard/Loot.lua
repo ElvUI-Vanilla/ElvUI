@@ -16,8 +16,8 @@ local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES
 local LOOT = LOOT
 
 local function LoadSkin()
-	-- if E.private.general.loot then return end
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.loot ~= true then return end
+	if E.private.general.loot then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.loot ~= true then return end
 
 	E:StripTextures(LootFrame)
 
@@ -92,8 +92,8 @@ local function LoadSkin()
 end
 
 local function LoadRollSkin()
-	-- if E.private.general.lootRoll then return end
-	-- if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lootRoll then return end
+	if E.private.general.lootRoll then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.lootRoll then return end
 
 	local function OnShow(self)
 		E:SetTemplate(self, "Transparent")

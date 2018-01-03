@@ -7,7 +7,7 @@ local _G = _G
 --WoW API / Variables
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.guildregistrar ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.guildregistrar ~= true then return end
 
 	E:StripTextures(GuildRegistrarFrame, true)
 	E:CreateBackdrop(GuildRegistrarFrame, "Transparent")

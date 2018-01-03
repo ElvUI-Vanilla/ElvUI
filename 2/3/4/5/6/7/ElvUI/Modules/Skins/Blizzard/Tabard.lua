@@ -8,7 +8,7 @@ local _G = _G
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tabard ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tabard ~= true then return end
 
 	E:StripTextures(TabardFrame)
 	E:Kill(TabardFramePortrait)

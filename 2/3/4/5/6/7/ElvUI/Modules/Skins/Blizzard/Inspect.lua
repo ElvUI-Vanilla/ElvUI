@@ -14,7 +14,7 @@ local GetItemQualityColor = GetItemQualityColor
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect then return end
+	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect then return end
 
 	E:StripTextures(InspectFrame, true)
 	E:CreateBackdrop(InspectFrame, "Transparent")

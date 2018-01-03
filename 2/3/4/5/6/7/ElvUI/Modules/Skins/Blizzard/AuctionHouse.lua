@@ -10,7 +10,7 @@ local pairs = pairs
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.auctionhouse ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.auctionhouse ~= true then return end
 
 	E:StripTextures(AuctionFrame, true)
 	E:CreateBackdrop(AuctionFrame, "Transparent")

@@ -14,7 +14,7 @@ local hooksecurefunc = hooksecurefunc
 local INBOXITEMS_TO_DISPLAY = INBOXITEMS_TO_DISPLAY
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mail ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.mail ~= true then return end
 
 	-- Inbox Frame
 	E:StripTextures(MailFrame, true)

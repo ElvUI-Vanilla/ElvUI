@@ -10,7 +10,7 @@ local pairs = pairs
 local hooksecurefunc = hooksecurefunc
 
 function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true then return end
 
 	-- RaidFrame
 	local StripAllTextures = {

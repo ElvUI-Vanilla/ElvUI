@@ -2,6 +2,8 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 local S = E:GetModule("Skins");
 
 local function LoadSkin()
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.battlefield ~= true then return end
+
 	E:StripTextures(BattlefieldFrame)
 
 	E:CreateBackdrop(BattlefieldFrame, "Transparent")

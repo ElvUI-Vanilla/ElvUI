@@ -9,7 +9,7 @@ local find, gsub = string.find, string.gsub
 local HookScript = HookScript
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.greeting ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.greeting ~= true then return end
 
 	HookScript(QuestFrameGreetingPanel, "OnShow", function()
 		E:StripTextures(QuestFrameGreetingPanel)

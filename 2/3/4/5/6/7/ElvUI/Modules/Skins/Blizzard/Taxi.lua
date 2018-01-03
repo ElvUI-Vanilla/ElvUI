@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 local S = E:GetModule("Skins");
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.taxi ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.taxi ~= true then return end
 
 	E:CreateBackdrop(TaxiFrame, "Transparent")
 	TaxiFrame.backdrop:SetPoint("TOPLEFT", 11, -12)

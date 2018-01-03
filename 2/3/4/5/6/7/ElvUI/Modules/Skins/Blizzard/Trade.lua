@@ -12,7 +12,7 @@ local GetTradeTargetItemInfo = GetTradeTargetItemInfo
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trade ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trade ~= true then return end
 
 	E:StripTextures(TradeFrame, true)
 	TradeFrame:SetWidth(400)

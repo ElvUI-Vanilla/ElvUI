@@ -8,7 +8,7 @@ local _G = _G
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
-	-- if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.gossip ~= true then return end
+	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.gossip ~= true then return end
 
 	E:StripTextures(ItemTextFrame, true)
 	E:StripTextures(ItemTextScrollFrame)

@@ -34,24 +34,9 @@ E.Options.args.skins = {
 			disabled = function() return not E.private.skins.blizzard.enable end,
 			guiInline = true,
 			args = {
-				achievement = {
-					type = "toggle",
-					name = L["Achievement Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
 				alertframes = {
 					type = "toggle",
 					name = L["Alert Frames"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				arena = {
-					type = "toggle",
-					name = L["Arena Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				arenaregistrar = {
-					type = "toggle",
-					name = L["Arena Registrar"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				auctionhouse = {
@@ -65,14 +50,9 @@ E.Options.args.skins = {
 					desc = L["TOGGLESKIN_DESC"],
 					disabled = function() return E.private.bags.enable end
 				},
-				barber = {
+				battlefield = {
 					type = "toggle",
-					name = L["Barbershop Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				bgmap = {
-					type = "toggle",
-					name = L["BG Map"],
+					name = L["Battlefield Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				bgscore = {
@@ -83,11 +63,6 @@ E.Options.args.skins = {
 				binding = {
 					type = "toggle",
 					name = L["KeyBinding Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				calendar = {
-					type = "toggle",
-					name = L["Calendar Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				character = {
@@ -108,16 +83,6 @@ E.Options.args.skins = {
 				friends = {
 					type = "toggle",
 					name = L["Friends"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				gbank = {
-					type = "toggle",
-					name = L["Guild Bank"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				gmchat = {
-					type = "toggle",
-					name = L["GM Chat"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				gossip = {
@@ -143,16 +108,6 @@ E.Options.args.skins = {
 				inspect = {
 					type = "toggle",
 					name = L["Inspect Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				lfd = {
-					type = "toggle",
-					name = L["LFD Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				lfr = {
-					type = "toggle",
-					name = L["LFR Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				loot = {
@@ -192,24 +147,19 @@ E.Options.args.skins = {
 					name = L["Petition Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
-				pvp = {
-					type = "toggle",
-					name = L["PvP Frames"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
 				quest = {
 					type = "toggle",
 					name = L["Quest Frames"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
+				questtimers = {
+					type = "toggle",
+					name = QUEST_TIMERS,
+					desc = L["TOGGLESKIN_DESC"]
+				},
 				raid = {
 					type = "toggle",
 					name = L["Raid Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				socket = {
-					type = "toggle",
-					name = L["Socket Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				spellbook = {
@@ -242,11 +192,6 @@ E.Options.args.skins = {
 					name = L["Tooltip"],
 					desc = L["TOGGLESKIN_DESC"],
 				},
-				timemanager = {
-					type = "toggle",
-					name = L["Time Manager"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
 				trade = {
 					type = "toggle",
 					name = L["Trade Frame"],
@@ -265,11 +210,6 @@ E.Options.args.skins = {
 				tutorial = {
 					type = "toggle",
 					name = L["Tutorial Frame"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				watchframe = {
-					type = "toggle",
-					name = L["Watch Frame"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				worldmap = {
