@@ -20,7 +20,7 @@ local gsub = string.gsub
 local IsAddOnLoaded = IsAddOnLoaded
 local GetScreenWidth = GetScreenWidth
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local FRIEND, ENEMY, SHOW, HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR = "FRIEND", "ENEMY", "SHOW", "HIDE", "DELETE", "NONE", "FILTERS", "FONT_SIZE", "COLOR"
+local HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR = HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR
 
 local SHIFT_KEY, ALT_KEY, CTRL_KEY = "SHIFT_KEY", "ALT_KEY", "CTRL_KEY"
 local HEALTH, MANA, NAME, PLAYER, CLASS, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, GROUP
@@ -361,7 +361,7 @@ local function GetOptionsTable_AuraBars(friendlyOnly, updateFunc, groupName)
 		end,
 		stateSwitchGetText = function(button, text, value)
 			local friend, enemy = match(text, "^Friendly:([^,]*)"), match(text, "^Enemy:([^,]*)")
-			return (friend and format("|cFF33FF33%s|r %s", FRIEND, friend)) or (enemy and format("|cFFFF3333%s|r %s", ENEMY, enemy))
+			return (friend and format("|cFF33FF33%s|r %s", L["Friend"], friend)) or (enemy and format("|cFFFF3333%s|r %s", L["Enemy"], enemy))
 		end,
 		stateSwitchOnClick = function(info, value)
 			filterPriority("aurabar", groupName, carryFilterFrom, nil, nil, true)
@@ -610,7 +610,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 		end,
 		stateSwitchGetText = function(button, text, value)
 			local friend, enemy = match(text, "^Friendly:([^,]*)"), match(text, "^Enemy:([^,]*)")
-			return (friend and format("|cFF33FF33%s|r %s", FRIEND, friend)) or (enemy and format("|cFFFF3333%s|r %s", ENEMY, enemy))
+			return (friend and format("|cFF33FF33%s|r %s", L["Friend"], friend)) or (enemy and format("|cFFFF3333%s|r %s", L["Enemy"], enemy))
 		end,
 		stateSwitchOnClick = function(info, value)
 			filterPriority(auraType, groupName, carryFilterFrom, nil, nil, true)
