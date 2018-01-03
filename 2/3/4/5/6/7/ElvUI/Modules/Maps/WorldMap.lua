@@ -88,12 +88,11 @@ function M:Initialize()
 	if E.global.general.smallerWorldMap then
 		BlackoutWorld:SetTexture(nil)
 
-		WorldMapFrame:SetParent(UIParent)
+		WorldMapFrame:SetParent(E.UIParent)
+		WorldMapFrame:SetScale(1)
 		WorldMapFrame:EnableKeyboard(false)
-		HookScript(WorldMapFrame, "OnShow", function()
-			WorldMapFrame:SetScale(E.UIParent:GetScale())
-		end)
 		WorldMapFrame:EnableMouse(false)
+		WorldMapFrame:SetToplevel()
 
 		UIPanelWindows["WorldMapFrame"] = {area = "center", pushable = 0, whileDead = 1}
 
@@ -102,6 +101,8 @@ function M:Initialize()
 				DropDownList1:SetScale(UIParent:GetScale())
 			end
 		end)
+
+		WorldMapTooltip:SetFrameLevel(WorldMapPositioningGuide:GetFrameLevel() + 110)
 	end
 end
 

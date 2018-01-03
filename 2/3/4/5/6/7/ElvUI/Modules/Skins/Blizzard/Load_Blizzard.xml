@@ -22,7 +22,7 @@
 	<Script file="Misc.lua"/>
 	<Script file="Petition.lua"/>
 	<Script file="Quest.lua"/>
-	<Script file="QuestTimer.lua"/>
+	<Script file="QuestTimers.lua"/>
 	<Script file="Raid.lua"/>
 	<Script file="SpellBook.lua"/>
 	<Script file="Stable.lua"/>
