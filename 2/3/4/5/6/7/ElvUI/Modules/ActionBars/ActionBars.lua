@@ -227,7 +227,7 @@ function AB:CreateBar(id)
 				for i = 1, NUM_ACTIONBAR_BUTTONS do
 					bar.buttons[i]:SetParent(E.HiddenFrame)
 				end
-	
+
 				bar.buttons = bar.actionButtons
 			end
 
@@ -301,7 +301,7 @@ function AB:StyleButton(button, noBackdrop)
 			macroName:Show()
 			E:FontTemplate(macroName, LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 			macroName:ClearAllPoints()
-			macroName:Point("BOTTOM", 2, 2)
+			E:Point(macroName, "BOTTOM", 2, 2)
 			macroName:SetJustifyH("CENTER")
 		else
 			macroName:Hide()
