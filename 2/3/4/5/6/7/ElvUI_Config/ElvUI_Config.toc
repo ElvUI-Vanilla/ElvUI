@@ -19,5 +19,6 @@ Filters.lua
 NamePlates.lua
 Skins.lua
 Tooltip.lua
+Unitframes.lua
 DataBars.lua
 Maps.lua

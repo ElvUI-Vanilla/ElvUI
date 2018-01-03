@@ -23,9 +23,8 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local FRIEND, ENEMY, SHOW, HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR = "FRIEND", "ENEMY", "SHOW", "HIDE", "DELETE", "NONE", "FILTERS", "FONT_SIZE", "COLOR"
 
 local SHIFT_KEY, ALT_KEY, CTRL_KEY = "SHIFT_KEY", "ALT_KEY", "CTRL_KEY"
-local HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP = "HEALTH", "MANA", "NAME", "PLAYER", "CLASS", "ROLE", "GROUP"
-local RAGE, FOCUS, ENERGY, PAIN, FURY, INSANITY, MAELSTROM, RUNIC_POWER, HOLY_POWER, LUNAR_POWER = "RAGE", "FOCUS", "ENERGY", "PAIN", "FURY", "INSANITY", "MAELSTROM", "RUNIC_POWER", "HOLY_POWER", "LUNAR_POWER"
-local POWER_TYPE_ARCANE_CHARGES, SOUL_SHARDS, RUNES = "POWER_TYPE_ARCANE_CHARGES", "SOUL_SHARDS", "RUNES"
+local HEALTH, MANA, NAME, PLAYER, CLASS, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, GROUP
+local RAGE, FOCUS, ENERGY = RAGE, FOCUS, ENERGY
 ------------------------------
 
 local ACD = LibStub("AceConfigDialog-3.0")
@@ -1942,7 +1941,7 @@ E.Options.args.unitframe = {
 		colorsShortcut = {
 			order = 5,
 			type = "execute",
-			name = "COLORS",
+			name = L["Colors"],
 		--	buttonElvUI = true,
 			func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup") end,
 			disabled = function() return not E.UnitFrames; end,
@@ -2187,14 +2186,14 @@ E.Options.args.unitframe = {
 					order = 2,
 					type = "group",
 					childGroups = "tree",
-					name = "COLORS",
+					name = L["Colors"],
 					get = function(info) return E.db.unitframe.colors[ info[getn(info)] ] end,
 					set = function(info, value) E.db.unitframe.colors[ info[getn(info)] ] = value; UF:Update_AllFrames() end,
 					args = {
 						header = {
 							order = 0,
 							type = "header",
-							name = "COLORS",
+							name = L["Colors"],
 						},
 						borderColor = {
 							order = 1,
@@ -2360,11 +2359,6 @@ E.Options.args.unitframe = {
 								ENERGY = {
 									order = 5,
 									name = ENERGY,
-									type = "color",
-								},
-								RUNIC_POWER = {
-									order = 6,
-									name = RUNIC_POWER,
 									type = "color",
 								},
 							},
@@ -2625,7 +2619,7 @@ E.Options.args.unitframe = {
 						},
 					},
 				},
-				raidDebuffIndicator = {
+				--[[raidDebuffIndicator = {
 					order = 4,
 					type = "group",
 					name = L["RaidDebuff Indicator"],
@@ -2670,7 +2664,7 @@ E.Options.args.unitframe = {
 							set = function(info, value) E.global.unitframe.raidDebuffIndicator.otherFilter = value; UF:UpdateAllHeaders() end,
 						},
 					},
-				},
+				},--]]
 			},
 		},
 	},
@@ -4978,7 +4972,7 @@ end
 
 --Custom Texts
 function E:RefreshCustomTextsConfigs()
-	--Hide any custom texts that don"t belong to current profile
+	--Hide any custom texts that don't belong to current profile
 	for _, customText in pairs(CUSTOMTEXT_CONFIGS) do
 		customText.hidden = true
 	end
