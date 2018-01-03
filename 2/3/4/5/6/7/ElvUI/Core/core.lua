@@ -899,8 +899,6 @@ function E:ResetAllUI()
 end
 
 function E:ResetUI(name)
-	if(InCombatLockdown()) then E:Print(ERR_NOT_IN_COMBAT) return end
-
 	if(name == "" or name == " " or name == nil) then
 		E:StaticPopup_Show("RESETUI_CHECK")
 		return
