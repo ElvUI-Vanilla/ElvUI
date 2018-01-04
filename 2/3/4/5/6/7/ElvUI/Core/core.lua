@@ -812,7 +812,7 @@ function E:UpdateAll(ignoreInstall)
 
 	self:SetMoversPositions()
 	self:UpdateMedia()
-	-- self:UpdateCooldownSettings()
+	self:UpdateCooldownSettings()
 
 	local UF = self:GetModule("UnitFrames")
 	UF.db = self.db.unitframe
@@ -833,7 +833,7 @@ function E:UpdateAll(ignoreInstall)
 	bags.db = self.db.bags
 	bags:Layout()
 	bags:Layout(true)
-	-- bags:SizeAndPositionBagBar()
+	bags:SizeAndPositionBagBar()
 	bags:UpdateItemLevelDisplay()
 	bags:UpdateCountDisplay()
 
@@ -843,9 +843,9 @@ function E:UpdateAll(ignoreInstall)
 	DT.db = self.db.datatexts
 	DT:LoadDataTexts()
 
-	--local NP = self:GetModule("NamePlates")
-	--NP.db = self.db.nameplates
-	--NP:ConfigureAll()
+	local NP = self:GetModule("NamePlates")
+	NP.db = self.db.nameplates
+	NP:ConfigureAll()
 
 	local DataBars = self:GetModule("DataBars")
 	DataBars.db = E.db.databars
@@ -853,16 +853,16 @@ function E:UpdateAll(ignoreInstall)
 	DataBars:EnableDisable_ExperienceBar()
 	DataBars:EnableDisable_ReputationBar()
 
-	--self:GetModule("Auras").db = self.db.auras
+	self:GetModule("Auras").db = self.db.auras
 	self:GetModule("Tooltip").db = self.db.tooltip
 
-	--if(ElvUIPlayerBuffs) then
-	--	E:GetModule("Auras"):UpdateHeader(ElvUIPlayerBuffs)
-	--end
+	if(ElvUIPlayerBuffs) then
+		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerBuffs)
+	end
 
-	--if(ElvUIPlayerDebuffs) then
-	--	E:GetModule("Auras"):UpdateHeader(ElvUIPlayerDebuffs)
-	--end
+	if(ElvUIPlayerDebuffs) then
+		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerDebuffs)
+	end
 
 	if not (self.private.install_complete or ignoreInstall) then
 		self:Install()
@@ -883,7 +883,7 @@ function E:UpdateAll(ignoreInstall)
 	LO:TopPanelVisibility()
 	LO:SetDataPanelStyle()
 
-	--self:GetModule("Blizzard"):SetWatchFrameHeight()
+	self:GetModule("Blizzard"):SetWatchFrameHeight()
 end
 
 function E:ResetAllUI()
