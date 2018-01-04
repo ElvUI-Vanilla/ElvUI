@@ -379,7 +379,6 @@ L["Reset Aura Filters"] = true --Used in Nameplates/UnitFrames general options
 L["Accept Invites"] = "Aceitar Convites"
 L["Adjust the position of the threat bar to either the left or right datatext panels."] = "Ajustar a posição da barra de agro para os painéis de texto informativos da esquerda ou da direita."
 L["AFK Mode"] = true;
-L["Animate Config"] = true;
 L["Announce Interrupts"] = "Anunciar Interrupções"
 L["Announce when you interrupt a spell to the specified chat channel."] = "Anunciar quando interromper um feitiço para o canal de bate-papo especificado."
 L["Attempt to support eyefinity/nvidia surround."] = true;

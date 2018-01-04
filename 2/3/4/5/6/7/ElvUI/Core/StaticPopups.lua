@@ -38,11 +38,11 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 	button1 = OKAY,
 	OnAccept = E.noop,
 	EditBoxOnEnterPressed = function()
-		ChatEdit_FocusActiveWindow()
+		-- ChatEdit_FocusActiveWindow()
 		this:GetParent():Hide()
 	end,
 	EditBoxOnEscapePressed = function()
-		ChatEdit_FocusActiveWindow()
+		-- ChatEdit_FocusActiveWindow()
 		this:GetParent():Hide()
 	end,
 	EditBoxOnTextChanged = function()
@@ -51,7 +51,7 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 		end
 		this:HighlightText()
 		this:ClearFocus()
-		ChatEdit_FocusActiveWindow()
+		-- ChatEdit_FocusActiveWindow()
 	end,
 	OnEditFocusGained = function()
 		this:HighlightText()
@@ -62,6 +62,7 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 E.PopupDialogs["CLIQUE_ADVERT"] = {
 	text = L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."],
 	button1 = YES,
+	button2 = "", -- Temporary until further fix
 	OnAccept = E.noop,
 	showAlert = 1
 }
@@ -809,7 +810,7 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 	local button2 = _G[name.."Button2"]
 
 	do
-	--	assert(getn(tempButtonLocs == 0))
+		-- assert(getn(tempButtonLocs == 0))
 
 		tinsert(tempButtonLocs, button1)
 		tinsert(tempButtonLocs, button2)

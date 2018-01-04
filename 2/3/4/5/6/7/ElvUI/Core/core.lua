@@ -25,13 +25,13 @@ local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 local MAX_TALENT_TABS = MAX_TALENT_TABS
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
-E.myclass = UnitClass("player") -- Constants
-E.myrace = UnitRace("player")
-E.myfaction = UnitFactionGroup("player")
+_, E.myclass = UnitClass("player") -- Constants
+_, E.myrace = UnitRace("player")
+_, E.myfaction = UnitFactionGroup("player")
 E.myname = UnitName("player")
 E.version = GetAddOnMetadata("ElvUI", "Version")
 E.myrealm = GetRealmName()
-E.wowbuild = GetBuildInfo() E.wowbuild = tonumber(E.wowbuild)
+_, E.wowbuild = GetBuildInfo() E.wowbuild = tonumber(E.wowbuild)
 E.resolution = GetCVar("gxResolution")
 E.screenheight = tonumber(match(E.resolution, "%d+x(%d+)"));
 E.screenwidth = tonumber(match(E.resolution, "(%d+)x+%d"));

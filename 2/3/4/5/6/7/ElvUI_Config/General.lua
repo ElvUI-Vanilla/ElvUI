@@ -15,26 +15,19 @@ E.Options.args.general = {
 			get = function(info) return E.global.general.versionCheck; end,
 			set = function(info, value) E.global.general.versionCheck = value; end
 		},
-		animateConfig = {
-			order = 2,
-			type = "toggle",
-			name = L["Animate Config"],
-			get = function(info) return E.global.general.animateConfig; end,
-			set = function(info, value) E.global.general.animateConfig = value; E:StaticPopup_Show("GLOBAL_RL"); end
-		},
 		spacer = {
-			order = 3,
+			order = 2,
 			type = "description",
 			name = "",
 			width = "full",
 		},
 		intro = {
-			order = 4,
+			order = 3,
 			type = "description",
 			name = L["ELVUI_DESC"],
 		},
 		general = {
-			order = 5,
+			order = 4,
 			type = "group",
 			name = L["General"],
 			args = {

@@ -379,7 +379,6 @@ L["Reset Aura Filters"] = "重置光环过滤器" --Used in Nameplates/UnitFrame
 L["Accept Invites"] = "自动接受邀请"
 L["Adjust the position of the threat bar to either the left or right datatext panels."] = "调整仇恨条的位置于左侧或右侧信息面板"
 L["AFK Mode"] = "离开模式"
-L["Animate Config"] = "动画设置"
 L["Announce Interrupts"] = "打断通告"
 L["Announce when you interrupt a spell to the specified chat channel."] = "在指定对话频道通知打断信息"
 L["Attempt to support eyefinity/nvidia surround."] = "尝试支持eyefinity/nvidia surround"

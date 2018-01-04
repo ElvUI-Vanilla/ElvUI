@@ -379,7 +379,6 @@ L["Reset Aura Filters"] = "Setze Aurafilter zurück" --Used in Nameplates/UnitFr
 L["Accept Invites"] = "Einladungen akzeptieren"
 L["Adjust the position of the threat bar to either the left or right datatext panels."] = "Bestimme die Position der Bedrohungsleiste in den rechten oder linken Infotextleisten."
 L["AFK Mode"] = "AFK Modus"
-L["Animate Config"] = "Animierte Konfiguration"
 L["Announce Interrupts"] = "Unterbrechungen ankündigen"
 L["Announce when you interrupt a spell to the specified chat channel."] = "Melde über den angegebenen Chatkanal einen unterbrochenen Zauber."
 L["Attempt to support eyefinity/nvidia surround."] = "Versucht Eyefinity/NVIDIA Surround zu unterstützen"
