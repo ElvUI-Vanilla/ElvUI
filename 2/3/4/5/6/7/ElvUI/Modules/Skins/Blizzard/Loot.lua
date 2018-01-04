@@ -80,7 +80,7 @@ local function LoadSkin()
 		end
 	end)
 
-	HookScript(LootFrame, "OnShow", function()
+	--[[HookScript(LootFrame, "OnShow", function()
 		if IsFishingLoot() then
 			this.Title:SetText(L["Fishy Loot"])
 		elseif not UnitIsFriend("player", "target") and UnitIsDead("target") then
@@ -88,7 +88,7 @@ local function LoadSkin()
 		else
 			this.Title:SetText(LOOT)
 		end
-	end)
+	end)--]]
 end
 
 local function LoadRollSkin()

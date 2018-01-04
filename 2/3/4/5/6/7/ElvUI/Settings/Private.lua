@@ -14,7 +14,9 @@ V["general"] = {
 	["pixelPerfect"] = true,
 	["replaceBlizzFonts"] = true,
 	["minimap"] = {
-		["enable"] = true
+		["enable"] = true,
+		["hideCalendar"] = true,
+		["zoomLevel"] = 0,
 	},
 }
 
@@ -81,6 +83,7 @@ V["skins"] = {
 		["tradeskill"] = true,
 		["trainer"] = true,
 		["tutorial"] = true,
+		["watchframe"] = true,
 		["worldmap"] = true,
 		["mirrorTimers"] = true
 	},

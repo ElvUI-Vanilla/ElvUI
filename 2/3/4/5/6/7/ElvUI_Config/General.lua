@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
 E.Options.args.general = {
 	type = "group",

@@ -299,6 +299,8 @@ function M:Initialize()
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
 
+	MinimapToggleButton:Hide()
+
 	MinimapZoomIn:Hide()
 	MinimapZoomOut:Hide()
 

@@ -14,6 +14,7 @@ P["general"] = {
 	["autoAcceptInvite"] = false,
 	["bottomPanel"] = true,
 	["hideErrorFrame"] = true,
+	["watchFrameHeight"] = 480,
 	["afk"] = true,
 	["enhancedPvpMessages"] = true,
 	["numberPrefixStyle"] = "ENGLISH",
