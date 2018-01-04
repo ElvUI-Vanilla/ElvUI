@@ -3,6 +3,9 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 --Locked Settings, These settings are stored for your character only regardless of profile options.
 
 V["general"] = {
+	["loot"] = true,
+	["lootRoll"] = true,
+	["lootUnderMouse"] = false,
 	["normTex"] = "ElvUI Norm",
 	["glossTex"] = "ElvUI Norm",
 	["dmgfont"] = "PT Sans Narrow",

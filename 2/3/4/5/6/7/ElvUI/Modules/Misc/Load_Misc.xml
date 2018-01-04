@@ -2,4 +2,6 @@
 	<Script file="Misc.lua"/>
 	<Script file="AFK.lua"/>
 	<Script file="ChatBubbles.lua"/>
+	<Script file="Loot.lua"/>
+	<Script file="LootRoll.lua"/>
 </Ui>

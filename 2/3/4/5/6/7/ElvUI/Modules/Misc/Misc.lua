@@ -176,7 +176,7 @@ end
 
 function M:ForceCVars()
 	if E.private.general.loot then
-		if GetCVar("lootUnderMouse") == "1" then
+		if E.private.general.lootUnderMouse then
 			E:DisableMover("LootFrameMover")
 		else
 			E:EnableMover("LootFrameMover")
@@ -186,8 +186,8 @@ end
 
 function M:Initialize()
 	-- self:LoadRaidMarker()
-	-- self:LoadLoot()
-	-- self:LoadLootRoll()
+	self:LoadLoot()
+	self:LoadLootRoll()
 	self:LoadChatBubbles()
 	self:RegisterEvent("MERCHANT_SHOW")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "ErrorFrameToggle")

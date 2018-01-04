@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="NamePlates\Load_NamePlates.xml"/>
 	<Include file="Auras\Load_Auras.xml"/>
+	<Include file="Blizzard\Load_Blizzard.xml"/>
 	<Include file="Tooltip\Load_Tooltip.xml"/>
 	<Include file="DataTexts\Load_DataTexts.xml"/>
 	<Include file="ActionBars\Load_ActionBars.xml"/>
