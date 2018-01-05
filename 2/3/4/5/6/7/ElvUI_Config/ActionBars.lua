@@ -25,7 +25,6 @@ local function BuildABConfig()
 		order = 1,
 		type = "group",
 		name = L["General Options"],
-		childGroups = "tab",
 		disabled = function() return not E.private.actionbar.enable end,
 		args = {
 			info = {
@@ -204,7 +203,7 @@ local function BuildABConfig()
 		}
 	}
 	group["microbar"] = {
-		order = 4,
+		order = 7,
 		type = "group",
 		name = L["Micro Bar"],
 		get = function(info) return E.db.actionbar.microbar[ info[getn(info)] ] end,
@@ -279,10 +278,9 @@ end
 local function BuildBarConfig(i)
 	local name = L["Bar "]..i
 	group["bar"..i] = {
-		order = 7 + i,
+		order = 1 + i,
 		name = name,
 		type = "group",
-		guiInline = false,
 		disabled = function() return not E.private.actionbar.enable end,
 		get = function(info) return E.db.actionbar["bar"..i][ info[getn(info)] ] end,
 		set = function(info, value)
@@ -430,7 +428,7 @@ end
 E.Options.args.actionbar = {
 	type = "group",
 	name = L["ActionBars"],
-	childGroups = "tree",
+	childGroups = "tab",
 	get = function(info) return E.db.actionbar[ info[getn(info)] ] end,
 	set = function(info, value) E.db.actionbar[ info[getn(info)] ] = value AB:UpdateButtonSettings() end,
 	args = {
@@ -446,111 +444,6 @@ E.Options.args.actionbar = {
 			type = "description",
 			name = L["ACTIONBARS_DESC"]
 		},
-		header = {
-			order = 3,
-			type = "header",
-			name = L["Shortcuts"]
-		},
-		spacer1 = {
-			order = 4,
-			type = "description",
-			name = " "
-		},
-		generalShortcut = {
-			order = 5,
-			type = "execute",
-			name = L["General"],
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "general") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		petBarShortcut = {
-			order = 6,
-			type = "execute",
-			name = L["Pet Bar"],
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "barPet") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		stanceBarShortcut = {
-			order = 7,
-			type = "execute",
-			name = L["Stance Bar"],
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "stanceBar") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		spacer2 = {
-			order = 8,
-			type = "description",
-			name = " "
-		},
-		microbarShortcut = {
-			order = 9,
-			type = "execute",
-			name = L["Micro Bar"],
-			-- buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "microbar") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		bar1Shortcut = {
-			order = 10,
-			type = "execute",
-			name = L["Bar "]..1,
-			-- buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar1") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		bar2Shortcut = {
-			order = 11,
-			type = "execute",
-			name = L["Bar "]..2,
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar2") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		spacer3 = {
-			order = 12,
-			type = "description",
-			name = " "
-		},
-		bar3Shortcut = {
-			order = 13,
-			type = "execute",
-			name = L["Bar "]..3,
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar3") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		bar4Shortcut = {
-			order = 14,
-			type = "execute",
-			name = L["Bar "]..4,
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar4") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		bar5Shortcut = {
-			order = 15,
-			type = "execute",
-			name = L["Bar "]..5,
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar5") end,
-			disabled = function() return not E.private.actionbar.enable end
-		},
-		spacer4 = {
-			order = 16,
-			type = "description",
-			name = " "
-		},
-		bar6Shortcut = {
-			order = 17,
-			type = "execute",
-			name = L["Bar "]..6,
-			--buttonElvUI = true,
-			func = function() ACD:SelectGroup("ElvUI", "actionbar", "bar6") end,
-			disabled = function() return not E.private.actionbar.enable end
-		}
 	}
 }
 group = E.Options.args.actionbar.args
