@@ -796,13 +796,13 @@ local function SendRecieve(_, event, prefix, message, _, sender)
 		E.SendMSGTimer = E:ScheduleTimer("SendMessage", 12)
 	end
 end
-
+--[[
 local f = CreateFrame("Frame")
 f:RegisterEvent("RAID_ROSTER_UPDATE")
 f:RegisterEvent("PARTY_MEMBERS_CHANGED")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:SetScript("OnEvent", SendRecieve)
-
+]]
 function E:UpdateAll(ignoreInstall)
 	self.private = self.charSettings.profile
 	self.db = self.data.profile

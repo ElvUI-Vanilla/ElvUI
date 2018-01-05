@@ -66,7 +66,7 @@ local OnClick = function()
 	ss = this:GetID()
 	sq = this.quality
 	sn = this.name:GetText()
-	LootSlot(ss)
+	--LootSlot(ss)
 end
 
 local OnShow = function()
@@ -92,13 +92,11 @@ local function anchorSlots(self)
 end
 
 local function createSlot(id)
-	local frame = CreateFrame("Button", "ElvLootSlot"..id, lootFrame)
+	local frame = CreateFrame("LootButton", "ElvLootSlot"..id, lootFrame)
 	frame:SetPoint("LEFT", 8, 0)
 	frame:SetPoint("RIGHT", -8, 0)
 	frame:SetHeight(iconSize - 2)
 	frame:SetID(id)
-
-	frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
 	frame:SetScript("OnEnter", OnEnter)
 	frame:SetScript("OnLeave", OnLeave)
@@ -145,10 +143,10 @@ local function createSlot(id)
 	return frame
 end
 
-function M:LOOT_SLOT_CLEARED(_, slot)
-	if(not lootFrame:IsShown()) then return end
+function M:LOOT_SLOT_CLEARED()
+	if not lootFrame:IsShown() then return end
 
-	lootFrame.slots[slot]:Hide()
+	lootFrame.slots[arg1]:Hide()
 	anchorSlots(lootFrame)
 end
 
@@ -237,6 +235,9 @@ function M:LOOT_OPENED(_, autoLoot)
 				m = max(m, quality)
 			end
 			w = max(w, slot.name:GetStringWidth())
+
+			slot:SetID(i)
+			slot:SetSlot(i)
 
 			slot:Enable()
 			slot:Show()

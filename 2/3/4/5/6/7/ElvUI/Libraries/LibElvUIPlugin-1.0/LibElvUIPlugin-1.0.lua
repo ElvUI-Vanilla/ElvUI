@@ -73,10 +73,10 @@ function lib:RegisterPlugin(name,callback, isLib)
 
 	if not lib.vcframe then
 		local f = CreateFrame('Frame')
-		f:RegisterEvent("RAID_ROSTER_UPDATE");
-		f:RegisterEvent("PARTY_MEMBERS_CHANGED");
-		f:RegisterEvent("CHAT_MSG_ADDON")
-		f:SetScript("OnEvent", lib.VersionCheck)
+		--f:RegisterEvent("RAID_ROSTER_UPDATE");
+		--f:RegisterEvent("PARTY_MEMBERS_CHANGED");
+		--f:RegisterEvent("CHAT_MSG_ADDON")
+		--f:SetScript("OnEvent", lib.VersionCheck)
 		lib.vcframe = f
 	end
 
