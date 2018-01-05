@@ -280,6 +280,7 @@ L["Attempt to lock the left and right chat frame positions. Disabling this optio
 L["Below Chat"] = "채팅창 아래에 배치"
 L["Chat EditBox Position"] = "대화입력창 위치"
 L["Chat History"] = "이전 채팅내역 기억"
+L["Chat Timestamps"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display the hyperlink tooltip while hovering over a hyperlink."] = "각종 링크에 커서를 갖다 댄(마우스오버) 동안에 링크에 대한 툴팁을 표시합니다."

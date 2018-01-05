@@ -234,6 +234,7 @@ L["Attempt to lock the left and right chat frame positions. Disabling this optio
 L["Below Chat"] = "聊天框下方"
 L["Chat EditBox Position"] = "对话輸入框位置"
 L["Chat History"] = "聊天历史"
+L["Chat Timestamps"] = true
 L["Class Color Mentions"] = "职业颜色提示"
 L["Custom Timestamp Color"] = "自定义时间戳颜色"
 L["Display the hyperlink tooltip while hovering over a hyperlink."] = "鼠标悬停在链接上时显示鼠标提示"

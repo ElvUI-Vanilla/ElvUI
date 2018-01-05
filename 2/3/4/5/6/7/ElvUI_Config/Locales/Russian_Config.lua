@@ -234,6 +234,7 @@ L["Attempt to lock the left and right chat frame positions. Disabling this optio
 L["Below Chat"] = "Под чатом"
 L["Chat EditBox Position"] = "Позиция поля ввода"
 L["Chat History"] = "История чата"
+L["Chat Timestamps"] = true;
 L["Class Color Mentions"] = "Упоминания цветом класса"
 L["Custom Timestamp Color"] = "Свой цвет времени"
 L["Display the hyperlink tooltip while hovering over a hyperlink."] = "Отображать подсказку ссылки на при наведении на нее мыши. Действует на предметы, достижения, сохранения подземелий и тд."

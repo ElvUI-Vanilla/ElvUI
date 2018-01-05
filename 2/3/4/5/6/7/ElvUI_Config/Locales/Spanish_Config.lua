@@ -234,6 +234,7 @@ L["Attempt to lock the left and right chat frame positions. Disabling this optio
 L["Below Chat"] = "Debajo del Chat"
 L["Chat EditBox Position"] = "Posición del Cuadro de Edición del Chat"
 L["Chat History"] = "Historial de Chat"
+L["Chat Timestamps"] = true;
 L["Class Color Mentions"] = true;
 L["Custom Timestamp Color"] = true;
 L["Display the hyperlink tooltip while hovering over a hyperlink."] = "Muestra la descripción emergente del enlace cuando pasas el cursor sobre él."
