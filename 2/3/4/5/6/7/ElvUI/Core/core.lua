@@ -304,8 +304,8 @@ function E:PLAYER_ENTERING_WORLD()
 	if(not self.MediaUpdated) then
 		self:UpdateMedia()
 		self.MediaUpdated = true
-	else
-		self:ScheduleTimer("CheckRole", 0.01)
+	-- else
+	-- 	self:ScheduleTimer("CheckRole", 0.01)
 	end
 
 	local _, instanceType = IsInInstance()

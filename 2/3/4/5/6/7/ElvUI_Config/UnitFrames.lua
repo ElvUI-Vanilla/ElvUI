@@ -665,7 +665,7 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 				func = function()
 					local frameName = E:StringTitle(groupName)
 					frameName = "ElvUF_"..frameName
-					frameName = frameName:gsub("t(arget)", "T%1")
+					frameName = gsub(frameName, "t(arget)", "T%1")
 
 					if numUnits then
 						for i=1, numUnits do
@@ -835,7 +835,7 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 				tickColor = {
 					order = 2,
 					type = "color",
-					name = "COLOR",
+					name = COLOR,
 					hasAlpha = true,
 					get = function(info)
 						local c = E.db.unitframe.units[groupName].castbar.tickColor
@@ -1659,7 +1659,7 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 					color = {
 						order = 4,
 						type = "color",
-						name = "COLOR",
+						name = COLOR,
 						hasAlpha = true,
 						get = function(info)
 							local c = E.db.unitframe.units.raid.rdebuffs.duration.color
@@ -1713,7 +1713,7 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 					color = {
 						order = 4,
 						type = "color",
-						name = "COLOR",
+						name = COLOR,
 						hasAlpha = true,
 						get = function(info)
 							local c = E.db.unitframe.units[groupName].rdebuffs.stack.color

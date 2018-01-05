@@ -16,11 +16,9 @@
 	<Include file="LibDataBroker\LibDataBroker-1.1.xml"/>
 	<Include file="LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.xml"/>
 	<Include file="oUF\oUF.xml"/>
-<!--
 	<Include file="UTF8\UTF8.xml"/>
 	<Include file="LibCompress\LibCompress.xml"/>
 	<Include file="LibBase64-1.0\LibBase64-1.0.xml"/>
--->
 	<Include file="LibAnim\LibAnim.xml"/>
 	<Include file="LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
 </Ui>

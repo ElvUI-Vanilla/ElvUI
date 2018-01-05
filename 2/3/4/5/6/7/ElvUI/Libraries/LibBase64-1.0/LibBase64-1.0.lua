@@ -6,34 +6,50 @@ Description: A library to encode and decode Base64 strings
 License: MIT
 ]]
 
-local LibBase64 = LibStub:NewLibrary("LibBase64-1.0-ElvUI", 1)
+local modf = math.modf
+local sub = string.sub
+local format = string.format
+local getn = table.getn
+local gsub = string.gsub
+local strlen = string.len
+local byte = string.byte
+
+local LibBase64 = LibStub:NewLibrary("LibBase64-1.0", 1)
 
 if not LibBase64 then
     return
 end
 
-local _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+local charTable = {}
 local byteToNum = {}
 local numToChar = {}
-for i = 1, #_chars do
-    numToChar[i - 1] = _chars:sub(i, i)
-    byteToNum[_chars:byte(i)] = i - 1
+
+for i = 1, strlen(chars) do
+    charTable[i] = sub(chars, i, i)
 end
-_chars = nil
-local A_byte = ("A"):byte()
-local Z_byte = ("Z"):byte()
-local a_byte = ("a"):byte()
-local z_byte = ("z"):byte()
-local zero_byte = ("0"):byte()
-local nine_byte = ("9"):byte()
-local plus_byte = ("+"):byte()
-local slash_byte = ("/"):byte()
-local equals_byte = ("="):byte()
+
+for i = 1, getn(charTable) do
+    numToChar[i - 1] = sub(chars, i, i)
+    byteToNum[byte(chars, i)] = i - 1
+end
+
+charTable = nil
+
+local A_byte = byte("A")
+local Z_byte = byte("Z")
+local a_byte = byte("a")
+local z_byte = byte("z")
+local zero_byte = byte("0")
+local nine_byte = byte("9")
+local plus_byte = byte("+")
+local slash_byte = byte("/")
+local equals_byte = byte("=")
 local whitespace = {
-    [(" "):byte()] = true,
-    [("\t"):byte()] = true,
-    [("\n"):byte()] = true,
-    [("\r"):byte()] = true,
+    [byte(" ")] = true,
+    [byte("\t")] = true,
+    [byte("\n")] = true,
+    [byte("\r")] = true,
 }
 
 local t = {}
@@ -46,29 +62,29 @@ local t = {}
 -- @return a Base64-encoded string
 function LibBase64:Encode(text, maxLineLength, lineEnding)
     if type(text) ~= "string" then
-        error(("Bad argument #1 to `Encode'. Expected %q, got %q"):format("string", type(text)), 2)
+        error(format("Bad argument #1 to `Encode'. Expected %q, got %q", "string", type(text)), 2)
     end
 
     if maxLineLength == nil then
         -- do nothing
     elseif type(maxLineLength) ~= "number" then
-        error(("Bad argument #2 to `Encode'. Expected %q or %q, got %q"):format("number", "nil", type(maxLineLength)), 2)
-    elseif (maxLineLength % 4) ~= 0 then
-        error(("Bad argument #2 to `Encode'. Expected a multiple of 4, got %s"):format(maxLineLength), 2)
+        error(format("Bad argument #2 to `Encode'. Expected %q or %q, got %q", "number", "nil", type(maxLineLength)), 2)
+    elseif modf(maxLineLength, 4) ~= 0 then
+        error(format("Bad argument #2 to `Encode'. Expected a multiple of 4, got %s", maxLineLength), 2)
     elseif maxLineLength <= 0 then
-        error(("Bad argument #2 to `Encode'. Expected a number > 0, got %s"):format(maxLineLength), 2)
+        error(format("Bad argument #2 to `Encode'. Expected a number > 0, got %s", maxLineLength), 2)
     end
 
     if lineEnding == nil then
         lineEnding = "\r\n"
     elseif type(lineEnding) ~= "string" then
-        error(("Bad argument #3 to `Encode'. Expected %q, got %q"):format("string", type(lineEnding)), 2)
+        error(format("Bad argument #3 to `Encode'. Expected %q, got %q", "string", type(lineEnding)), 2)
     end
 
     local currentLength = 0
 
-	for i = 1, #text, 3 do
-		local a, b, c = text:byte(i, i+2)
+	for i = 1, getn(text), 3 do
+		local a, b, c = byte(text, i, i+2)
 		local nilNum = 0
 		if not b then
 			nilNum = 2
@@ -80,33 +96,33 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 		end
 		local num = a * 2^16 + b * 2^8 + c
 
-		local d = num % 2^6
+		local d = modf(num, 2^6)
 		num = (num - d) / 2^6
 
-		local c = num % 2^6
+		local c = modf(num, 2^6)
 		num = (num - c) / 2^6
 
-		local b = num % 2^6
+		local b = modf(num, 2^6)
 		num = (num - b) / 2^6
 
-		local a = num % 2^6
+		local a = modf(num, 2^6)
 
-		t[#t+1] = numToChar[a]
+		t[getn(t+1)] = numToChar[a]
 
-		t[#t+1] = numToChar[b]
+		t[getn(t+1)] = numToChar[b]
 
-		t[#t+1] = (nilNum >= 2) and "=" or numToChar[c]
+		t[getn(t+1)] = (nilNum >= 2) and "=" or numToChar[c]
 
-		t[#t+1] = (nilNum >= 1) and "=" or numToChar[d]
+		t[getn(t+1)] = (nilNum >= 1) and "=" or numToChar[d]
 
 		currentLength = currentLength + 4
-		if maxLineLength and (currentLength % maxLineLength) == 0 then
-		    t[#t+1] = lineEnding
+		if maxLineLength and modf(currentLength, maxLineLength) == 0 then
+		    t[getn(t+1)] = lineEnding
 		end
 	end
 
 	local s = table.concat(t)
-	for i = 1, #t do
+	for i = 1, getn(t) do
 		t[i] = nil
 	end
 	return s
@@ -122,27 +138,27 @@ local t2 = {}
 -- @return a bytestring
 function LibBase64:Decode(text)
     if type(text) ~= "string" then
-        error(("Bad argument #1 to `Decode'. Expected %q, got %q"):format("string", type(text)), 2)
+        error(format("Bad argument #1 to `Decode'. Expected %q, got %q", "string", type(text)), 2)
     end
 
-    for i = 1, #text do
-        local byte = text:byte(i)
+    for i = 1, getn(text) do
+        local byte = byte(text, i)
         if whitespace[byte] or byte == equals_byte then
             -- do nothing
         else
             local num = byteToNum[byte]
             if not num then
-                for i = 1, #t2 do
+                for i = 1, getn(t2) do
                     t2[k] = nil
                 end
 
-                error(("Bad argument #1 to `Decode'. Received an invalid char: %q"):format(text:sub(i, i)), 2)
+                error(format("Bad argument #1 to `Decode'. Received an invalid char: %q", sub(text, i, i)), 2)
             end
-            t2[#t2+1] = num
+            t2[getn(t2+1)] = num
         end
     end
 
-    for i = 1, #t2, 4 do
+    for i = 1, getn(t2), 4 do
         local a, b, c, d = t2[i], t2[i+1], t2[i+2], t2[i+3]
 
 		local nilNum = 0
@@ -157,30 +173,30 @@ function LibBase64:Decode(text)
 
 		local num = a * 2^18 + b * 2^12 + c * 2^6 + d
 
-		local c = num % 2^8
+		local c = modf(num, 2^8)
 		num = (num - c) / 2^8
 
-		local b = num % 2^8
+		local b = modf(num, 2^8)
 		num = (num - b) / 2^8
 
-		local a = num % 2^8
+		local a = modf(num, 2^8)
 
-		t[#t+1] = string.char(a)
+		t[getn(t+1)] = string.char(a)
 		if nilNum < 2 then
-			t[#t+1] = string.char(b)
+			t[getn(t+1)] = string.char(b)
 		end
 		if nilNum < 1 then
-			t[#t+1] = string.char(c)
+			t[getn(t+1)] = string.char(c)
 		end
 	end
 
-	for i = 1, #t2 do
+	for i = 1, getn(t2) do
 		t2[i] = nil
 	end
 
 	local s = table.concat(t)
 
-	for i = 1, #t do
+	for i = 1, getn(t) do
 		t[i] = nil
 	end
 
@@ -189,15 +205,15 @@ end
 
 function LibBase64:IsBase64(text)
 	if type(text) ~= "string" then
-		error(("Bad argument #1 to `IsBase64'. Expected %q, got %q"):format("string", type(text)), 2)
+		error(format("Bad argument #1 to `IsBase64'. Expected %q, got %q", "string", type(text)), 2)
 	end
 
-	if #text % 4 ~= 0 then
+	if modf(strlen(text), 4 ~= 0) then
 		return false
 	end
 
-	for i = 1, #text do
-		local byte = text:byte(i)
+	for i = 1, getn(text) do
+		local byte = byte(text, i)
 		if whitespace[byte] or byte == equals_byte then
 			-- do nothing
 		else
