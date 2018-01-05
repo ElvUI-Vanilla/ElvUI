@@ -356,7 +356,6 @@ local function ExportImport_Open(mode)
 
 				box.scrollFrame:UpdateScrollChildRect()
 				box.scrollFrame:SetVerticalScroll(box.scrollFrame:GetVerticalScrollRange())
-				box.scrollFrame:SetFrameLevel(box.scrollFrame:GetParent():GetFrameLevel() - 2)
 
 				oldText = text
 			end

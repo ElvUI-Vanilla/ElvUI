@@ -521,7 +521,7 @@ E.PopupDialogs["IMPORT_PROFILE_EXISTS"] = {
 			self:GetParent().button1:Enable();
 		end
 	end,
-	OnShow = function(self) self.editBox:SetText(D.profileKey); self.editBox:SetFocus(); end,
+	OnShow = function() this.editBox:SetText(D.profileKey); this.editBox:SetFocus(); end,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = true,

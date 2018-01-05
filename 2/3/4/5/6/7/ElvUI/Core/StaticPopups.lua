@@ -576,7 +576,7 @@ end
 
 function E:StaticPopup_EditBoxOnEnterPressed()
 	local EditBoxOnEnterPressed, which, dialog
-	local parent = self:GetParent()
+	local parent = this:GetParent()
 	if(parent.which) then
 		which = parent.which
 		dialog = parent
@@ -586,21 +586,21 @@ function E:StaticPopup_EditBoxOnEnterPressed()
 	end
 	EditBoxOnEnterPressed = E.PopupDialogs[which].EditBoxOnEnterPressed
 	if(EditBoxOnEnterPressed) then
-		EditBoxOnEnterPressed(self, dialog.data)
+		EditBoxOnEnterPressed(this, dialog.data)
 	end
 end
 
 function E:StaticPopup_EditBoxOnEscapePressed()
-	local EditBoxOnEscapePressed = E.PopupDialogs[self:GetParent().which].EditBoxOnEscapePressed
+	local EditBoxOnEscapePressed = E.PopupDialogs[this:GetParent().which].EditBoxOnEscapePressed
 	if(EditBoxOnEscapePressed) then
-		EditBoxOnEscapePressed(self, self:GetParent().data)
+		EditBoxOnEscapePressed(this, this:GetParent().data)
 	end
 end
 
 function E:StaticPopup_EditBoxOnTextChanged(userInput)
-	local EditBoxOnTextChanged = E.PopupDialogs[self:GetParent().which].EditBoxOnTextChanged
+	local EditBoxOnTextChanged = E.PopupDialogs[this:GetParent().which].EditBoxOnTextChanged
 	if(EditBoxOnTextChanged) then
-		EditBoxOnTextChanged(self, self:GetParent().data)
+		EditBoxOnTextChanged(this, this:GetParent().data)
 	end
 end
 
