@@ -52,13 +52,13 @@ local function LoadSkin()
 	E:StyleButton(MerchantRepairItemButton)
 	E:SetTemplate(MerchantRepairItemButton, "Default", true)
 
-	--[[for i = 1, MerchantRepairItemButton:GetNumRegions() do
+	for i = 1, MerchantRepairItemButton:GetNumRegions() do
 		local region = select(i, MerchantRepairItemButton:GetRegions())
 		if region:GetObjectType() == "Texture" then
 			region:SetTexCoord(0.04, 0.24, 0.06, 0.5)
 			E:SetInside(region)
 		end
-	end]]
+	end
 
 	E:StyleButton(MerchantRepairAllButton)
 	E:SetTemplate(MerchantRepairAllButton, "Default", true)

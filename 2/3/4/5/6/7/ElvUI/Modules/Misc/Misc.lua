@@ -86,20 +86,9 @@ function M:MERCHANT_SHOW()
 	if IsShiftKeyDown() or autoRepair == "NONE" or not CanMerchantRepair() then return end
 
 	local cost, possible = GetRepairAllCost()
-	local withdrawLimit = GetGuildBankWithdrawMoney()
-	if autoRepair == "GUILD" and (not CanGuildBankRepair() or cost > withdrawLimit) then
-		autoRepair = "PLAYER"
-	end
-
 	if cost > 0 then
 		if possible then
-			RepairAllItems(autoRepair == "GUILD")
-
-			if autoRepair == "GUILD" then
-				E:Print(L["Your items have been repaired using guild bank funds for: "]..E:FormatMoney(cost, "BLIZZARD", true))
-			else
-				E:Print(L["Your items have been repaired for: "]..E:FormatMoney(cost, "BLIZZARD", true))
-			end
+			E:Print(L["Your items have been repaired for: "]..E:FormatMoney(cost, "BLIZZARD", true))
 		else
 			E:Print(L["You don't have enough money to repair."])
 		end
