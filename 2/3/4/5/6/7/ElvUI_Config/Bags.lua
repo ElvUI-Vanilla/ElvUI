@@ -32,19 +32,8 @@ E.Options.args.bags = {
 					type = "header",
 					name = L["General"]
 				},
-				currencyFormat = {
-					order = 1,
-					type = "select",
-					name = L["Currency Format"],
-					desc = L["The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)"],
-					values = {
-						["TEXT"] = L["Text"],
-						["TEXT_ABBR"] = L["Text (Short)"]
-					},
-					set = function(info, value) E.db.bags[ info[getn(info)] ] = value; end
-				},
 				moneyFormat = {
-					order = 2,
+					order = 1,
 					type = "select",
 					name = L["Money Format"],
 					desc = L["The display format of the money text that is shown at the top of the main bag."],
@@ -59,25 +48,25 @@ E.Options.args.bags = {
 					set = function(info, value) E.db.bags[ info[getn(info)] ] = value; B:UpdateGoldText(); end
 				},
 				clearSearchOnClose = {
-					order = 3,
+					order = 2,
 					type = "toggle",
 					name = L["Clear Search On Close"],
 					set = function(info, value) E.db.bags[info[getn(info)]] = value; end
 				},
 				disableBagSort = {
-					order = 4,
+					order = 3,
 					type = "toggle",
 					name = L["Disable Bag Sort"],
 					set = function(info, value) E.db.bags[info[getn(info)]] = value; B:ToggleSortButtonState(false); end
 				},
 				disableBankSort = {
-					order = 5,
+					order = 4,
 					type = "toggle",
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[getn(info)]] = value; B:ToggleSortButtonState(true); end
 				},
 				countGroup = {
-					order = 6,
+					order = 5,
 					type = "group",
 					name = L["Item Count Font"],
 					guiInline = true,
@@ -127,7 +116,7 @@ E.Options.args.bags = {
 					}
 				},
 				itemLevelGroup = {
-					order = 7,
+					order = 6,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,
