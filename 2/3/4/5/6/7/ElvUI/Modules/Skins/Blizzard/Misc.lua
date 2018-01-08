@@ -198,7 +198,6 @@ local function LoadSkin()
 	-- hide header textures and move text/buttons.
 	local BlizzardHeader = {
 		"GameMenuFrame",
-		"UIOptionsFrame",
 		"SoundOptionsFrame",
 		"OptionsFrame",
 	}
@@ -300,15 +299,12 @@ local function LoadSkin()
 	S:HandleSliderFrame(OpacityFrameSlider)
 
 	-- Interface Options
-	UIOptionsFrame:SetScript("OnShow", function()
-		UIOptionsFrame_Load()
+	UIOptionsFrame:SetParent(E.UIParent)
+	UIOptionsFrame:SetScale(E.UIParent:GetScale())
+	UIOptionsFrame:EnableMouse(0)
 
-		E:Kill(UIOptionsBlackground)
-
+	hooksecurefunc("UIOptionsFrame_Load", function()
 		E:StripTextures(UIOptionsFrame, true)
-
-		UIOptionsFrame:EnableMouse(0)
-		UIOptionsFrame:SetScale(UIParent:GetScale())
 	end)
 
 	local UIOptions = {
@@ -331,18 +327,26 @@ local function LoadSkin()
 		end
 	end
 
-	local interfacetab = {
-		"UIOptionsFrameTab1",
-		"UIOptionsFrameTab2",
-	}
-	for i = 1, getn(interfacetab) do
-		local itab = _G[interfacetab[i]]
-		if itab then
-			E:StripTextures(itab)
-			S:HandleTab(itab)
-			E:SetTemplate(itab.backdrop, "Transparent")
-			itab.backdrop:SetPoint("TOPLEFT", 10, E.PixelMode and -4 or -6)
-			itab.backdrop:SetPoint("BOTTOMRIGHT", -10, E.PixelMode and -4 or -6)
+	for i = 1, 2 do
+		local tab = _G["UIOptionsFrameTab"..i]
+		E:StripTextures(tab, true)
+		E:CreateBackdrop(tab, "Transparent")
+
+		tab:SetFrameLevel(tab:GetParent():GetFrameLevel() + 1)
+		tab.backdrop:SetFrameLevel(tab:GetParent():GetFrameLevel() + 1)
+
+		tab.backdrop:SetPoint("TOPLEFT", 10, E.PixelMode and -4 or -6)
+		tab.backdrop:SetPoint("BOTTOMRIGHT", -10, E.PixelMode and -4 or -6)
+
+		tab:SetScript("OnEnter", function() S:SetModifiedBackdrop(this) end)
+		tab:SetScript("OnLeave", function() S:SetOriginalBackdrop(this) end)
+	end
+
+	for i = 1, UIOptionsFrame:GetNumChildren() do
+		local child = select(i, UIOptionsFrame:GetChildren())
+		if child.GetPushedTexture and child:GetPushedTexture() and not child:GetName() then
+			child:SetFrameLevel(child:GetParent():GetFrameLevel() + 2)
+			S:HandleCloseButton(child, UIOptionsFrame.backdrop)
 		end
 	end
 
