@@ -328,7 +328,12 @@ local function LoadSkin()
 	BasicOptions.backdrop:SetPoint("TOPLEFT", BasicOptionsGeneral, -20, 35)
 	BasicOptions.backdrop:SetPoint("BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
 	E:SetTemplate(BasicOptions.backdrop, "Transparent")
-	
+
+	AdvancedOptions.backdrop = CreateFrame("Frame", nil, AdvancedOptions)
+	AdvancedOptions.backdrop:SetPoint("TOPLEFT", BasicOptionsGeneral, -20, 35)
+	AdvancedOptions.backdrop:SetPoint("BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
+	E:SetTemplate(AdvancedOptions.backdrop, "Transparent")
+
 	for i = 1, 2 do
 		local tab = _G["UIOptionsFrameTab"..i]
 		E:StripTextures(tab, true)
