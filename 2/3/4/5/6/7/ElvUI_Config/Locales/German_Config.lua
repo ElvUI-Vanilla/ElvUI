@@ -176,7 +176,6 @@ L["Search Syntax"] = "Suchsyntax"
 L["Set the size of your bag buttons."] = "Setze die Größe der Taschen Taste."
 L["Short (Whole Numbers)"] = "Kurz (ganze Zahlen)"
 L["Short"] = "Kurz"
-L["Show Coins"] = "Währungssymbole anzeigen"
 L["Smart"] = "Elegant"
 L["Sort Direction"] = "Sortierrichtung" --Also used in Buffs and Debuffs
 L["Sort Inverted"] = "Umgekehrtes sortieren"

@@ -176,7 +176,6 @@ L["Search Syntax"] = "Синтаксис поиска"
 L["Set the size of your bag buttons."] = "Установите размер кнопок на панели."
 L["Short (Whole Numbers)"] = "Короткий (целые)"
 L["Short"] = "Короткий"
-L["Show Coins"] = "Показывать монеты"
 L["Smart"] = "Умный"
 L["Sort Direction"] = "Направление сортировки" --Also used in Buffs and Debuffs
 L["Sort Inverted"] = "Инвертированная сортировка"

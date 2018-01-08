@@ -691,8 +691,7 @@ function B:OnEvent()
 end
 
 function B:UpdateGoldText()
-	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db["bags"].moneyFormat, not E.db["bags"].moneyCoins))
-	-- self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), "SMART", true))
+	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db["bags"].moneyFormat))
 end
 
 function B:GetGraysValue()

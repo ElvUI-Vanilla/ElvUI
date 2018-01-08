@@ -59,33 +59,26 @@ E.Options.args.bags = {
 					},
 					set = function(info, value) E.db.bags[ info[getn(info)] ] = value; B:UpdateGoldText(); end
 				},
-				moneyCoins = {
-					order = 3,
-					type = "toggle",
-					name = L["Show Coins"],
-					desc = L["Use coin icons instead of colored text."],
-					set = function(info, value) E.db.bags[ info[getn(info)] ] = value; B:UpdateGoldText(); end
-				},
 				clearSearchOnClose = {
-					order = 4,
+					order = 3,
 					type = "toggle",
 					name = L["Clear Search On Close"],
 					set = function(info, value) E.db.bags[info[getn(info)]] = value; end
 				},
 				disableBagSort = {
-					order = 5,
+					order = 4,
 					type = "toggle",
 					name = L["Disable Bag Sort"],
 					set = function(info, value) E.db.bags[info[getn(info)]] = value; B:ToggleSortButtonState(false); end
 				},
 				disableBankSort = {
-					order = 6,
+					order = 5,
 					type = "toggle",
 					name = L["Disable Bank Sort"],
 					set = function(info, value) E.db.bags[info[getn(info)]] = value; B:ToggleSortButtonState(true); end
 				},
 				countGroup = {
-					order = 7,
+					order = 6,
 					type = "group",
 					name = L["Item Count Font"],
 					guiInline = true,
@@ -135,7 +128,7 @@ E.Options.args.bags = {
 					}
 				},
 				itemLevelGroup = {
-					order = 8,
+					order = 7,
 					type = "group",
 					name = L["Item Level"],
 					guiInline = true,

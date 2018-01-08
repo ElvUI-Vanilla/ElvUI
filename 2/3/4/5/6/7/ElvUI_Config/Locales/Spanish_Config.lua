@@ -176,7 +176,6 @@ L["Search Syntax"] = true;
 L["Set the size of your bag buttons."] = "Establece el tamaño de tus botones de la bolsa."
 L["Short (Whole Numbers)"] = true;
 L["Short"] = true;
-L["Show Coins"] = true;
 L["Smart"] = true;
 L["Sort Direction"] = "Dirección de Ordenado"
 L["Sort Inverted"] = "Ordenado Invertido"

@@ -130,12 +130,6 @@ E.Options.args.datatexts = {
 								["CONDENSED"] = L["Condensed"],
 								["BLIZZARD"] = L["Blizzard Style"]
 							}
-						},
-						goldCoins = {
-							order = 7,
-							type = "toggle",
-							name = L["Show Coins"],
-							desc = L["Use coin icons instead of colored text."]
 						}
 					}
 				},

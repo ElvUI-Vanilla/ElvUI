@@ -327,14 +327,11 @@ end
 local COLOR_COPPER = "|cffeda55f"
 local COLOR_SILVER = "|cffc7c7cf"
 local COLOR_GOLD = "|cffffd700"
-local ICON_COPPER = "|TInterface\\MoneyFrame\\UI-CopperIcon:12:12|t"
-local ICON_SILVER = "|TInterface\\MoneyFrame\\UI-SilverIcon:12:12|t"
-local ICON_GOLD = "|TInterface\\MoneyFrame\\UI-GoldIcon:12:12|t"
 
-function E:FormatMoney(amount, style, textonly)
-	local coppername = textonly and L.copperabbrev or ICON_COPPER
-	local silvername = textonly and L.silverabbrev or ICON_SILVER
-	local goldname = textonly and L.goldabbrev or ICON_GOLD
+function E:FormatMoney(amount, style)
+	local coppername = L.copperabbrev
+	local silvername = L.silverabbrev
+	local goldname = L.goldabbrev
 
 	local value = abs(amount)
 	local gold = floor(value / 10000)
