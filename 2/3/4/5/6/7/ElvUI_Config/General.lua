@@ -65,7 +65,6 @@ E.Options.args.general = {
 					desc = L["Automatically repair using the following method when visiting a merchant."],
 					values = {
 						["NONE"] = NONE,
-						["GUILD"] = GUILD,
 						["PLAYER"] = PLAYER
 					}
 				},

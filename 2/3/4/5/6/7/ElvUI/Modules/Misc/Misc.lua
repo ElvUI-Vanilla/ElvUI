@@ -88,7 +88,8 @@ function M:MERCHANT_SHOW()
 	local cost, possible = GetRepairAllCost()
 	if cost > 0 then
 		if possible then
-			E:Print(L["Your items have been repaired for: "]..E:FormatMoney(cost, "BLIZZARD", true))
+			RepairAllItems(autoRepair == "PLAYER")
+			E:Print(L["Your items have been repaired for: "]..E:FormatMoney(cost, "BLIZZARD"))
 		else
 			E:Print(L["You don't have enough money to repair."])
 		end
