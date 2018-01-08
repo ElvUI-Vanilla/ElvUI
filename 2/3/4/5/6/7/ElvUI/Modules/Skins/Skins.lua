@@ -38,14 +38,14 @@ function S:SquareButton_SetIcon(self, name)
 	end
 end
 
-function S:SetModifiedBackdrop(self)
-	if self.backdrop then self = self.backdrop end
-	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
+function S:SetModifiedBackdrop()
+	if this.backdrop then this = this.backdrop end
+	this:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
 end
 
-function S:SetOriginalBackdrop(self)
-	if self.backdrop then self = self.backdrop end
-	self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+function S:SetOriginalBackdrop()
+	if this.backdrop then this = this.backdrop end
+	this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 end
 
 function S:HandleButton(f, strip)
@@ -72,8 +72,8 @@ function S:HandleButton(f, strip)
 	if strip then E:StripTextures(f) end
 
 	E:SetTemplate(f, "Default", true)
-	HookScript(f, "OnEnter", function() S:SetModifiedBackdrop(this) end)
-	HookScript(f, "OnLeave", function() S:SetOriginalBackdrop(this) end)
+	HookScript(f, "OnEnter", S.SetModifiedBackdrop)
+	HookScript(f, "OnLeave", S.SetOriginalBackdrop)
 end
 
 function S:HandleScrollBar(frame, thumbTrim)

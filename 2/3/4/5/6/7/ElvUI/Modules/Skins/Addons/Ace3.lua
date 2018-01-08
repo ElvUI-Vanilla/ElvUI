@@ -10,14 +10,14 @@ local pairs = pairs
 local CreateFrame = CreateFrame
 
 local RegisterAsWidget, RegisterAsContainer
-local function SetModifiedBackdrop(self)
-	if self.backdrop then self = self.backdrop end
-	self:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
+local function SetModifiedBackdrop()
+	if this.backdrop then this = this.backdrop end
+	this:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
 end
 
-local function SetOriginalBackdrop(self)
-	if self.backdrop then self = self.backdrop end
-	self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+local function SetOriginalBackdrop()
+	if this.backdrop then this = this.backdrop end
+	this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 end
 
 local function SkinScrollBar(frame, thumbTrim)
@@ -101,8 +101,8 @@ local function SkinButton(f, strip, noTemplate)
 		E:SetTemplate(f, "Default", true)
 	end
 
-	HookScript(f, "OnEnter", function() SetModifiedBackdrop(this) end)
-	HookScript(f, "OnLeave", function() SetOriginalBackdrop(this) end)
+	HookScript(f, "OnEnter", SetModifiedBackdrop)
+	HookScript(f, "OnLeave", SetOriginalBackdrop)
 end
 
 function S:SkinAce3()

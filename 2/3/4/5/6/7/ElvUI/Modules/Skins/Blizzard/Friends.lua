@@ -37,8 +37,8 @@ function LoadSkin()
 		tab.backdrop:SetPoint("TOPLEFT", 3, -7)
 		tab.backdrop:SetPoint("BOTTOMRIGHT", -2, -1)
 
-		tab:SetScript("OnEnter", function() S:SetModifiedBackdrop(this) end)
-		tab:SetScript("OnLeave", function() S:SetOriginalBackdrop(this) end)
+		tab:SetScript("OnEnter", S.SetModifiedBackdrop)
+		tab:SetScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
 

@@ -300,11 +300,10 @@ local function LoadSkin()
 
 	-- Interface Options
 	UIOptionsFrame:SetParent(E.UIParent)
-	UIOptionsFrame:SetScale(E.UIParent:GetScale())
-	UIOptionsFrame:EnableMouse(0)
+	UIOptionsFrame:EnableMouse(false)
 
 	hooksecurefunc("UIOptionsFrame_Load", function()
-		E:StripTextures(UIOptionsFrame, true)
+		E:StripTextures(UIOptionsFrame)
 	end)
 
 	local UIOptions = {
@@ -322,30 +321,45 @@ local function LoadSkin()
 
 	for i = 1, getn(UIOptions) do
 		local options = _G[UIOptions[i]]
-		if options then
-			E:SetTemplate(options, "Transparent")
-		end
+		E:SetTemplate(options, "Transparent")
 	end
 
+	BasicOptions.backdrop = CreateFrame("Frame", nil, BasicOptions)
+	BasicOptions.backdrop:SetPoint("TOPLEFT", BasicOptionsGeneral, -20, 35)
+	BasicOptions.backdrop:SetPoint("BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
+	E:SetTemplate(BasicOptions.backdrop, "Transparent")
+	
 	for i = 1, 2 do
 		local tab = _G["UIOptionsFrameTab"..i]
 		E:StripTextures(tab, true)
 		E:CreateBackdrop(tab, "Transparent")
 
-		tab:SetFrameLevel(tab:GetParent():GetFrameLevel() + 1)
+		tab:SetFrameLevel(tab:GetParent():GetFrameLevel() + 2)
 		tab.backdrop:SetFrameLevel(tab:GetParent():GetFrameLevel() + 1)
 
-		tab.backdrop:SetPoint("TOPLEFT", 10, E.PixelMode and -4 or -6)
-		tab.backdrop:SetPoint("BOTTOMRIGHT", -10, E.PixelMode and -4 or -6)
+		tab.backdrop:SetPoint("TOPLEFT", 5, E.PixelMode and -14 or -16)
+		tab.backdrop:SetPoint("BOTTOMRIGHT", -5, E.PixelMode and -4 or -6)
 
-		tab:SetScript("OnEnter", function() S:SetModifiedBackdrop(this) end)
-		tab:SetScript("OnLeave", function() S:SetOriginalBackdrop(this) end)
+		tab:SetScript("OnClick", function()
+			PanelTemplates_Tab_OnClick(UIOptionsFrame)
+			if AdvancedOptions:IsShown() then
+				BasicOptions:Show()
+				AdvancedOptions:Hide()
+			else
+				BasicOptions:Hide()
+				AdvancedOptions:Show()
+			end
+			PlaySound("igCharacterInfoTab")
+		end)
+
+		HookScript(tab, "OnEnter", S.SetModifiedBackdrop)
+		HookScript(tab, "OnLeave", S.SetOriginalBackdrop)
 	end
 
 	for i = 1, UIOptionsFrame:GetNumChildren() do
 		local child = select(i, UIOptionsFrame:GetChildren())
 		if child.GetPushedTexture and child:GetPushedTexture() and not child:GetName() then
-			child:SetFrameLevel(child:GetParent():GetFrameLevel() + 2)
+			child:SetFrameLevel(UIOptionsFrame:GetFrameLevel() + 2)
 			S:HandleCloseButton(child, UIOptionsFrame.backdrop)
 		end
 	end
