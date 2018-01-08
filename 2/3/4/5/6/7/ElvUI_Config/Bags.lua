@@ -38,11 +38,10 @@ E.Options.args.bags = {
 					name = L["Currency Format"],
 					desc = L["The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)"],
 					values = {
-						["ICON"] = L["Icons Only"],
-						["ICON_TEXT"] = L["Icons and Text"],
-						["ICON_TEXT_ABBR"] = L["Icons and Text (Short)"]
+						["TEXT"] = L["Text"],
+						["TEXT_ABBR"] = L["Text (Short)"]
 					},
-					set = function(info, value) E.db.bags[ info[getn(info)] ] = value; B:UpdateTokens(); end
+					set = function(info, value) E.db.bags[ info[getn(info)] ] = value; end
 				},
 				moneyFormat = {
 					order = 2,
