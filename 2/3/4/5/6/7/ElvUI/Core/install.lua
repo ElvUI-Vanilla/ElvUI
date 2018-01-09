@@ -728,7 +728,7 @@ local function SetPage(PageNum)
 		InstallOption3Button:SetText(CLASS)
 	elseif PageNum == 5 then
 		f.SubTitle:SetText(L["Resolution"])
-		f.Desc1:SetText(L["Your current resolution is %s, this is considered a %s resolution."], E.resolution, E.lowversion == true and L["low"] or L["high"])
+		f.Desc1:SetText(format(L["Your current resolution is %s, this is considered a %s resolution."], E.resolution, E.lowversion == true and L["low"] or L["high"]))
 		if E.lowversion then
 			f.Desc2:SetText(L["This resolution requires that you change some settings to get everything to fit on your screen."].." "..L["Click the button below to resize your chat frames, unitframes, and reposition your actionbars."].." "..L["You may need to further alter these settings depending how low you resolution is."])
 			f.Desc3:SetText(L["Importance: |cff07D400High|r"])
@@ -773,7 +773,7 @@ local function SetPage(PageNum)
 		InstallOption2Button:SetText(L["Icons Only"])
 	elseif PageNum == 8 then
 		f.SubTitle:SetText(L["Installation Complete"])
-		f.Desc1:SetText(L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-TBC/ElvUI"])
+		f.Desc1:SetText(L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-Vanilla/ElvUI"])
 		f.Desc2:SetText(L["Please click the button below so you can setup variables and ReloadUI."])
 		InstallOption1Button:Show()
 		InstallOption1Button:SetScript("OnClick", InstallComplete)

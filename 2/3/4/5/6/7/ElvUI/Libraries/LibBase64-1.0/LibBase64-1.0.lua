@@ -10,7 +10,6 @@ local modf = math.modf
 local sub = string.sub
 local format = string.format
 local getn = table.getn
-local gsub = string.gsub
 local strlen = string.len
 local byte = string.byte
 
@@ -20,21 +19,21 @@ if not LibBase64 then
     return
 end
 
-local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+local _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 local charTable = {}
 local byteToNum = {}
 local numToChar = {}
 
-for i = 1, strlen(chars) do
-    charTable[i] = sub(chars, i, i)
+for i = 1, strlen(_chars) do
+    charTable[i] = sub(_chars, i, i)
 end
 
 for i = 1, getn(charTable) do
-    numToChar[i - 1] = sub(chars, i, i)
-    byteToNum[byte(chars, i)] = i - 1
+    numToChar[i - 1] = sub(_chars, i, i)
+    byteToNum[byte(_chars, i)] = i - 1
 end
 
-charTable = nil
+_chars = nil
 
 local A_byte = byte("A")
 local Z_byte = byte("Z")
@@ -107,17 +106,17 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 
 		local a = modf(num, 2^6)
 
-		t[getn(t+1)] = numToChar[a]
+		t[getn(t)+1] = numToChar[a]
 
-		t[getn(t+1)] = numToChar[b]
+		t[getn(t)+1] = numToChar[b]
 
-		t[getn(t+1)] = (nilNum >= 2) and "=" or numToChar[c]
+		t[getn(t)+1] = (nilNum >= 2) and "=" or numToChar[c]
 
-		t[getn(t+1)] = (nilNum >= 1) and "=" or numToChar[d]
+		t[getn(t)+1] = (nilNum >= 1) and "=" or numToChar[d]
 
 		currentLength = currentLength + 4
 		if maxLineLength and modf(currentLength, maxLineLength) == 0 then
-		    t[getn(t+1)] = lineEnding
+		    t[getn(t)+1] = lineEnding
 		end
 	end
 
@@ -154,7 +153,7 @@ function LibBase64:Decode(text)
 
                 error(format("Bad argument #1 to `Decode'. Received an invalid char: %q", sub(text, i, i)), 2)
             end
-            t2[getn(t2+1)] = num
+            t2[getn(t2)+1] = num
         end
     end
 
@@ -181,12 +180,12 @@ function LibBase64:Decode(text)
 
 		local a = modf(num, 2^8)
 
-		t[getn(t+1)] = string.char(a)
+		t[getn(t)+1] = string.char(a)
 		if nilNum < 2 then
-			t[getn(t+1)] = string.char(b)
+			t[getn(t)+1] = string.char(b)
 		end
 		if nilNum < 1 then
-			t[getn(t+1)] = string.char(c)
+			t[getn(t)+1] = string.char(c)
 		end
 	end
 
@@ -208,7 +207,7 @@ function LibBase64:IsBase64(text)
 		error(format("Bad argument #1 to `IsBase64'. Expected %q, got %q", "string", type(text)), 2)
 	end
 
-	if modf(strlen(text), 4 ~= 0) then
+	if modf(strlen(text), 4) ~= 0 then
 		return false
 	end
 

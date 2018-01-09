@@ -238,7 +238,7 @@ local function ExportImport_Open(mode)
 	label2:SetWidth(800)
 	frame:AddChild(label2)
 
-	if(mode == "export") then
+	if mode == "export" then
 		frame:SetTitle(L["Export Profile"])
 
 		local profileTypeDropdown = AceGUI:Create("Dropdown")
@@ -265,7 +265,7 @@ local function ExportImport_Open(mode)
 
 			local profileType, exportFormat = profileTypeDropdown:GetValue(), exportFormatDropdown:GetValue()
 			local profileKey, profileExport = D:ExportProfile(profileType, exportFormat)
-			if(not profileKey or not profileExport) then
+			if not profileKey or not profileExport then
 				label1:SetText(L["Error exporting profile!"])
 			else
 				label1:SetText(format("%s: %s%s|r", L["Exported"], E.media.hexvaluecolor, profileTypeItems[profileType]))
@@ -288,8 +288,9 @@ local function ExportImport_Open(mode)
 				box.editBox:HighlightText()
 			end
 			box.scrollFrame:UpdateScrollChildRect()
+			print(box.scrollFrame:GetName())
 		end)
-	elseif(mode == "import") then
+	elseif mode == "import" then
 		frame:SetTitle(L["Import Profile"])
 		local importButton = AceGUI:Create("Button")
 		importButton:SetDisabled(true)
@@ -301,7 +302,7 @@ local function ExportImport_Open(mode)
 
 			local text
 			local success = D:ImportProfile(box:GetText())
-			if(success) then
+			if success then
 				text = L["Profile imported successfully!"]
 			else
 				text = L["Error decoding data. Import string may be corrupted!"]
@@ -319,7 +320,7 @@ local function ExportImport_Open(mode)
 			label2:SetText(" ")
 			local decodedText
 			local profileType, profileKey, profileData = D:Decode(box:GetText())
-			if(profileData) then
+			if profileData then
 				decodedText = E:TableToLuaString(profileData)
 			end
 			local importText = D:CreateProfileExport(decodedText, profileType, profileKey)
@@ -330,14 +331,14 @@ local function ExportImport_Open(mode)
 		local oldText = ""
 		local function OnTextChanged()
 			local text = box:GetText()
-			if(text == "") then
+			if text == "" then
 				label1:SetText(" ")
 				label2:SetText(" ")
 				importButton:SetDisabled(true)
 				decodeButton:SetDisabled(true)
-			elseif(oldText ~= text) then
+			elseif oldText ~= text then
 				local stringType = D:GetImportStringType(text)
-				if(stringType == "Base64") then
+				if stringType == "Base64" then
 					decodeButton:SetDisabled(false)
 				else
 					decodeButton:SetDisabled(true)
@@ -351,7 +352,7 @@ local function ExportImport_Open(mode)
 					decodeButton:SetDisabled(true)
 				else
 					label1:SetText(format("%s: %s%s|r", L["Importing"], E.media.hexvaluecolor, profileTypeItems[profileType] or ""))
-					if(profileType == "profile") then
+					if profileType == "profile" then
 						label2:SetText(format("%s: %s%s|r", L["Profile Name"], E.media.hexvaluecolor, profileKey))
 					end
 					importButton:SetDisabled(false)
@@ -391,10 +392,10 @@ local function ExportImport_Open(mode)
 end
 
 E.Options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(E.data)
-AC.RegisterOptionsTable(P, "ElvProfiles", E.Options.args.profiles)
+AC.RegisterOptionsTable(E, "ElvProfiles", E.Options.args.profiles)
 E.Options.args.profiles.order = -10
 
-if(not E.Options.args.profiles.plugins) then
+if not E.Options.args.profiles.plugins then
 	E.Options.args.profiles.plugins = {}
 end
 
