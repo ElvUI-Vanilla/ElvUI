@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI)
 local B = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
-local Search = LibStub("LibItemSearch-1.2", true)
+local Search = LibStub("LibItemSearch-1.2")
 -- local LIP = LibStub("ItemPrice-1.1", true)
 
 --Cache global variables
@@ -153,7 +153,7 @@ function B:ResetAndClear()
 	local editbox = this:GetParent().editBox or this
 	if editbox then editbox:SetText(SEARCH) end
 
-	-- this:ClearFocus()
+	this:ClearFocus()
 	B:SearchReset()
 end
 
@@ -164,7 +164,7 @@ function B:SetSearch(query)
 			for slotID = 1, GetContainerNumSlots(bagID) do
 				local link = GetContainerItemLink(bagID, slotID)
 				local button = bagFrame.Bags[bagID][slotID]
-				-- local success, result = pcall(Search.Matches, Search, link, query)
+				local success, result = pcall(Search.Matches, Search, link, query)
 				if empty or (success and result) then
 					SetItemButtonDesaturated(button)
 					button:SetAlpha(1)
@@ -181,7 +181,7 @@ function B:SetSearch(query)
 		for slotID = 1, numKey do
 			local link = GetContainerItemLink(KEYRING_CONTAINER, slotID)
 			local button = _G["ElvUIKeyFrameItem"..slotID]
-			-- local success, result = pcall(Search.Matches, Search, link, query)
+			local success, result = pcall(Search.Matches, Search, link, query)
 			if empty or (success and result) then
 				SetItemButtonDesaturated(button)
 				button:SetAlpha(1)
@@ -928,8 +928,8 @@ function B:ContructContainerFrame(name, isBank)
 		f.editBox:SetPoint("RIGHT", f.purchaseBagButton, "LEFT", -5, 0)
 		f.editBox:SetAutoFocus(false)
 		f.editBox:SetScript("OnEscapePressed", self.ResetAndClear)
-		f.editBox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		f.editBox:SetScript("OnEditFocusGained", f.editBox.HighlightText)
+		f.editBox:SetScript("OnEnterPressed", function() this:ClearFocus() end)
+		f.editBox:SetScript("OnEditFocusGained", function() this:HighlightText() end)
 		f.editBox:SetScript("OnTextChanged", self.UpdateSearch)
 		f.editBox:SetScript("OnChar", self.UpdateSearch)
 		f.editBox:SetText(SEARCH)
@@ -1037,8 +1037,8 @@ function B:ContructContainerFrame(name, isBank)
 		f.editBox:SetPoint("RIGHT", f.vendorGraysButton, "LEFT", -5, 0)
 		f.editBox:SetAutoFocus(false)
 		f.editBox:SetScript("OnEscapePressed", self.ResetAndClear)
-		f.editBox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		f.editBox:SetScript("OnEditFocusGained", f.editBox.HighlightText)
+		f.editBox:SetScript("OnEnterPressed", function() this:ClearFocus() end)
+		f.editBox:SetScript("OnEditFocusGained", function() this:HighlightText() end)
 		f.editBox:SetScript("OnTextChanged", self.UpdateSearch)
 		f.editBox:SetScript("OnChar", self.UpdateSearch)
 		f.editBox:SetText(SEARCH)
