@@ -12,6 +12,8 @@ else
 	return;
 end
 
+local strmatch, lower = string.match, string.lower
+
 --[[ User API ]]--
 
 function Lib:Matches(link, search)
@@ -19,17 +21,17 @@ function Lib:Matches(link, search)
 end
 
 function Lib:Tooltip(link, search)
-	return link and self.Filters.tip:match(link, nil, search);
+	return link and strmatch(self.Filters.tip, link, nil, search);
 end
 
 function Lib:TooltipPhrase(link, search)
-	return link and self.Filters.tipPhrases:match(link, nil, search);
+	return link and strmatch(self.Filters.tipPhrases, link, nil, search);
 end
 
 function Lib:InSet(link, search)
 	if(IsEquippableItem(link)) then
-		local id = tonumber(link:match("item:(%-?%d+)"));
-		return self:BelongsToSet(id, (search or ""):lower());
+		local id = tonumber(strmatch(link, "item:(%-?%d+)"));
+		return self:BelongsToSet(id, lower(search or ""));
 	end
 end
 
@@ -43,7 +45,7 @@ Lib.Filters.name = {
 	end,
 
 	match = function(self, item, _, search)
-		local name = item:match("%[(.-)%]");
+		local name = strmatch(item, "%[(.-)%]");
 		return Search:Find(search, name);
 	end
 };
@@ -94,8 +96,8 @@ Lib.Filters.requiredlevel = {
 --[[ Quality ]]--
 
 local qualities = {};
-for i = 0, #ITEM_QUALITY_COLORS do
-	qualities[i] = _G["ITEM_QUALITY" .. i .. "_DESC"]:lower();
+for i = 0, getn(ITEM_QUALITY_COLORS) do
+	qualities[i] = lower(_G["ITEM_QUALITY" .. i .. "_DESC"]);
 end
 
 Lib.Filters.quality = {
@@ -103,7 +105,7 @@ Lib.Filters.quality = {
 
 	canSearch = function(self, _, search)
 		for i, name in pairs(qualities) do
-			if(name:find(search)) then
+			if(find(namesearch)) then
 				return i;
 			end
 		end
@@ -146,7 +148,7 @@ Lib.Filters.tip = {
 	end,
 
 	match = function(self, link, _, search)
-		if(link:find("item:")) then
+		if(find(link, "item:")) then
 			scanner:SetOwner(UIParent, "ANCHOR_NONE");
 			scanner:SetHyperlink(link)
 
@@ -166,7 +168,7 @@ local escapes = {
 
 local function CleanString(str)
     for k, v in pairs(escapes) do
-        str = str:gsub(k, v);
+        str = string.gsub(str, k, v);
     end
     return str;
 end
@@ -177,7 +179,7 @@ Lib.Filters.tipPhrases = {
 	end,
 
 	match = function(self, link, _, search)
-		local id = link:match("item:(%d+)");
+		local id = strmatch(link, "item:(%d+)");
 		if(not id) then
 			return;
 		end
@@ -207,13 +209,12 @@ Lib.Filters.tipPhrases = {
 	cache = setmetatable({}, {__index = function(t, k) local v = {} t[k] = v return v end}),
 
 	keywords = {
-    	[ITEM_SOULBOUND:lower()] = ITEM_BIND_ON_PICKUP,
+    	[lower(ITEM_SOULBOUND)] = ITEM_BIND_ON_PICKUP,
     	["bound"] = ITEM_BIND_ON_PICKUP,
     	["bop"] = ITEM_BIND_ON_PICKUP,
 		["boe"] = ITEM_BIND_ON_EQUIP,
 		["bou"] = ITEM_BIND_ON_USE,
 		["boa"] = ITEM_BIND_TO_ACCOUNT,
-		[QUESTS_LABEL:lower()] = ITEM_BIND_QUEST
 	};
 };
 
@@ -225,7 +226,7 @@ if IsAddOnLoaded("ItemRack") then
 
 	function Lib:BelongsToSet(id, search)
 		for name, set in pairs(ItemRackUser.Sets) do
-			if name:sub(1,1) ~= "" and Search:Find(search, name) then
+			if string.sub(name,1,1) ~= "" and Search:Find(search, name) then
 				for _, item in pairs(set.equip) do
 					if sameID(id, item) then
 						return true

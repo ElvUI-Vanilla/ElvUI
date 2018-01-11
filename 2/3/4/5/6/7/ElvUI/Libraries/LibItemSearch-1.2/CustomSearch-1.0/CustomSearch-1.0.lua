@@ -23,6 +23,7 @@ if not Lib then
 	return
 end
 
+local lower = string.lower
 
 --[[ Parsing ]]--
 
@@ -36,7 +37,7 @@ function Lib:Matches(object, search, filters)
 end
 
 function Lib:MatchAll(search)
-	for phrase in self:Clean(search):gmatch('[^&]+') do
+	for phrase in gmatch(self:Clean(search), '[^&]+') do
 		if not self:MatchAny(phrase) then
       		return
 		end
@@ -46,7 +47,7 @@ function Lib:MatchAll(search)
 end
 
 function Lib:MatchAny(search)
-	for phrase in search:gmatch('[^|]+') do
+	for phrase in gmatch(search, '[^|]+') do
 		if self:Match(phrase) then
         	return true
 		end
@@ -54,13 +55,13 @@ function Lib:MatchAny(search)
 end
 
 function Lib:Match(search)
-	local tag, rest = search:match('^%s*(%S+):(.*)$')
+	local tag, rest = match(search, '^%s*(%S+):(.*)$')
 	if tag then
 		tag = '^' .. tag
 		search = rest
 	end
 
-	local words = search:gmatch('%S+')
+	local words = gmatch(search, '%S+')
 	local failed
 
 	for word in words do
@@ -72,7 +73,7 @@ function Lib:Match(search)
 			end
 
 		else
-			local negate, rest = word:match('^([!~]=*)(.*)$')
+			local negate, rest = match(word, '^([!~]=*)(.*)$')
 			if negate or word == self.NOT_MATCH then
 				word = rest and rest ~= '' and rest or words() or ''
 				negate = -1
@@ -80,7 +81,7 @@ function Lib:Match(search)
 				negate = 1
 			end
 
-			local operator, rest = word:match('^(=*[<>]=*)(.*)$')
+			local operator, rest = match(word, '^(=*[<>]=*)(.*)$')
 			if operator then
 				word = rest ~= '' and rest or words()
 			end
@@ -106,7 +107,7 @@ function Lib:Filter(tag, operator, search)
 	if tag then
 		for _, filter in pairs(self.filters) do
 			for _, value in pairs(filter.tags or {}) do
-				if value:find(tag) then
+				if find(value, tag) then
 					return self:UseFilter(filter, operator, search)
 				end
 			end
@@ -123,7 +124,7 @@ end
 function Lib:UseFilter(filter, operator, search)
 	local data = {filter:canSearch(operator, search, self.object)}
 	if data[1] then
-		return filter:match(self.object, operator, unpack(data))
+		return match(filter, self.object, operator, unpack(data))
 	end
 end
 
@@ -131,20 +132,20 @@ end
 --[[ Utilities ]]--
 
 function Lib:Find(search, ...)
-	for i = 1, select('#', ...) do
-		local text = select(i, ...)
-		if text and self:Clean(text):find(search) then
+	for i = 1, getn(arg) do
+		local text = arg[i]
+		if text and find(self:Clean(text), search) then
 			return true
 		end
 	end
 end
 
 function Lib:Clean(string)
-	string = string:lower()
-	string = string:gsub('[%(%)%.%%%+%-%*%?%[%]%^%$]', function(c) return '%'..c end)
+	string = lower(string)
+	string = gsub(string, '[%(%)%.%%%+%-%*%?%[%]%^%$]', function(c) return '%'..c end)
 
 	for accent, char in pairs(self.ACCENTS) do
-		string = string:gsub(accent, char)
+		string = gsub(string, accent, char)
 	end
 
 	return string
@@ -152,16 +153,16 @@ end
 
 function Lib:Compare(op, a, b)
 	if op then
-		if op:find('<') then
-			 if op:find('=') then
+		if find(op, '<') then
+			 if find(op, '=') then
 			 	return a <= b
 			 end
 
 			 return a < b
 		end
 
-		if op:find('>')then
-			if op:find('=') then
+		if find(op, '>')then
+			if find(op, '=') then
 			 	return a >= b
 			end
 

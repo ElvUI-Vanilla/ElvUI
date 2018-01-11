@@ -97,9 +97,9 @@ end
 
 --[[ API ]]--
 
-function Lib:IsItemUnusable(...)
-	if ... then
-		local subclass, _, slot = select(7, GetItemInfo(...))
+function Lib:IsItemUnusable(arg1)
+	if arg1 then
+		local subclass, _, slot = select(7, GetItemInfo(arg1))
 		return Lib:IsClassUnusable(subclass, slot)
 	end
 end
