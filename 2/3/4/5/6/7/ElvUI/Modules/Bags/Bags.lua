@@ -472,7 +472,7 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID]:SetNormalTexture("")
 					f.Bags[bagID][slotID]:SetCheckedTexture("")
 
-					f.Bags[bagID][slotID].Count = _G[f.Bags[bagID][slotID]:GetName() .. "Count"]
+					f.Bags[bagID][slotID].Count = _G[f.Bags[bagID][slotID]:GetName().."Count"]
 					f.Bags[bagID][slotID].Count:ClearAllPoints()
 					f.Bags[bagID][slotID].Count:SetPoint("BOTTOMRIGHT", 0, 2)
 					E:FontTemplate(f.Bags[bagID][slotID].Count, E.LSM:Fetch("font", E.db.bags.countFont), E.db.bags.countFontSize, E.db.bags.countFontOutline)
