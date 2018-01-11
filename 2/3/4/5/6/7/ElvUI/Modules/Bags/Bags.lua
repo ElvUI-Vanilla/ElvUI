@@ -425,7 +425,7 @@ function B:Layout(isBank)
 			end
 
 			f.ContainerHolder:SetWidth(((buttonSize + buttonSpacing) * (isBank and i - 1 or i)) + buttonSpacing)
-			f.ContainerHolder:SetHeight(buttonSize + (buttonwwSpacing * 2))
+			f.ContainerHolder:SetHeight(buttonSize + (buttonSpacing * 2))
 
 			--[[if isBank then
 				BankFrameItemButton_OnUpdate()
