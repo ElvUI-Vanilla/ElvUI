@@ -14,3 +14,7 @@ G["general"] = {
 	},
 	["versionCheck"] = true
 }
+
+G["bags"] = {
+	["ignoredItems"] = {}
+}

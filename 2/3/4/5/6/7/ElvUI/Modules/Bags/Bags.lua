@@ -95,7 +95,7 @@ end
 function B:DisableBlizzard()
 	BankFrame:UnregisterAllEvents()
 
-	for i=1, NUM_CONTAINER_FRAMES do
+	for i = 1, NUM_CONTAINER_FRAMES do
 		E:Kill(_G["ContainerFrame"..i])
 	end
 end
@@ -118,7 +118,7 @@ function B:UpdateSearch()
 	local prevSearchString = SEARCH_STRING
 	if (len(searchString) > MIN_REPEAT_CHARACTERS) then
 		local repeatChar = true
-		for i=1, MIN_REPEAT_CHARACTERS, 1 do
+		for i = 1, MIN_REPEAT_CHARACTERS, 1 do
 			if ( sub(searchString,(0-i), (0-i)) ~= sub(searchString,(-1-i),(-1-i)) ) then
 				repeatChar = false
 				break
