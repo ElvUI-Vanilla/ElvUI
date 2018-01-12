@@ -102,6 +102,10 @@ local function LoadSkin()
 				end
 			end
 
+			HookScript(MerchantBuyBackItemItemButton, "OnEvent", function()
+				this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			end)
+
 			local buybackName = GetBuybackItemInfo(GetNumBuybackItems())
 			if buybackName then
 				local itemLink = GetItemLinkByName(buybackName)
