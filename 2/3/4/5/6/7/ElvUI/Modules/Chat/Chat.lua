@@ -206,7 +206,7 @@ local function ChatFrame_OnMouseScroll(frame, delta)
 					CH:CancelTimer(frame.ScrollTimer, true)
 				end
 
-				frame.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, frame)
+				-- frame.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, frame)
 			end
 		end
 	end
@@ -627,7 +627,7 @@ function CH.FindURL(msg, ...)
 	if event and event == "CHAT_MSG_WHISPER" and CH.db.whisperSound ~= "None" and not CH.SoundPlayed then
 		PlaySoundFile(LSM:Fetch("sound", CH.db.whisperSound), "Master")
 		CH.SoundPlayed = true
-		CH.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
+		-- CH.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
 	end
 
 	if not CH.db.url then
@@ -1294,7 +1294,7 @@ function CH:CheckKeyword(message)
 				if(self.db.keywordSound ~= "None" and not self.SoundPlayed) then
 					PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
 					self.SoundPlayed = true
-					self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
+					-- self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
 				end
 			end
 		end
@@ -1315,7 +1315,7 @@ function CH:CheckKeyword(message)
 				if self.db.keywordSound ~= "None" and not self.SoundPlayed then
 					PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
 					self.SoundPlayed = true
-					self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
+					-- self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
 				end
 			end
 		end
