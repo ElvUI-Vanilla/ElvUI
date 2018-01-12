@@ -5,7 +5,7 @@ if not lib then return end
 --Cache global variables
 --Lua functions
 local pairs, tonumber = pairs, tonumber
-local format, gsub, strmatch, strsplit = format, gsub, strmatch, strsplit
+local format, gsub, strmatch, strsplit = string.format, string.gsub, string.match, string.split
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local GetAddOnMetadata = GetAddOnMetadata

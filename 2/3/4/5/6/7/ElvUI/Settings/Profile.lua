@@ -455,13 +455,14 @@ P["datatexts"] = {
 		["TopLeftMiniPanel"] = "",
 	},
 	["battleground"] = true,
-	["panelTransparency"] = false,
 	["panelBackdrop"] = true,
+	["panelTransparency"] = false,
 
 	--Datatext Options
 	--General
 	["goldFormat"] = "BLIZZARD",
 	["goldCoins"] = false,
+
 	--Time Datatext
 	["timeFormat"] = "%I:%M",
 	["dateFormat"] = "",

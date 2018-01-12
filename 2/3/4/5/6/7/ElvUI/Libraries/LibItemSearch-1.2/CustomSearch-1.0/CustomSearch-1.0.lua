@@ -23,7 +23,7 @@ if not Lib then
 	return
 end
 
-local lower = string.lower
+local find, gmatch, lower, match = string.find, string.gmatch, string.lower, string.match
 
 --[[ Parsing ]]--
 

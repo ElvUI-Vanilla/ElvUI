@@ -676,7 +676,7 @@ function B:DoMove(move)
 		end
 	end
 
-	local stackSize = select(8, GetItemInfo(sourceItemID))
+	local stackSize = select(7, GetItemInfo(sourceItemID))
 	if (sourceItemID == targetItemID) and (targetCount ~= stackSize) and ((targetCount + sourceCount) > stackSize) then
 		B:SplitItem(sourceBag, sourceSlot, stackSize - targetCount)
 	else

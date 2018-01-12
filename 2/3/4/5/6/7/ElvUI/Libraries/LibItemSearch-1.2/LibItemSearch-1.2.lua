@@ -12,25 +12,25 @@ else
 	return;
 end
 
-local strmatch, lower = string.match, string.lower
+local match, lower = string.match, string.lower
 
 --[[ User API ]]--
 
 function Lib:Matches(link, search)
-	return Search(link, search, self.Filters);
+	return Search(link, search, this.Filters);
 end
 
 function Lib:Tooltip(link, search)
-	return link and strmatch(self.Filters.tip, link, nil, search);
+	return link and match(self.Filters.tip, link, nil, search);
 end
 
 function Lib:TooltipPhrase(link, search)
-	return link and strmatch(self.Filters.tipPhrases, link, nil, search);
+	return link and match(self.Filters.tipPhrases, link, nil, search);
 end
 
 function Lib:InSet(link, search)
 	if(IsEquippableItem(link)) then
-		local id = tonumber(strmatch(link, "item:(%-?%d+)"));
+		local id = tonumber(match(link, "item:(%-?%d+)"));
 		return self:BelongsToSet(id, lower(search or ""));
 	end
 end
@@ -45,7 +45,7 @@ Lib.Filters.name = {
 	end,
 
 	match = function(self, item, _, search)
-		local name = strmatch(item, "%[(.-)%]");
+		local name = match(item, "%[(.-)%]");
 		return Search:Find(search, name);
 	end
 };
@@ -179,7 +179,7 @@ Lib.Filters.tipPhrases = {
 	end,
 
 	match = function(self, link, _, search)
-		local id = strmatch(link, "item:(%d+)");
+		local id = match(link, "item:(%d+)");
 		if(not id) then
 			return;
 		end

@@ -1,7 +1,7 @@
-local E, L, V, P, G = unpack(ElvUI)
-local B = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
-local Search = LibStub("LibItemSearch-1.2")
--- local LIP = LibStub("ItemPrice-1.1", true)
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local B = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
+local Search = LibStub("LibItemSearch-1.2");
+-- local LIP = LibStub("ItemPrice-1.1", true);
 
 --Cache global variables
 --Lua functions
@@ -9,7 +9,7 @@ local _G = _G
 local type, ipairs, pairs, unpack, select, assert = type, ipairs, pairs, unpack, select, assert
 local tinsert = table.insert
 local floor, ceil = math.floor, math.ceil
-local len, sub, find = string.len, string.sub, string.find
+local len, gsub, sub, find = string.len, string.gsub, string.sub, string.find
 --WoW API / Variables
 local BankFrameItemButton_Update = BankFrameItemButton_Update
 local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
