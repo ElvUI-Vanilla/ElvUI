@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Bags");
-local Search = LibStub("LibItemSearch-1.2", true);
+local Search = LibStub("LibItemSearch-1.2");
 
 --Cache global variables
 --Lua functions
@@ -69,7 +69,7 @@ local specialtyBags = {}
 local emptySlots = {}
 
 local moveRetries = 0
-local lastItemID, lockStop, lastDestination, lastMove
+local lastItemID, currentItemID, lockStop, lastDestination, lastMove
 local moveTracker = {}
 
 local inventorySlots = {
@@ -487,7 +487,7 @@ function B.Sort(bags, sorter, invertDirection)
 	twipe(blackListedSlots)
 
 	buildBlacklist(B.db.ignoredItems)
-	buildBlacklist(E.global.bags.ignoredItems)
+	--buildBlacklist(E.global.bags.ignoredItems)
 
 	for i, bag, slot in B.IterateBags(bags, nil, "both") do
 		local bagSlot = B:Encode_BagSlot(bag, slot)
@@ -597,11 +597,11 @@ end
 function B.SortBags(...)
 	for i = 1, getn(arg) do
 		local bags = arg[i]
-		for _, slotNum in ipairs(bags) do
+		for i, slotNum in ipairs(bags) do
 			local bagType = B:IsSpecialtyBag(slotNum)
 			if bagType == false then bagType = "Normal" end
 			if not bagCache[bagType] then bagCache[bagType] = {} end
-			tinsert(bagCache[bagType], slotNum)
+			bagCache[bagType][i] = slotNum
 		end
 
 		for bagType, sortedBags in pairs(bagCache) do
@@ -641,7 +641,7 @@ end
 function B:StopStacking(message)
 	twipe(moves)
 	twipe(moveTracker)
-	moveRetries, lastItemID, lockStop, lastDestination, lastMove = 0, nil, nil, nil, nil
+	moveRetries, lastItemID, currentItemID, lockStop, lastDestination, lastMove = 0, nil, nil, nil, nil, nil
 
 	self.SortUpdateTimer:Hide()
 	if message then
@@ -650,7 +650,7 @@ function B:StopStacking(message)
 end
 
 function B:DoMove(move)
-	if GetCursorInfo() == "item" then
+	if CursorHasItem() then
 		return false, "cursorhasitem"
 	end
 
@@ -683,7 +683,7 @@ function B:DoMove(move)
 		B:PickupItem(sourceBag, sourceSlot)
 	end
 
-	if GetCursorInfo() == "item" then
+	if CursorHasItem() then
 		B:PickupItem(targetBag, targetSlot)
 	end
 
@@ -691,9 +691,9 @@ function B:DoMove(move)
 end
 
 function B:DoMoves()
-	local cursorType, cursorItemID = GetCursorInfo()
-	if cursorType == "item" and cursorItemID then
-		if lastItemID ~= cursorItemID then
+	--local cursorType, cursorItemID = GetCursorInfo()
+	if CursorHasItem() and currentItemID then
+		if lastItemID ~= currentItemID then
 			return B:StopStacking(L["Confused.. Try Again!"])
 		end
 
@@ -718,7 +718,7 @@ function B:DoMoves()
 				if (GetTime() - lockStop) > MAX_MOVE_TIME then
 					if lastMove and moveRetries < 100 then
 						local success, moveID, moveSource, targetID, moveTarget = self:DoMove(lastMove)
-						WAIT_TIME = 0.5 or 0.1
+						WAIT_TIME = 0.1
 
 						if not success then
 							lockStop = GetTime()
@@ -752,7 +752,7 @@ function B:DoMoves()
 		for i = getn(moves), 1, -1 do
 			success, moveID, moveSource, targetID, moveTarget = B:DoMove(moves[i])
 			if not success then
-				WAIT_TIME = 0.3 or 0.1
+				WAIT_TIME = 0.1
 				lockStop = GetTime()
 				return
 			end
@@ -764,7 +764,7 @@ function B:DoMoves()
 			tremove(moves, i)
 
 			if moves[i-1] then
-				WAIT_TIME = 0.3 or 0
+				WAIT_TIME = 0
 				return
 			end
 		end
@@ -784,8 +784,6 @@ function B:GetGroup(id)
 end
 
 function B:CommandDecorator(func, groupsDefaults)
-	local bagGroups = {}
-
 	return function(groups)
 		if self.SortUpdateTimer:IsShown() then
 			E:Print(L["Already Running.. Bailing Out!"])
