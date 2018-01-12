@@ -141,6 +141,13 @@ local function LoadSkin()
 	E:StyleButton(OpenMailPackageButton)
 	E:SetTemplate(OpenMailPackageButton, "Default", true)
 
+	for _, region in ipairs({OpenMailPackageButton:GetRegions()}) do
+		if region:GetObjectType() == "Texture" then
+			region:SetTexCoord(unpack(E.TexCoords))
+			E:SetInside(region)
+		end
+	end
+
 	--[[for i = 1, OpenMailPackageButton:GetNumRegions() do
 		local region = select(i, OpenMailPackageButton:GetRegions())
 		if region:GetObjectType() == "Texture" then

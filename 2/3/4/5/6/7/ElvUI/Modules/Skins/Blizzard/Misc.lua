@@ -361,13 +361,20 @@ local function LoadSkin()
 		HookScript(tab, "OnLeave", S.SetOriginalBackdrop)
 	end
 
-	for i = 1, UIOptionsFrame:GetNumChildren() do
-		local child = select(i, UIOptionsFrame:GetChildren())
+	for _, child in ipairs({UIOptionsFrame:GetChildren()}) do
 		if child.GetPushedTexture and child:GetPushedTexture() and not child:GetName() then
 			child:SetFrameLevel(UIOptionsFrame:GetFrameLevel() + 2)
 			S:HandleCloseButton(child, UIOptionsFrame.backdrop)
 		end
 	end
+
+	--[[for i = 1, UIOptionsFrame:GetNumChildren() do
+		local child = select(i, UIOptionsFrame:GetChildren())
+		if child.GetPushedTexture and child:GetPushedTexture() and not child:GetName() then
+			child:SetFrameLevel(UIOptionsFrame:GetFrameLevel() + 2)
+			S:HandleCloseButton(child, UIOptionsFrame.backdrop)
+		end
+	end--]]
 
 	OptionsFrameDefaults:ClearAllPoints()
 	OptionsFrameDefaults:SetPoint("TOPLEFT", OptionsFrame, "BOTTOMLEFT", 15, 36)
