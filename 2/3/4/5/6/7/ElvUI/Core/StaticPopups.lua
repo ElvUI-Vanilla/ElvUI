@@ -36,6 +36,7 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 	end,
 	hideOnEscape = 1,
 	button1 = OKAY,
+	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	EditBoxOnEnterPressed = function()
 		-- ChatEdit_FocusActiveWindow()
@@ -62,7 +63,7 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 E.PopupDialogs["CLIQUE_ADVERT"] = {
 	text = L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."],
 	button1 = YES,
-	button2 = "", -- Temporary until further fix
+	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	showAlert = 1
 }
@@ -126,6 +127,7 @@ E.PopupDialogs["INCOMPATIBLE_ADDON"] = {
 E.PopupDialogs["PIXELPERFECT_CHANGED"] = {
 	text = L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."],
 	button1 = ACCEPT,
+	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	timeout = 0,
 	whileDead = 1,
@@ -135,6 +137,7 @@ E.PopupDialogs["PIXELPERFECT_CHANGED"] = {
 E.PopupDialogs["CONFIGAURA_SET"] = {
 	text = L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."],
 	button1 = ACCEPT,
+	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	timeout = 0,
 	whileDead = 1,
@@ -232,6 +235,7 @@ E.PopupDialogs["BUY_BANK_SLOT"] = {
 E.PopupDialogs["CANNOT_BUY_BANK_SLOT"] = {
 	text = L["Can't buy anymore slots!"],
 	button1 = ACCEPT,
+	button2 = CLOSE, -- Temporary until further fix
 	timeout = 0,
 	whileDead = 1
 }
@@ -239,6 +243,7 @@ E.PopupDialogs["CANNOT_BUY_BANK_SLOT"] = {
 E.PopupDialogs["NO_BANK_BAGS"] = {
 	text = L["You must purchase a bank slot first!"],
 	button1 = ACCEPT,
+	button2 = CLOSE, -- Temporary until further fix
 	timeout = 0,
 	whileDead = 1
 }
@@ -257,6 +262,7 @@ E.PopupDialogs["RESETUI_CHECK"] = {
 E.PopupDialogs["HARLEM_SHAKE"] = {
 	text = L["ElvUI needs to perform database optimizations please be patient."],
 	button1 = OKAY,
+	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = function()
 		if E.isMassiveShaking then
 			E:StopHarlemShake()
@@ -272,6 +278,7 @@ E.PopupDialogs["HARLEM_SHAKE"] = {
 E.PopupDialogs["HELLO_KITTY"] = {
 	text = L["ElvUI needs to perform database optimizations please be patient."],
 	button1 = OKAY,
+	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = function()
 		E:SetupHelloKitty()
 	end,
@@ -335,8 +342,8 @@ E.PopupDialogs["APPLY_FONT_WARNING"] = {
 		E.db.bags.itemLevelFontSize = fontSize
 		E.db.bags.countFont = font
 		E.db.bags.countFontSize = fontSize
-		-- E.db.nameplates.font = font
-		-- E.db.nameplates.fontSize = fontSize
+		E.db.nameplates.font = font
+		E.db.nameplates.fontSize = fontSize
 		E.db.actionbar.font = font
 		E.db.actionbar.fontSize = fontSize
 		E.db.auras.font = font
