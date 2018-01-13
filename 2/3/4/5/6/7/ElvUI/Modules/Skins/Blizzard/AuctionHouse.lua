@@ -173,7 +173,12 @@ local function LoadSkin()
 	BrowseBidPrice:SetPoint("BOTTOM", -15, 18)
 	BrowseBidText:SetPoint("BOTTOMRIGHT", AuctionFrameBrowse, "BOTTOM", -116, 21)
 
+	BrowseMinLevel:SetWidth(32)
+
+	BrowseLevelHyphen:SetPoint("LEFT", BrowseMinLevel, "RIGHT", -7, 1)
+
 	BrowseMaxLevel:SetPoint("LEFT", BrowseMinLevel, "RIGHT", 8, 0)
+	BrowseMaxLevel:SetWidth(32)
 	BrowseLevelText:SetPoint("BOTTOMLEFT", AuctionFrameBrowse, "TOPLEFT", 195, -48)
 
 	BrowseName:SetWidth(164)
