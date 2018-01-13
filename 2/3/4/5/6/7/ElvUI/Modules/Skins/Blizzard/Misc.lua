@@ -82,7 +82,7 @@ local function LoadSkin()
 		StyleButton(_G["VoiceMacroMenuButton"..i])
 	end
 
-	-- Dropdown Menus
+	-- UIDropDownMenu
 	hooksecurefunc("UIDropDownMenu_Initialize", function()
 		for i = 1, UIDROPDOWNMENU_MAXLEVELS do
 			local buttonBackdrop = _G["DropDownList"..i.."Backdrop"]
@@ -97,8 +97,7 @@ local function LoadSkin()
 
 				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
 				buttonHighlight:SetTexture(1, 1, 1, 0.3)
-				buttonHighlight:ClearAllPoints()
-				buttonHighlight:SetHeight(16)
+				buttonHighlight:SetAllPoints(button)
 
 				if i == 1 then
 					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
@@ -111,6 +110,7 @@ local function LoadSkin()
 		end
 	end)
 
+	-- L_UIDropDownMenu
 	hooksecurefunc("L_UIDropDownMenu_Initialize", function()
 		for i = 1, 2 do
 			local buttonBackdrop = _G["L_DropDownList"..i.."Backdrop"]
@@ -126,16 +126,13 @@ local function LoadSkin()
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
 				local button = _G["L_DropDownList"..i.."Button"..j]
 				local buttonHighlight = _G["L_DropDownList"..i.."Button"..j.."Highlight"]
+				local buttonWidth = button:GetWidth()
 
 				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
 				buttonHighlight:SetTexture(1, 1, 1, 0.3)
-				buttonHighlight:ClearAllPoints()
-				buttonHighlight:SetHeight(16)
+				buttonHighlight:SetAllPoints(button)
 
-				if i == 1 then
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 4, 0)
-				else
+				if i == 2 then
 					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
 					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
 				end
@@ -167,7 +164,11 @@ local function LoadSkin()
 		E:StripTextures(closeButton)
 		S:HandleCloseButton(closeButton)
 
-		--select(8, wideBox:GetRegions()):Hide()
+		local _, _, _, _, _, _, _, region = wideBox:GetRegions()
+		if region then
+			region:Hide()
+		end
+		 --select(8, wideBox:GetRegions()):Hide()
 		S:HandleEditBox(wideBox)
 		wideBox:SetHeight(22)
 
@@ -379,19 +380,18 @@ local function LoadSkin()
 	OptionsFrameDefaults:ClearAllPoints()
 	OptionsFrameDefaults:SetPoint("TOPLEFT", OptionsFrame, "BOTTOMLEFT", 15, 36)
 
-	for i = 1, 69 do
-		local UIOptionsFrameCheckBox = _G["UIOptionsFrameCheckButton"..i]
-		if UIOptionsFrameCheckBox then
-			S:HandleCheckBox(UIOptionsFrameCheckBox)
-		end
-	end
+	S:HandleButton(UIOptionsFrameResetTutorials)
 
+	SoundOptionsFrameCheckButton1:SetPoint("TOPLEFT", "SoundOptionsFrame", "TOPLEFT", 16, -15)
+
+	-- Interface Options Frame Dropdown
 	local interfacedropdown ={
 		"CombatTextDropDown",
 		"TargetofTargetDropDown",
 		"CameraDropDown",
 		"ClickCameraDropDown"
 	}
+
 	for i = 1, getn(interfacedropdown) do
 		local idropdown = _G["UIOptionsFrame"..interfacedropdown[i]]
 		if idropdown then
@@ -399,55 +399,14 @@ local function LoadSkin()
 		end
 	end
 
-	S:HandleButton(UIOptionsFrameResetTutorials)
-
-	local optioncheckbox = {
-		"OptionsFrameCheckButton1",
-		"OptionsFrameCheckButton2",
-		"OptionsFrameCheckButton3",
-		"OptionsFrameCheckButton4",
-		"OptionsFrameCheckButton5",
-		"OptionsFrameCheckButton6",
-		"OptionsFrameCheckButton7",
-		"OptionsFrameCheckButton8",
-		"OptionsFrameCheckButton9",
-		"OptionsFrameCheckButton10",
-		"OptionsFrameCheckButton11",
-		"OptionsFrameCheckButton12",
-		"OptionsFrameCheckButton13",
-		"OptionsFrameCheckButton14",
-		"OptionsFrameCheckButton15",
-		"OptionsFrameCheckButton16",
-		"OptionsFrameCheckButton17",
-		"OptionsFrameCheckButton18",
-		"OptionsFrameCheckButton19",
-		"SoundOptionsFrameCheckButton1",
-		"SoundOptionsFrameCheckButton2",
-		"SoundOptionsFrameCheckButton3",
-		"SoundOptionsFrameCheckButton4",
-		"SoundOptionsFrameCheckButton5",
-		"SoundOptionsFrameCheckButton6",
-		"SoundOptionsFrameCheckButton7",
-		"SoundOptionsFrameCheckButton8",
-		"SoundOptionsFrameCheckButton9",
-		"SoundOptionsFrameCheckButton10",
-		"SoundOptionsFrameCheckButton11"
-	}
-	for i = 1, getn(optioncheckbox) do
-		local ocheckbox = _G[optioncheckbox[i]]
-		if ocheckbox then
-			S:HandleCheckBox(ocheckbox)
-		end
-	end
-
-	SoundOptionsFrameCheckButton1:SetPoint("TOPLEFT", "SoundOptionsFrame", "TOPLEFT", 16, -15)
-
+	-- Video Options Frame Dropdown
 	local optiondropdown = {
 		"OptionsFrameResolutionDropDown",
 		"OptionsFrameRefreshDropDown",
 		"OptionsFrameMultiSampleDropDown",
 		"SoundOptionsOutputDropDown",
 	}
+
 	for i = 1, getn(optiondropdown) do
 		local odropdown = _G[optiondropdown[i]]
 		if odropdown then
@@ -455,23 +414,44 @@ local function LoadSkin()
 		end
 	end
 
-	for i = 1, 4 do
-		local UIOptionsFrameSlider = _G["UIOptionsFrameSlider"..i]
-		if UIOptionsFrameSlider then
-			S:HandleSliderFrame(UIOptionsFrameSlider)
+	-- Interface Options Checkboxes
+	for index, value in UIOptionsFrameCheckButtons do
+		local UIOptionsFrameCheckBox = _G["UIOptionsFrameCheckButton"..value.index]
+		if UIOptionsFrameCheckBox then
+			S:HandleCheckBox(UIOptionsFrameCheckBox)
 		end
 	end
 
+	-- Video Options Checkboxes
+	for index, value in OptionsFrameCheckButtons do
+		local OptionsFrameCheckButton = _G["OptionsFrameCheckButton"..value.index]
+		if OptionsFrameCheckButton then
+			S:HandleCheckBox(OptionsFrameCheckButton)
+		end
+	end
+
+	-- Sound Options Checkboxes
+	for index, value in SoundOptionsFrameCheckButtons do
+		local SoundOptionsFrameCheckButton = _G["SoundOptionsFrameCheckButton"..value.index]
+		if SoundOptionsFrameCheckButton then
+			S:HandleCheckBox(SoundOptionsFrameCheckButton)
+		end
+	end
+
+	-- Interface Options Sliders
+	for i, v in UIOptionsFrameSliders do
+		S:HandleSliderFrame(_G["UIOptionsFrameSlider"..i])
+	end
+
 	-- Video Options Sliders
-	for i = 1, 9 do
+	for i, v in OptionsFrameSliders do
 		S:HandleSliderFrame(_G["OptionsFrameSlider"..i])
 	end
 
 	-- Sound Options Sliders
-	for i = 1, 4 do
+	for i, v in SoundOptionsFrameSliders do
 		S:HandleSliderFrame(_G["SoundOptionsFrameSlider"..i])
 	end
-
 end
 
 S:AddCallback("SkinMisc", LoadSkin)
