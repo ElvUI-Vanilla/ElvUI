@@ -1190,7 +1190,7 @@ function L_UIDropDownMenu_GetValue(id)
 	end
 end
 
---[[function OpenColorPicker(info) --ColorPicker stuff not changed
+function OpenColorPicker(info) --ColorPicker stuff not changed
 	ColorPickerFrame.func = info.swatchFunc;
 	ColorPickerFrame.hasOpacity = info.hasOpacity;
 	ColorPickerFrame.opacityFunc = info.opacityFunc;
@@ -1205,4 +1205,4 @@ end
 
 function ColorPicker_GetPreviousValues()
 	return ColorPickerFrame.previousValues.r, ColorPickerFrame.previousValues.g, ColorPickerFrame.previousValues.b;
-end]]
+end

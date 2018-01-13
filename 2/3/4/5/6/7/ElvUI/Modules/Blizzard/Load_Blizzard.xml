@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="Blizzard.lua"/>
+	<Script file="ColorPicker.lua"/>
 	<Script file="WatchFrame.lua"/>
 </Ui>

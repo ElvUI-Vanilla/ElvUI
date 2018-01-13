@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(ElvUI)
-local B = E:NewModule("Blizzard", "AceEvent-3.0", "AceHook-3.0")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local B = E:NewModule("Blizzard", "AceEvent-3.0", "AceHook-3.0");
 
 local GetNumQuestChoices = GetNumQuestChoices
 local GetNumQuestLogChoices = GetNumQuestLogChoices
@@ -14,7 +14,7 @@ E.Blizzard = B
 
 function B:Initialize()
 	-- self:AlertMovers()
-	-- self:EnhanceColorPicker()
+	self:EnhanceColorPicker()
 	-- self:KillBlizzard()
 	-- self:PositionCaptureBar()
 	-- self:PositionDurabilityFrame()
