@@ -13,7 +13,7 @@ local GetRewardSpell = GetRewardSpell
 E.Blizzard = B
 
 function B:Initialize()
-	-- self:AlertMovers()
+	self:AlertMovers()
 	self:EnhanceColorPicker()
 	-- self:KillBlizzard()
 	self:PositionCaptureBar()
