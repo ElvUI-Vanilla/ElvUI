@@ -6,7 +6,7 @@ local S = E:NewModule("Skins", "AceHook-3.0", "AceEvent-3.0");
 local _G = _G
 local unpack, assert, pairs, ipairs, type, pcall = unpack, assert, pairs, ipairs, type, pcall
 local tinsert, wipe = table.insert, table.wipe
-local lower = string.lower
+local find, gfind, lower = string.find, string.gfind, string.lower
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local SetDesaturation = SetDesaturation
@@ -20,8 +20,6 @@ S.nonAddonsToLoad = {}
 S.allowBypass = {}
 S.addonCallbacks = {}
 S.nonAddonCallbacks = {["CallPriority"] = {}}
-
-local find = string.find
 
 S.SQUARE_BUTTON_TEXCOORDS = {
 	["UP"] = {     0.45312500,    0.64062500,     0.01562500,     0.20312500};
@@ -244,7 +242,7 @@ function S:HandleEditBox(frame)
 		if _G[frame:GetName() .."Right"] then E:Kill(_G[frame:GetName() .."Right"]) end
 		if _G[frame:GetName() .."Mid"] then E:Kill(_G[frame:GetName() .."Mid"]) end
 
-		if string.gfind(frame:GetName(), "Silver") or string.gfind(frame:GetName(), "Copper") then
+		if gfind(frame:GetName(), "Silver") or gfind(frame:GetName(), "Copper") then
 			frame.backdrop:SetPoint("BOTTOMRIGHT", -12, -2)
 		end
 	end
@@ -386,6 +384,15 @@ function S:HandleSliderFrame(frame)
 		frame:SetWidth(SIZE)
 	else
 		frame:SetHeight(SIZE)
+
+		for _, region in ipairs({frame:GetRegions()}) do
+			if region and region:GetObjectType() == "FontString" then
+				local point, anchor, anchorPoint, x, y = region:GetPoint()
+				if find(anchorPoint, "BOTTOM") then
+					region:SetPoint(point, anchor, anchorPoint, x, y - 4)
+				end
+			end
+		end
 
 		--[[for i = 1, frame:GetNumRegions() do
 			local region = select(i, frame:GetRegions())

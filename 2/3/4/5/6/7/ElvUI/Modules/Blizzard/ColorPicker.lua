@@ -2,12 +2,12 @@
 	Credit to Jaslm, most of this code is his from the addon ColorPickerPlus
 ]]
 local E, L, DF = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local B = E:GetModule("Blizzard", true);
-local S = E:GetModule("Skins", true);
+local B = E:GetModule("Blizzard");
+local S = E:GetModule("Skins");
 
 local tonumber, collectgarbage = tonumber, collectgarbage
 local floor = math.floor
-local format, strsub = string.format, strsub
+local format = string.format
 
 local CreateFrame = CreateFrame
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
@@ -47,15 +47,15 @@ function B:EnhanceColorPicker()
 	ColorPickerFrameHeader:SetTexture("")
 	ColorPickerFrameHeader:ClearAllPoints()
 	ColorPickerFrameHeader:SetPoint("TOP", ColorPickerFrame, 0, 0)
-	-- S:HandleButton(ColorPickerOkayButton)
-	-- S:HandleButton(ColorPickerCancelButton)
+	S:HandleButton(ColorPickerOkayButton)
+	S:HandleButton(ColorPickerCancelButton)
 	ColorPickerCancelButton:ClearAllPoints()
 	ColorPickerOkayButton:ClearAllPoints()
 	ColorPickerCancelButton:SetPoint("BOTTOMRIGHT", ColorPickerFrame, "BOTTOMRIGHT", -6, 6)
 	ColorPickerCancelButton:SetPoint("BOTTOMLEFT", ColorPickerFrame, "BOTTOM", 0, 6)
 	ColorPickerOkayButton:SetPoint("BOTTOMLEFT", ColorPickerFrame,"BOTTOMLEFT", 6,6)
 	ColorPickerOkayButton:SetPoint("RIGHT", ColorPickerCancelButton,"LEFT", -4,0)
-	-- S:HandleSliderFrame(OpacitySliderFrame)
+	S:HandleSliderFrame(OpacitySliderFrame)
 	HookScript(ColorPickerFrame, "OnShow", function()
 		-- get color that will be replaced
 		local r, g, b = ColorPickerFrame:GetColorRGB()
@@ -121,7 +121,7 @@ function B:EnhanceColorPicker()
 
 	-- add copy button to the ColorPickerFrame
 	local b = CreateFrame("Button", "ColorPPCopy", ColorPickerFrame, "UIPanelButtonTemplate")
-	-- S:HandleButton(b)
+	S:HandleButton(b)
 	b:SetText(L["Copy"])
 	b:SetWidth(60)
 	b:SetHeight(22)
@@ -147,7 +147,7 @@ function B:EnhanceColorPicker()
 	--class color button
 	b = CreateFrame("Button", "ColorPPClass", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SetText(CLASS)
-	-- S:HandleButton(b)
+	S:HandleButton(b)
 	b:SetWidth(80)
 	b:SetHeight(22)
 	b:SetPoint("TOP", "ColorPPCopy", "BOTTOMRIGHT", 0, -7)
@@ -164,7 +164,7 @@ function B:EnhanceColorPicker()
 	-- add paste button to the ColorPickerFrame
 	b = CreateFrame("Button", "ColorPPPaste", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SetText(L["Paste"])
-	-- S:HandleButton(b)
+	S:HandleButton(b)
 	b:SetWidth(60)
 	b:SetHeight(22)
 	b:SetPoint("TOPLEFT", "ColorPPCopy", "TOPRIGHT", 2, 0)
@@ -184,7 +184,7 @@ function B:EnhanceColorPicker()
 	-- add defaults button to the ColorPickerFrame
 	b = CreateFrame("Button", "ColorPPDefault", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SetText(DEFAULTS)
-	-- S:HandleButton(b)
+	S:HandleButton(b)
 	b:SetWidth(80)
 	b:SetHeight(22)
 	b:SetPoint("TOPLEFT", "ColorPPClass", "BOTTOMLEFT", 0, -7)
@@ -226,12 +226,12 @@ function B:EnhanceColorPicker()
 
 		local rgb = boxes[i]
 		local box = CreateFrame("EditBox", "ColorPPBox"..rgb, ColorPickerFrame, "InputBoxTemplate")
-		-- S:HandleEditBox(box)
+		S:HandleEditBox(box)
 		box:SetID(i)
 		box:SetFrameStrata("DIALOG")
 		box:SetAutoFocus(false)
-		box:SetTextInsets(0,7,0,0)
-		box:SetJustifyH("RIGHT")
+		box:SetTextInsets(0,14,0,0)
+		box:SetJustifyH("CENTER")
 		box:SetHeight(24)
 
 		if i == 4 then
@@ -265,7 +265,7 @@ function B:EnhanceColorPicker()
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateColorTexts() end)
 		end
 
-		box:SetScript("OnEditFocusGained", function() this:SetCursorPosition(0) this:HighlightText() end)
+		box:SetScript("OnEditFocusGained", function() this:HighlightText() end)
 		box:SetScript("OnEditFocusLost", function()	this:HighlightText(0,0) end)
 		box:SetScript("OnTextSet", function() this:ClearFocus() end)
 		box:Show()
