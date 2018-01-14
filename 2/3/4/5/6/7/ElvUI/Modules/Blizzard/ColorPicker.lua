@@ -5,10 +5,12 @@ local E, L, DF = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB,
 local B = E:GetModule("Blizzard");
 local S = E:GetModule("Skins");
 
+--Cache global variables
+--Lua functions
 local tonumber, collectgarbage = tonumber, collectgarbage
 local floor = math.floor
 local format = string.format
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS

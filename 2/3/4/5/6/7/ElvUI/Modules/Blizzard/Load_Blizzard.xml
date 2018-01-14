@@ -2,4 +2,5 @@
 	<Script file="Blizzard.lua"/>
 	<Script file="ColorPicker.lua"/>
 	<Script file="WatchFrame.lua"/>
+	<Script file="CaptureBar.lua"/>
 </Ui>
