@@ -17,7 +17,7 @@ function B:Initialize()
 	self:EnhanceColorPicker()
 	-- self:KillBlizzard()
 	self:PositionCaptureBar()
-	-- self:PositionDurabilityFrame()
+	self:PositionDurabilityFrame()
 	-- self:PositionGMFrames()
 	self:MoveWatchFrame()
 
