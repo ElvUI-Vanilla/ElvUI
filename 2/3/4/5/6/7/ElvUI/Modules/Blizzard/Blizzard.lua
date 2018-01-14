@@ -18,7 +18,7 @@ function B:Initialize()
 	-- self:KillBlizzard()
 	self:PositionCaptureBar()
 	self:PositionDurabilityFrame()
-	-- self:PositionGMFrames()
+	self:PositionGMFrames()
 	self:MoveWatchFrame()
 
 	--[[self:RawHook("CombatConfig_Colorize_Update", function()

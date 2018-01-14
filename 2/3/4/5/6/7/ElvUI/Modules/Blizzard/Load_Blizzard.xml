@@ -3,6 +3,7 @@
 	<Script file="AlertFrame.lua"/>
 	<Script file="ColorPicker.lua"/>
 	<Script file="WatchFrame.lua"/>
+	<Script file="GM.lua"/>
 	<Script file="Durablity.lua"/>
 	<Script file="CaptureBar.lua"/>
 </Ui>
