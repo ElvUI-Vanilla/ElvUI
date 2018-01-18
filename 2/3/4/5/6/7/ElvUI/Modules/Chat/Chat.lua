@@ -10,7 +10,7 @@ local time, difftime = time, difftime
 local pairs, unpack, select, tostring, next, tonumber, type, assert = pairs, unpack, select, tostring, next, tonumber, type, assert
 local tinsert, tremove, tsort, twipe, tconcat = table.insert, table.remove, table.sort, table.wipe, table.concat
 local strmatch = strmatch
-local gsub, find, gmatch, format, split = string.gsub, string.find, string.gmatch, string.format, string.split
+local gsub, find, match, gmatch, format, split = string.gsub, string.find, string.match, string.gmatch, string.format, string.split
 local strlower, strsub, strlen, strupper = strlower, strsub, strlen, strupper
 --WoW API / Variables
 local BetterDate = BetterDate
@@ -464,7 +464,7 @@ function CH:UpdateAnchors()
 		end
 	end
 
-	-- CH:PositionChat(true)
+	CH:PositionChat(true)
 end
 
 local function FindRightChatID()
@@ -512,7 +512,7 @@ function CH:UpdateChatTabs()
 end
 
 function CH:PositionChat(override)
-	--if ((not override and self.initialMove) or (not override)) then return end
+	if ((not override and self.initialMove) or (not override)) then return end
 	if not RightChatPanel or not LeftChatPanel then return end
 	RightChatPanel:SetWidth(E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth)
 	RightChatPanel:SetHeight(E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
@@ -694,22 +694,22 @@ end
 
 local hyperLinkEntered
 function CH:OnHyperlinkEnter()
-	--[[local linkToken = refString:match("^([^:]+)")
+	local linkToken = match(arg1, "(%a+):(%d+)")
 	if hyperlinkTypes[linkToken] then
 		ShowUIPanel(GameTooltip)
-		GameTooltip:SetOwner(frame, "ANCHOR_CURSOR")
-		GameTooltip:SetHyperlink(refString)
-		hyperLinkEntered = frame
+		GameTooltip:SetOwner(this, "ANCHOR_CURSOR")
+		GameTooltip:SetHyperlink(arg1)
+		hyperLinkEntered = this
 		GameTooltip:Show()
-	end]]
+	end
 end
 
 function CH:OnHyperlinkLeave()
-	--[[local linkToken = refString:match("^([^:]+)")
+	local linkToken = match(arg1, "(%a+):(%d+)")
 	if hyperlinkTypes[linkToken] then
 		HideUIPanel(GameTooltip)
 		hyperLinkEntered = nil
-	end]]
+	end
 end
 
 function CH:OnMessageScrollChanged(frame)
