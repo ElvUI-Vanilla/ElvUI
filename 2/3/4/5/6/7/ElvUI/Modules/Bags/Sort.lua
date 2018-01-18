@@ -22,8 +22,8 @@ local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local ContainerIDToInventoryID = ContainerIDToInventoryID
 local GetInventoryItemLink = GetInventoryItemLink
-local GetCursorInfo = GetCursorInfo
-local ARMOR, ENCHSLOT_WEAPON = ARMOR, ENCHSLOT_WEAPON
+local CursorHasItem = CursorHasItem
+local ARMOR = ARMOR
 
 local bankBags = {BANK_CONTAINER}
 local MAX_MOVE_TIME = 1.25
@@ -38,10 +38,10 @@ for i = 0, NUM_BAG_SLOTS do
 end
 
 local allBags = {}
-for _,i in ipairs(playerBags) do
+for _, i in ipairs(playerBags) do
 	tinsert(allBags, i)
 end
-for _,i in ipairs(bankBags) do
+for _, i in ipairs(bankBags) do
 	tinsert(allBags, i)
 end
 
@@ -199,7 +199,7 @@ local function DefaultSort(a, b)
 		return (itemTypes[aType] or 99) < (itemTypes[bType] or 99)
 	end
 
-	if aType == ARMOR or aType == ENCHSLOT_WEAPON then
+	if aType == ARMOR then
 		local aEquipLoc = inventorySlots[aEquipLoc] or -1
 		local bEquipLoc = inventorySlots[bEquipLoc] or -1
 		if aEquipLoc == bEquipLoc then
@@ -210,6 +210,7 @@ local function DefaultSort(a, b)
 			return aEquipLoc < bEquipLoc
 		end
 	end
+
 	if aSubType == bSubType then
 		return PrimarySort(a, b)
 	end
@@ -243,7 +244,7 @@ end
 local function IterateForwards(bagList, i)
 	i = i + 1
 	local step = 1
-	for _,bag in ipairs(bagList) do
+	for _, bag in ipairs(bagList) do
 		local slots = B:GetNumSlots(bag, bagRole)
 		if i > slots + step then
 			step = step + slots
@@ -307,9 +308,8 @@ end
 
 function B:GetNumSlots(bag, role)
 	if bag then
-		return GetContainerNumSlots(bag)
+		return GetContainerNumSlots(bag);
 	end
-
 	return 0
 end
 
@@ -362,7 +362,7 @@ function B:ScanBags()
 		if itemID then
 			bagMaxStacks[bagSlot] = select(7, GetItemInfo(itemID))
 			bagIDs[bagSlot] = itemID
-			bagQualities[bagSlot] = select(3, GetItemInfo(B:GetItemLink(bag, slot)))
+			bagQualities[bagSlot] = select(3, GetItemInfo(itemID))
 			bagStacks[bagSlot] = select(2, B:GetItemInfo(bag, slot))
 		end
 	end
@@ -374,6 +374,8 @@ function B:GetItemFamily(bagType)
 
 	if strupper(itemSubType) == "BAG" then
 		return 0
+	elseif strupper(itemSubType) == "QUIVER" then
+		return  1
 	elseif strupper(itemSubType) == "KEYRING" then
 		return  -2
 	else
@@ -405,12 +407,12 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 			itemFamily = 1
 		end
 	end
-	-- local bagFamily = select(2, GetContainerNumFreeSlots(targetBag))
-	-- if itemFamily then
-	-- 	return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
-	-- else
+	local bagFamily = select(2, GetContainerNumFreeSlots(targetBag))
+	if itemFamily then
+		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
+	else
 		return false
-	-- end
+	end
 end
 
 function B.Compress(...)
@@ -422,6 +424,7 @@ end
 
 function B.Stack(sourceBags, targetBags, canMove)
 	if not canMove then canMove = DefaultCanMove end
+
 	for _, bag, slot in B.IterateBags(targetBags, nil, "deposit") do
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		local itemID = bagIDs[bagSlot]
@@ -487,7 +490,7 @@ function B.Sort(bags, sorter, invertDirection)
 	twipe(blackListedSlots)
 
 	buildBlacklist(B.db.ignoredItems)
-	--buildBlacklist(E.global.bags.ignoredItems)
+	buildBlacklist(E.global.bags.ignoredItems)
 
 	for i, bag, slot in B.IterateBags(bags, nil, "both") do
 		local bagSlot = B:Encode_BagSlot(bag, slot)
@@ -499,7 +502,7 @@ function B.Sort(bags, sorter, invertDirection)
 			end
 
 			if not blackListedSlots[bagSlot] then
-				for _,itemsearchquery in pairs(blackListQueries) do
+				for _, itemsearchquery in pairs(blackListQueries) do
 					local success, result = pcall(Search.Matches, Search, link, itemsearchquery)
 					if success and result then
 						blackListedSlots[bagSlot] = blackListedSlots[bagSlot] or result
@@ -603,7 +606,6 @@ function B.SortBags(...)
 			if not bagCache[bagType] then bagCache[bagType] = {} end
 			bagCache[bagType][i] = slotNum
 		end
-
 		for bagType, sortedBags in pairs(bagCache) do
 			if bagType ~= "Normal" then
 				B.Stack(sortedBags, sortedBags, B.IsPartial)
@@ -691,7 +693,6 @@ function B:DoMove(move)
 end
 
 function B:DoMoves()
-	--local cursorType, cursorItemID = GetCursorInfo()
 	if CursorHasItem() and currentItemID then
 		if lastItemID ~= currentItemID then
 			return B:StopStacking(L["Confused.. Try Again!"])

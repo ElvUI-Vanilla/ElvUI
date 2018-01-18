@@ -9,7 +9,7 @@ local _G = _G
 local type, ipairs, pairs, unpack, select, assert = type, ipairs, pairs, unpack, select, assert
 local tinsert = table.insert
 local floor, ceil = math.floor, math.ceil
-local len, gsub, sub, find = string.len, string.gsub, string.sub, string.find
+local len, gsub, sub, find, match = string.len, string.gsub, string.sub, string.find, string.match
 --WoW API / Variables
 local BankFrameItemButton_Update = BankFrameItemButton_Update
 local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
@@ -54,7 +54,6 @@ B.ProfessionColors = {
 	["0x0020"] = {18/255, 181/255, 32/255}, -- Herbs
 	["0x0040"] = {160/255, 3/255, 168/255}, -- Enchanting
 	["0x0080"] = {232/255, 118/255, 46/255}, -- Engineering
-	["0x0200"] = {8/255, 180/255, 207/255}, -- Gems
 	["0x0400"] = {105/255, 79/255, 7/255}, -- Mining
 	["0x010000"] = {222/255, 13/255, 65/255} -- Cooking
 }
@@ -116,15 +115,15 @@ function B:UpdateSearch()
 	local MIN_REPEAT_CHARACTERS = 3
 	local searchString = this:GetText()
 	local prevSearchString = SEARCH_STRING
-	if (len(searchString) > MIN_REPEAT_CHARACTERS) then
+	if len(searchString) > MIN_REPEAT_CHARACTERS then
 		local repeatChar = true
 		for i = 1, MIN_REPEAT_CHARACTERS, 1 do
-			if ( sub(searchString,(0-i), (0-i)) ~= sub(searchString,(-1-i),(-1-i)) ) then
+			if sub(searchString,(0-i), (0-i)) ~= sub(searchString,(-1-i),(-1-i)) then
 				repeatChar = false
 				break
 			end
 		end
-		if ( repeatChar ) then
+		if repeatChar then
 			B.ResetAndClear(this)
 			return
 		end
@@ -244,11 +243,11 @@ function B:UpdateSlot(bagID, slotID)
 	slot:Show()
 	slot.itemLevel:SetText("")
 
-	--if(B.ProfessionColors[bagType]) then
-	--	slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
-	if clink then
+	if B.ProfessionColors[bagType] then
+		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
+	elseif clink then
 		local iLvl, itemEquipLoc
-		slot.name, _, slot.rarity, iLvl, _, _, _, _, itemEquipLoc = GetItemInfo(string.match(clink, "item:(%d+)"))
+		slot.name, _, slot.rarity, iLvl, _, _, _, itemEquipLoc = GetItemInfo(match(clink, "item:(%d+)"))
 
 		local r, g, b
 
@@ -390,14 +389,14 @@ function B:Layout(isBank)
 			if not f.ContainerHolder[i] then
 				if isBank then
 					f.ContainerHolder[i] = CreateFrame("CheckButton", "ElvUIBankBag"..bagID - 4, f.ContainerHolder, "BankItemButtonBagTemplate")
-					f.ContainerHolder[i]:SetScript("OnClick", function(self)
-						local inventoryID = self:GetInventorySlot()
+					f.ContainerHolder[i]:SetScript("OnClick", function()
+						local inventoryID = this:GetInventorySlot()
 						PutItemInBag(inventoryID) --Put bag on empty slot, or drop item in this bag
 					end)
 				else
 					f.ContainerHolder[i] = CreateFrame("CheckButton", "ElvUIMainBag"..bagID.."Slot", f.ContainerHolder, "BagSlotButtonTemplate")
-					f.ContainerHolder[i]:SetScript("OnClick", function(self)
-						local id = self:GetID()
+					f.ContainerHolder[i]:SetScript("OnClick", function()
+						local id = this:GetID()
 						PutItemInBag(id) --Put bag on empty slot, or drop item in this bag
 					end)
 				end
@@ -450,7 +449,7 @@ function B:Layout(isBank)
 				f.Bags[bagID] = CreateFrame("Frame", f:GetName().."Bag"..bagID, f)
 				f.Bags[bagID]:SetID(bagID)
 				f.Bags[bagID].UpdateBagSlots = B.UpdateBagSlots
-			--	f.Bags[bagID].UpdateSlot = B.UpdateSlot
+				-- f.Bags[bagID].UpdateSlot = B.UpdateSlot
 			end
 
 			f.Bags[bagID].numSlots = numSlots
