@@ -288,7 +288,6 @@ local function ExportImport_Open(mode)
 				box.editBox:HighlightText()
 			end
 			box.scrollFrame:UpdateScrollChildRect()
-			print(box.scrollFrame:GetName())
 		end)
 	elseif mode == "import" then
 		frame:SetTitle(L["Import Profile"])
@@ -416,14 +415,14 @@ E.Options.args.profiles.plugins["ElvUI"] = {
 		desc = L["Sends your current profile to your target."],
 		type = "execute",
 		func = function()
-			if(not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target")) then
+			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
 				E:Print(L["You must be targeting a player."])
 				return
 			end
 			local name, server = UnitName("target")
-			if(name and (not server or server == "")) then
+			if name and not server or server == "" then
 				D:Distribute(name)
-			elseif(server) then
+			elseif server then
 				D:Distribute(name, true)
 			end
 		end
@@ -434,14 +433,14 @@ E.Options.args.profiles.plugins["ElvUI"] = {
 		name = L["Share Filters"],
 		desc = L["Sends your filter settings to your target."],
 		func = function()
-			if(not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target")) then
+			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
 				E:Print(L["You must be targeting a player."])
 				return
 			end
 			local name, server = UnitName("target")
-			if(name and (not server or server == "")) then
+			if name and not server or server == "" then
 				D:Distribute(name, false, true)
-			elseif(server) then
+			elseif server then
 				D:Distribute(name, true, true)
 			end
 		end,

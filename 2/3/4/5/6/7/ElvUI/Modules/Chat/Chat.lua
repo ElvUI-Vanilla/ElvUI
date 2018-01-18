@@ -694,7 +694,7 @@ end
 
 local hyperLinkEntered
 function CH:OnHyperlinkEnter()
-	local linkToken = match(arg1, "(%a+):(%d+)")
+	local linkToken = match(arg1, "([^:]+)")
 	if hyperlinkTypes[linkToken] then
 		ShowUIPanel(GameTooltip)
 		GameTooltip:SetOwner(this, "ANCHOR_CURSOR")
@@ -705,7 +705,7 @@ function CH:OnHyperlinkEnter()
 end
 
 function CH:OnHyperlinkLeave()
-	local linkToken = match(arg1, "(%a+):(%d+)")
+	local linkToken = match(arg1, "([^:]+)")
 	if hyperlinkTypes[linkToken] then
 		HideUIPanel(GameTooltip)
 		hyperLinkEntered = nil
@@ -1708,7 +1708,7 @@ function CH:Initialize()
 	end
 
 	local S = E:GetModule("Skins")
-	--S:HandleNextPrevButton(CombatLogQuickButtonFrame_CustomAdditionalFilterButton, true)
+
 	local frame = CreateFrame("Frame", "CopyChatFrame", E.UIParent)
 	tinsert(UISpecialFrames, "CopyChatFrame")
 	E:SetTemplate(frame, "Transparent")

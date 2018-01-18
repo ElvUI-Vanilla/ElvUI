@@ -5,7 +5,7 @@ local mod = E:NewModule("NamePlates", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3
 local _G = _G
 local pairs, tonumber = pairs, tonumber
 local select = select
-local gsub, split = string.gsub, string.split
+local gsub, match, split = string.gsub, string.match, string.split
 local twipe = table.wipe
 
 local CreateFrame = CreateFrame
@@ -82,7 +82,7 @@ function mod:CheckBGHealers()
 	for i = 1, GetNumBattlefieldScores() do
 		name, _, _, _, _, _, _, _, _, class, damageDone, healingDone = GetBattlefieldScore(i)
 		if name and class and healClasses[class] then
-			name = name:match("(.+)%-.+") or name
+			name = match(name, "(.+)%-.+") or name
 			if name and healingDone > (damageDone * 2) then
 				self.Healers[name] = true
 			elseif name and self.Healers[name] then
@@ -712,7 +712,7 @@ end
 	if queryList[name] then
 		local frame = queryList[name]
 
-		if frame.UnitType then 
+		if frame.UnitType then
 			if frame.UnitType == "ENEMY_NPC" then
 				frame.UnitType = "ENEMY_PLAYER"
 			end

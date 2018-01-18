@@ -723,7 +723,7 @@ function B:VendorGrays(delete, _, getValue)
 		for s = 1, GetContainerNumSlots(b) do
 			local l = GetContainerItemLink(b, s)
 			if l and find(l,"ff9d9d9d") then
-				local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
+				-- local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
 
 				if delete then
 					if find(l,"ff9d9d9d") then

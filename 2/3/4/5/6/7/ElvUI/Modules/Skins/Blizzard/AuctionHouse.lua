@@ -223,7 +223,7 @@ local function LoadSkin()
 		end
 
 		E:StripTextures(button)
-		E:StyleButton(button, false ,true)
+		E:StyleButton(button, false, true)
 		_G["BrowseButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
 		button:GetHighlightTexture():SetPoint("TOPLEFT", icon, "TOPRIGHT", 2, 0)

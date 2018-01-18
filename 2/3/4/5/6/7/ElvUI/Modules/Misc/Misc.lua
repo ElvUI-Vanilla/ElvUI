@@ -6,10 +6,8 @@ E.Misc = M
 --Lua functions
 local format, gsub = string.format, string.gsub
 --WoW API / Variables
-local CanGuildBankRepair = CanGuildBankRepair
 local CanMerchantRepair = CanMerchantRepair
 local GetFriendInfo = GetFriendInfo
-local GetGuildBankWithdrawMoney = GetGuildBankWithdrawMoney
 local GetGuildRosterInfo = GetGuildRosterInfo
 local GetNumFriends = GetNumFriends
 local GetNumGuildMembers = GetNumGuildMembers
@@ -18,7 +16,6 @@ local GetNumRaidMembers = GetNumRaidMembers
 local GetPartyMember = GetPartyMember
 local GetRepairAllCost = GetRepairAllCost
 local GuildRoster = GuildRoster
-local InCombatLockdown = InCombatLockdown
 local IsInGuild = IsInGuild
 local IsInInstance = IsInInstance
 local IsShiftKeyDown = IsShiftKeyDown
@@ -97,8 +94,6 @@ function M:MERCHANT_SHOW()
 end
 
 function M:DisbandRaidGroup()
-	if InCombatLockdown() then return end -- Prevent user error in combat
-
 	if UnitInRaid("player") then
 		for i = 1, GetNumRaidMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
@@ -182,7 +177,7 @@ function M:Initialize()
 	self:RegisterEvent("MERCHANT_SHOW")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "ErrorFrameToggle")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "ErrorFrameToggle")
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	-- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("CHAT_MSG_BG_SYSTEM_HORDE", "PVPMessageEnhancement")
 	self:RegisterEvent("CHAT_MSG_BG_SYSTEM_ALLIANCE", "PVPMessageEnhancement")
 	self:RegisterEvent("CHAT_MSG_BG_SYSTEM_NEUTRAL", "PVPMessageEnhancement")
