@@ -170,7 +170,7 @@ function M:ForceCVars()
 end
 
 function M:Initialize()
-	-- self:LoadRaidMarker()
+	self:LoadRaidMarker()
 	self:LoadLoot()
 	self:LoadLootRoll()
 	self:LoadChatBubbles()

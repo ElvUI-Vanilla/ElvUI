@@ -4,4 +4,5 @@
 	<Script file="ChatBubbles.lua"/>
 	<Script file="Loot.lua"/>
 	<Script file="LootRoll.lua"/>
+	<Script file="RaidMarker.lua"/>
 </Ui>
