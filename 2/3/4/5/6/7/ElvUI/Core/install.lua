@@ -17,12 +17,10 @@ local ChatFrame_RemoveAllMessageGroups = ChatFrame_RemoveAllMessageGroups
 local ChatFrame_AddChannel = ChatFrame_AddChannel
 local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
 local ChangeChatColor = ChangeChatColor
-local FCF_ResetChatWindows = FCF_ResetChatWindows
 local FCF_SetLocked = FCF_SetLocked
 local FCF_DockFrame, FCF_UnDockFrame = FCF_DockFrame, FCF_UnDockFrame
 local FCF_OpenNewWindow = FCF_OpenNewWindow
 local FCF_SetWindowName = FCF_SetWindowName
-local FCF_StopDragging = FCF_StopDragging
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
 local CLASS, CONTINUE, PREV = CLASS, CONTINUE, PREV
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
@@ -34,15 +32,83 @@ local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local CURRENT_PAGE = 0
 local MAX_PAGE = 8
 
+local function FCF_ResetChatWindows()
+	ChatFrame1:ClearAllPoints()
+	ChatFrame1:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 32, 95)
+	ChatFrame1:SetWidth(430)
+	ChatFrame1:SetHeight(120)
+	ChatFrame1.isInitialized = 0
+	FCF_SetButtonSide(ChatFrame1, "left")
+	FCF_SetChatWindowFontSize(ChatFrame1, 14)
+	FCF_SetWindowName(ChatFrame1, GENERAL)
+	FCF_SetWindowColor(ChatFrame1, DEFAULT_CHATFRAME_COLOR.r, DEFAULT_CHATFRAME_COLOR.g, DEFAULT_CHATFRAME_COLOR.b)
+	FCF_SetWindowAlpha(ChatFrame1, DEFAULT_CHATFRAME_ALPHA)
+	FCF_UnDockFrame(ChatFrame1)
+	FCF_ValidateChatFramePosition(ChatFrame1)
+	ChatFrame_RemoveAllChannels(ChatFrame1)
+	ChatFrame_RemoveAllMessageGroups(ChatFrame1)
+	DEFAULT_CHAT_FRAME = ChatFrame1
+	SELECTED_CHAT_FRAME = ChatFrame1
+	ChatFrameEditBox.chatFrame = DEFAULT_CHAT_FRAME
+	DEFAULT_CHAT_FRAME.editBox = ChatFrameEditBox
+	DEFAULT_CHAT_FRAME.chatframe = DEFAULT_CHAT_FRAME
+
+	FCF_SetChatWindowFontSize(ChatFrame2, 14)
+	FCF_SetWindowName(ChatFrame2, COMBAT_LOG)
+	FCF_SetWindowColor(ChatFrame2, DEFAULT_CHATFRAME_COLOR.r, DEFAULT_CHATFRAME_COLOR.g, DEFAULT_CHATFRAME_COLOR.b)
+	FCF_SetWindowAlpha(ChatFrame2, DEFAULT_CHATFRAME_ALPHA)
+	ChatFrame_RemoveAllChannels(ChatFrame2)
+	ChatFrame_RemoveAllMessageGroups(ChatFrame2)
+	FCF_UnDockFrame(ChatFrame2)
+	ChatFrame2.isInitialized = 0
+
+	for i = 2, NUM_CHAT_WINDOWS do
+		local chatFrame = _G["ChatFrame"..i]
+		chatFrame.isInitialized = 0
+		FCF_SetTabPosition(chatFrame, 0)
+		FCF_Close(chatFrame)
+		FCF_UnDockFrame(chatFrame)
+		FCF_SetChatWindowFontSize(chatFrame, 14)
+		FCF_SetWindowName(chatFrame, "")
+		FCF_SetWindowColor(chatFrame, DEFAULT_CHATFRAME_COLOR.r, DEFAULT_CHATFRAME_COLOR.g, DEFAULT_CHATFRAME_COLOR.b)
+		FCF_SetWindowAlpha(chatFrame, DEFAULT_CHATFRAME_ALPHA)
+		ChatFrame_RemoveAllChannels(chatFrame)
+		ChatFrame_RemoveAllMessageGroups(chatFrame)
+	end
+
+	ChatFrame1.init = 0
+	FCF_DockFrame(ChatFrame1, 1)
+	FCF_DockFrame(ChatFrame2, 2)
+end
+
+local function FCF_StopDragging(chatFrame)
+	if not chatFrame then
+		return
+	end
+
+	chatFrame:StopMovingOrSizing()
+
+	local activeDockRegion = FCF_GetActiveDockRegion()
+	if activeDockRegion then
+		FCF_DockFrame(chatFrame, activeDockRegion, true)
+	else
+		FCF_SetTabPosition(chatFrame, 0)
+		FCF_ValidateChatFramePosition(chatFrame)
+		FCF_SelectDockFrame(DOCKED_CHAT_FRAMES[1])
+	end
+
+	MOVING_CHATFRAME = nil
+end
+
 local function SetupChat()
 	InstallStepComplete.message = L["Chat Set"]
 	InstallStepComplete:Show()
-	-- FCF_ResetChatWindows()
+	FCF_ResetChatWindows()
 	FCF_SetLocked(ChatFrame1, 1)
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
 
-	-- FCF_OpenNewWindow(LOOT)
+	FCF_OpenNewWindow(LOOT)
 	FCF_UnDockFrame(ChatFrame3)
 	FCF_SetLocked(ChatFrame3, 1)
 	ChatFrame3:Show()
@@ -59,7 +125,7 @@ local function SetupChat()
 			frame:SetPoint("BOTTOMLEFT", RightChatDataPanel, "TOPLEFT", 1, 3)
 		end
 
-		-- FCF_StopDragging(frame)
+		FCF_StopDragging(frame)
 
 		-- set default Elvui font size
 		FCF_SetChatWindowFontSize(frame, 12)
