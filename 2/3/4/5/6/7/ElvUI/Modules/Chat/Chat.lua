@@ -51,7 +51,7 @@ local GlobalStrings = {
 	["CHAT_RESTRICTED"] = CHAT_RESTRICTED,
 	["CHAT_TELL_ALERT_TIME"] = CHAT_TELL_ALERT_TIME,
 	["DND"] = CHAT_MSG_DND,
-	["RAID_WARNING"] = RAID_WARNING
+	["CHAT_MSG_RAID_WARNING"] = CHAT_MSG_RAID_WARNING
 }
 
 local CreatedFrames = 0
@@ -243,15 +243,15 @@ function CH:GetSmileyReplacementText(msg)
 	while(startpos <= origlen) do
 		endpos = origlen
 		local pos = find(msg,"|H",startpos,true)
-		if(pos ~= nil) then
+		if pos ~= nil then
 			endpos = pos
 		end
 		outstr = outstr .. CH:InsertEmotions(strsub(msg,startpos,endpos)) --run replacement on this bit
 		startpos = endpos + 1
-		if(pos ~= nil) then
+		if pos ~= nil then
 			endpos = find(msg,"|h]|r",startpos,-1) or find(msg,"|h",startpos,-1)
 			endpos = endpos or origlen
-			if(startpos < endpos) then
+			if startpos < endpos then
 				outstr = outstr .. strsub(msg,startpos,endpos) --don't run replacement on this bit
 				startpos = endpos + 1
 			end
@@ -447,9 +447,9 @@ end
 
 function CH:UpdateAnchors()
 	local frame = _G["ChatFrameEditBox"]
-	if(not E.db.datatexts.leftChatPanel and (self.db.panelBackdrop == "HIDEBOTH" or self.db.panelBackdrop == "RIGHT")) then
+	if not E.db.datatexts.leftChatPanel and self.db.panelBackdrop == "HIDEBOTH" or self.db.panelBackdrop == "RIGHT" then
 		frame:ClearAllPoints()
-		if(E.db.chat.editBoxPosition == "BELOW_CHAT") then
+		if E.db.chat.editBoxPosition == "BELOW_CHAT" then
 			frame:SetPoint("TOPLEFT", ChatFrame1, "BOTTOMLEFT")
 			frame:SetPoint("BOTTOMRIGHT", ChatFrame1, "BOTTOMRIGHT", 0, -LeftChatTab:GetHeight())
 		else
@@ -457,7 +457,7 @@ function CH:UpdateAnchors()
 			frame:SetPoint("TOPRIGHT", ChatFrame1, "TOPRIGHT", 0, LeftChatTab:GetHeight())
 		end
 	else
-		if(E.db.datatexts.leftChatPanel and E.db.chat.editBoxPosition == "BELOW_CHAT") then
+		if E.db.datatexts.leftChatPanel and E.db.chat.editBoxPosition == "BELOW_CHAT" then
 			frame:SetAllPoints(LeftChatDataPanel)
 		else
 			frame:SetAllPoints(LeftChatTab)
@@ -474,7 +474,7 @@ local function FindRightChatID()
 		local chat = _G["ChatFrame"..i]
 		local id = chat:GetID()
 
-		if(E:FramesOverlap(chat, RightChatPanel) and not E:FramesOverlap(chat, LeftChatPanel)) then
+		if E:FramesOverlap(chat, RightChatPanel) and not E:FramesOverlap(chat, LeftChatPanel) then
 			rightChatID = id
 			break
 		end
@@ -745,8 +745,8 @@ function CH:DisableChatThrottle()
 	twipe(msgList) twipe(msgCount) twipe(msgTime)
 end
 
-function CH.ShortChannel(self)
-	return format("|Hchannel:%s|h[%s]|h", self, DEFAULT_STRINGS[string.upper(self)] or gsub(self, "channel:", ""))
+function CH.ShortChannel()
+	return format("|Hchannel:%s|h[%s]|h", arg8, DEFAULT_STRINGS[strupper(arg8)] or gsub(arg8, "channel:", ""))
 end
 
 function CH:ConcatenateTimeStamp(msg)
@@ -1059,19 +1059,19 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 
 			-- Add Channel
 			arg4 = gsub(arg4, "%s%-%s.*", "")
-			if(channelLength > 0) then
+			if channelLength > 0 then
 				body = "|Hchannel:channel:"..arg8.."|h["..arg4.."]|h "..body
 			end
 
 			if CH.db.shortChannels then
-				--body = gsub(body, "|Hchannel:(.-)|h%[(.-)%]|h", function() CH:ShortChannel(this) end)
+				body = gsub(body, "|Hchannel:(.-)|h%[(.-)%]|h", CH.ShortChannel)
 				body = gsub(body, "CHANNEL:", "")
 				body = gsub(body, "^(.-|h) "..L["whispers"], "%1")
 				body = gsub(body, "^(.-|h) "..L["says"], "%1")
 				body = gsub(body, "^(.-|h) "..L["yells"], "%1")
 				body = gsub(body, "<"..GlobalStrings.AFK..">", "[|cffFF0000"..L["AFK"].."|r] ")
 				body = gsub(body, "<"..GlobalStrings.DND..">", "[|cffE7E716"..L["DND"].."|r] ")
-			--	body = gsub(body, "^%["..GlobalStrings.RAID_WARNING.."%]", "["..L["RW"].."]")
+				body = gsub(body, "^%["..GlobalStrings.CHAT_MSG_RAID_WARNING.."%]", "["..L["RW"].."]")
 			end
 			self:AddMessage(CH:ConcatenateTimeStamp(body), info.r, info.g, info.b, info.id)
 		end
@@ -1291,7 +1291,7 @@ function CH:CheckKeyword(message)
 		protectLinks[itemLink] = itemLink:gsub("%s","|s")
 		for keyword, _ in pairs(CH.Keywords) do
 			if itemLink == keyword then
-				if(self.db.keywordSound ~= "None" and not self.SoundPlayed) then
+				if self.db.keywordSound ~= "None" and not self.SoundPlayed then
 					PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
 					self.SoundPlayed = true
 					-- self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
@@ -1357,17 +1357,17 @@ function CH:AddLines(lines, ...)
 	end
 end
 
-function CH:ChatEdit_UpdateHeader(editbox)
-	local type = editbox.chatType
+function CH:ChatEdit_UpdateHeader()
+	local type = this.chatType
 	if type == "CHANNEL" then
-		local id = GetChannelName(editBox.channelTarget)
+		local id = GetChannelName(this.channelTarget)
 		if id == 0 then
-			editbox:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		else
-			editbox:SetBackdropBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
+			this:SetBackdropBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
 		end
 	elseif type then
-		editbox:SetBackdropBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
+		this:SetBackdropBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
 	end
 end
 
@@ -1636,7 +1636,7 @@ function CH:Initialize()
 
 	E:Kill(ChatFrameMenuButton)
 
-	if(WIM) then
+	if WIM then
 		WIM.RegisterWidgetTrigger("chat_display", "whisper,chat,w2w,demo", "OnHyperlinkClick", function(self) CH.clickedframe = self end)
 		WIM.RegisterItemRefHandler("url", WIM_URLLink)
 	end
@@ -1724,7 +1724,7 @@ function CH:Initialize()
 		if arg1 == "LeftButton" and not this.isMoving then
 			this:StartMoving()
 			this.isMoving = true
-		elseif(arg1 == "RightButton" and not this.isSizing) then
+		elseif arg1 == "RightButton" and not this.isSizing then
 			this:StartSizing()
 			this.isSizing = true
 		end
