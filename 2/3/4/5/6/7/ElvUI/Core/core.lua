@@ -777,19 +777,19 @@ function E:SendMessage()
 end
 
 local SendRecieveGroupSize
-local function SendRecieve(_, event, prefix, message, _, sender)
+local function SendRecieve()
 	if not E.global.general.versionCheck then return end
 
 	if event == "CHAT_MSG_ADDON" then
-		if prefix ~= "ELVUI_VERSIONCHK" then return end
-		if not sender or sender == E.myname or E.recievedOutOfDateMessage then return end
+		if arg1 ~= "ELVUI_VERSIONCHK" then return end
+		if not arg4 or arg4 == E.myname or E.recievedOutOfDateMessage then return end
 
-		message = tonumber(message)
+		arg2 = tonumber(arg2)
 
-		if message and message > tonumber(E.version) then
+		if arg2 and arg2 > tonumber(E.version) then
 			E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"])
 
-			if (message - tonumber(E.version)) >= 0.05 then
+			if (arg2 - tonumber(E.version)) >= 0.05 then
 				E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
 			end
 
