@@ -20,6 +20,7 @@
 	<Include file="LibCompress\LibCompress.xml"/>
 	<Include file="LibBase64-1.0\LibBase64-1.0.xml"/>
 	<Include file="LibAnim\LibAnim.xml"/>
+	<Include file="LibWho-2.0\LibWho-2.0.xml"/>
 	<Include file="LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
 	<Include file="LibItemSearch-1.2\LibItemSearch-1.2.xml"/>
 </Ui>

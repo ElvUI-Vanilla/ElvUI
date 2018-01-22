@@ -1,12 +1,12 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local M = E:GetModule("Misc");
--- local CH = E:GetModule("Chat");
--- local CC = E:GetModule("ClassCache");
+local CH = E:GetModule("Chat");
+local CC = E:GetModule("ClassCache");
 
 --Cache global variables
 --Lua functions
 local select, unpack, type = select, unpack, type
-local format, gsub = string.format, string.gsub
+local format, gsub, match, gmatch = string.format, string.gsub, string.match, string.gmatch
 local strlower = strlower
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -29,17 +29,17 @@ function M:UpdateBubbleBorder()
 	if E.private.chat.enable and E.private.general.classCache and E.private.general.classColorMentionsSpeech then
 		local classColorTable, isFirstWord, rebuiltString, lowerCaseWord, tempWord, wordMatch, classMatch
 		local text = this.text:GetText()
-		if text and text:match("%s-[^%s]+%s*") then
-			for word in text:gmatch("%s-[^%s]+%s*") do
-				tempWord = word:gsub("^[%s%p]-([^%s%p]+)([%-]?[^%s%p]-)[%s%p]*$","%1%2")
-				lowerCaseWord = tempWord:lower()
+		if text and match(text, "%s-[^%s]+%s*") then
+			for word in gmatch(text, "%s-[^%s]+%s*") do
+				tempWord = gsub(word, "^[%s%p]-([^%s%p]+)([%-]?[^%s%p]-)[%s%p]*$","%1%2")
+				lowerCaseWord = strlower(tempWord)
 
 				classMatch = CC:GetCacheTable()[E.myrealm][tempWord]
 				wordMatch = classMatch and lowerCaseWord
 
 				if wordMatch and not E.global.chat.classColorMentionExcludedNames[wordMatch] then
 					classColorTable = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classMatch] or RAID_CLASS_COLORS[classMatch]
-					word = word:gsub(tempWord:gsub("%-","%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
+					word = gsub(word, gsub(tempWord, "%-","%%-"), format("\124cff%.2x%.2x%.2x%s\124r", classColorTable.r*255, classColorTable.g*255, classColorTable.b*255, tempWord))
 				end
 
 				if not isFirstWord then

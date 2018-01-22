@@ -310,6 +310,16 @@ Or for most users it would be easier to simply put a tga file into your WoW fold
 
 对多数玩家来说, 较简易的方式是将 tga 档放入 WoW 资料夹中, 然后在此处输入档案名称.]]
 
+--Class Cache
+L["Class Cache"] = true;
+L["Enable class caching to colorize names in chat and nameplates."] = true;
+L["If cache stored in DB it will be available between game sessions but increase memory usage.\nIn other way it will be wiped on relog or UI reload."] = true;
+L["Request info for class cache"] = true;
+L["Store cache in DB"] = true;
+L["Use LibWho to cache class info"] = true;
+L["Wipe DB Cache"] = true;
+L["Wipe Session Cache"] = true;
+
 --Credits
 L["Coding:"] = "编码:"
 L["Credits"] = "呜谢"

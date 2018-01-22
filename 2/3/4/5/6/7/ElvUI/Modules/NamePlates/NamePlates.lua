@@ -1,13 +1,15 @@
-local E, L, V, P, G = unpack(ElvUI)
-local mod = E:NewModule("NamePlates", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
---local CC = E:GetModule("ClassCache")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local mod = E:NewModule("NamePlates", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
+local CC = E:GetModule("ClassCache");
 
+--Cache global variables
+--Lua functions
 local _G = _G
 local pairs, tonumber = pairs, tonumber
 local select = select
 local gsub, match, split = string.gsub, string.match, string.split
 local twipe = table.wipe
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local GetBattlefieldScore = GetBattlefieldScore
 local GetNumBattlefieldScores = GetNumBattlefieldScores
@@ -21,7 +23,7 @@ local WorldGetNumChildren, WorldGetChildren = WorldFrame.GetNumChildren, WorldFr
 local numChildren = 0
 local isTarget = false
 local BORDER = "Interface\\Tooltips\\Nameplate-Border"
-local FSPAT = "%s*"
+local FSPAT = "^%s*$"
 local queryList = {}
 
 local RaidIconCoordinate = {
@@ -269,21 +271,21 @@ function mod:RoundColors(r, g, b)
 end
 
 function mod:UnitClass(name, type)
-	if E.private.general.classCache then
+	--[[if E.private.general.classCache then
 		if type == "FRIENDLY_PLAYER" then
 			local _, class = UnitClass(name)
 			if class then
 				return class
 			else
 				local name, realm = split("-", name)
-				--return CC:GetClassByName(name, realm)
+				return CC:GetClassByName(name, realm)
 			end
 		end
 	else
 		if type == "FRIENDLY_PLAYER" then
-			--return select(2, UnitClass(name))
+			return select(2, UnitClass(name))
 		end
-	end
+	end--]]
 end
 
 function mod:UnitDetailedThreatSituation(frame)
@@ -300,7 +302,7 @@ function mod:UnitLevel(frame)
 end
 
 function mod:GetUnitInfo(frame)
-	--[[if UnitExists("target") == 1 and frame:GetParent():IsShown() and frame:GetParent():GetAlpha() == 1 then
+	if UnitExists("target") == 1 and frame:GetParent():IsShown() and frame:GetParent():GetAlpha() == 1 then
 		if UnitIsPlayer("target") then
 			if UnitIsEnemy("target", "player") then
 				return 2, "ENEMY_PLAYER"
@@ -316,7 +318,7 @@ function mod:GetUnitInfo(frame)
 				return 5, "FRIENDLY_NPC"
 			end
 		end
-	end]]
+	end
 
 	local r, g, b = mod:RoundColors(frame.oldHealthBar:GetStatusBarColor())
 	if r == 1 and g == 0 and b == 0 then
@@ -708,7 +710,7 @@ function mod:PLAYER_REGEN_ENABLED()
 	end
 end
 
---[[function mod:ClassCacheQueryResult(_, name, class)
+function mod:ClassCacheQueryResult(_, name, class)
 	if queryList[name] then
 		local frame = queryList[name]
 
@@ -726,7 +728,7 @@ end
 
 		queryList[name] = nil
 	end
-end]]
+end
 
 function mod:Initialize()
 	self.db = E.db["nameplates"]
@@ -744,7 +746,7 @@ function mod:Initialize()
 	--self:RegisterEvent("UNIT_AURA")
 	--self:RegisterEvent("PLAYER_COMBO_POINTS")
 
-	--self:RegisterMessage("ClassCacheQueryResult")
+	self:RegisterMessage("ClassCacheQueryResult")
 
 	E.NamePlates = self
 end

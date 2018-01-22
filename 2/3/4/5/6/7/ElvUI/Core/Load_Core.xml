@@ -14,4 +14,5 @@
 	<Script file="dropdown.lua"/>
 	<Script file="Cooldowns.lua"/>
 	<Script file="pluginInstaller.lua"/>
+	<Script file="ClassCache.lua"/>
 </Ui>

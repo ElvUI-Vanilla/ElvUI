@@ -15,6 +15,16 @@ G["general"] = {
 	["versionCheck"] = true
 }
 
+G["classCache"] = {}
+
+G["classtimer"] = {}
+
+G["nameplates"] = {}
+
+G["chat"] = {
+	["classColorMentionExcludedNames"] = {}
+}
+
 G["bags"] = {
 	["ignoredItems"] = {}
 }

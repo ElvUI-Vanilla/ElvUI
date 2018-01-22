@@ -310,6 +310,16 @@ Zum Beispiel: Interface\AddOns\ElvUI\media\textures\copy
 
 Für die meisten Anwender ist es allerdigns einfacher, eine tga-Datei in ihren WoW-Ordner abzulegen. Anschließend kann man den Namen der Datei hier eingeben.]]
 
+--Class Cache
+L["Class Cache"] = true;
+L["Enable class caching to colorize names in chat and nameplates."] = true;
+L["If cache stored in DB it will be available between game sessions but increase memory usage.\nIn other way it will be wiped on relog or UI reload."] = true;
+L["Request info for class cache"] = true;
+L["Store cache in DB"] = true;
+L["Use LibWho to cache class info"] = true;
+L["Wipe DB Cache"] = true;
+L["Wipe Session Cache"] = true;
+
 --Credits
 L["Coding:"] = "Programmierung:"
 L["Credits"] = "Danksagung"

@@ -21,6 +21,8 @@ V["general"] = {
 		["hideCalendar"] = true,
 		["zoomLevel"] = 0,
 	},
+	["classCache"] = true,
+	["classColorMentionsSpeech"] = true,
 }
 
 V["bags"] = {
