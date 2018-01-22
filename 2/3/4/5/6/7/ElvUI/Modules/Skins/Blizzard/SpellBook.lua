@@ -34,46 +34,34 @@ local function LoadSkin()
 
 	for i = 1, SPELLS_PER_PAGE do
 		local button = _G["SpellButton"..i]
-		local iconTexture = _G["SpellButton"..i.."IconTexture"]
-		local cooldown = _G["SpellButton"..i.."Cooldown"]
+		E:StripTextures(button)
 
-		button:DisableDrawLayer("BACKGROUND")
-		button:GetNormalTexture():SetTexture("")
-		button:GetPushedTexture():SetTexture("")
+		_G["SpellButton"..i.."AutoCastable"]:SetTexture("Interface\\Buttons\\UI-AutoCastableOverlay")
+		E:SetOutside(_G["SpellButton"..i.."AutoCastable"], button, 16, 16)
 
 		E:CreateBackdrop(button, "Default", true)
 
-		iconTexture:SetTexCoord(unpack(E.TexCoords))
+		_G["SpellButton"..i.."IconTexture"]:SetTexCoord(unpack(E.TexCoords))
 
-		E:RegisterCooldown(cooldown)
+		E:RegisterCooldown(_G["SpellButton"..i.."Cooldown"])
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function()
 		local name = this:GetName()
-		local spellName = _G[name.."SpellName"]
-		local subSpellName = _G[name.."SubSpellName"]
-		local iconTexture = _G[name.."IconTexture"]
-		local highlight = _G[name.."Highlight"]
-
-		spellName:SetTextColor(1, 0.80, 0.10)
-		subSpellName:SetTextColor(1, 1, 1)
-
-		if iconTexture then
-			if highlight then
-				highlight:SetTexture(1, 1, 1, 0.3)
-			end
-		end
+		_G[name.."SpellName"]:SetTextColor(1, 0.80, 0.10)
+		_G[name.."SubSpellName"]:SetTextColor(1, 1, 1)
+		_G[name.."Highlight"]:SetTexture(1, 1, 1, 0.3)
 	end)
 
 	for i = 1, MAX_SKILLLINE_TABS do
 		local tab = _G["SpellBookSkillLineTab"..i]
 
-		tab:DisableDrawLayer("BACKGROUND")
-		E:SetTemplate(tab, "Default", true)
+		E:StripTextures(tab)
 		E:StyleButton(tab, nil, true)
+		E:SetTemplate(tab, "Default", true)
 
-		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(tab:GetNormalTexture())
+		tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 	end
 
 	SpellBookPageText:SetTextColor(1, 1, 1)
