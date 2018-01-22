@@ -18,6 +18,8 @@ P["general"] = {
 	["afk"] = true,
 	["enhancedPvpMessages"] = true,
 	["numberPrefixStyle"] = "ENGLISH",
+	["decimalLength"] = 1,
+
 	["fontSize"] = 12,
 	["font"] = "PT Sans Narrow",
 
