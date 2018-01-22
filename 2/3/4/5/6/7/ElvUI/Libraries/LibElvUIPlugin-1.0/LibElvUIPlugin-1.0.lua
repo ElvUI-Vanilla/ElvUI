@@ -5,7 +5,7 @@ if not lib then return end
 --Cache global variables
 --Lua functions
 local pairs, tonumber = pairs, tonumber
-local format, gsub, strmatch, strsplit = string.format, string.gsub, string.match, string.split
+local format, gsub, strmatch, strsplit = format, gsub, strmatch, strsplit
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local GetAddOnMetadata = GetAddOnMetadata
@@ -63,7 +63,7 @@ end
 --	Registers a module with the given name and option callback, pulls version info from metadata
 --
 
-function lib:RegisterPlugin(name,callback, isLib)
+function lib:RegisterPlugin(name, callback, isLib)
 	local plugin = {}
 	plugin.name = name
 	plugin.version = name == MAJOR and MINOR or GetAddOnMetadata(name, "Version")
@@ -85,8 +85,8 @@ function lib:RegisterPlugin(name,callback, isLib)
 		if not lib.ConfigFrame then
 			local configFrame = CreateFrame("Frame")
 			configFrame:RegisterEvent("ADDON_LOADED")
-			configFrame:SetScript("OnEvent", function(self, event, addon)
-				if addon == "ElvUI_Config" then
+			configFrame:SetScript("OnEvent", function()
+				if arg1 == "ElvUI_Config" then
 					for _, PlugIn in pairs(lib.plugins) do
 						if PlugIn.callback then
 							PlugIn.callback()
@@ -147,17 +147,17 @@ local function SendPluginVersionCheck(self)
 	end
 end
 
-function lib:VersionCheck(event, prefix, message, channel, sender)
+function lib:VersionCheck()
 	if not ElvUI[1].global.general.versionCheck then return end
 
 	local E = ElvUI[1]
 	if event == "CHAT_MSG_ADDON" then
-		if not (prefix == lib.prefix and sender and message and not strmatch(message, "^%s-$")) then return end
-		if sender == E.myname then return end
+		if not (arg1 == lib.prefix and arg4 and arg1 and not strmatch(arg1, "^%s-$")) then return end
+		if arg4 == E.myname then return end
 
 		if not E["pluginRecievedOutOfDateMessage"] then
 			local name, version, plugin, Pname
-			for _, p in pairs({strsplit(";",message)}) do
+			for _, p in pairs({strsplit(";", arg2)}) do
 				if not strmatch(p, "^%s-$") then
 					name, version = strmatch(p, "([%w_]+)=([%d%p]+)")
 					if lib.plugins[name] then
@@ -196,7 +196,7 @@ function lib:GeneratePluginList()
 		if plugin.name ~= MAJOR then
 			author = GetAddOnMetadata(plugin.name, "Author")
 			Pname = GetAddOnMetadata(plugin.name, "Title") or plugin.name
-			color = plugin.old and E:RGBToHex(1,0,0) or E:RGBToHex(0,1,0)
+			color = plugin.old and E:RGBToHex(1, 0, 0) or E:RGBToHex(0, 1, 0)
 			list = list .. Pname
 			if author then
 				list = list .. " ".. INFO_BY .." " .. author
@@ -212,7 +212,7 @@ function lib:GeneratePluginList()
 end
 
 function lib:SendPluginVersionCheck(message)
-	if (not message) or strmatch(message, "^%s-$") then return end
+	if not message or strmatch(message, "^%s-$") then return end
 
 	local ChatType
 	if GetNumRaidMembers() > 1 then
@@ -227,11 +227,11 @@ function lib:SendPluginVersionCheck(message)
 	if msgLength > maxChar then
 		local delay, splitMessage = 0
 
-		for _ = 1, ceil(msgLength/maxChar) do
+		for _ = 1, ceil(msgLength / maxChar) do
 			splitMessage = strmatch(strsub(message, 1, maxChar), ".+;")
 
 			if splitMessage then -- incase the string is over `maxChar` but doesnt contain `;`
-				message = gsub(message, "^"..gsub(splitMessage, '([%-%.%+%[%]%(%)%$%^%%%?%*])','%%%1'), "")
+				message = gsub(message, "^"..gsub(splitMessage, "([%-%.%+%[%]%(%)%$%^%%%?%*])","%%%1"), "")
 				ElvUI[1]:Delay(delay, SendAddonMessage, lib.prefix, splitMessage, ChatType)
 				delay = delay + 1
 			end
