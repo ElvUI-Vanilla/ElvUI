@@ -776,33 +776,44 @@ function E:SendMessage()
 	end
 end
 
+local SendRecieveGroupSize
 local function SendRecieve(_, event, prefix, message, _, sender)
-	if(not E.global.general.versionCheck) then return end
+	print(_, event, prefix, message, _, sender)
+	if not E.global.general.versionCheck then return end
 
-	if(event == "CHAT_MSG_ADDON") then
-		if(sender == myName) then return end
-		if(prefix == "ELVUI_VERSIONCHK" and not E.recievedOutOfDateMessage) then
-			if(tonumber(message) ~= nil and tonumber(message) > tonumber(E.version)) then
-				E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"])
+	if event == "CHAT_MSG_ADDON" then
+		if prefix ~= "ELVUI_VERSIONCHK" then return end
+		if not sender or sender == E.myname or E.recievedOutOfDateMessage then return end
 
-				if((tonumber(message) - tonumber(E.version)) >= 0.05) then
-					E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
-				end
+		message = tonumber(message)
 
-				E.recievedOutOfDateMessage = true
+		if message and message > tonumber(E.version) then
+			E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"])
+
+			if (message - tonumber(E.version)) >= 0.05 then
+				E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
 			end
+
+			E.recievedOutOfDateMessage = true
 		end
 	else
-		E.SendMSGTimer = E:ScheduleTimer("SendMessage", 12)
+		local numRaid, numParty = GetNumRaidMembers(), GetNumPartyMembers() + 1
+		local num = numRaid > 0 and numRaid or numParty
+		if num ~= SendRecieveGroupSize then
+			if num > 1 and SendRecieveGroupSize and num > SendRecieveGroupSize then
+				E.SendMSGTimer = E:ScheduleTimer("SendMessage", 12)
+			end
+			SendRecieveGroupSize = num
+		end
 	end
 end
---[[
+
 local f = CreateFrame("Frame")
 f:RegisterEvent("RAID_ROSTER_UPDATE")
 f:RegisterEvent("PARTY_MEMBERS_CHANGED")
 f:RegisterEvent("CHAT_MSG_ADDON")
 f:SetScript("OnEvent", SendRecieve)
-]]
+
 function E:UpdateAll(ignoreInstall)
 	self.private = self.charSettings.profile
 	self.db = self.data.profile
