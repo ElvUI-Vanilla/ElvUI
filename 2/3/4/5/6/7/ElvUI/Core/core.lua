@@ -778,7 +778,6 @@ end
 
 local SendRecieveGroupSize
 local function SendRecieve(_, event, prefix, message, _, sender)
-	print(_, event, prefix, message, _, sender)
 	if not E.global.general.versionCheck then return end
 
 	if event == "CHAT_MSG_ADDON" then
