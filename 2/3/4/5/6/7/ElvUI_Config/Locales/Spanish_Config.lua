@@ -557,7 +557,6 @@ L["ENEMY_NPC"] = "Enemy NPC"
 L["ENEMY_PLAYER"] = "Enemy Player"
 L["Filter already exists!"] = "¡El filtro ya existe!"
 L["Filter Priority"] = true;
-L["Filter"] = true;
 L["Filters Page"] = true;
 L["Friendly Combat Toggle"] = true;
 L["Friendly NPC Frames"] = true;

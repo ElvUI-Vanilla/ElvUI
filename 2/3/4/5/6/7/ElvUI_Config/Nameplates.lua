@@ -304,7 +304,7 @@ local function GetUnitSettings(unit, name)
 							filter = {
 								order = 3,
 								type = "select",
-								name = L["Filter"],
+								name = FILTER,
 								values = function()
 									local filters = {}
 									filters[""] = NONE
@@ -376,7 +376,7 @@ local function GetUnitSettings(unit, name)
 							filter = {
 								order = 3,
 								type = "select",
-								name = L["Filter"],
+								name = FILTER,
 								values = function()
 									local filters = {}
 									filters[""] = NONE

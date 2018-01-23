@@ -557,7 +557,6 @@ L["ENEMY_NPC"] = "Gegnerischer NPC"
 L["ENEMY_PLAYER"] = "Gegnerischer Spieler"
 L["Filter already exists!"] = "Filter existiert bereits!"
 L["Filter Priority"] = "Filter Priorität"
-L["Filter"] = true; --No need to translate
 L["Filters Page"] = "Filter Seite"
 L["Friendly Combat Toggle"] = "Im Kampf für freundliche umschalten"
 L["Friendly NPC Frames"] = "Freundliche NPC Rahmen"

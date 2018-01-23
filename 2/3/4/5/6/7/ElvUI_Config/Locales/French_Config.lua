@@ -557,7 +557,6 @@ L["ENEMY_NPC"] = "PNJ ennemi"
 L["ENEMY_PLAYER"] = "Joueur ennemi"
 L["Filter already exists!"] = "Le filtre existe déjà !"
 L["Filter Priority"] = true
-L["Filter"] = "Filtres"
 L["Filters Page"] = true
 L["Friendly Combat Toggle"] = true;
 L["Friendly NPC Frames"] = "PNJ alliés"
