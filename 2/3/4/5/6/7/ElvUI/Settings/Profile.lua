@@ -400,7 +400,6 @@ P["chat"] = {
 	["font"] = "PT Sans Narrow",
 	["fontOutline"] = "NONE",
 	["sticky"] = true,
-	["emotionIcons"] = true,
 	["keywordSound"] = "None",
 	["whisperSound"] = "Whisper Alert",
 	["noAlertInCombat"] = false,

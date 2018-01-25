@@ -75,17 +75,8 @@ E.Options.args.chat = {
 						CH:UpdateFading();
 					end
 				},
-				emotionIcons = {
-					order = 6,
-					type = "toggle",
-					name = L["Emotion Icons"],
-					desc = L["Display emotion icons in chat."],
-					set = function(info, value)
-						E.db.chat[ info[getn(info)] ] = value;
-					end
-				},
 				fadeUndockedTabs = {
-					order = 7,
+					order = 6,
 					type = "toggle",
 					name = L["Fade Undocked Tabs"],
 					desc = L["Fades the text on chat tabs that are not docked at the left or right chat panel."],
@@ -95,7 +86,7 @@ E.Options.args.chat = {
 					end
 				},
 				fadeTabsNoBackdrop = {
-					order = 8,
+					order = 7,
 					type = "toggle",
 					name = L["Fade Tabs No Backdrop"],
 					desc = L["Fades the text on chat tabs that are docked in a panel where the backdrop is disabled."],
@@ -105,13 +96,13 @@ E.Options.args.chat = {
 					end
 				},
 				chatHistory = {
-					order = 9,
+					order = 8,
 					type = "toggle",
 					name = L["Chat History"],
 					desc = L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."]
 				},
 				useAltKey = {
-					order = 10,
+					order = 9,
 					type = "toggle",
 					name = L["Use Alt Key"],
 					desc = L["Require holding the Alt key down to move cursor or cycle through messages in the editbox."],
@@ -121,12 +112,12 @@ E.Options.args.chat = {
 					end
 				},
 				spacer = {
-					order = 11,
+					order = 10,
 					type = "description",
 					name = " ",
 				},
 				throttleInterval = {
-					order = 12,
+					order = 11,
 					type = "range",
 					name = L["Spam Interval"],
 					desc = L["Prevent the same messages from displaying in chat more than once within this set amount of seconds, set to zero to disable."],
@@ -139,7 +130,7 @@ E.Options.args.chat = {
 					end
 				},
 				scrollDownInterval = {
-					order = 13,
+					order = 12,
 					type = "range",
 					name = L["Scroll Interval"],
 					desc = L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."],
@@ -149,14 +140,14 @@ E.Options.args.chat = {
 					end
 				},
 				numAllowedCombatRepeat = {
-					order = 14,
+					order = 13,
 					type = "range",
 					name = L["Allowed Combat Repeat"],
 					desc = L["Number of repeat characters while in combat before the chat editbox is automatically closed."],
 					min = 2, max = 10, step = 1
 				},
 				numScrollMessages = {
-					order = 15,
+					order = 14,
 					type = "range",
 					name = L["Scroll Messages"],
 					desc = L["Number of messages you scroll for each step."],
@@ -168,7 +159,7 @@ E.Options.args.chat = {
 					name = " ",
 				},
 				timeStampFormat = {
-					order = 17,
+					order = 15,
 					type = "select",
 					name = L["Chat Timestamps"],
 					desc = "OPTION_TOOLTIP_TIMESTAMPS",
@@ -183,13 +174,13 @@ E.Options.args.chat = {
 					}
 				},
 				useCustomTimeColor = {
-					order = 18,
+					order = 16,
 					type = "toggle",
 					name = L["Custom Timestamp Color"],
 					disabled = function() return not E.db.chat.timeStampFormat == "NONE"; end
 				},
 				customTimeColor = {
-					order = 19,
+					order = 17,
 					type = "color",
 					hasAlpha = false,
 					name = L["Timestamp Color"],

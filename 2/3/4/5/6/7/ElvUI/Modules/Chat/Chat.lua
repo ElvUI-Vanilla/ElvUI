@@ -85,63 +85,6 @@ local hyperlinkTypes = {
 	["talent"] = true,
 }
 
-local smileyPack = {
-	["Angry"] = [[Interface\AddOns\ElvUI\media\textures\smileys\angry.blp]],
-	["Grin"] = [[Interface\AddOns\ElvUI\media\textures\smileys\grin.blp]],
-	["Hmm"] = [[Interface\AddOns\ElvUI\media\textures\smileys\hmm.blp]],
-	["MiddleFinger"] = [[Interface\AddOns\ElvUI\media\textures\smileys\middle_finger.blp]],
-	["Sad"] = [[Interface\AddOns\ElvUI\media\textures\smileys\sad.blp]],
-	["Surprise"] = [[Interface\AddOns\ElvUI\media\textures\smileys\surprise.blp]],
-	["Tongue"] = [[Interface\AddOns\ElvUI\media\textures\smileys\tongue.blp]],
-	["Cry"] = [[Interface\AddOns\ElvUI\media\textures\smileys\weepy.blp]],
-	["Wink"] = [[Interface\AddOns\ElvUI\media\textures\smileys\winky.blp]],
-	["Happy"] = [[Interface\AddOns\ElvUI\media\textures\smileys\happy.blp]],
-	["Heart"] = [[Interface\AddOns\ElvUI\media\textures\smileys\heart.blp]],
-	["BrokenHeart"] = [[Interface\AddOns\ElvUI\media\textures\smileys\broken_heart.blp]],
-}
-
-local smileyKeys = {
-	["%:%-%@"] = "Angry",
-	["%:%@"] = "Angry",
-	["%:%-%)"]="Happy",
-	["%:%)"]="Happy",
-	["%:D"]="Grin",
-	["%:%-D"]="Grin",
-	["%;%-D"]="Grin",
-	["%;D"]="Grin",
-	["%=D"]="Grin",
-	["xD"]="Grin",
-	["XD"]="Grin",
-	["%:%-%("]="Sad",
-	["%:%("]="Sad",
-	["%:o"]="Surprise",
-	["%:%-o"]="Surprise",
-	["%:%-O"]="Surprise",
-	["%:O"]="Surprise",
-	["%:%-0"]="Surprise",
-	["%:P"]="Tongue",
-	["%:%-P"]="Tongue",
-	["%:p"]="Tongue",
-	["%:%-p"]="Tongue",
-	["%=P"]="Tongue",
-	["%=p"]="Tongue",
-	["%;%-p"]="Tongue",
-	["%;p"]="Tongue",
-	["%;P"]="Tongue",
-	["%;%-P"]="Tongue",
-	["%;%-%)"]="Wink",
-	["%;%)"]="Wink",
-	["%:S"]="Hmm",
-	["%:%-S"]="Hmm",
-	["%:%,%("]="Cry",
-	["%:%,%-%("]="Cry",
-	["%:%'%("]="Cry",
-	["%:%'%-%("]="Cry",
-	["%:%F"]="MiddleFinger",
-	["<3"]="Heart",
-	["</3"]="BrokenHeart",
-}
-
 local specialChatIcons = {
 --	["Smolderforge"] = {
 --		["Loaal"] = "|TInterface\\AddOns\\ElvUI\\media\\textures\\ElvUI_Chat_Logo:13:22|t",
@@ -263,41 +206,6 @@ function CH:GetGroupDistribution()
 		return "/p "
 	end
 	return "/s "
-end
-
-function CH:InsertEmotions(msg)
-	for k,v in pairs(smileyKeys) do
-		-- msg = gsub(msg,k,"|T"..smileyPack[v]..":16|t")
-	end
-	return msg
-end
-
-function CH:GetSmileyReplacementText(msg)
-	if not msg or not self.db.emotionIcons or find(msg, "/run") or find(msg, "/dump") or find(msg, "/script") then return msg end
-	local outstr = ""
-	local origlen = strlen(msg)
-	local startpos = 1
-	local endpos
-
-	while(startpos <= origlen) do
-		endpos = origlen
-		local pos = find(msg,"|H",startpos,true)
-		if pos ~= nil then
-			endpos = pos
-		end
-		outstr = outstr .. CH:InsertEmotions(strsub(msg,startpos,endpos)) --run replacement on this bit
-		startpos = endpos + 1
-		if pos ~= nil then
-			endpos = find(msg,"|h]|r",startpos,-1) or find(msg,"|h",startpos,-1)
-			endpos = endpos or origlen
-			if startpos < endpos then
-				outstr = outstr .. strsub(msg,startpos,endpos) --don't run replacement on this bit
-				startpos = endpos + 1
-			end
-		end
-	end
-
-	return outstr
 end
 
 function CH:StyleChat(frame)
@@ -671,34 +579,27 @@ function CH.FindURL(msg, ...)
 
 	if not CH.db.url then
 		msg = CH:CheckKeyword(msg)
-		msg = CH:GetSmileyReplacementText(msg)
 		return false, msg, unpack(arg)
 	end
 
-	local text, tag = msg, strmatch(msg, "{(.-)}")
-	if tag and ICON_TAG_LIST[strlower(tag)] then
-		text = gsub(gsub(text, "(%S)({.-})", "%1 %2"), "({.-})(%S)", "%1 %2")
-	end
-
-	text = gsub(gsub(text, "(%S)(|c.-|H.-|h.-|h|r)", '%1 %2'), "(|c.-|H.-|h.-|h|r)(%S)", "%1 %2")
+	msg = gsub(gsub(msg, "(%S)(|c.-|H.-|h.-|h|r)", '%1 %2'), "(|c.-|H.-|h.-|h|r)(%S)", "%1 %2")
 	-- http://example.com
-	local newMsg, found = gsub(text, "(%a+)://(%S+)%s?", CH:PrintURL("%1://%2"))
-	if found > 0 then return false, CH:GetSmileyReplacementText(CH:CheckKeyword(newMsg)), unpack(arg) end
+	local newMsg, found = gsub(msg, "(%a+)://(%S+)%s?", CH:PrintURL("%1://%2"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- www.example.com
-	newMsg, found = gsub(text, "www%.([_A-Za-z0-9-]+)%.(%S+)%s?", CH:PrintURL("www.%1.%2"))
-	if found > 0 then return false, CH:GetSmileyReplacementText(CH:CheckKeyword(newMsg)), unpack(arg) end
+	newMsg, found = gsub(msg, "www%.([_A-Za-z0-9-]+)%.(%S+)%s?", CH:PrintURL("www.%1.%2"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- example@example.com
-	newMsg, found = gsub(text, "([_A-Za-z0-9-%.]+)@([_A-Za-z0-9-]+)(%.+)([_A-Za-z0-9-%.]+)%s?", CH:PrintURL("%1@%2%3%4"))
-	if found > 0 then return false, CH:GetSmileyReplacementText(CH:CheckKeyword(newMsg)), unpack(arg) end
+	newMsg, found = gsub(msg, "([_A-Za-z0-9-%.]+)@([_A-Za-z0-9-]+)(%.+)([_A-Za-z0-9-%.]+)%s?", CH:PrintURL("%1@%2%3%4"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- IP address with port 1.1.1.1:1
-	newMsg, found = gsub(text, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)(:%d+)%s?", CH:PrintURL("%1.%2.%3.%4%5"))
-	if found > 0 then return false, CH:GetSmileyReplacementText(CH:CheckKeyword(newMsg)), unpack(arg) end
+	newMsg, found = gsub(msg, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)(:%d+)%s?", CH:PrintURL("%1.%2.%3.%4%5"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- IP address 1.1.1.1
-	newMsg, found = gsub(text, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%s?", CH:PrintURL("%1.%2.%3.%4"))
-	if found > 0 then return false, CH:GetSmileyReplacementText(CH:CheckKeyword(newMsg)), unpack(arg) end
+	newMsg, found = gsub(msg, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%s?", CH:PrintURL("%1.%2.%3.%4"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 
 	msg = CH:CheckKeyword(msg)
-	msg = CH:GetSmileyReplacementText(msg)
 
 	return false, msg, unpack(arg)
 end
