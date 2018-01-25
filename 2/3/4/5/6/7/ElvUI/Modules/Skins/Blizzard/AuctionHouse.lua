@@ -96,8 +96,10 @@ local function LoadSkin()
 			E:SetInside(this:GetNormalTexture())
 		end
 
-		local itemName, _, _, quality = GetAuctionSellItemInfo()
+		local itemName = GetAuctionSellItemInfo()
 		if itemName then
+			local _, itemString = GetItemInfoByName(itemName)
+			local _, _, quality = GetItemInfo(itemString, "item:(%d+)")
 			if quality then
 				AuctionsItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				AuctionsItemButtonName:SetTextColor(GetItemQualityColor(quality))

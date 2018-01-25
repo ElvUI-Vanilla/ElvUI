@@ -51,11 +51,15 @@ local function LoadSkin()
 
 				button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				if packageIcon and not isGM then
-					local _, _, _, quality = GetInboxItem(index)
-					if quality then
-						button:SetBackdropBorderColor(GetItemQualityColor(quality))
-					else
-						button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					local itemName = GetInboxItem(index)
+					if itemName then
+						local _, itemString = GetItemInfoByName(itemName)
+						local _, _, quality = GetItemInfo(itemString, "item:(%d+)")
+						if quality then
+							button:SetBackdropBorderColor(GetItemQualityColor(quality))
+						else
+							button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						end
 					end
 				elseif isGM then
 					button:SetBackdropBorderColor(0, 0.56, 0.94)
@@ -165,7 +169,8 @@ local function LoadSkin()
 		if hasItem then
 			local itemName = GetInboxItem(index)
 			if itemName then
-				local _, _, _, quality = GetInboxItem(index)
+				local _, itemString = GetItemInfoByName(itemName)
+				local _, _, quality = GetItemInfo(itemString, "item:(%d+)")
 				if quality then
 					OpenMailPackageButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else

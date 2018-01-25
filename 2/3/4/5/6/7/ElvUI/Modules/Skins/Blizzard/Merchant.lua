@@ -115,15 +115,10 @@ local function LoadSkin()
 
 			local buybackName = GetBuybackItemInfo(GetNumBuybackItems())
 			if buybackName then
-				local itemLink = GetItemLinkByName(buybackName)
-				if itemLink then
-					local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
-					if quality then
-						MerchantBuyBackItemName:SetTextColor(GetItemQualityColor(quality))
-						MerchantBuyBackItemItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
-					else
-						MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-					end
+				local _, _, quality = GetItemInfoByName(buybackName)
+				if quality then
+					MerchantBuyBackItemName:SetTextColor(GetItemQualityColor(quality))
+					MerchantBuyBackItemItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else
 					MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
@@ -140,15 +135,10 @@ local function LoadSkin()
 			if i <= numBuybackItems then
 				local buybackName = GetBuybackItemInfo(i)
 				if buybackName then
-					local itemLink = GetItemLinkByName(buybackName)
-					if itemLink then
-						local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
-						if quality then
-							itemName:SetTextColor(GetItemQualityColor(quality))
-							itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
-						else
-							itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-						end
+					local _, _, quality = GetItemInfoByName(buybackName)
+					if quality then
+						itemName:SetTextColor(GetItemQualityColor(quality))
+						itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
 						itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					end
