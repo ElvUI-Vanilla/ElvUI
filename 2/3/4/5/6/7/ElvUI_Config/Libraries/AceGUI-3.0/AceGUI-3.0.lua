@@ -255,11 +255,11 @@ do
 		end
 	end
 
-	WidgetBase.Fire = function(self,name,argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-		argc = argc or 0
+	WidgetBase.Fire = function(self,name,argc,...)
+		argc = table.getn(arg)
 		local func = self.events[name]
 		if func then
-			local success, ret = safecall(func,argc+3,self,name,argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+			local success, ret = safecall(func,argc+3,self,name,argc,unpack(arg))
 			if success then
 				return ret
 			end
