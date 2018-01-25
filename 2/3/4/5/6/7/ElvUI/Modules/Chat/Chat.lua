@@ -85,12 +85,6 @@ local hyperlinkTypes = {
 	["talent"] = true,
 }
 
-local specialChatIcons = {
---	["Smolderforge"] = {
---		["Loaal"] = "|TInterface\\AddOns\\ElvUI\\media\\textures\\ElvUI_Chat_Logo:13:22|t",
---	}
-}
-
 CH.Keywords = {}
 
 local numScrollMessages
@@ -307,15 +301,6 @@ function CH:UpdateSettings()
 	ChatFrameEditBox:SetAltArrowKeyMode(CH.db.useAltKey)
 end
 
-local function removeIconFromLine(text)
-	text = gsub(text, "|TInterface\\TargetingFrame\\UI%-RaidTargetingIcon_(%d+):0|t", function(x)
-		x = _G["RAID_TARGET_"..x]; return "{"..strlower(x).."}"
-	end)
-
-	text = gsub(text, "|H.-|h(.-)|h", "%1")
-	return gsub(text, "|T.-|t", "")
-end
-
 local function colorizeLine(text, r, g, b)
 	local hexCode = E:RGBToHex(r, g, b)
 	local hexReplacement = format("|r%s", hexCode)
@@ -335,7 +320,6 @@ function CH:GetLines(...)
 			local line = tostring(region:GetText())
 			local r, g, b = region:GetTextColor()
 
-			line = removeIconFromLine(line)
 			line = colorizeLine(line, r, g, b)
 
 			lines[index] = line
@@ -728,18 +712,6 @@ function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, a
 	return arg2
 end
 
-local function GetChatIcons(sender)
-	if specialChatIcons[PLAYER_REALM] and specialChatIcons[PLAYER_REALM][E.myname] then
-		for realm, _ in pairs(specialChatIcons) do
-			for character, texture in pairs(specialChatIcons[realm]) do
-				if sender == character or sender == character.."-"..realm then
-					return texture
-				end
-			end
-		end
-	end
-end
-
 function CH:ChatFrame_MessageEventHandler(event, ...)
 	if event == "UPDATE_CHAT_WINDOWS" then
 		local name, fontSize, r, g, b, a, shown, locked = GetChatWindowInfo(self:GetID())
@@ -946,12 +918,9 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 			end
 
 			-- Add AFK/DND flags
-			local pflag = GetChatIcons(arg2)
+			local pflag
 			if arg6 ~= "" then
-				if arg6 == "GM" then
-					--Add Blizzard Icon, this was sent by a GM
-					pflag = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz.blp:0:2:0:-3|t "
-				elseif arg6 == "DND" or arg6 == "AFK" then
+				if arg6 == "DND" or arg6 == "AFK" then
 					pflag = (pflag or "").._G["CHAT_FLAG_"..arg6]
 				else
 					pflag = _G["CHAT_FLAG_"..arg6]
@@ -1017,7 +986,7 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 		end
 
 		if type == "WHISPER" then
-			ChatEdit_SetLastTellTarget(arg2)
+			ChatEdit_SetLastTellTarget(self.editBox, arg2)
 			if self.tellTimer and (GetTime() > self.tellTimer) then
 				PlaySound("TellMessage")
 			end
