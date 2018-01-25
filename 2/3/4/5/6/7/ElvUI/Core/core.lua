@@ -195,11 +195,11 @@ function E:CheckClassColor(r, g, b)
 end
 
 function E:GetColorTable(data)
-	if(not data.r or not data.g or not data.b) then
+	if (not data.r or not data.g or not data.b) then
 		error("Could not unpack color values.")
 	end
 
-	if(data.a) then
+	if data.a then
 		return {data.r, data.g, data.b, data.a}
 	else
 		return {data.r, data.g, data.b}
@@ -207,7 +207,7 @@ function E:GetColorTable(data)
 end
 
 function E:UpdateMedia()
-	if(not self.db["general"] or not self.private["general"]) then return end
+	if (not self.db["general"] or not self.private["general"]) then return end
 
 	-- Fonts
 	self["media"].normFont = LSM:Fetch("font", self.db["general"].font)
@@ -220,7 +220,7 @@ function E:UpdateMedia()
 
 	-- Border Color
 	local border = E.db["general"].bordercolor
-	if(self:CheckClassColor(border.r, border.g, border.b)) then
+	if self:CheckClassColor(border.r, border.g, border.b) then
 		local classColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
 		E.db["general"].bordercolor.r = classColor.r
 		E.db["general"].bordercolor.g = classColor.g
@@ -247,7 +247,7 @@ function E:UpdateMedia()
 
 	-- Value Color
 	local value = self.db["general"].valuecolor
-	if(self:CheckClassColor(value.r, value.g, value.b)) then
+	if self:CheckClassColor(value.r, value.g, value.b) then
 		value = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
 		self.db["general"].valuecolor.r = value.r
 		self.db["general"].valuecolor.g = value.g
@@ -257,7 +257,7 @@ function E:UpdateMedia()
 	self["media"].hexvaluecolor = self:RGBToHex(value.r, value.g, value.b)
 	self["media"].rgbvaluecolor = {value.r, value.g, value.b}
 
-	if(LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex) then
+	if LeftChatPanel and LeftChatPanel.tex and RightChatPanel and RightChatPanel.tex then
 		LeftChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameLeft)
 		local a = E.db.general.backdropfadecolor.a or 0.5
 		LeftChatPanel.tex:SetAlpha(a)
@@ -283,16 +283,16 @@ local LBFGroupToTableElement = {
 }
 
 function E:LBFCallback(SkinID, _, _, Group)
-	if(not E.private) then return end
+	if not E.private then return end
 	local element = LBFGroupToTableElement[Group]
-	if(element) then
-		if(E.private[element].lbf.enable) then
+	if element then
+		if E.private[element].lbf.enable then
 			E.private[element].lbf.skin = SkinID
 		end
 	end
 end
 
-if(LBF) then
+if LBF then
 	LBF:RegisterSkinCallback("ElvUI", E.LBFCallback, E)
 end
 
@@ -301,18 +301,18 @@ function E:RequestBGInfo()
 end
 
 function E:PLAYER_ENTERING_WORLD()
-	if(not self.MediaUpdated) then
+	if not self.MediaUpdated then
 		self:UpdateMedia()
 		self.MediaUpdated = true
 	-- else
-	-- 	self:ScheduleTimer("CheckRole", 0.01)
+		-- self:ScheduleTimer("CheckRole", 0.01)
 	end
 
 	local _, instanceType = IsInInstance()
-	if(instanceType == "pvp") then
+	if instanceType == "pvp" then
 		self.BGTimer = self:ScheduleRepeatingTimer("RequestBGInfo", 5)
 		self:RequestBGInfo()
-	elseif(self.BGTimer) then
+	elseif self.BGTimer then
 		self:CancelTimer(self.BGTimer)
 		self.BGTimer = nil
 	end
@@ -434,9 +434,9 @@ E.HiddenFrame = CreateFrame("Frame")
 E.HiddenFrame:Hide()
 
 function E:IsDispellableByMe(debuffType)
-	if(not self.DispelClasses[self.myclass]) then return end
+	if not self.DispelClasses[self.myclass] then return end
 
-	if(self.DispelClasses[self.myclass][debuffType]) then
+	if self.DispelClasses[self.myclass][debuffType] then
 		return true
 	end
 end
@@ -482,19 +482,19 @@ function E:CheckRole()
 	local talentTree = self:GetTalentSpecInfo()
 	local role
 
-	if(type(self.ClassRole[self.myclass]) == "string") then
+	if type(self.ClassRole[self.myclass]) == "string" then
 		role = self.ClassRole[self.myclass]
 	elseif(talentTree) then
-		if(self.myclass == "DRUID" and talentTree == 2) then
+		if self.myclass == "DRUID" and talentTree == 2 then
 			role = select(5, GetTalentInfo(talentTree, 22)) > 0 and "Tank" or "Melee"
 		else
 			role = self.ClassRole[self.myclass][talentTree]
 		end
 	end
 
-	if(not role) then role = "Melee" end
+	if not role then role = "Melee" end
 
-	if(self.Role ~= role) then
+	if self.Role ~= role then
 		self.Role = role
 		self.TalentTree = talentTree
 		self.callbacks:Fire("RoleChanged")
@@ -518,28 +518,28 @@ function E:IncompatibleAddOn(addon, module)
 end
 
 function E:CheckIncompatible()
-	if(E.global.ignoreIncompatible) then return end
+	if E.global.ignoreIncompatible then return end
 
-	if(IsAddOnLoaded("Prat-3.0") and E.private.chat.enable) then
+	if IsAddOnLoaded("Prat-3.0") and E.private.chat.enable then
 		E:IncompatibleAddOn("Prat-3.0", "Chat")
 	end
 
-	if(IsAddOnLoaded("Chatter") and E.private.chat.enable) then
+	if IsAddOnLoaded("Chatter") and E.private.chat.enable then
 		E:IncompatibleAddOn("Chatter", "Chat")
 	end
 
-	if(IsAddOnLoaded("SnowfallKeyPress") and E.private.actionbar.enable) then
+	if IsAddOnLoaded("SnowfallKeyPress") and E.private.actionbar.enable then
 		E.private.actionbar.keyDown = true
 		E:IncompatibleAddOn("SnowfallKeyPress", "ActionBar")
 	end
 
-	if(IsAddOnLoaded("TidyPlates") and E.private.nameplates.enable) then
+	if IsAddOnLoaded("TidyPlates") and E.private.nameplates.enable then
 		E:IncompatibleAddOn("TidyPlates", "NamePlates")
 	end
 end
 
 function E:IsFoolsDay()
-	if(find(date(), "04/01/") and not E.global.aprilFools) then
+	if find(date(), "04/01/") and not E.global.aprilFools then
 		return true
 	else
 		return false
@@ -547,11 +547,11 @@ function E:IsFoolsDay()
 end
 
 function E:CopyTable(currentTable, defaultTable)
-	if(type(currentTable) ~= "table") then currentTable = {} end
+	if type(currentTable) ~= "table" then currentTable = {} end
 
 	if type(defaultTable) == "table" then
 		for option, value in pairs(defaultTable) do
-			if(type(value) == "table") then
+			if type(value) == "table" then
 				value = self:CopyTable(currentTable[option], value)
 			end
 
@@ -563,13 +563,13 @@ function E:CopyTable(currentTable, defaultTable)
 end
 
 function E:RemoveEmptySubTables(tbl)
-	if(type(tbl) ~= "table") then
+	if type(tbl) ~= "table" then
 		E:Print("Bad argument #1 to 'RemoveEmptySubTables' (table expected)")
 		return
 	end
 
 	for k, v in pairs(tbl) do
-		if(type(v) == "table") then
+		if type(v) == "table" then
 			if next(v) == nil then
 				tbl[k] = nil
 			else
@@ -580,21 +580,21 @@ function E:RemoveEmptySubTables(tbl)
 end
 
 function E:RemoveTableDuplicates(cleanTable, checkTable)
-	if(type(cleanTable) ~= "table") then
+	if type(cleanTable) ~= "table" then
 		E:Print("Bad argument #1 to 'RemoveTableDuplicates' (table expected)")
 		return
 	end
-	if(type(checkTable) ~= "table") then
+	if type(checkTable) ~= "table" then
 		E:Print("Bad argument #2 to 'RemoveTableDuplicates' (table expected)")
 		return
 	end
 
 	local cleaned = {}
 	for option, value in pairs(cleanTable) do
-		if(type(value) == "table" and checkTable[option] and type(checkTable[option]) == "table") then
+		if type(value) == "table" and checkTable[option] and type(checkTable[option]) == "table" then
 			cleaned[option] = self:RemoveTableDuplicates(value, checkTable[option])
 		else
-			if(cleanTable[option] ~= checkTable[option]) then
+			if cleanTable[option] ~= checkTable[option] then
 				cleaned[option] = value
 			end
 		end
@@ -606,7 +606,7 @@ function E:RemoveTableDuplicates(cleanTable, checkTable)
 end
 
 function E:TableToLuaString(inTable)
-	if(type(inTable) ~= "table") then
+	if type(inTable) ~= "table" then
 		E:Print("Invalid argument #1 to E:TableToLuaString (table expected)")
 		return
 	end
@@ -615,24 +615,24 @@ function E:TableToLuaString(inTable)
 	local function recurse(table, level)
 		for i, v in pairs(table) do
 			ret = ret .. strrep("    ", level).."["
-			if(type(i) == "string") then
+			if type(i) == "string" then
 				ret = ret .. "\"" .. i .. "\""
 			else
 				ret = ret .. i
 			end
 			ret = ret .. "] = "
 
-			if(type(v) == "number") then
+			if type(v) == "number" then
 				ret = ret .. v .. ",\n"
-			elseif(type(v) == "string") then
+			elseif type(v) == "string" then
 				ret = ret .. "\"" .. gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"") .. "\",\n"
-			elseif(type(v) == "boolean") then
-				if(v) then
+			elseif type(v) == "boolean" then
+				if v then
 					ret = ret .. "true,\n"
 				else
 					ret = ret .. "false,\n"
 				end
-			elseif(type(v) == "table") then
+			elseif type(v) == "table" then
 				ret = ret .. "{\n"
 				recurse(v, level + 1)
 				ret = ret .. strrep("    ", level) .. "},\n"
@@ -642,7 +642,7 @@ function E:TableToLuaString(inTable)
 		end
 	end
 
-	if(inTable) then
+	if inTable then
 		recurse(inTable, 1)
 	end
 	ret = ret.."}"
@@ -663,7 +663,7 @@ local lineStructureTable = {}
 
 function E:ProfileTableToPluginFormat(inTable, profileType)
 	local profileText = profileFormat[profileType]
-	if(not profileText) then
+	if not profileText then
 		return
 	end
 
@@ -688,19 +688,19 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 	local function recurse(tbl)
 		lineStructure = buildLineStructure()
 		for k, v in pairs(tbl) do
-			if(not sameLine) then
+			if not sameLine then
 				returnString = returnString .. lineStructure
 			end
 
 			returnString = returnString .. "["
 
-			if(type(k) == "string") then
+			if type(k) == "string" then
 				returnString = returnString.."\"" .. k .. "\""
 			else
 				returnString = returnString .. k
 			end
 
-			if(type(v) == "table") then
+			if type(v) == "table" then
 				tinsert(lineStructureTable, k)
 				sameLine = true
 				returnString = returnString .. "]"
@@ -709,12 +709,12 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 				sameLine = false
 				returnString = returnString .. "] = "
 
-				if(type(v) == "number") then
+				if type(v) == "number" then
 					returnString = returnString .. v .. "\n"
-				elseif(type(v) == "string") then
+				elseif type(v) == "string" then
 					returnString = returnString .. "\"" .. gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"") .. "\"\n"
-				elseif(type(v) == "boolean") then
-					if(v) then
+				elseif type(v) == "boolean" then
+					if v then
 						returnString = returnString .. "true\n"
 					else
 						returnString = returnString .. "false\n"
@@ -729,7 +729,7 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 		lineStructure = buildLineStructure()
 	end
 
-	if(inTable and profileType) then
+	if inTable and profileType then
 		recurse(inTable)
 	end
 
@@ -742,9 +742,9 @@ function E:StringSplitMultiDelim(s, delim)
 	local start = 1
 	local t = {}
 
-	while(true) do
+	while true do
 		local pos = find(s, delim, start, true)
-		if(not pos) then
+		if not pos then
 			break
 		end
 
@@ -760,17 +760,17 @@ end
 function E:SendMessage()
 	local numParty, numRaid = GetNumPartyMembers(), GetNumRaidMembers()
 	local inInstance, instanceType = IsInInstance()
-	if(inInstance and (instanceType == "pvp" or instanceType == "arena")) then
+	if inInstance and (instanceType == "pvp" or instanceType == "arena") then
 		SendAddonMessage("ELVUI_VERSIONCHK", E.version, "BATTLEGROUND")
 	else
-		if(numRaid > 0) then
+		if numRaid > 0 then
 			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "RAID")
-		elseif(numParty > 0) then
+		elseif numParty > 0 then
 			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "PARTY")
 		end
 	end
 
-	if(E.SendMSGTimer) then
+	if E.SendMSGTimer then
 		self:CancelTimer(E.SendMSGTimer)
 		E.SendMSGTimer = nil
 	end
@@ -948,7 +948,7 @@ end
 
 function E:RegisterInitialModule(name, loadFunc)
 	--New method using callbacks
-	if (loadFunc and type(loadFunc) == "function") then
+	if loadFunc and type(loadFunc) == "function" then
 		if self.InitialModuleCallbacks[name] then
 			--Don't allow a registered module name to be overwritten
 			E:Print("Invalid argument #1 to E:RegisterInitialModule (module name:", name, "is already registered, please use a unique name)")
@@ -978,11 +978,11 @@ function E:InitializeInitialModules()
 	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E["RegisteredInitialModules"]) do
 		module = self:GetModule(module, true)
-		if(module and module.Initialize) then
+		if module and module.Initialize then
 			local _, catch = pcall(module.Initialize, module)
-			--if(catch and GetCVarBool("ShowErrors") == "1") then
+			if catch and GetCVar("ShowErrors") == "1" then
 				ScriptErrorsFrame_OnError(catch, false)
-			--end
+			end
 		end
 	end
 end
@@ -1004,28 +1004,18 @@ function E:InitializeModules()
 	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E["RegisteredModules"]) do
 		module = self:GetModule(module)
-		if(module.Initialize) then
+		if module.Initialize then
 			local _, catch = pcall(module.Initialize, module)
-			--if(catch and GetCVarBool("ShowErrors") == "1") then
+			if catch and GetCVar("ShowErrors") == "1" then
 				ScriptErrorsFrame_OnError(catch, false)
-			--end
+			end
 		end
 	end
 end
 
 --DATABASE CONVERSIONS
 function E:DBConversions()
-	if E.db.unitframe.units.raid.groupBy == "ROLE" then
-		E.db.unitframe.units.raid.groupBy = "GROUP"
-	end
-	if E.db.unitframe.units.raid40.groupBy == "ROLE" then
-		E.db.unitframe.units.raid40.groupBy = "GROUP"
-	end
-
-	--Make sure default filters use the correct filter type
-	for filter, filterType in pairs(E.DEFAULT_FILTER) do
-		E.global.unitframe.aurafilters[filter].type = filterType
-	end
+	-- Add conversions here
 end
 
 local CPU_USAGE = {}
@@ -1034,26 +1024,26 @@ local function CompareCPUDiff(showall, module, minCalls)
 	local greatestDiff, lastModule, mod, newUsage, calls, differance = 0
 
 	for name, oldUsage in pairs(CPU_USAGE) do
-		newName, newFunc = name:match("^([^:]+):(.+)$")
-		if(not newFunc) then
+		newName, newFunc = match(name, "^([^:]+):(.+)$")
+		if not newFunc then
 			E:Print("CPU_USAGE:", name, newFunc)
 		else
-			if(newName ~= lastModule) then
+			if newName ~= lastModule then
 				mod = E:GetModule(newName, true) or E
 				lastModule = newName
 			end
 			newUsage, calls = GetFunctionCPUUsage(mod[newFunc], true)
 			differance = newUsage - oldUsage
-			if(showall and calls > minCalls) then
+			if showall and calls > minCalls then
 				E:Print(calls, name, differance)
 			end
-			if((differance > greatestDiff) and calls > minCalls) then
+			if (differance > greatestDiff) and calls > minCalls then
 				greatestName, greatestUsage, greatestCalls, greatestDiff = name, newUsage, calls, differance
 			end
 		end
 	end
 
-	if(greatestName) then
+	if greatestName then
 		E:Print(greatestName .. " had the CPU usage difference of: " .. greatestUsage .. "ms. And has been called " .. greatestCalls .. " times.")
 	else
 		E:Print("CPU Usage: No CPU Usage differences found.")
@@ -1061,7 +1051,7 @@ local function CompareCPUDiff(showall, module, minCalls)
 end
 
 function E:GetTopCPUFunc(msg)
-	local module, showall, delay, minCalls = msg:match("^([^%s]+)%s*([^%s]*)%s*([^%s]*)%s*(.*)$")
+	local module, showall, delay, minCalls = match(msg, "^([^%s]+)%s*([^%s]*)%s*([^%s]*)%s*(.*)$")
 	local mod
 
 	module = (module == "nil" and nil) or module
@@ -1074,11 +1064,11 @@ function E:GetTopCPUFunc(msg)
 	minCalls = (minCalls == "nil" and nil) or tonumber(minCalls) or 15
 
 	twipe(CPU_USAGE)
-	if(module == "all") then
+	if module == "all" then
 		for _, registeredModule in pairs(self["RegisteredModules"]) do
 			mod = self:GetModule(registeredModule, true) or self
 			for name in pairs(mod) do
-				if(type(mod[name]) == "function" and name ~= "GetModule") then
+				if type(mod[name]) == "function" and name ~= "GetModule" then
 					CPU_USAGE[registeredModule .. ":" .. name] = GetFunctionCPUUsage(mod[name], true)
 				end
 			end
@@ -1086,7 +1076,7 @@ function E:GetTopCPUFunc(msg)
 	else
 		mod = self:GetModule(module, true) or self
 		for name in pairs(mod) do
-			if(type(mod[name]) == "function" and name ~= "GetModule") then
+			if type(mod[name]) == "function" and name ~= "GetModule" then
 				CPU_USAGE[module .. ":" .. name] = GetFunctionCPUUsage(mod[name], true)
 			end
 		end
@@ -1110,9 +1100,9 @@ function E:Initialize()
 	self.db = self.data.profile
 	self.global = self.data.global
 	self:CheckIncompatible()
-	--self:DBConversions()
+	self:DBConversions()
 
-	--self:ScheduleTimer("CheckRole", 0.01)
+	-- self:ScheduleTimer("CheckRole", 0.01)
 	self:UIScale("PLAYER_LOGIN")
 
 	self:LoadCommands()
@@ -1121,11 +1111,11 @@ function E:Initialize()
 	self:UpdateCooldownSettings()
 	self.initialized = true
 
-	if(self.private.install_complete == nil) then
+	if self.private.install_complete == nil then
 		self:Install()
 	end
 
-	if(not find(date(), "04/01/")) then
+	if not find(date(), "04/01/") then
 		E.global.aprilFools = nil
 	end
 
@@ -1136,11 +1126,11 @@ function E:Initialize()
 	self:UpdateMedia()
 	self:UpdateFrameTemplates()
 	--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole")
-	--self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole")
+	-- self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole")
 	self:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", "UIScale")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-	if(self.db.general.kittys) then
+	if self.db.general.kittys then
 		self:CreateKittys()
 		self:Delay(5, self.Print, self, L["Type /hellokitty to revert to old settings."])
 	end
@@ -1150,7 +1140,7 @@ function E:Initialize()
 	self:RefreshModulesDB()
 	collectgarbage()
 
-	if(self.db.general.loginmessage) then
---		print(select(2, E:GetModule("Chat"):FindURL("CHAT_MSG_DUMMY", format(L["LOGIN_MSG"], self["media"].hexvaluecolor, self["media"].hexvaluecolor, self.version)))..".")
+	if self.db.general.loginmessage then
+		print(select(2, E:GetModule("Chat").FindURL(format(L["LOGIN_MSG"], self["media"].hexvaluecolor, self["media"].hexvaluecolor, self.version)))..".")
 	end
 end
