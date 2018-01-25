@@ -1,5 +1,5 @@
 --Cache global variables
-local assert = assert
+--local assert = assert
 local error = error
 local geterrorhandler = geterrorhandler
 local loadstring = loadstring
@@ -10,7 +10,7 @@ local type = type
 local unpack = unpack
 local ceil, floor = math.ceil, math.floor
 local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
-local getn, setn, tinsert = table.getn, table.setn, table.insert
+local concat, getn, setn, tinsert = table.concat, table.getn, table.setn, table.insert
 
 local escapeSequences = {
 	["\a"] = "\\a", -- Bell
@@ -46,14 +46,22 @@ math.huge = 1/0
 string.gmatch = gfind
 
 function difftime(time2, time1)
-	assert(type(time2) == "number", format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"))
-	assert(not time1 or type(time1) == "number", format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"))
+--	assert(type(time2) == "number", format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"))
+--	assert(not time1 or type(time1) == "number", format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"))
+	if type(time2) ~= "number" then
+		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"), 2)
+	elseif time1 and type(time1) ~= "number" then
+		error(format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"), 2)
+	end
 
 	return time1 and time2 - time1 or time2
 end
 
 function select(n, ...)
-	assert(type(n) == "number" or (type(n) == "string" and n == "#"), format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
+--	assert(type(n) == "number" or (type(n) == "string" and n == "#"), format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
+	if not (type(n) == "number" or (type(n) == "string" and n == "#")) then
+		error(format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"), 2)
+	end
 
 	if type(n) == "string" then
 		return getn(arg)
@@ -73,7 +81,10 @@ function select(n, ...)
 end
 
 function math.modf(i)
-	assert(type(i) == "number", format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"))
+--	assert(type(i) == "number", format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"))
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
 
 	local int = i >= 0 and floor(i) or ceil(i)
 
@@ -81,39 +92,54 @@ function math.modf(i)
 end
 
 function string.join(delimiter, ...)
-	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
+--	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
+	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
+		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
+	end
 
-	local size = getn(arg)
-	if size == 0 then
+	if getn(arg) == 0 then
 		return ""
 	end
 
-	local text = arg[1]
-	for i = 2, size do
-		text = text..delimiter..arg[i]
-	end
-
-	return text
+	return concat(arg, delimiter)
 end
 strjoin = string.join
 
 function string.match(str, pattern, index)
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
-	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
-	assert(not index or type(index) == "number" or type(index) == "string", format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"))
+--	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
+--	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
+--	assert(not index or type(index) == "number" or (type(index) == "string" and index ~= ""), format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"))
+	if type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"), 2)
+	elseif type(pattern) ~= "string" and type(pattern) ~= "number" then
+		error(format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"), 2)
+	elseif index and type(index) ~= "number" and (type(index) ~= "string" or index == "") then
+		error(format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"), 2)
+	end
 
-	str = type(str) == "number" and tostring(str) or str
-	pattern = type(pattern) == "number" and tostring(pattern) or pattern
+	local i1, i2, match, match2 = find(str, pattern, index)
 
-	return gfind(index and sub(str, index) or str, pattern)()
+	if not match and i2 and i2 >= i1 then
+		return sub(str, i1, i2)
+	elseif match2 then
+		local matches = {find(str, pattern, index)}
+		tremove(matches, 2)
+		tremove(matches, 1)
+		return unpack(matches)
+	end
+
+	return match
 end
 strmatch = string.match
 
 function string.split(delimiter, str)
-	assert(type(delimiter) == "string" or type(str) == "number", format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"))
-
-	str = type(str) == "number" and tostring(str) or str
+--	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
+--	assert(type(str) == "string" or type(str) == "number", format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"))
+	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
+		error(format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
+	elseif type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"), 2)
+	end
 
 	local fields = {}
 	gsub(str, format("([^%s]+)", delimiter), function(c) fields[getn(fields) + 1] = c end)
@@ -123,14 +149,15 @@ end
 strsplit = string.split
 
 function string.trim(str, chars)
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"))
-	assert(not chars or type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
-
-	str = type(str) == "number" and tostring(str) or str
+--	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"))
+--	assert(not chars or type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
+	if type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"), 2)
+	elseif chars and (type(chars) ~= "string" and type(chars) ~= "number") then
+		error(format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"), 2)
+	end
 
 	if chars then
-		chars = type(chars) == "number" and tostring(chars) or chars
-
 		local tokens = {}
 
 		for token in gfind(chars, "[%z\1-\255]") do
@@ -143,7 +170,7 @@ function string.trim(str, chars)
 		for i = 1, size do
 			pattern = pattern..(escapeSequences[tokens[i]] or tokens[i]).."+"
 
-			if size > 1 and i < size then
+			if i < size then
 				pattern = pattern.."|"
 			end
 		end
@@ -152,22 +179,27 @@ function string.trim(str, chars)
 		local patternEnd = loadstring("return \"^(.-)["..pattern.."]$\"")()
 
 		local trimed, x, y = 1
-		while trimed >= 1 do
+		while trimed > 0 do
 			str, x = gsub(str, patternStart, "%1")
 			str, y = gsub(str, patternEnd, "%1")
 			trimed = x + y
 		end
 
 		return str
-	else
+	elseif type(str) == "string" then
 		-- remove leading/trailing [space][tab][return][newline]
 		return gsub(str, "^%s*(.-)%s*$", "%1")
+	else
+		return tostring(str)
 	end
 end
 strtrim = string.trim
 
 function table.wipe(t)
-	assert(type(t) == "table", format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"))
+--	assert(type(t) == "table", format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"))
+	if type(t) ~= "table" then
+		error(format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"), 2)
+	end
 
 	for k in pairs(t) do
 		t[k] = nil
@@ -215,6 +247,7 @@ function tostringall(...)
 	return unpack(LOCAL_ToStringAllTemp)
 end
 
+local strjoin = strjoin
 local LOCAL_PrintHandler = function(...)
 	DEFAULT_CHAT_FRAME:AddMessage(strjoin(" ", tostringall(unpack(arg))))
 end
