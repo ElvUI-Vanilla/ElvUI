@@ -692,7 +692,7 @@ function CH:ConcatenateTimeStamp(msg)
 	return msg
 end
 
-function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
 	if not E.private.general.classCache then return arg2 end
 
 	if arg2 and arg2 ~= "" then
@@ -824,22 +824,22 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 	if strsub(event, 1, 8) == "CHAT_MSG" then
 		local type = strsub(event, 10)
 		local info = ChatTypeInfo[type]
-		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 = unpack(arg)
+		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10 = unpack(arg)
 
-		local filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11 = false
+		local filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10 = false
 		if chatFilters[event] then
 			for _, filterFunc in next, chatFilters[event] do
-				filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11 = filterFunc(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, event)
+				filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10 = filterFunc(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, event)
 				arg1 = newarg1 or arg1
 				if filter then
 					return true
 				elseif newarg1 and newarg2 then
-					arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 = newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11
+					arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10 = newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10
 				end
 			end
 		end
 
-		local coloredName = GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+		local coloredName = GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
 
 		local channelLength = arg4 and strlen(arg4)
 		if (strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER")) then
@@ -946,22 +946,27 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 			else
 				arg1 = gsub(arg1, "%%", "%%%%")
 			end
+
 			if (strlen(arg3) > 0) and (arg3 ~= "Universal") and (arg3 ~= GetDefaultLanguage()) then
 				local languageHeader = "["..arg3.."] "
 				if showLink and (strlen(arg2) > 0) then
-					body = format(_G["CHAT_"..type.."_GET"]..languageHeader..arg1, pflag.."|Hplayer:"..arg2.."|h".."["..arg2.."]".."|h")
+					body = format(_G["CHAT_"..type.."_GET"]..languageHeader..arg1, pflag.."|Hplayer:"..arg2.."|h".."["..coloredName.."]".."|h")
 				else
 					body = format(_G["CHAT_"..type.."_GET"]..languageHeader..arg1, pflag..arg2)
 				end
 			else
 				if showLink and (strlen(arg2) > 0) and (type ~= "EMOTE") then
-					body = format(_G["CHAT_"..type.."_GET"]..arg1, pflag.."|Hplayer:"..arg2.."|h".."["..arg2.."]".."|h")
+					body = format(_G["CHAT_"..type.."_GET"]..arg1, pflag.."|Hplayer:"..arg2.."|h".."["..coloredName.."]".."|h")
+				elseif showLink and (strlen(arg2) > 0) and (type == "EMOTE") then
+					body = format(_G["CHAT_"..type.."_GET"]..arg1, pflag.."|Hplayer:"..arg2.."|h".."["..coloredName.."]".."|h")
 				else
+					arg1 = gsub(arg1, "%%s %%s", "%%s")
 					body = format(_G["CHAT_"..type.."_GET"]..arg1, pflag..arg2)
 
 					-- Add raid boss emote message
 					if type == "RAID_BOSS_EMOTE" then
 						RaidBossEmoteFrame:AddMessage(body, info.r, info.g, info.b, 1.0)
+						PlaySound("RaidBossEmoteWarning")
 					end
 				end
 			end
@@ -1073,7 +1078,7 @@ function CH:SetupChat()
 			frame:EnableMouseWheel(true)
 
 			if id ~= 2 then
-				frame:SetScript("OnEvent", function() CH:FloatingChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13) end)
+				frame:SetScript("OnEvent", function() CH:FloatingChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) end)
 			end
 			frame.scriptsSet = true
 		end
