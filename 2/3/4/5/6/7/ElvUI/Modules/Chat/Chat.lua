@@ -88,62 +88,62 @@ local hyperlinkTypes = {
 CH.Keywords = {}
 
 local numScrollMessages
-local function ChatFrame_OnMouseScroll(frame, delta)
+local function ChatFrame_OnMouseScroll()
 	numScrollMessages = CH.db.numScrollMessages or 3
 	if CH.db.scrollDirection == "TOP" then
-		if delta < 0 then
+		if arg1 < 0 then
 			if IsShiftKeyDown() then
-				frame:ScrollToBottom()
+				this:ScrollToBottom()
 			elseif IsAltKeyDown() then
-				frame:ScrollDown()
+				this:ScrollDown()
 			else
 				for i = 1, numScrollMessages do
-					frame:ScrollDown()
+					this:ScrollDown()
 				end
 			end
-		elseif delta > 0 then
+		elseif arg1 > 0 then
 			if IsShiftKeyDown() then
-				frame:ScrollToTop()
+				this:ScrollToTop()
 			elseif IsAltKeyDown() then
-				frame:ScrollUp()
+				this:ScrollUp()
 			else
 				for i = 1, numScrollMessages do
-					frame:ScrollUp()
+					this:ScrollUp()
 				end
 			end
 
 			if CH.db.scrollDownInterval ~= 0 then
-				if frame.ScrollTimer then
-					CH:CancelTimer(frame.ScrollTimer, true)
+				if this.ScrollTimer then
+					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				frame.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, frame)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, this)
 			end
 		end
 	else
-		if delta < 0 then
+		if arg1 < 0 then
 			if IsShiftKeyDown() then
-				frame:ScrollToBottom()
+				this:ScrollToBottom()
 			else
 				for i = 1, numScrollMessages do
-					frame:ScrollDown()
+					this:ScrollDown()
 				end
 			end
-		elseif delta > 0 then
+		elseif arg1 > 0 then
 			if IsShiftKeyDown() then
-				frame:ScrollToTop()
+				this:ScrollToTop()
 			else
 				for i = 1, numScrollMessages do
-					frame:ScrollUp()
+					this:ScrollUp()
 				end
 			end
 
 			if CH.db.scrollDownInterval ~= 0 then
-				if frame.ScrollTimer then
-					CH:CancelTimer(frame.ScrollTimer, true)
+				if this.ScrollTimer then
+					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				-- frame.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, frame)
+				-- this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, this)
 			end
 		end
 	end
@@ -1003,15 +1003,15 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 	end
 end
 
-function CH:ChatFrame_OnEvent(event, ...)
-	if CH.ChatFrame_MessageEventHandler(self, event, unpack(arg)) then
+function CH:ChatFrame_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+	if CH.ChatFrame_MessageEventHandler(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) then
 		return
 	end
 end
 
-function CH:FloatingChatFrame_OnEvent(self, event, ...)
-	CH.ChatFrame_OnEvent(self, event, unpack(arg))
-	FloatingChatFrame_OnEvent(self, event, 1)
+function CH:FloatingChatFrame_OnEvent()
+	CH.ChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+	FloatingChatFrame_OnEvent(this, event, 1)
 end
 
 local function OnTextChanged(self)
@@ -1074,12 +1074,17 @@ function CH:SetupChat()
 		frame:SetFading(self.db.fade)
 
 		if not frame.scriptsSet then
-			frame:SetScript("OnMouseWheel", function() ChatFrame_OnMouseScroll(this, arg1) end)
+			frame:SetScript("OnMouseWheel", ChatFrame_OnMouseScroll)
 			frame:EnableMouseWheel(true)
 
 			if id ~= 2 then
-				frame:SetScript("OnEvent", function() CH:FloatingChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) end)
+				frame:SetScript("OnEvent", CH.FloatingChatFrame_OnEvent)
 			end
+
+			hooksecurefunc(frame, "StopMovingOrSizing", function()
+				CH:PositionChat(true)
+			end)
+
 			frame.scriptsSet = true
 		end
 	end
@@ -1111,8 +1116,7 @@ function CH:SetupChat()
 	end
 
 	DEFAULT_CHAT_FRAME:SetParent(LeftChatPanel)
-	self:ScheduleRepeatingTimer("PositionChat", 1)
-	-- self:PositionChat(true)
+	self:ScheduleTimer("PositionChat", 1)
 end
 
 local function PrepareMessage(author, message)
@@ -1662,13 +1666,11 @@ function CH:Initialize()
 	frame:SetFrameStrata("DIALOG")
 
 	local scrollArea = CreateFrame("ScrollFrame", "CopyChatScrollFrame", frame, "UIPanelScrollFrameTemplate")
+	scrollArea:SetWidth(662)
+	scrollArea:SetHeight(162)
 	scrollArea:SetPoint("TOPLEFT", frame, "TOPLEFT", 8, -30)
-	scrollArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -30, 8)
 	S:HandleScrollBar(CopyChatScrollFrameScrollBar)
-	scrollArea:SetScript("OnSizeChanged", function()
-		CopyChatFrameEditBox:SetWidth(this:GetWidth())
-		CopyChatFrameEditBox:SetHeight(this:GetHeight())
-	end)
+
 	HookScript(scrollArea, "OnVerticalScroll", function()
 		CopyChatFrameEditBox:SetHitRectInsets(0, 0, arg1, (CopyChatFrameEditBox:GetHeight() - arg1 - this:GetHeight()))
 	end)
@@ -1683,18 +1685,25 @@ function CH:Initialize()
 	editBox:SetHeight(200)
 	editBox:SetScript("OnEscapePressed", function() CopyChatFrame:Hide() end)
 	scrollArea:SetScrollChild(editBox)
-	CopyChatFrameEditBox:SetScript("OnTextChanged", function()
+	--[[CopyChatFrameEditBox:SetScript("OnTextChanged", function()
 		local scrollBar = CopyChatScrollFrameScrollBar
 		local _, max = scrollBar:GetMinMaxValues()
 		for i = 1, max do
 			scrollBar:SetValue(scrollBar:GetValue() + (scrollBar:GetHeight() / 2))
 		end
+	end)]]
+
+	frame:SetScript("OnSizeChanged", function()
+		local width, height = this:GetWidth() - 38, this:GetHeight() - 38
+		scrollArea:SetWidth(width)
+		scrollArea:SetHeight(height)
+		CopyChatFrameEditBox:SetWidth(width)
+		CopyChatFrameEditBox:SetHeight(height)
 	end)
 
 	local close = CreateFrame("Button", "CopyChatFrameCloseButton", frame, "UIPanelCloseButton")
 	close:SetPoint("TOPRIGHT", 0, 0)
 	close:SetFrameLevel(close:GetFrameLevel() + 1)
-	close:EnableMouse(true)
 	S:HandleCloseButton(close)
 end
 
