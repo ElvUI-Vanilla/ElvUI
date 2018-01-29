@@ -1417,15 +1417,15 @@ function CH:DelayGuildMOTD()
 		local msg = GetGuildRosterMOTD()
 		for i = 1, NUM_CHAT_WINDOWS do
 			chat = _G["ChatFrame"..i]
-			if i == 1 then -- TEMPORARY UNTIL FURTHER FIX
-			--if chat and chat:IsEventRegistered("CHAT_MSG_GUILD") then
-				if msg and strlen(msg) > 0 then
-					local info = ChatTypeInfo["GUILD"]
-					local string = format(GUILD_MOTD_TEMPLATE, msg)
-					chat:AddMessage(string, info.r, info.g, info.b, info.id)
+			for k, v in pairs(chat.messageTypeList) do
+				if chat and v == "GUILD" then
+					if msg and strlen(msg) > 0 then
+						local info = ChatTypeInfo["GUILD"]
+						local string = format(GUILD_MOTD_TEMPLATE, msg)
+						chat:AddMessage(string, info.r, info.g, info.b, info.id)
+					end
+					chat:RegisterEvent("GUILD_MOTD")
 				end
-				chat:RegisterEvent("GUILD_MOTD")
-			--end
 			end
 		end
 		this:SetScript("OnUpdate", nil)
