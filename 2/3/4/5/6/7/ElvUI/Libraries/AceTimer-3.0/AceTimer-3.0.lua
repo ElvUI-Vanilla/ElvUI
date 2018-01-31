@@ -159,8 +159,8 @@ end	-- new, del
 -- function MyAddOn:TimerFeedback()
 --   print("5 seconds passed")
 -- end
-function AceTimer:ScheduleTimer(func, delay, argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-	return new(self, nil, func, delay, argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+function AceTimer:ScheduleTimer(func, delay, argc, ...)
+	return new(self, nil, func, delay, argc, unpack(arg))
 end
 
 --- Schedule a repeating timer.
@@ -185,8 +185,8 @@ end
 --     self:CancelTimer(self.testTimer)
 --   end
 -- end
-function AceTimer:ScheduleRepeatingTimer(func, delay, argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-	return new(self, true, func, delay, argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+function AceTimer:ScheduleRepeatingTimer(func, delay, argc, ...)
+	return new(self, true, func, delay, argc, unpack(arg))
 end
 
 --- Cancels a timer with the given id, registered by the same addon object as used for `:ScheduleTimer`
