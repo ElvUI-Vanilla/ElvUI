@@ -453,9 +453,9 @@ function lib:AskWhoNext()
 			self.Quiet = false
 
 			if args.whotoui then
-    			self.hooked.SetWhoToUI(args.whotoui)
+    			-- self.hooked.SetWhoToUI(args.whotoui)
     		else
-    			self.hooked.SetWhoToUI(args.gui and true or false)
+    			-- self.hooked.SetWhoToUI(args.gui and true or false)
 			end
 		else
 			-- self.hooked.SetWhoToUI(true)
