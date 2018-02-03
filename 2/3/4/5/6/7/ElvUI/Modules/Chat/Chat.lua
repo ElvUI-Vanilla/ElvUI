@@ -43,6 +43,7 @@ local hooksecurefunc = hooksecurefunc
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME
+local SELECTED_DOCK_FRAME = SELECTED_DOCK_FRAME
 
 local GlobalStrings = {
 	["AFK"] = CHAT_MSG_AFK,
@@ -89,6 +90,7 @@ CH.Keywords = {}
 
 local numScrollMessages
 local function ChatFrame_OnMouseScroll()
+	SELECTED_DOCK_FRAME = this
 	numScrollMessages = CH.db.numScrollMessages or 3
 	if CH.db.scrollDirection == "TOP" then
 		if arg1 < 0 then
@@ -117,7 +119,7 @@ local function ChatFrame_OnMouseScroll()
 					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, this)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval)
 			end
 		end
 	else
@@ -143,7 +145,7 @@ local function ChatFrame_OnMouseScroll()
 					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				-- this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, this)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval)
 			end
 		end
 	end
@@ -541,10 +543,10 @@ local function UpdateChatTabColor(_, r, g, b)
 end
 E["valueColorUpdateFuncs"][UpdateChatTabColor] = true
 
-function CH:ScrollToBottom(frame)
-	frame:ScrollToBottom()
+function CH:ScrollToBottom()
+	SELECTED_DOCK_FRAME:ScrollToBottom()
 
-	self:CancelTimer(frame.ScrollTimer, true)
+	self:CancelTimer(SELECTED_DOCK_FRAME.ScrollTimer, true)
 end
 
 function CH:PrintURL(url)
@@ -554,11 +556,10 @@ end
 function CH.FindURL(msg, ...)
 	if not msg then return end
 
-	local event = select(11, unpack(arg))
 	if event and event == "CHAT_MSG_WHISPER" and CH.db.whisperSound ~= "None" and not CH.SoundPlayed then
 		PlaySoundFile(LSM:Fetch("sound", CH.db.whisperSound), "Master")
 		CH.SoundPlayed = true
-		-- CH.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
+		CH.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
 	end
 
 	if not CH.db.url then
@@ -1212,7 +1213,7 @@ function CH:CheckKeyword(message)
 				if self.db.keywordSound ~= "None" and not self.SoundPlayed then
 					PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
 					self.SoundPlayed = true
-					-- self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
+					self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
 				end
 			end
 		end
@@ -1233,7 +1234,7 @@ function CH:CheckKeyword(message)
 				if self.db.keywordSound ~= "None" and not self.SoundPlayed then
 					PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
 					self.SoundPlayed = true
-					-- self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
+					self.SoundTimer = CH:ScheduleTimer("ThrottleSound", 1)
 				end
 			end
 		end
