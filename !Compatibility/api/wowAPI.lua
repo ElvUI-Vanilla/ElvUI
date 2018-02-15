@@ -10,6 +10,7 @@ local unpack = unpack
 local format, gsub, lower, match, upper = string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
+local GetItemInfo = GetItemInfo
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
 local IsInInstance = IsInInstance
@@ -374,14 +375,30 @@ function GetThreatStatus(currentThreat, maxThreat)
 	end
 end
 
--- Credits: @Shagu - pfUI
--- https://github.com/shagu/pfUI/blob/7999f612ad464261306bbf6f309bb63b54bd44af/api/api.lua#L123
-function GetItemLinkByName(name)
-	for itemID = 1, 25818 do
-		local itemName, itemLink, itemQuality = GetItemInfo(itemID)
-		if itemName and itemName == name then
-			local hex = select(4, GetItemQualityColor(tonumber(itemQuality)))
-			return hex.. "|H"..itemLink.."|h["..itemName.."]|h|r"
+local LAST_ITEM_ID = 24283
+local itemInfoDB = {}
+
+function GetItemInfoByName(itemName)
+	if type(itemName) ~= "string" then
+		error("Usage: GetItemInfoByName(itemName)", 2)
+	end
+
+	if not itemInfoDB[itemName] then
+		local name
+		for itemID = 1, LAST_ITEM_ID do
+			name = GetItemInfo(itemID)
+
+			if name ~= "" then
+				itemInfoDB[name] = itemID
+
+				if name == itemName then
+					break
+				end
+			end
 		end
 	end
+
+	if not itemInfoDB[itemName] then return end
+
+	return GetItemInfo(itemInfoDB[itemName])
 end
