@@ -56,6 +56,19 @@ function math.modf(i)
 	return int, i - int
 end
 
+function math.modulo(x, y)
+	x = type(x) ~= "number" and tonumber(i) or x
+	y = type(y) ~= "number" and tonumber(i) or y
+
+	if type(x) ~= "number" then
+		error(format("bad argument #1 to 'modulo' (number expected, got %s)", x and type(x) or "no value"), 2)
+	elseif type(y) ~= "number" then
+		error(format("bad argument #2 to 'modulo' (number expected, got %s)", y and type(y) or "no value"), 2)
+	end
+
+	return x - floor(x / y) * y
+end
+
 function math.cosh(i)
 	i = type(i) ~= "number" and tonumber(i) or i
 
