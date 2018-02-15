@@ -1,5 +1,4 @@
 --Cache global variables
-local assert = assert
 local error = error
 local geterrorhandler = geterrorhandler
 local loadstring = loadstring
@@ -12,38 +11,8 @@ local ceil, floor = math.ceil, math.floor
 local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
 local getn, setn, tinsert = table.getn, table.setn, table.insert
 
-local escapeSequences = {
-	["\a"] = "\\a", -- Bell
-	["\b"] = "\\b", -- Backspace
-	["\t"] = "\\t", -- Horizontal tab
-	["\n"] = "\\n", -- Newline
-	["\v"] = "\\v", -- Vertical tab
-	["\f"] = "\\f", -- Form feed
-	["\r"] = "\\r", -- Carriage return
-	["\\"] = "\\\\", -- Backslash
-	["\""] = "\\\"", -- Quotation mark
-	["|"] = "||",
-	[" "] = "%s",
-
-	[" "] = "%s",
-	["!"] = "\\!",
-	["#"] = "\\#",
-	["$"] = "\\$",
-	["%"] = "\\%",
-	["&"] = "\\&",
-	["'"] = "\\'",
-	["("] = "\\(",
-	[")"] = "\\)",
-	["*"] = "\\*",
-	["+"] = "\\+",
-	[","] = "\\,",
-	["-"] = "\\-",
-	["."] = "\\.",
-	["/"] = "\\/"
-}
-
 math.huge = 1/0
-string.gmatch = gfind
+string.gmatch = string.gfind
 
 function difftime(time2, time1)
 	if type(time2) ~= "number" then
@@ -150,6 +119,34 @@ function string.split(delimiter, str)
 end
 strsplit = string.split
 
+local escapeSequences = {
+	["\a"] = "\\a", -- Bell
+	["\b"] = "\\b", -- Backspace
+	["\t"] = "\\t", -- Horizontal tab
+	["\n"] = "\\n", -- Newline
+	["\v"] = "\\v", -- Vertical tab
+	["\f"] = "\\f", -- Form feed
+	["\r"] = "\\r", -- Carriage return
+	["\\"] = "\\\\", -- Backslash
+	["\""] = "\\\"", -- Quotation mark
+	["|"] = "||",
+	[" "] = "%s",
+
+	["!"] = "\\!",
+	["#"] = "\\#",
+	["$"] = "\\$",
+	["%"] = "\\%",
+	["&"] = "\\&",
+	["'"] = "\\'",
+	["("] = "\\(",
+	[")"] = "\\)",
+	["*"] = "\\*",
+	["+"] = "\\+",
+	[","] = "\\,",
+	["-"] = "\\-",
+	["."] = "\\.",
+	["/"] = "\\/"
+}
 function string.trim(str, chars)
 	if type(str) ~= "string" and type(str) ~= "number" then
 		error(format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"), 2)

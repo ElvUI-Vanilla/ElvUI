@@ -232,10 +232,8 @@ function GetInstanceInfo()
 	local name = GetRealZoneText()
 
 	local difficulty = 1
-	local difficultyName = DUNGEON_DIFFICULTY1
 	local maxPlayers = GetMaxPlayersByType(instanceType, name)
-
-	difficultyName = format("%d %s", maxPlayers, difficultyName)
+	local difficultyName = format("%d %s", maxPlayers, DUNGEON_DIFFICULTY1)
 
 	return name, instanceType, difficulty, difficultyName, maxPlayers
 end
@@ -291,14 +289,14 @@ end
 
 local function OnSizeChanged()
 	local width, height = this:GetWidth(), this:GetHeight()
+
 	this.texturePointer.width = width
 	this.texturePointer.height = height
 	this.texturePointer:SetWidth(width)
 	this.texturePointer:SetHeight(height)
 end
 
-local function OnValueChanged()
-	local value = arg1
+local function OnValueChanged(value)
 	local _, max = this:GetMinMaxValues()
 
 	if this.texturePointer.verticalOrientation then
