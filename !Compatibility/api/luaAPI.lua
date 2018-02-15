@@ -46,9 +46,18 @@ function select(n, ...)
 	return unpack(args)
 end
 
+local huge = math.huge
 function math.modf(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
 	if type(i) ~= "number" then
 		error(format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	if i == 0 then
+		return i, i
+	elseif abs(i) == huge then
+		return i, i > 0 and 0 or -0
 	end
 
 	local int = i >= 0 and floor(i) or ceil(i)
