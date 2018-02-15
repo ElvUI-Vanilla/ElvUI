@@ -4,13 +4,15 @@ local geterrorhandler = geterrorhandler
 local loadstring = loadstring
 local pairs = pairs
 local pcall = pcall
+local tonumber = tonumber
 local tostring = tostring
 local type = type
 local unpack = unpack
-local ceil, floor = math.ceil, math.floor
-local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
+local abs, ceil, exp, floor = math.abs, math.ceil, math.exp, math.floor
+local find, format, gfind, gsub, len, sub = string.find, string.format, string.gfind, string.gsub, string.len, string.sub
 local concat, getn, setn = table.concat, table.getn, table.setn
 
+math.fmod = math.mod
 math.huge = 1/0
 string.gmatch = string.gfind
 
@@ -54,6 +56,105 @@ function math.modf(i)
 	return int, i - int
 end
 
+function math.cosh(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'cosh' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	if i < 0 then
+		i = -i
+	end
+
+	if i > 21 then
+		return exp(i) / 2
+	end
+
+	return (exp(i) + exp(-i)) / 2
+end
+
+local sinhC = {
+	["P0"] = -0.6307673640497716991184787251e+6,
+	["P1"] = -0.8991272022039509355398013511e+5,
+	["P2"] = -0.2894211355989563807284660366e+4,
+	["P3"] = -0.2630563213397497062819489e+2,
+	["Q0"] = -0.6307673640497716991212077277e+6,
+	["Q1"] = 0.1521517378790019070696485176e+5,
+	["Q2"] = -0.173678953558233699533450911e+3
+}
+function math.sinh(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'sinh' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	local neg, x
+
+	if i < 0 then
+		i = -i
+		neg = true
+	end
+
+	if i > 21 then
+		x = exp(i) / 2
+	elseif i > 0.5 then
+		x = (exp(i) - exp(-i)) / 2
+	else
+		local sq = i * i
+		x = (((sinhC["P3"] * sq + sinhC["P2"]) * sq + sinhC["P1"]) * sq + sinhC["P0"]) * i
+		x = x / (((sq + sinhC["Q2"]) * sq + sinhC["Q1"]) * sq + sinhC["Q0"])
+	end
+
+	if neg then
+		x = -x
+	end
+
+	return x
+end
+
+local MAXLOG2 = 8.8029691931113054295988e+01 * 0.5
+local tanhP = {
+	-9.64399179425052238628E-1,
+	-9.92877231001918586564E1,
+	-1.61468768441708447952E3,
+}
+local tanhQ = {
+	1.12811678491632931402E2,
+	2.23548839060100448583E3,
+	4.84406305325125486048E3,
+}
+function math.tanh(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'tanh' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	if i == 0 then
+		return i
+	end
+
+	local x = abs(i)
+
+	if x > MAXLOG2 then
+		return i < 0 and -1 or 1
+	elseif x >= 0.625 then
+		local s = exp(2 * x)
+		x = 1 - 2 / (s + 1)
+
+		if i < 0 then
+			x = -x
+		end
+	else
+		local sq = i * i
+		x = i + i * sq * ((tanhP[1] * sq + tanhP[2]) * sq + tanhP[3]) / (((sq + tanhQ[1]) * sq + tanhQ[2]) * sq + tanhQ[3])
+	end
+
+	return x
+end
+
 function string.join(delimiter, ...)
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
 		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
@@ -90,6 +191,24 @@ function string.match(str, pattern, index)
 	return match
 end
 strmatch = string.match
+
+function string.reverse(str)
+	if type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #1 to 'reverse' (string expected, got %s)", str and type(str) or "no value"), 2)
+	end
+
+	local size = len(str)
+	if size > 1 then
+		local reversed = ""
+		for i = size, 1, -1 do
+			reversed = reversed .. sub(str, i, i)
+		end
+
+		return reversed
+	end
+
+	return str
+end
 
 function string.split(delimiter, str)
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
