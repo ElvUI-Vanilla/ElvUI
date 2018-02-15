@@ -1,7 +1,7 @@
 --Cache global variables
 local _G = _G
-local assert = assert
 local date = date
+local error = error
 local pairs = pairs
 local select = select
 local tonumber = tonumber
@@ -62,7 +62,9 @@ QuestDifficultyColors = {
 }
 
 function HookScript(frame, scriptType, handler)
-	assert(type(frame) == "table" and frame.GetScript and type(scriptType) == "string" and type(handler) == "function", "Usage: HookScript(frame, \"type\", function)")
+	if not (type(frame) == "table" and frame.GetScript and type(scriptType) == "string" and type(handler) == "function") then
+		error("Usage: HookScript(frame, \"type\", function)", 2)
+	end
 
 	local original_scipt = frame:GetScript(scriptType)
 	if original_scipt then
@@ -79,7 +81,9 @@ end
 
 function hooksecurefunc(arg1, arg2, arg3)
 	local isMethod = type(arg1) == "table" and type(arg2) == "string" and type(arg1[arg2]) == "function" and type(arg3) == "function"
-	assert(isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function"), "Usage: hooksecurefunc([table,] \"functionName\", hookfunc)")
+	if not (isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function")) then
+		error("Usage: hooksecurefunc([table,] \"functionName\", hookfunc)", 2)
+	end
 
 	if not isMethod then
 		arg1, arg2, arg3 = _G, arg1, arg2
@@ -103,7 +107,9 @@ end
 	If a table is passed first, it checks table.variable (e.g. issecurevariable(PlayerFrame, "Show") checks PlayerFrame["Show"] or PlayerFrame.Show (they are the same thing)).
 ]]
 function issecurevariable(t, var)
---	assert(type(t) == "table" and type(var) == "string", "Usage: issecurevariable([table,] \"variable\")")
+--	if type(var) ~= "table" or type(var) ~= "string" then
+--		error("Usage: issecurevariable([table,] \"variable\")", 2)
+--	end
 	return
 end
 
@@ -121,7 +127,9 @@ function tContains(table, item)
 end
 
 function UnitAura(unit, i, filter)
-	assert((type(unit) == "string" or type(unit) == "number") and (type(i) == "string" or type(i) == "number"), "Usage: UnitAura(\"unit\", index [, filter])")
+	if not ((type(unit) == "string" or type(unit) == "number") and (type(i) == "string" or type(i) == "number")) then
+		error("Usage: UnitAura(\"unit\", index [, filter])", 2)
+	end
 
 	if not filter or match(filter, "(HELPFUL)") then
 		local name, rank, aura, count, duration, maxDuration = UnitBuff(unit, i, filter)
@@ -159,7 +167,9 @@ function GetQuestDifficultyColor(level)
 end
 
 function FillLocalizedClassList(tab, female)
-	assert(type(tab) == "table", "Usage: FillLocalizedClassList(classTable[, isFemale])")
+	if type(tab) ~= "table" then
+		error("Usage: FillLocalizedClassList(classTable[, isFemale])", 2)
+	end
 
 	for _, engClass in ipairs(CLASS_SORT_ORDER) do
 		if female then
@@ -237,7 +247,9 @@ function GetCurrentMapAreaID()
 end
 
 function GetMapNameByID(id)
-	assert(type(id) == "string" or type(id) == "number", format("Bad argument #1 to \"GetMapNameByID\" (number expected, got %s)", id and type(id) or "no value"))
+	if not (type(id) == "string" or type(id) == "number") then
+		error(format("Bad argument #1 to \"GetMapNameByID\" (number expected, got %s)", id and type(id) or "no value"), 2)
+	end
 
 	return mapByID[tonumber(id)]
 end
@@ -296,8 +308,11 @@ local function OnValueChanged()
 end
 
 function CreateStatusBarTexturePointer(statusbar)
-	assert(type(statusbar) == "table", format("Bad argument #1 to \"CreateStatusBarTexturePointer\" (table expected, got %s)", statusbar and type(statusbar) or "no value"))
-	assert(statusbar.GetObjectType and statusbar:GetObjectType() == "StatusBar", "Bad argument #1 to \"CreateStatusBarTexturePointer\" (statusbar object expected)")
+	if type(statusbar) ~= "table" then
+		error(format("Bad argument #1 to \"CreateStatusBarTexturePointer\" (table expected, got %s)", statusbar and type(statusbar) or "no value"), 2)
+	elseif not (statusbar.GetObjectType and statusbar:GetObjectType() == "StatusBar") then
+		error("Bad argument #1 to \"CreateStatusBarTexturePointer\" (statusbar object expected)", 2)
+	end
 
 	local f = statusbar:CreateTexture()
 	f.width = statusbar:GetWidth()
@@ -338,7 +353,9 @@ function GetThreatStatusColor(statusIndex)
 end
 
 function GetThreatStatus(currentThreat, maxThreat)
-	assert(type(currentThreat) == "number" and type(maxThreat) == "number", "Usage: GetThreatStatus(currentThreat, maxThreat)")
+	if type(currentThreat) ~= "number" or type(maxThreat) ~= "number" then
+		error("Usage: GetThreatStatus(currentThreat, maxThreat)", 2)
+	end
 
 	if not maxThreat or maxThreat == 0 then
 		maxThreat = 1

@@ -46,14 +46,19 @@ math.huge = 1/0
 string.gmatch = gfind
 
 function difftime(time2, time1)
-	assert(type(time2) == "number", format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"))
-	assert(not time1 or type(time1) == "number", format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"))
+	if type(time2) ~= "number" then
+		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"), 2)
+	elseif time1 and type(time1) ~= "number" then
+		error(format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"), 2)
+	end
 
 	return time1 and time2 - time1 or time2
 end
 
 function select(n, ...)
-	assert(type(n) == "number" or (type(n) == "string" and n == "#"), format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
+	if not (type(n) == "number" or (type(n) == "string" and n == "#")) then
+		error(format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"), 2)
+	end
 
 	if type(n) == "string" then
 		return getn(arg)
@@ -73,7 +78,9 @@ function select(n, ...)
 end
 
 function math.modf(i)
-	assert(type(i) == "number", format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"))
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
 
 	local int = i >= 0 and floor(i) or ceil(i)
 
@@ -81,7 +88,9 @@ function math.modf(i)
 end
 
 function string.join(delimiter, ...)
-	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
+	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
+		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
+	end
 
 	local size = getn(arg)
 	if size == 0 then
@@ -98,9 +107,13 @@ end
 strjoin = string.join
 
 function string.match(str, pattern, index)
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
-	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
-	assert(not index or type(index) == "number" or type(index) == "string", format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"))
+	if type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"), 2)
+	elseif type(pattern) ~= "string" and type(pattern) ~= "number" then
+		error(format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"), 2)
+	elseif index and type(index) ~= "number" and (type(index) ~= "string" or index == "") then
+		error(format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"), 2)
+	end
 
 	str = type(str) == "number" and tostring(str) or str
 	pattern = type(pattern) == "number" and tostring(pattern) or pattern
@@ -122,8 +135,11 @@ end
 strmatch = string.match
 
 function string.split(delimiter, str)
-	assert(type(delimiter) == "string" or type(str) == "number", format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"))
+	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
+		error(format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
+	elseif type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"), 2)
+	end
 
 	str = type(str) == "number" and tostring(str) or str
 
@@ -135,8 +151,11 @@ end
 strsplit = string.split
 
 function string.trim(str, chars)
-	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"))
-	assert(not chars or type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
+	if type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"), 2)
+	elseif chars and (type(chars) ~= "string" and type(chars) ~= "number") then
+		error(format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"), 2)
+	end
 
 	str = type(str) == "number" and tostring(str) or str
 
@@ -179,7 +198,9 @@ end
 strtrim = string.trim
 
 function table.wipe(t)
-	assert(type(t) == "table", format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"))
+	if type(t) ~= "table" then
+		error(format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"), 2)
+	end
 
 	for k in pairs(t) do
 		t[k] = nil
