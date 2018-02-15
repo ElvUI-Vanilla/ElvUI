@@ -543,7 +543,7 @@
 				FrameStackTooltip_OnUpdate(this, arg1);
 			</OnUpdate>
 			<OnEvent>
-				FrameStackTooltip_OnEvent(this, arg);
+				FrameStackTooltip_OnEvent(this, event, arg1);
 			</OnEvent>
 		</Scripts>
 	</GameTooltip>

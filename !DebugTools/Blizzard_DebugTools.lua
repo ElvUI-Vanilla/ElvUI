@@ -1,4 +1,4 @@
-local mod = math.mod
+local modulo = math.modulo
 local getn = table.getn
 
 EVENT_TRACE_EVENT_HEIGHT = 16;
@@ -49,7 +49,7 @@ function EventTraceFrame_OnLoad(self)
 	EventTraceFrame_OnSizeChanged(self, self:GetWidth(), self:GetHeight());
 	self:EnableMouse(true);
 	self:EnableMouseWheel(true);
-	self:SetScript("OnMouseWheel", function() EventTraceFrame_OnMouseWheel(tris, arg1) end);
+	self:SetScript("OnMouseWheel", function() EventTraceFrame_OnMouseWheel(this, arg1) end);
 end
 
 local _workTable = {};
@@ -100,14 +100,14 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			local hours = math.floor(minutes / 60);
 			seconds = seconds - 60 * minutes;
 			minutes = minutes - 60 * hours;
-			hours = mod(hours, 1000)
+			hours = modulo(hours, 1000)
 			self.times[nextIndex] = string.format("%.2d:%.2d:%06.3f", hours, minutes, seconds);
 			self.timeSinceLast[nextIndex] = 0;
 			self.framesSinceLast[nextIndex] = 0;
 			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = select("#", unpack(arg));
-			for i=1, numArgs do
+			local numArgs = getn(arg);
+			for i = 1, numArgs do
 				if (not self.args[i]) then
 					self.args[i] = {};
 				end

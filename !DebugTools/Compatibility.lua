@@ -1,7 +1,7 @@
 -- Cache global variables
-local mod = math.mod
 local pairs = pairs
 local tostring = tostring
+local fmod = math.fmod
 local format, match = string.format, string.match
 local getn, setn, tinsert, tsort, twipe = table.getn, table.setn, table.insert, table.sort, table.wipe
 -- WoW API
@@ -174,7 +174,7 @@ function UpdateFrameStack(tooltip, showHidden)
 		end
 
 		if l ~= ol then
-			cs = mod(cs, cn) + 1
+			cs = fmod(cs, cn) + 1
 			ol = l
 		end
 
