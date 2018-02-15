@@ -9,7 +9,7 @@ local type = type
 local unpack = unpack
 local ceil, floor = math.ceil, math.floor
 local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
-local getn, setn, tinsert = table.getn, table.setn, table.insert
+local concat, getn, setn = table.concat, table.getn, table.setn
 
 math.huge = 1/0
 string.gmatch = string.gfind
@@ -29,11 +29,9 @@ function select(n, ...)
 		error(format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"), 2)
 	end
 
-	if type(n) == "string" then
+	if n == "#" then
 		return getn(arg)
-	end
-
-	if n == 1 then
+	elseif n == 1 then
 		return unpack(arg)
 	end
 
@@ -61,17 +59,11 @@ function string.join(delimiter, ...)
 		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
 	end
 
-	local size = getn(arg)
-	if size == 0 then
+	if getn(arg) == 0 then
 		return ""
 	end
 
-	local text = arg[1]
-	for i = 2, size do
-		text = text..delimiter..arg[i]
-	end
-
-	return text
+	return concat(arg, delimiter)
 end
 strjoin = string.join
 
@@ -84,19 +76,15 @@ function string.match(str, pattern, index)
 		error(format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"), 2)
 	end
 
-	str = type(str) == "number" and tostring(str) or str
-	pattern = type(pattern) == "number" and tostring(pattern) or pattern
-
-	if type(index) == "string" then
-		index = index ~= "" and tonumber(index) or nil
-	end
-
 	local i1, i2, match, match2 = find(str, pattern, index)
 
 	if not match and i2 and i2 >= i1 then
 		return sub(str, i1, i2)
 	elseif match2 then
-		return select(3, find(str, pattern, index))
+		local matches = {find(str, pattern, index)}
+		tremove(matches, 2)
+		tremove(matches, 1)
+		return unpack(matches)
 	end
 
 	return match
@@ -109,8 +97,6 @@ function string.split(delimiter, str)
 	elseif type(str) ~= "string" and type(str) ~= "number" then
 		error(format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"), 2)
 	end
-
-	str = type(str) == "number" and tostring(str) or str
 
 	local fields = {}
 	gsub(str, format("([^%s]+)", delimiter), function(c) fields[getn(fields) + 1] = c end)
@@ -154,24 +140,21 @@ function string.trim(str, chars)
 		error(format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"), 2)
 	end
 
-	str = type(str) == "number" and tostring(str) or str
-
 	if chars then
-		chars = type(chars) == "number" and tostring(chars) or chars
-
 		local tokens = {}
+		local size = 0
 
 		for token in gfind(chars, "[%z\1-\255]") do
-			tinsert(tokens, token)
+			size = size + 1
+			tokens[size] = token
 		end
 
 		local pattern = ""
-		local size = getn(tokens)
 
 		for i = 1, size do
 			pattern = pattern..(escapeSequences[tokens[i]] or tokens[i]).."+"
 
-			if size > 1 and i < size then
+			if i < size then
 				pattern = pattern.."|"
 			end
 		end
@@ -180,16 +163,18 @@ function string.trim(str, chars)
 		local patternEnd = loadstring("return \"^(.-)["..pattern.."]$\"")()
 
 		local trimed, x, y = 1
-		while trimed >= 1 do
+		while trimed > 0 do
 			str, x = gsub(str, patternStart, "%1")
 			str, y = gsub(str, patternEnd, "%1")
 			trimed = x + y
 		end
 
 		return str
-	else
+	elseif type(str) == "string" then
 		-- remove leading/trailing [space][tab][return][newline]
 		return gsub(str, "^%s*(.-)%s*$", "%1")
+	else
+		return tostring(str)
 	end
 end
 strtrim = string.trim
@@ -245,6 +230,7 @@ function tostringall(...)
 	return unpack(LOCAL_ToStringAllTemp)
 end
 
+local strjoin = strjoin
 local LOCAL_PrintHandler = function(...)
 	DEFAULT_CHAT_FRAME:AddMessage(strjoin(" ", tostringall(unpack(arg))))
 end
