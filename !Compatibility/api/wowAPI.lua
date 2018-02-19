@@ -296,13 +296,13 @@ local function OnSizeChanged()
 	this.texturePointer:SetHeight(height)
 end
 
-local function OnValueChanged(value)
+local function OnValueChanged()
 	local _, max = this:GetMinMaxValues()
 
 	if this.texturePointer.verticalOrientation then
-		this.texturePointer:SetHeight(this.texturePointer.height * (value / max))
+		this.texturePointer:SetHeight(this.texturePointer.height * (arg1 / max))
 	else
-		this.texturePointer:SetWidth(this.texturePointer.width * (value / max))
+		this.texturePointer:SetWidth(this.texturePointer.width * (arg1 / max))
 	end
 end
 
