@@ -6,6 +6,7 @@ local M = E:GetModule("Misc");
 local max = math.max
 local tinsert = table.insert
 local unpack, pairs = unpack, pairs
+local gsub = string.gsub
 --WoW API / Variables
 local CloseLoot = CloseLoot
 local CursorOnUpdate = CursorOnUpdate
@@ -207,7 +208,7 @@ function M:LOOT_OPENED(_, autoLoot)
 			local color = ITEM_QUALITY_COLORS[quality]
 
 			if(LootSlotIsCoin(i)) then
-				item = item:gsub("\n", ", ")
+				item = gsub(item, "\n", ", ")
 			end
 
 			if quantity and (quantity > 1) then
