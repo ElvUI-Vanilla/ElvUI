@@ -207,7 +207,7 @@ function M:LOOT_OPENED(_, autoLoot)
 			local color = ITEM_QUALITY_COLORS[quality]
 
 			if(LootSlotIsCoin(i)) then
-				item = item:gsub("\n", ", ")
+				item = string.gsub(item, "\n", ", ")
 			end
 
 			if quantity and (quantity > 1) then
