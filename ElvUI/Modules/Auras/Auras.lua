@@ -264,7 +264,7 @@ function A:ConfigureAuras(header, auraTable, weaponPosition)
 		end
 
 		if buffInfo.filter == "HARMFUL" then
-			local color = DebuffTypeColor[buffInfo.dispelType or ""]
+			local color = DebuffTypeColor[buffInfo.dispelType or ""] or DebuffTypeColor.none
 			button:SetBackdropBorderColor(color.r, color.g, color.b)
 		else
 			button:SetBackdropBorderColor(unpack(E.media.bordercolor))
