@@ -1,4 +1,5 @@
-### NOTE: STILL IN VERY EARLY STAGES OF DEVELOPMENT (MORE TO COME SOON)
+### NOTE: STILL UNDER DEVELOPMENT
+### IF YOU WANT TO TEST AND HELP SUBMIT FEEDBACK OR PULL REQUESTS, PLEASE DO SO IN OUR "DEV" BRANCH: https://github.com/ElvUI-Vanilla/ElvUI/commits/dev
 
 # ElvUI Vanilla (1.12.1)
 This is the backported version of ElvUI for World of Warcraft 1.12.1
