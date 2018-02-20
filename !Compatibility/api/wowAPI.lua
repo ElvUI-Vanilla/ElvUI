@@ -1,6 +1,5 @@
 --Cache global variables
 local _G = _G
---local assert = assert
 local date = date
 local error = error
 local pairs = pairs
@@ -64,7 +63,6 @@ QuestDifficultyColors = {
 }
 
 function HookScript(frame, scriptType, handler)
---	assert(type(frame) == "table" and frame.GetScript and type(scriptType) == "string" and type(handler) == "function", "Usage: HookScript(frame, \"type\", function)")
 	if not (type(frame) == "table" and frame.GetScript and type(scriptType) == "string" and type(handler) == "function") then
 		error("Usage: HookScript(frame, \"type\", function)", 2)
 	end
@@ -84,7 +82,6 @@ end
 
 function hooksecurefunc(arg1, arg2, arg3)
 	local isMethod = type(arg1) == "table" and type(arg2) == "string" and type(arg1[arg2]) == "function" and type(arg3) == "function"
---	assert(isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function"), "Usage: hooksecurefunc([table,] \"functionName\", hookfunc)")
 	if not (isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function")) then
 		error("Usage: hooksecurefunc([table,] \"functionName\", hookfunc)", 2)
 	end
@@ -111,7 +108,9 @@ end
 	If a table is passed first, it checks table.variable (e.g. issecurevariable(PlayerFrame, "Show") checks PlayerFrame["Show"] or PlayerFrame.Show (they are the same thing)).
 ]]
 function issecurevariable(t, var)
---	assert(type(t) == "table" and type(var) == "string", "Usage: issecurevariable([table,] \"variable\")")
+--	if type(var) ~= "table" or type(var) ~= "string" then
+--		error("Usage: issecurevariable([table,] \"variable\")", 2)
+--	end
 	return
 end
 
@@ -129,7 +128,6 @@ function tContains(table, item)
 end
 
 function UnitAura(unit, i, filter)
---	assert((type(unit) == "string" or type(unit) == "number") and (type(i) == "string" or type(i) == "number"), "Usage: UnitAura(\"unit\", index [, filter])")
 	if not ((type(unit) == "string" or type(unit) == "number") and (type(i) == "string" or type(i) == "number")) then
 		error("Usage: UnitAura(\"unit\", index [, filter])", 2)
 	end
@@ -170,7 +168,6 @@ function GetQuestDifficultyColor(level)
 end
 
 function FillLocalizedClassList(tab, female)
---	assert(type(tab) == "table", "Usage: FillLocalizedClassList(classTable[, isFemale])")
 	if type(tab) ~= "table" then
 		error("Usage: FillLocalizedClassList(classTable[, isFemale])", 2)
 	end
@@ -235,10 +232,8 @@ function GetInstanceInfo()
 	local name = GetRealZoneText()
 
 	local difficulty = 1
-	local difficultyName = DUNGEON_DIFFICULTY1
 	local maxPlayers = GetMaxPlayersByType(instanceType, name)
-
-	difficultyName = format("%d %s", maxPlayers, difficultyName)
+	local difficultyName = format("%d %s", maxPlayers, DUNGEON_DIFFICULTY1)
 
 	return name, instanceType, difficulty, difficultyName, maxPlayers
 end
@@ -251,7 +246,6 @@ function GetCurrentMapAreaID()
 end
 
 function GetMapNameByID(id)
---	assert(type(id) == "string" or type(id) == "number", format("Bad argument #1 to \"GetMapNameByID\" (number expected, got %s)", id and type(id) or "no value"))
 	if not (type(id) == "string" or type(id) == "number") then
 		error(format("Bad argument #1 to \"GetMapNameByID\" (number expected, got %s)", id and type(id) or "no value"), 2)
 	end
@@ -295,6 +289,7 @@ end
 
 local function OnSizeChanged()
 	local width, height = this:GetWidth(), this:GetHeight()
+
 	this.texturePointer.width = width
 	this.texturePointer.height = height
 	this.texturePointer:SetWidth(width)
@@ -302,19 +297,16 @@ local function OnSizeChanged()
 end
 
 local function OnValueChanged()
-	local value = arg1
 	local _, max = this:GetMinMaxValues()
 
 	if this.texturePointer.verticalOrientation then
-		this.texturePointer:SetHeight(this.texturePointer.height * (value / max))
+		this.texturePointer:SetHeight(this.texturePointer.height * (arg1 / max))
 	else
-		this.texturePointer:SetWidth(this.texturePointer.width * (value / max))
+		this.texturePointer:SetWidth(this.texturePointer.width * (arg1 / max))
 	end
 end
 
 function CreateStatusBarTexturePointer(statusbar)
---	assert(type(statusbar) == "table", format("Bad argument #1 to \"CreateStatusBarTexturePointer\" (table expected, got %s)", statusbar and type(statusbar) or "no value"))
---	assert(statusbar.GetObjectType and statusbar:GetObjectType() == "StatusBar", "Bad argument #1 to \"CreateStatusBarTexturePointer\" (statusbar object expected)")
 	if type(statusbar) ~= "table" then
 		error(format("Bad argument #1 to \"CreateStatusBarTexturePointer\" (table expected, got %s)", statusbar and type(statusbar) or "no value"), 2)
 	elseif not (statusbar.GetObjectType and statusbar:GetObjectType() == "StatusBar") then
@@ -360,7 +352,6 @@ function GetThreatStatusColor(statusIndex)
 end
 
 function GetThreatStatus(currentThreat, maxThreat)
---	assert(type(currentThreat) == "number" and type(maxThreat) == "number", "Usage: GetThreatStatus(currentThreat, maxThreat)")
 	if type(currentThreat) ~= "number" or type(maxThreat) ~= "number" then
 		error("Usage: GetThreatStatus(currentThreat, maxThreat)", 2)
 	end
@@ -382,21 +373,21 @@ function GetThreatStatus(currentThreat, maxThreat)
 	end
 end
 
-local MAX_ITEM_ID = 24283
-local ItemInfoDB = {}
+local LAST_ITEM_ID = 24283
+local itemInfoDB = {}
 
-function GetItemInfoByName(name)
---	assert(type(itemName) == "string", "Usage: GetItemInfoByName(itemName)")
-	if type(name) ~= "string" then
+function GetItemInfoByName(itemName)
+	if type(itemName) ~= "string" then
 		error("Usage: GetItemInfoByName(itemName)", 2)
 	end
 
-	if not ItemInfoDB[name] then
-		local itemName
-		for itemID = 1, MAX_ITEM_ID do
-			itemName = GetItemInfo(itemID)
-			if itemName ~= "" then
-				ItemInfoDB[name] = itemID
+	if not itemInfoDB[itemName] then
+		local name
+		for itemID = 1, LAST_ITEM_ID do
+			name = GetItemInfo(itemID)
+
+			if name ~= "" then
+				itemInfoDB[name] = itemID
 
 				if name == itemName then
 					break
@@ -405,7 +396,7 @@ function GetItemInfoByName(name)
 		end
 	end
 
-	if not ItemInfoDB[name] then return end
+	if not itemInfoDB[itemName] then return end
 
-	return GetItemInfo(ItemInfoDB[name])
+	return GetItemInfo(itemInfoDB[itemName])
 end

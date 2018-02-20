@@ -1,53 +1,22 @@
 --Cache global variables
---local assert = assert
 local error = error
 local geterrorhandler = geterrorhandler
 local loadstring = loadstring
 local pairs = pairs
 local pcall = pcall
+local tonumber = tonumber
 local tostring = tostring
 local type = type
 local unpack = unpack
-local ceil, floor = math.ceil, math.floor
-local find, format, gfind, gsub, sub = string.find, string.format, string.gfind, string.gsub, string.sub
-local concat, getn, setn, tinsert = table.concat, table.getn, table.setn, table.insert
+local abs, ceil, exp, floor = math.abs, math.ceil, math.exp, math.floor
+local find, format, gfind, gsub, len, sub = string.find, string.format, string.gfind, string.gsub, string.len, string.sub
+local concat, getn, setn = table.concat, table.getn, table.setn
 
-local escapeSequences = {
-	["\a"] = "\\a", -- Bell
-	["\b"] = "\\b", -- Backspace
-	["\t"] = "\\t", -- Horizontal tab
-	["\n"] = "\\n", -- Newline
-	["\v"] = "\\v", -- Vertical tab
-	["\f"] = "\\f", -- Form feed
-	["\r"] = "\\r", -- Carriage return
-	["\\"] = "\\\\", -- Backslash
-	["\""] = "\\\"", -- Quotation mark
-	["|"] = "||",
-	[" "] = "%s",
-
-	[" "] = "%s",
-	["!"] = "\\!",
-	["#"] = "\\#",
-	["$"] = "\\$",
-	["%"] = "\\%",
-	["&"] = "\\&",
-	["'"] = "\\'",
-	["("] = "\\(",
-	[")"] = "\\)",
-	["*"] = "\\*",
-	["+"] = "\\+",
-	[","] = "\\,",
-	["-"] = "\\-",
-	["."] = "\\.",
-	["/"] = "\\/"
-}
-
+math.fmod = math.mod
 math.huge = 1/0
-string.gmatch = gfind
+string.gmatch = string.gfind
 
 function difftime(time2, time1)
---	assert(type(time2) == "number", format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"))
---	assert(not time1 or type(time1) == "number", format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"))
 	if type(time2) ~= "number" then
 		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"), 2)
 	elseif time1 and type(time1) ~= "number" then
@@ -58,16 +27,13 @@ function difftime(time2, time1)
 end
 
 function select(n, ...)
---	assert(type(n) == "number" or (type(n) == "string" and n == "#"), format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"))
 	if not (type(n) == "number" or (type(n) == "string" and n == "#")) then
 		error(format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"), 2)
 	end
 
-	if type(n) == "string" then
+	if n == "#" then
 		return getn(arg)
-	end
-
-	if n == 1 then
+	elseif n == 1 then
 		return unpack(arg)
 	end
 
@@ -80,10 +46,18 @@ function select(n, ...)
 	return unpack(args)
 end
 
+local huge = math.huge
 function math.modf(i)
---	assert(type(i) == "number", format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"))
+	i = type(i) ~= "number" and tonumber(i) or i
+
 	if type(i) ~= "number" then
 		error(format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	if i == 0 then
+		return i, i
+	elseif abs(i) == huge then
+		return i, i > 0 and 0 or -0
 	end
 
 	local int = i >= 0 and floor(i) or ceil(i)
@@ -91,8 +65,119 @@ function math.modf(i)
 	return int, i - int
 end
 
+function math.modulo(x, y)
+	x = type(x) ~= "number" and tonumber(i) or x
+	y = type(y) ~= "number" and tonumber(i) or y
+
+	if type(x) ~= "number" then
+		error(format("bad argument #1 to 'modulo' (number expected, got %s)", x and type(x) or "no value"), 2)
+	elseif type(y) ~= "number" then
+		error(format("bad argument #2 to 'modulo' (number expected, got %s)", y and type(y) or "no value"), 2)
+	end
+
+	return x - floor(x / y) * y
+end
+
+function math.cosh(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'cosh' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	if i < 0 then
+		i = -i
+	end
+
+	if i > 21 then
+		return exp(i) / 2
+	end
+
+	return (exp(i) + exp(-i)) / 2
+end
+
+local sinhC = {
+	["P0"] = -0.6307673640497716991184787251e+6,
+	["P1"] = -0.8991272022039509355398013511e+5,
+	["P2"] = -0.2894211355989563807284660366e+4,
+	["P3"] = -0.2630563213397497062819489e+2,
+	["Q0"] = -0.6307673640497716991212077277e+6,
+	["Q1"] = 0.1521517378790019070696485176e+5,
+	["Q2"] = -0.173678953558233699533450911e+3
+}
+function math.sinh(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'sinh' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	local neg, x
+
+	if i < 0 then
+		i = -i
+		neg = true
+	end
+
+	if i > 21 then
+		x = exp(i) / 2
+	elseif i > 0.5 then
+		x = (exp(i) - exp(-i)) / 2
+	else
+		local sq = i * i
+		x = (((sinhC["P3"] * sq + sinhC["P2"]) * sq + sinhC["P1"]) * sq + sinhC["P0"]) * i
+		x = x / (((sq + sinhC["Q2"]) * sq + sinhC["Q1"]) * sq + sinhC["Q0"])
+	end
+
+	if neg then
+		x = -x
+	end
+
+	return x
+end
+
+local MAXLOG2 = 8.8029691931113054295988e+01 * 0.5
+local tanhP = {
+	-9.64399179425052238628E-1,
+	-9.92877231001918586564E1,
+	-1.61468768441708447952E3,
+}
+local tanhQ = {
+	1.12811678491632931402E2,
+	2.23548839060100448583E3,
+	4.84406305325125486048E3,
+}
+function math.tanh(i)
+	i = type(i) ~= "number" and tonumber(i) or i
+
+	if type(i) ~= "number" then
+		error(format("bad argument #1 to 'tanh' (number expected, got %s)", i and type(i) or "no value"), 2)
+	end
+
+	if i == 0 then
+		return i
+	end
+
+	local x = abs(i)
+
+	if x > MAXLOG2 then
+		return i < 0 and -1 or 1
+	elseif x >= 0.625 then
+		local s = exp(2 * x)
+		x = 1 - 2 / (s + 1)
+
+		if i < 0 then
+			x = -x
+		end
+	else
+		local sq = i * i
+		x = i + i * sq * ((tanhP[1] * sq + tanhP[2]) * sq + tanhP[3]) / (((sq + tanhQ[1]) * sq + tanhQ[2]) * sq + tanhQ[3])
+	end
+
+	return x
+end
+
 function string.join(delimiter, ...)
---	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
 		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
 	end
@@ -106,9 +191,6 @@ end
 strjoin = string.join
 
 function string.match(str, pattern, index)
---	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"))
---	assert(type(pattern) == "string" or type(pattern) == "number", format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"))
---	assert(not index or type(index) == "number" or (type(index) == "string" and index ~= ""), format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"))
 	if type(str) ~= "string" and type(str) ~= "number" then
 		error(format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"), 2)
 	elseif type(pattern) ~= "string" and type(pattern) ~= "number" then
@@ -132,9 +214,25 @@ function string.match(str, pattern, index)
 end
 strmatch = string.match
 
+function string.reverse(str)
+	if type(str) ~= "string" and type(str) ~= "number" then
+		error(format("bad argument #1 to 'reverse' (string expected, got %s)", str and type(str) or "no value"), 2)
+	end
+
+	local size = len(str)
+	if size > 1 then
+		local reversed = ""
+		for i = size, 1, -1 do
+			reversed = reversed .. sub(str, i, i)
+		end
+
+		return reversed
+	end
+
+	return str
+end
+
 function string.split(delimiter, str)
---	assert(type(delimiter) == "string" or type(delimiter) == "number", format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"))
---	assert(type(str) == "string" or type(str) == "number", format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"))
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
 		error(format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
 	elseif type(str) ~= "string" and type(str) ~= "number" then
@@ -148,9 +246,35 @@ function string.split(delimiter, str)
 end
 strsplit = string.split
 
+local escapeSequences = {
+	["\a"] = "\\a", -- Bell
+	["\b"] = "\\b", -- Backspace
+	["\t"] = "\\t", -- Horizontal tab
+	["\n"] = "\\n", -- Newline
+	["\v"] = "\\v", -- Vertical tab
+	["\f"] = "\\f", -- Form feed
+	["\r"] = "\\r", -- Carriage return
+	["\\"] = "\\\\", -- Backslash
+	["\""] = "\\\"", -- Quotation mark
+	["|"] = "||",
+	[" "] = "%s",
+
+	["!"] = "\\!",
+	["#"] = "\\#",
+	["$"] = "\\$",
+	["%"] = "\\%",
+	["&"] = "\\&",
+	["'"] = "\\'",
+	["("] = "\\(",
+	[")"] = "\\)",
+	["*"] = "\\*",
+	["+"] = "\\+",
+	[","] = "\\,",
+	["-"] = "\\-",
+	["."] = "\\.",
+	["/"] = "\\/"
+}
 function string.trim(str, chars)
---	assert(type(str) == "string" or type(str) == "number", format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"))
---	assert(not chars or type(chars) == "string" or type(chars) == "number", format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"))
 	if type(str) ~= "string" and type(str) ~= "number" then
 		error(format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"), 2)
 	elseif chars and (type(chars) ~= "string" and type(chars) ~= "number") then
@@ -159,13 +283,14 @@ function string.trim(str, chars)
 
 	if chars then
 		local tokens = {}
+		local size = 0
 
 		for token in gfind(chars, "[%z\1-\255]") do
-			tinsert(tokens, token)
+			size = size + 1
+			tokens[size] = token
 		end
 
 		local pattern = ""
-		local size = getn(tokens)
 
 		for i = 1, size do
 			pattern = pattern..(escapeSequences[tokens[i]] or tokens[i]).."+"
@@ -196,7 +321,6 @@ end
 strtrim = string.trim
 
 function table.wipe(t)
---	assert(type(t) == "table", format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"))
 	if type(t) ~= "table" then
 		error(format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"), 2)
 	end
