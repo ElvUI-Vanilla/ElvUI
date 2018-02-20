@@ -1,0 +1,24 @@
+## Interface: 11200
+## Author: Elv, Bunny
+## Version: 1.01
+## Title: |cffA11313E|r|cffC4C4C4lvUI|r |cffA11313C|r|cffC4C4C4onfig|r
+## Notes: Options for ElvUI.
+## RequiredDeps: ElvUI
+## LoadOnDemand: true
+
+Libraries\Load_Libraries.xml
+Locales\Load_Locales.xml
+Core.lua
+General.lua
+ActionBars.lua
+Auras.lua
+Bags.lua
+Chat.lua
+DataTexts.lua
+Filters.lua
+NamePlates.lua
+Skins.lua
+Tooltip.lua
+Unitframes.lua
+DataBars.lua
+Maps.lua

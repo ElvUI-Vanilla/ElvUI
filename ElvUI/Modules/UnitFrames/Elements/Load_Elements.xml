@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="CombatIndicator.lua"/>
+	<Script file="Health.lua"/>
+	<Script file="Name.lua"/>
+	<Script file="Portrait.lua"/>
+	<Script file="Power.lua"/>
+	<Script file="InfoPanel.lua"/>
+	<Script file="RaidIcon.lua"/>
+	<Script file="RaidRoleIcons.lua"/>
+	<Script file="RestingIndicator.lua"/>
+</Ui>

@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Auras.lua"/>
+	<Script file="CastBar.lua"/>
+	<Script file="ComboPoints.lua"/>
+	<Script file="Glow.lua"/>
+	<Script file="HealthBar.lua"/>
+	<Script file="Level.lua"/>
+	<Script file="Name.lua"/>
+	<Script file="RaidIcon.lua"/>
+	<Script file="HealerIcon.lua"/>
+</Ui>

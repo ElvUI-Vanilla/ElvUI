@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="DataTexts.lua"/>
+	<Script file="Armor.lua"/>
+	<Script file="AttackPower.lua"/>
+	<Script file="Avoidance.lua"/>
+	<Script file="Durability.lua"/>
+	<Script file="Friends.lua"/>
+	<Script file="Gold.lua"/>
+	<Script file="Guild.lua"/>
+	<Script file="System.lua"/>
+	<Script file="Time.lua"/>
+</Ui>

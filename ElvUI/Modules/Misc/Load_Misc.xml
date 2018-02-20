@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Misc.lua"/>
+	<Script file="AFK.lua"/>
+	<Script file="ChatBubbles.lua"/>
+	<Script file="Loot.lua"/>
+	<Script file="LootRoll.lua"/>
+	<Script file="RaidMarker.lua"/>
+</Ui>

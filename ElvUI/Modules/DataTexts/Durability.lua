@@ -1,0 +1,102 @@
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local DT = E:GetModule("DataTexts");
+
+--Cache global variables
+--Lua functions
+local _G = _G
+local pairs = pairs
+local format, join, upper = string.format, string.join, string.upper
+--WoW API / Variables
+local GetInventoryItemDurability = GetInventoryItemDurability
+local GetInventoryItemTexture = GetInventoryItemTexture
+local GetInventorySlotInfo = GetInventorySlotInfo
+local ToggleCharacter = ToggleCharacter
+local DURABILITY_TEMPLATE = string.gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%d+)")
+
+local DURABILITY = "Durability" -- Neel ElvUI locale
+
+local displayString = ""
+local tooltipString = "%d%%"
+local totalDurability = 0
+local current, max, lastPanel
+local invDurability = {}
+local slots = {
+	"RangedSlot",
+	"SecondaryHandSlot",
+	"MainHandSlot",
+	"FeetSlot",
+	"LegsSlot",
+	"HandsSlot",
+	"WristSlot",
+	"WaistSlot",
+	"ChestSlot",
+	"ShoulderSlot",
+	"HeadSlot"
+}
+
+local scan
+local function GetInventoryItemDurability(slot)
+	if not GetInventoryItemTexture("player", slot) then return nil, nil end
+
+	if not scan then
+		scan = CreateFrame("GameTooltip", "DurabilityScan", nil, "ShoppingTooltipTemplate")
+		scan:SetOwner(UIParent, "ANCHOR_NONE")
+	end
+
+	scan:ClearLines()
+	scan:SetInventoryItem("player", slot)
+
+	for i = 4, scan:NumLines() do
+		local text = _G[scan:GetName().."TextLeft"..i]:GetText()
+		for durability, max in string.gfind(text, DURABILITY_TEMPLATE) do
+			return tonumber(durability), tonumber(max)
+		end
+	end
+end
+
+local function OnEvent(self, t)
+	lastPanel = self
+	totalDurability = 100
+
+	for _, value in pairs(slots) do
+		local slot = GetInventorySlotInfo(value)
+		current, max = GetInventoryItemDurability(slot)
+
+		if current then
+			current, max = GetInventoryItemDurability(slot)
+
+			invDurability[value] = (current / max) * 100
+
+			if ((current / max) * 100) < totalDurability then
+				totalDurability = (current / max) * 100
+			end
+		end
+	end
+
+	self.text:SetText(format(displayString, totalDurability))
+end
+
+local function OnClick()
+	ToggleCharacter("PaperDollFrame")
+end
+
+local function OnEnter(self)
+	DT:SetupTooltip(self)
+
+	for slot, durability in pairs(invDurability) do
+		DT.tooltip:AddDoubleLine(_G[upper(slot)], format(tooltipString, durability), 1, 1, 1, E:ColorGradient(durability * 0.01, 1, 0, 0, 1, 1, 0, 0, 1, 0))
+	end
+
+	DT.tooltip:Show()
+end
+
+local function ValueColorUpdate(hex)
+	displayString = join("", DURABILITY, ": ", hex, "%d%%|r")
+
+	if lastPanel ~= nil then
+		OnEvent(lastPanel, "ELVUI_COLOR_UPDATE")
+	end
+end
+E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+
+DT:RegisterDatatext("Durability", {"PLAYER_ENTERING_WORLD", "UPDATE_INVENTORY_ALERTS", "MERCHANT_SHOW"}, OnEvent, nil, OnClick, OnEnter, nil, DURABILITY)

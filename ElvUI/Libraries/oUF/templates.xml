@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Frame name="oUF_GroupHeaderTemplate" hidden="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				this:RegisterEvent("PARTY_MEMBERS_CHANGED")
+				this:RegisterEvent("RAID_ROSTER_UPDATE")
+			</OnLoad>
+			<OnEvent>
+				SecureGroupHeader_OnEvent(this, event)
+			</OnEvent>
+			<OnShow>
+				SecureGroupHeader_Update(this)
+			</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>
