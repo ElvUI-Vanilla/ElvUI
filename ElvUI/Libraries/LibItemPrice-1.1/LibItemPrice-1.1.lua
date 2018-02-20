@@ -60,9 +60,9 @@ do
 	function get(id)
 		if id and id <= 39656 and id > 0 then
 			local index = id * 3
-			local a, b, c = byte(prices, index - 2, index)
-			local b = byte(index - 2)
-			local c = byte(index)
+			local a = byte(prices, index - 2, index)
+			local b = byte(prices, index - 2)
+			local c = byte(prices, index)
 			if a == 122 and b == 122 and c == 122 then return 0 end
 			if b == 0 then
 				if c == 0 then
