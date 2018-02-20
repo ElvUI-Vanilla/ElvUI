@@ -386,7 +386,7 @@ function GetItemInfoByName(itemName)
 		for itemID = 1, LAST_ITEM_ID do
 			name = GetItemInfo(itemID)
 
-			if name ~= "" then
+			if name ~= "" and name ~= nil then
 				itemInfoDB[name] = itemID
 
 				if name == itemName then

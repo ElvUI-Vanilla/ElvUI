@@ -697,7 +697,7 @@ function B:GetGraysValue()
 	local c = 0
 
 	for b = 0, NUM_BAG_FRAMES do
-		for s = 0, GetContainerNumSlots(b) do
+		for s = 1, GetContainerNumSlots(b) do
 			local l = GetContainerItemLink(b, s)
 			if l and find(l,"ff9d9d9d") then
 				-- local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
@@ -724,24 +724,19 @@ function B:VendorGrays(delete, _, getValue)
 			local l = GetContainerItemLink(b, s)
 			if l and find(l,"ff9d9d9d") then
 				-- local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
-
 				if delete then
-					if find(l,"ff9d9d9d") then
-						if not getValue then
-							PickupContainerItem(b, s)
-							DeleteCursorItem()
-						end
-						c = c + p
-						count = count + 1
+					if not getValue then
+						PickupContainerItem(b, s)
+						DeleteCursorItem()
 					end
+					-- c = c + p
+					count = count + 1
 				else
-					if select(3, GetItemInfo(l)) == 0 and p > 0 then
-						if not getValue then
-							UseContainerItem(b, s)
-							PickupMerchantItem()
-						end
-						c = c + p
+					if not getValue then
+						UseContainerItem(b, s)
+						PickupMerchantItem()
 					end
+					-- c = c + p
 				end
 			end
 		end
@@ -758,11 +753,12 @@ function B:VendorGrays(delete, _, getValue)
 end
 
 function B:VendorGrayCheck()
-	local value = B:GetGraysValue()
+	-- local value = B:GetGraysValue()
 
-	if value == 0 then
-		E:Print(L["No gray items to delete."])
-	elseif not MerchantFrame or not MerchantFrame:IsShown() then
+	-- if value == 0 then
+	-- 	E:Print(L["No gray items to delete."])
+	-- else
+	if not MerchantFrame or not MerchantFrame:IsShown() then
 		E.PopupDialogs["DELETE_GRAYS"].Money = value
 		E:StaticPopup_Show("DELETE_GRAYS")
 	else
