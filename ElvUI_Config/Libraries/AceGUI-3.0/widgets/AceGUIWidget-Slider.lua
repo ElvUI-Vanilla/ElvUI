@@ -7,7 +7,8 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local min, max, floor, format = math.min, math.max, math.floor, string.format
+local min, max, floor = math.min, math.max, math.floor
+local format, gsub = string.format, string.gsub
 local tonumber, pairs = tonumber, pairs
 
 -- WoW APIs
@@ -101,7 +102,7 @@ local function EditBox_OnEnterPressed()
 	local self = this.obj
 	local value = this:GetText()
 	if self.ispercent then
-		value = value:gsub('%%', '')
+		value = gsub(value, '%%', '')
 		value = tonumber(value) / 100
 	else
 		value = tonumber(value)

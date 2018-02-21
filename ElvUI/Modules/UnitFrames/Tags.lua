@@ -1,30 +1,32 @@
-local E, L, V, P, G = unpack(ElvUI)
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
-local _G = _G;
-local floor = math.floor;
-local format = string.format;
-
-local GetPVPTimer = GetPVPTimer;
-local GetTime = GetTime;
-local UnitClass = UnitClass;
-local UnitClassification = UnitClassification;
-local UnitGUID = UnitGUID;
-local UnitIsAFK = UnitIsAFK;
-local UnitIsConnected = UnitIsConnected;
-local UnitIsDND = UnitIsDND;
-local UnitIsDead = UnitIsDead;
-local UnitIsDeadOrGhost = UnitIsDeadOrGhost;
-local UnitIsGhost = UnitIsGhost;
-local UnitIsPVP = UnitIsPVP;
-local UnitIsPVPFreeForAll = UnitIsPVPFreeForAll;
-local UnitIsPlayer = UnitIsPlayer;
-local UnitLevel = UnitLevel;
-local UnitMana = UnitMana;
-local UnitManaMax = UnitManaMax;
-local UnitPowerType = UnitPowerType;
-local UnitReaction = UnitReaction;
-local DEFAULT_AFK_MESSAGE = DEFAULT_AFK_MESSAGE;
-local PVP = PVP;
+--Cache global variables
+--Lua functions
+local _G = _G
+local floor = math.floor
+local format = string.format
+--WoW API / Variables
+local GetPVPTimer = GetPVPTimer
+local GetTime = GetTime
+local UnitClass = UnitClass
+local UnitClassification = UnitClassification
+local UnitGUID = UnitGUID
+local UnitIsAFK = UnitIsAFK
+local UnitIsConnected = UnitIsConnected
+local UnitIsDND = UnitIsDND
+local UnitIsDead = UnitIsDead
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitIsGhost = UnitIsGhost
+local UnitIsPVP = UnitIsPVP
+local UnitIsPVPFreeForAll = UnitIsPVPFreeForAll
+local UnitIsPlayer = UnitIsPlayer
+local UnitLevel = UnitLevel
+local UnitMana = UnitMana
+local UnitManaMax = UnitManaMax
+local UnitPowerType = UnitPowerType
+local UnitReaction = UnitReaction
+local DEFAULT_AFK_MESSAGE = DEFAULT_AFK_MESSAGE
+local PVP = PVP
 
 ------------------------------------------------------------------------
 --	Tags
@@ -34,7 +36,7 @@ ElvUF.Tags.Events["afk"] = "PLAYER_FLAGS_CHANGED"
 ElvUF.Tags.Methods["afk"] = function(unit)
 	local isAFK = UnitIsAFK(unit)
 	if isAFK then
-		return ("|cffFFFFFF[|r|cffFF0000%s|r|cFFFFFFFF]|r"):format(DEFAULT_AFK_MESSAGE)
+		return format("|cffFFFFFF[|r|cffFF0000%s|r|cFFFFFFFF]|r", DEFAULT_AFK_MESSAGE)
 	else
 		return ""
 	end
@@ -474,7 +476,7 @@ ElvUF.Tags.Methods["statustimer"] = function(unit)
 		local timer = GetTime() - unitStatus[guid][2]
 		local mins = floor(timer / 60)
 		local secs = floor(timer - (mins * 60))
-		return ("%s (%01.f:%02.f)"):format(status, mins, secs)
+		return format("%s (%01.f:%02.f)", status, mins, secs)
 	else
 		return ""
 	end
@@ -488,7 +490,7 @@ ElvUF.Tags.Methods["pvptimer"] = function(unit)
 		if timer ~= 301000 and timer ~= -1 then
 			local mins = floor((timer / 1000) / 60)
 			local secs = floor((timer / 1000) - (mins * 60))
-			return ("%s (%01.f:%02.f)"):format(PVP, mins, secs)
+			return format("%s (%01.f:%02.f)", PVP, mins, secs)
 		else
 			return PVP
 		end

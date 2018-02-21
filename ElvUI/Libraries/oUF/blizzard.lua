@@ -1,24 +1,26 @@
 local ns = oUF
 local oUF = ns.oUF
 
+local format, match = string.format, string.match
+
 local hiddenParent = CreateFrame("Frame")
 
 -- sourced from FrameXML/PartyMemberFrame.lua
 local MAX_PARTY_MEMBERS = MAX_PARTY_MEMBERS or 4
 
-local hiddenParent = CreateFrame('Frame', nil, UIParent)
+local hiddenParent = CreateFrame("Frame", nil, UIParent)
 hiddenParent:SetAllPoints()
 hiddenParent:Hide()
 
 local function handleFrame(baseName)
 	local frame
-	if(type(baseName) == 'string') then
+	if type(baseName) == "string" then
 		frame = _G[baseName]
 	else
 		frame = baseName
 	end
 
-	if(frame) then
+	if frame then
 		frame:UnregisterAllEvents()
 		frame:Hide()
 
@@ -26,46 +28,46 @@ local function handleFrame(baseName)
 		frame:SetParent(hiddenParent)
 
 		local health = frame.healthBar or frame.healthbar
-		if(health) then
+		if health then
 			health:UnregisterAllEvents()
 		end
 
 		local power = frame.manabar
-		if(power) then
+		if power then
 			power:UnregisterAllEvents()
 		end
 
 		local spell = frame.castBar or frame.spellbar
-		if(spell) then
+		if spell then
 			spell:UnregisterAllEvents()
 		end
 
 		local buffFrame = frame.BuffFrame
-		if(buffFrame) then
+		if buffFrame then
 			buffFrame:UnregisterAllEvents()
 		end
 	end
 end
 
 function oUF:DisableBlizzard(unit)
-	if(not unit) then return end
+	if not unit then return end
 
-	if(unit == 'player') then
+	if unit == "player" then
 		handleFrame(PlayerFrame)
-	elseif(unit == 'pet') then
+	elseif unit == "pet" then
 		handleFrame(PetFrame)
-	elseif(unit == 'target') then
+	elseif unit == "target" then
 		handleFrame(TargetFrame)
 		handleFrame(ComboFrame)
-	elseif(unit == 'targettarget') then
+	elseif unit == "targettarget" then
 		handleFrame(TargetofTargetFrame)
-	elseif(unit:match('party%d?$')) then
-		local id = unit:match('party(%d)')
-		if(id) then
-			handleFrame('PartyMemberFrame' .. id)
+	elseif match(unit, "party%d?$") then
+		local id = match(unit, "party(%d)")
+		if id then
+			handleFrame("PartyMemberFrame" .. id)
 		else
 			for i = 1, MAX_PARTY_MEMBERS do
-				handleFrame(string.format('PartyMemberFrame%d', i))
+				handleFrame(format("PartyMemberFrame%d", i))
 			end
 		end
 	end

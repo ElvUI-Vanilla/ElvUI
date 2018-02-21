@@ -7,7 +7,7 @@ local select = select
 local tonumber = tonumber
 local type = type
 local unpack = unpack
-local format, gsub, lower, match, upper = string.format, string.gsub, string.lower, string.match, string.upper
+local find, format, gsub, lower, match, upper = string.find, string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
 local GetItemInfo = GetItemInfo
@@ -399,4 +399,25 @@ function GetItemInfoByName(itemName)
 	if not itemInfoDB[itemName] then return end
 
 	return GetItemInfo(itemInfoDB[itemName])
+end
+
+function GetItemCount(itemName)
+	local count = 0
+	for bag = NUM_BAG_FRAMES, 0, -1 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local _, itemCount = GetContainerItemInfo(bag, slot)
+			if itemCount then
+				local itemLink = GetContainerItemLink(bag, slot)
+				local _, _, itemParse = find(itemLink, "(%d+):")
+				local queryName, _, _, _, _, _ = GetItemInfo(itemParse)
+				if queryName and queryName ~= "" then
+					if queryName == itemName then
+						count = count + itemCount
+					end
+				end
+			end
+		end
+	end
+
+	return count
 end

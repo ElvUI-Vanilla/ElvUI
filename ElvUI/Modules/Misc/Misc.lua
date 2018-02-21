@@ -83,8 +83,10 @@ function M:MERCHANT_SHOW()
 	if IsShiftKeyDown() or autoRepair == "NONE" or not CanMerchantRepair() then return end
 
 	local cost, possible = GetRepairAllCost()
-	if cost > 0 then
-		if possible then
+	local money = GetMoney()
+
+	if possible then
+		if cost > 0 and money >= cost then
 			RepairAllItems(autoRepair == "PLAYER")
 			E:Print(L["Your items have been repaired for: "]..E:FormatMoney(cost, "BLIZZARD"))
 		else
