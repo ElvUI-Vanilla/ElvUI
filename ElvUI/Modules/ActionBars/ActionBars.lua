@@ -486,7 +486,7 @@ function AB:Initialize()
 	end
 
 	self:UpdateButtonSettings()
-	--self:LoadKeyBinder()
+	self:LoadKeyBinder()
 
 	self:SecureHook("ActionButton_Update")
 	self:RawHook("ActionButton_GetPagedID")
