@@ -27,37 +27,37 @@ A default texture will be applied to the StatusBar and Texture widgets if they d
 ## Examples
 
     -- Position and size
-    local Castbar = CreateFrame('StatusBar', nil, self)
+    local Castbar = CreateFrame("StatusBar", nil, self)
     Castbar:SetSize(20, 20)
-    Castbar:SetPoint('TOP')
-    Castbar:SetPoint('LEFT')
-    Castbar:SetPoint('RIGHT')
+    Castbar:SetPoint("TOP")
+    Castbar:SetPoint("LEFT")
+    Castbar:SetPoint("RIGHT")
 
     -- Add a background
-    local Background = Castbar:CreateTexture(nil, 'BACKGROUND')
+    local Background = Castbar:CreateTexture(nil, "BACKGROUND")
     Background:SetAllPoints(Castbar)
     Background:SetTexture(1, 1, 1, .5)
 
     -- Add a spark
-    local Spark = Castbar:CreateTexture(nil, 'OVERLAY')
+    local Spark = Castbar:CreateTexture(nil, "OVERLAY")
     Spark:SetSize(20, 20)
-    Spark:SetBlendMode('ADD')
+    Spark:SetBlendMode("ADD")
 
     -- Add a timer
-    local Time = Castbar:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall')
-    Time:SetPoint('RIGHT', Castbar)
+    local Time = Castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    Time:SetPoint("RIGHT", Castbar)
 
     -- Add spell text
-    local Text = Castbar:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall')
-    Text:SetPoint('LEFT', Castbar)
+    local Text = Castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    Text:SetPoint("LEFT", Castbar)
 
     -- Add spell icon
-    local Icon = Castbar:CreateTexture(nil, 'OVERLAY')
+    local Icon = Castbar:CreateTexture(nil, "OVERLAY")
     Icon:SetSize(20, 20)
-    Icon:SetPoint('TOPLEFT', Castbar, 'TOPLEFT')
+    Icon:SetPoint("TOPLEFT", Castbar, "TOPLEFT")
 
     -- Add safezone
-    local SafeZone = Castbar:CreateTexture(nil, 'OVERLAY')
+    local SafeZone = Castbar:CreateTexture(nil, "OVERLAY")
 
     -- Register it with oUF
     Castbar.bg = Background
@@ -70,6 +70,8 @@ A default texture will be applied to the StatusBar and Texture widgets if they d
 --]]
 local ns = oUF
 local oUF = ns.oUF
+
+local match = string.match
 
 local GetNetStats = GetNetStats
 local GetTime = GetTime
@@ -99,7 +101,7 @@ end
 
 local function UNIT_SPELLCAST_SENT(self, event, unit, spell, rank, target)
 	local element = self.Castbar
-	element.curTarget = (target and target ~= '') and target or nil
+	element.curTarget = (target and target ~= "") and target or nil
 
 	if element.isTradeSkill then
 		element.tradeSkillCastName = spell
@@ -127,11 +129,11 @@ local function UNIT_SPELLCAST_START(self, event, unit)
 	element.holdTime = 0
 	element.isTradeSkill = isTradeSkill
 
-	if(mergeTradeskill and isTradeSkill and UnitIsUnit(unit, 'player')) then
+	if(mergeTradeskill and isTradeSkill and UnitIsUnit(unit, "player")) then
 		element.duration = element.duration + (element.max * tradeskillCurrent)
 		element.max = max * tradeskillTotal
 
-		if(unit == 'player') then
+		if(unit == "player") then
 			tradeskillCurrent = tradeskillCurrent + 1
 			tradeskillCastDuration = element.duration
 			tradeskillCastTime = max
@@ -150,9 +152,9 @@ local function UNIT_SPELLCAST_START(self, event, unit)
 	local sf = element.SafeZone
 	if(sf) then
 		sf:ClearAllPoints()
-		sf:SetPoint('RIGHT')
-		sf:SetPoint('TOP')
-		sf:SetPoint('BOTTOM')
+		sf:SetPoint("RIGHT")
+		sf:SetPoint("TOP")
+		sf:SetPoint("BOTTOM")
 		updateSafeZone(element)
 	end
 
@@ -178,7 +180,7 @@ local function UNIT_SPELLCAST_FAILED(self, event, unit, spellname)
 		return
 	end
 
-	if(mergeTradeskill and UnitIsUnit(unit, 'player')) then
+	if(mergeTradeskill and UnitIsUnit(unit, "player")) then
 		mergeTradeskill = false
 		element.tradeSkillCastName = nil
 	end
@@ -212,7 +214,7 @@ local function UNIT_SPELLCAST_FAILED_QUIET(self, event, unit, spellname)
 		return
 	end
 
-	if(mergeTradeskill and UnitIsUnit(unit, 'player')) then
+	if(mergeTradeskill and UnitIsUnit(unit, "player")) then
 		mergeTradeskill = false
 		element.tradeSkillCastName = nil
 	end
@@ -286,7 +288,7 @@ local function UNIT_SPELLCAST_STOP(self, event, unit, spellname)
 		return
 	end
 
-	if(mergeTradeskill and UnitIsUnit(unit, 'player')) then
+	if(mergeTradeskill and UnitIsUnit(unit, "player")) then
 		if(tradeskillCurrent == tradeskillTotal) then
 			mergeTradeskill = false
 		end
@@ -345,9 +347,9 @@ local function UNIT_SPELLCAST_CHANNEL_START(self, event, unit)
 	local sf = element.SafeZone
 	if(sf) then
 		sf:ClearAllPoints()
-		sf:SetPoint('LEFT')
-		sf:SetPoint('TOP')
-		sf:SetPoint('BOTTOM')
+		sf:SetPoint("LEFT")
+		sf:SetPoint("TOP")
+		sf:SetPoint("BOTTOM")
 		updateSafeZone(element)
 	end
 
@@ -432,13 +434,13 @@ local function onUpdate(self, elapsed)
 				if(self.CustomDelayText) then
 					self:CustomDelayText(duration)
 				else
-					self.Time:SetText(format('%.1f|cffff0000-%.1f|r', duration, self.delay))
+					self.Time:SetText(format("%.1f|cffff0000-%.1f|r", duration, self.delay))
 				end
 			else
 				if(self.CustomTimeText) then
 					self:CustomTimeText(duration)
 				else
-					self.Time:SetText(format('%.1f', duration))
+					self.Time:SetText(format("%.1f", duration))
 				end
 			end
 		end
@@ -447,7 +449,7 @@ local function onUpdate(self, elapsed)
 		self:SetValue(duration)
 
 		if(self.Spark) then
-			self.Spark:SetPoint('CENTER', self, 'LEFT', (duration / self.max) * self:GetWidth(), 0)
+			self.Spark:SetPoint("CENTER", self, "LEFT", (duration / self.max) * self:GetWidth(), 0)
 		end
 	elseif(self.channeling) then
 		local duration = self.duration - elapsed
@@ -465,13 +467,13 @@ local function onUpdate(self, elapsed)
 				if(self.CustomDelayText) then
 					self:CustomDelayText(duration)
 				else
-					self.Time:SetText(format('%.1f|cffff0000-%.1f|r', duration, self.delay))
+					self.Time:SetText(format("%.1f|cffff0000-%.1f|r", duration, self.delay))
 				end
 			else
 				if(self.CustomTimeText) then
 					self:CustomTimeText(duration)
 				else
-					self.Time:SetText(format('%.1f', duration))
+					self.Time:SetText(format("%.1f", duration))
 				end
 			end
 		end
@@ -479,7 +481,7 @@ local function onUpdate(self, elapsed)
 		self.duration = duration
 		self:SetValue(duration)
 		if(self.Spark) then
-			self.Spark:SetPoint('CENTER', self, 'LEFT', (duration / self.max) * self:GetWidth(), 0)
+			self.Spark:SetPoint("CENTER", self, "LEFT", (duration / self.max) * self:GetWidth(), 0)
 		end
 	elseif(self.holdTime > 0) then
 		self.holdTime = self.holdTime - elapsed
@@ -499,7 +501,7 @@ local function Update(self, ...)
 end
 
 local function ForceUpdate(element)
-	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
+	return Update(element.__owner, "ForceUpdate", element.__owner.unit)
 end
 
 local function Enable(self, unit)
@@ -508,23 +510,23 @@ local function Enable(self, unit)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		if(not (unit and unit:match('%wtarget$'))) then
-			self:RegisterEvent('UNIT_SPELLCAST_START', UNIT_SPELLCAST_START)
-			self:RegisterEvent('UNIT_SPELLCAST_FAILED', UNIT_SPELLCAST_FAILED)
-			self:RegisterEvent('UNIT_SPELLCAST_STOP', UNIT_SPELLCAST_STOP)
-			self:RegisterEvent('UNIT_SPELLCAST_INTERRUPTED', UNIT_SPELLCAST_INTERRUPTED)
-			self:RegisterEvent('UNIT_SPELLCAST_DELAYED', UNIT_SPELLCAST_DELAYED)
-			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START', UNIT_SPELLCAST_CHANNEL_START)
-			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', UNIT_SPELLCAST_CHANNEL_UPDATE)
-			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', UNIT_SPELLCAST_CHANNEL_STOP)
-			self:RegisterEvent('UNIT_SPELLCAST_SENT', UNIT_SPELLCAST_SENT, true)
-			self:RegisterEvent('UNIT_SPELLCAST_FAILED_QUIET', UNIT_SPELLCAST_FAILED_QUIET)
+		if(not (unit and match(unit, "%wtarget$"))) then
+			self:RegisterEvent("UNIT_SPELLCAST_START", UNIT_SPELLCAST_START)
+			self:RegisterEvent("UNIT_SPELLCAST_FAILED", UNIT_SPELLCAST_FAILED)
+			self:RegisterEvent("UNIT_SPELLCAST_STOP", UNIT_SPELLCAST_STOP)
+			self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", UNIT_SPELLCAST_INTERRUPTED)
+			self:RegisterEvent("UNIT_SPELLCAST_DELAYED", UNIT_SPELLCAST_DELAYED)
+			self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", UNIT_SPELLCAST_CHANNEL_START)
+			self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", UNIT_SPELLCAST_CHANNEL_UPDATE)
+			self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", UNIT_SPELLCAST_CHANNEL_STOP)
+			self:RegisterEvent("UNIT_SPELLCAST_SENT", UNIT_SPELLCAST_SENT, true)
+			self:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET", UNIT_SPELLCAST_FAILED_QUIET)
 		end
 
 		element.holdTime = 0
-		element:SetScript('OnUpdate', element.OnUpdate or onUpdate)
+		element:SetScript("OnUpdate", element.OnUpdate or onUpdate)
 
-		if(self.unit == 'player') then
+		if(self.unit == "player") then
 			CastingBarFrame:UnregisterAllEvents()
 			CastingBarFrame.Show = CastingBarFrame.Hide
 			CastingBarFrame:Hide()
@@ -534,17 +536,17 @@ local function Enable(self, unit)
 			PetCastingBarFrame:Hide()
 		end
 
-		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
+		if(element:IsObjectType("StatusBar") and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
 		local spark = element.Spark
-		if(spark and spark:IsObjectType('Texture') and not spark:GetTexture()) then
+		if(spark and spark:IsObjectType("Texture") and not spark:GetTexture()) then
 			spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 		end
 
 		local safeZone = element.SafeZone
-		if(safeZone and safeZone:IsObjectType('Texture') and not safeZone:GetTexture()) then
+		if(safeZone and safeZone:IsObjectType("Texture") and not safeZone:GetTexture()) then
 			safeZone:SetTexture(1, 0, 0)
 		end
 
@@ -559,22 +561,22 @@ local function Disable(self)
 	if(element) then
 		element:Hide()
 
-		self:UnregisterEvent('UNIT_SPELLCAST_START', UNIT_SPELLCAST_START)
-		self:UnregisterEvent('UNIT_SPELLCAST_FAILED', UNIT_SPELLCAST_FAILED)
-		self:UnregisterEvent('UNIT_SPELLCAST_STOP', UNIT_SPELLCAST_STOP)
-		self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTED', UNIT_SPELLCAST_INTERRUPTED)
-		self:UnregisterEvent('UNIT_SPELLCAST_DELAYED', UNIT_SPELLCAST_DELAYED)
-		self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_START', UNIT_SPELLCAST_CHANNEL_START)
-		self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', UNIT_SPELLCAST_CHANNEL_UPDATE)
-		self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', UNIT_SPELLCAST_CHANNEL_STOP)
-		self:UnregisterEvent('UNIT_SPELLCAST_SENT', UNIT_SPELLCAST_SENT)
-		self:UnregisterEvent('UNIT_SPELLCAST_FAILED_QUIET', UNIT_SPELLCAST_FAILED_QUIET)
+		self:UnregisterEvent("UNIT_SPELLCAST_START", UNIT_SPELLCAST_START)
+		self:UnregisterEvent("UNIT_SPELLCAST_FAILED", UNIT_SPELLCAST_FAILED)
+		self:UnregisterEvent("UNIT_SPELLCAST_STOP", UNIT_SPELLCAST_STOP)
+		self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED", UNIT_SPELLCAST_INTERRUPTED)
+		self:UnregisterEvent("UNIT_SPELLCAST_DELAYED", UNIT_SPELLCAST_DELAYED)
+		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START", UNIT_SPELLCAST_CHANNEL_START)
+		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", UNIT_SPELLCAST_CHANNEL_UPDATE)
+		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", UNIT_SPELLCAST_CHANNEL_STOP)
+		self:UnregisterEvent("UNIT_SPELLCAST_SENT", UNIT_SPELLCAST_SENT)
+		self:UnregisterEvent("UNIT_SPELLCAST_FAILED_QUIET", UNIT_SPELLCAST_FAILED_QUIET)
 
-		element:SetScript('OnUpdate', nil)
+		element:SetScript("OnUpdate", nil)
 	end
 end
 
-hooksecurefunc('DoTradeSkill', function(_, num)
+hooksecurefunc("DoTradeSkill", function(_, num)
 	tradeskillCastTime = 0
 	tradeskillCastDuration = 0
 	tradeskillCurrent = 0
@@ -582,4 +584,4 @@ hooksecurefunc('DoTradeSkill', function(_, num)
 	mergeTradeskill = true
 end)
 
-oUF:AddElement('Castbar', Update, Enable, Disable)
+oUF:AddElement("Castbar", Update, Enable, Disable)

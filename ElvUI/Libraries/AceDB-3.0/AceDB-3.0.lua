@@ -52,6 +52,7 @@ local new, del = AceCore.new, AceCore.del
 -- Lua APIs
 local type, pairs, next, error = type, pairs, next, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
+local format, lower = string.format, string.lower
 
 -- WoW APIs
 local _G = AceCore._G
@@ -255,7 +256,7 @@ local function validateDefaults(defaults, keyTbl, offset)
 	offset = offset or 0
 	for k in pairs(defaults) do
 		if not keyTbl[k] or k == "profiles" then
-			error(("Usage: AceDBObject:RegisterDefaults(defaults): '%s' is not a valid datatype."):format(k), 3 + offset)
+			error(format("Usage: AceDBObject:RegisterDefaults(defaults): '%s' is not a valid datatype.", k), 3 + offset)
 		end
 	end
 end
@@ -275,7 +276,7 @@ local _, raceKey = UnitRace("player")
 local _, factionKey = UnitFactionGroup("player")
 -- Ace3v: the faction key may error when in GM mode
 factionKey = factionKey or "Others"
-local localeKey = string.lower(GetLocale())
+local localeKey = lower(GetLocale())
 
 -- Actual database initialization function
 local function initdb(sv, defaults, defaultProfile, olddb, parent)

@@ -179,7 +179,7 @@ end
 --
 -- function MyAddOn:TimerFeedback()
 --   self.timerCount = self.timerCount + 1
---   print(("%d seconds passed"):format(5 * self.timerCount))
+--   print(format("%d seconds passed", 5 * self.timerCount))
 --   -- run 30 seconds in total
 --   if self.timerCount == 6 then
 --     self:CancelTimer(self.testTimer)

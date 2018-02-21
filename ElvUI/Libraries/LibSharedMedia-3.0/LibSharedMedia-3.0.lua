@@ -24,6 +24,8 @@ local band			= _G.bit.band
 local table_insert	= _G.table.insert
 local table_sort	= _G.table.sort
 
+local find, lower = string.find, string.lower
+
 local locale = GetLocale()
 local locale_is_western
 local LOCALE_MASK = 0
@@ -166,12 +168,12 @@ function lib:Register(mediatype, key, data, langmask)
 	if type(key) ~= "string" then
 		error(MAJOR..":Register(mediatype, key, data, langmask) - key must be string, got "..type(key))
 	end
-	mediatype = string.lower(mediatype)
+	mediatype = lower(mediatype)
 	if mediatype == lib.MediaType.FONT and ((langmask and band(langmask, LOCALE_MASK) == 0) or not (langmask or locale_is_western)) then return false end
 	if mediatype == lib.MediaType.SOUND and type(data) == "string" then
 		local path = data
 		-- Only wav, ogg and mp3 are valid sounds.
-		if not string.find(path, ".ogg", nil, true) and not string.find(path, ".mp3", nil, true) and not string.find(path, ".wav", nil, true) then
+		if not find(path, ".ogg", nil, true) and not find(path, ".mp3", nil, true) and not find(path, ".wav", nil, true) then
 			return false
 		end
 	end

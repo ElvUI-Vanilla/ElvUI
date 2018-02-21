@@ -7,6 +7,7 @@ local AceCore = LibStub("AceCore-3.0")
 local min, max, floor = math.min, math.max, math.floor
 local pairs, ipairs, type = pairs, ipairs, type
 local tsort, tinsert, tgetn, tsetn = table.sort, table.insert, table.getn, table.setn
+local format = string.format
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -578,7 +579,7 @@ do
 	local function AddListItem(self, value, text, itemType)
 		if not itemType then itemType = "Dropdown-Item-Toggle" end
 		local exists = AceGUI:GetWidgetVersion(itemType)
-		if not exists then error(("The given item type, %q, does not exist within AceGUI-3.0"):format(tostring(itemType)), 2) end
+		if not exists then error(format("The given item type, %q, does not exist within AceGUI-3.0", tostring(itemType)), 2) end
 
 		local item = AceGUI:Create(itemType)
 		item:SetText(text)
