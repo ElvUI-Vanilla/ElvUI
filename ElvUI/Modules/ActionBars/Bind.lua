@@ -21,7 +21,6 @@ local IsShiftKeyDown, IsModifiedClick = IsShiftKeyDown, IsModifiedClick
 local InCombatLockdown = InCombatLockdown
 local GameTooltip_ShowCompareItem = GameTooltip_ShowCompareItem
 local GetMacroInfo = GetMacroInfo
-local SecureActionButton_OnClick = SecureActionButton_OnClick
 local GameTooltip_Hide = GameTooltip_Hide
 local CHARACTER_SPECIFIC_KEYBINDING_TOOLTIP = CHARACTER_SPECIFIC_KEYBINDING_TOOLTIP
 local CHARACTER_SPECIFIC_KEYBINDINGS = CHARACTER_SPECIFIC_KEYBINDINGS
@@ -30,7 +29,7 @@ local bind = CreateFrame("Frame", "ElvUI_KeyBinder", E.UIParent)
 
 function AB:ActivateBindMode()
 	bind.active = true
-	E:StaticPopupSpecial_Show(ElvUIBindPopupWindow)
+    E:StaticPopupSpecial_Show(ElvUIBindPopupWindow)
 	AB:RegisterEvent("PLAYER_REGEN_DISABLED", "DeactivateBindMode", false)
 end
 
@@ -214,17 +213,17 @@ end
 local script
 local shapeshift = ShapeshiftButton1:GetScript("OnClick")
 local pet = PetActionButton1:GetScript("OnClick")
-local button = SecureActionButton_OnClick
+local button = ActionButton1:GetScript("OnClick")
 
 function AB:RegisterButton(b, override)
-	if b.IsProtected and b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") and b:IsProtected() then
+    if b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") then
 		script = b:GetScript("OnClick")
 		if script == button or override then
-			b:HookScript("OnEnter", function() self:BindUpdate(b) end)
+			HookScript(b, "OnEnter", function() self:BindUpdate(b) end)
 			if script == shapeshift then
-				b:HookScript("OnEnter", function() self:BindUpdate(b, "SHAPESHIFT") end)
+				HookScript(b, "OnEnter", function() self:BindUpdate(b, "SHAPESHIFT") end)
 			elseif script == pet then
-				b:HookScript("OnEnter", function() self:BindUpdate(b, "PET") end)
+				HookScript(b, "OnEnter", function() self:BindUpdate(b, "PET") end)
 			end
 		end
 	end
@@ -234,7 +233,7 @@ function AB:RegisterMacro(addon)
 	if addon == "Blizzard_MacroUI" then
 		for i=1, MAX_ACCOUNT_MACROS do
 			local b = _G["MacroButton"..i]
-			b:HookScript("OnEnter", function(b) AB:BindUpdate(b, "MACRO") end)
+			HookScript(b, "OnEnter", function(b) AB:BindUpdate(b, "MACRO") end)
 		end
 	end
 end
@@ -274,7 +273,7 @@ function AB:LoadKeyBinder()
 
 	for b, _ in pairs(self["handledButtons"]) do
 		self:RegisterButton(b, true)
-	end
+    end
 
 	if not IsAddOnLoaded("Blizzard_MacroUI") then
 		self:SecureHook("LoadAddOn", "RegisterMacro")
@@ -327,7 +326,7 @@ function AB:LoadKeyBinder()
 	end)
 
 	perCharCheck:SetScript("OnClick", function()
-		if ( AB.bindingsChanged ) then
+		if AB.bindingsChanged then
 			E:StaticPopup_Show("CONFIRM_LOSE_BINDING_CHANGES")
 		else
 			AB:ChangeBindingProfile()
