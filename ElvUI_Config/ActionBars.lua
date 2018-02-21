@@ -79,7 +79,7 @@ local function BuildABConfig()
 				set = function(info, value)
 					E.db.actionbar[ info[getn(info)] ] = value
 					AB:UpdateButtonSettings()
-					SetCVar("lockActionBars", (value == true and 1 or 0))
+					-- SetCVar("lockActionBars", (value == true and 1 or 0))
 					LOCK_ACTIONBAR = (value == true and "1" or "0")
 				end
 			},
