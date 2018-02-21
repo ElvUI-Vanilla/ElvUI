@@ -58,7 +58,7 @@ do
 	price_count = 24221
 	local byte = string.byte
 	function get(id)
-		if id and id <= 39656 and id > 0 then
+		if id and id <= 24283 and id > 0 then
 			local index = id * 3
 			local a = byte(prices, index - 2, index)
 			local b = byte(prices, index - 2)

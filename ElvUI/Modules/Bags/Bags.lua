@@ -718,7 +718,7 @@ function B:VendorGrays(delete, _, getValue)
 	end
 
 	local c = 0
-	local count = 0
+
 	for b = 0, NUM_BAG_FRAMES do
 		for s = 1, GetContainerNumSlots(b) do
 			local l = GetContainerItemLink(b, s)
@@ -730,7 +730,6 @@ function B:VendorGrays(delete, _, getValue)
 						DeleteCursorItem()
 					end
 					c = c + p
-					count = count + 1
 				else
 					if not getValue then
 						UseContainerItem(b, s)
