@@ -29,27 +29,21 @@ local tooltips = {
 }
 
 function IP:SetAction(tt, id)
-	local item
-	for i = 1, tt:NumLines() do
-		if i == 1 then
-			local tiptext = _G["GameTooltipTextLeft"..i]
-			local linetext = tiptext:GetText()
+	local itemName = GameTooltipTextLeft1:GetText()
+	if not itemName then return end
 
-			item = linetext
+	local item = GetItemInfoByName(itemName)
+	if item then
+		local count = 1
+		if IsConsumableAction(id) then
+			local actionCount = GetActionCount(id)
+			if actionCount and actionCount == GetItemCount(item) then
+				count = actionCount
+			end
 		end
+
+		self:SetPrice(tt, count, item)
 	end
-
-	if not item then return end
-
-	local count = 1
-	if IsConsumableAction(id) then
-		local actionCount = GetActionCount(id)
-		if actionCount and actionCount == GetItemCount(item) then
-			count = actionCount
-		end
-	end
-
-	self:SetPrice(tt, count, item)
 end
 
 function IP:SetAuctionItem(tt, type, index)
@@ -157,15 +151,14 @@ end
 function IP:SetPrice(tt, count)
 	if MerchantFrame:IsShown() then return end
 
-	local bag, slot = this:GetParent():GetID(), this:GetID()
-	local itemLink = GetContainerItemLink(bag, slot)
-	local item, itemID
-	if itemLink then
-		itemID = match(itemLink, "item:(%d+)")
-		item = GetItemInfo(itemID)
-	end
+	local itemName = GameTooltipTextLeft1:GetText()
+	if not itemName then return end
 
-	if not item then return end
+	local _, itemString = GetItemInfoByName(itemName)
+	if not itemString then return end
+
+	local itemID = match(itemString, "item:(%d+)")
+	if not itemID then return end
 
 	local price = LIP:GetSellValue(itemID)
 
