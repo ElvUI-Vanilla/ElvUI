@@ -10,6 +10,7 @@
 	<Include file="AceComm-3.0\AceComm-3.0.xml"/>
 	<Include file="AceSerializer-3.0\AceSerializer-3.0.xml"/>
 	<Include file="AceTimer-3.0\AceTimer-3.0.xml"/>
+	<Include file="LibItemPrice-1.1\LibItemPrice-1.1.xml"/>
 	<Include file="AceHook-3.0\AceHook-3.0.xml"/>
 	<Include file="LibSharedMedia-3.0\LibSharedMedia-3.0.xml"/>
 	<Include file="LibSimpleSticky\LibSimpleSticky.xml"/>

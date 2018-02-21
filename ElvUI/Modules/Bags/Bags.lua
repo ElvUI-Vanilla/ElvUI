@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
 local Search = LibStub("LibItemSearch-1.2");
--- local LIP = LibStub("ItemPrice-1.1", true);
+local LIP = LibStub("ItemPrice-1.1", true);
 
 --Cache global variables
 --Lua functions
@@ -700,10 +700,10 @@ function B:GetGraysValue()
 		for s = 1, GetContainerNumSlots(b) do
 			local l = GetContainerItemLink(b, s)
 			if l and find(l,"ff9d9d9d") then
-				-- local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
-				-- if(select(3, GetItemInfo(l)) == 0 and p > 0) then
-					-- c = c + p
-				-- end
+				local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
+				if select(3, GetItemInfo(l)) == 0 and p > 0 then
+					c = c + p
+				end
 			end
 		end
 	end
@@ -718,25 +718,24 @@ function B:VendorGrays(delete, _, getValue)
 	end
 
 	local c = 0
-	local count = 0
+
 	for b = 0, NUM_BAG_FRAMES do
 		for s = 1, GetContainerNumSlots(b) do
 			local l = GetContainerItemLink(b, s)
 			if l and find(l,"ff9d9d9d") then
-				-- local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
+				local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
 				if delete then
 					if not getValue then
 						PickupContainerItem(b, s)
 						DeleteCursorItem()
 					end
-					-- c = c + p
-					count = count + 1
+					c = c + p
 				else
 					if not getValue then
 						UseContainerItem(b, s)
 						PickupMerchantItem()
 					end
-					-- c = c + p
+					c = c + p
 				end
 			end
 		end
@@ -753,12 +752,11 @@ function B:VendorGrays(delete, _, getValue)
 end
 
 function B:VendorGrayCheck()
-	-- local value = B:GetGraysValue()
+	local value = B:GetGraysValue()
 
-	-- if value == 0 then
-	-- 	E:Print(L["No gray items to delete."])
-	-- else
-	if not MerchantFrame or not MerchantFrame:IsShown() then
+	if value == 0 then
+		E:Print(L["No gray items to delete."])
+	elseif not MerchantFrame or not MerchantFrame:IsShown() then
 		E.PopupDialogs["DELETE_GRAYS"].Money = value
 		E:StaticPopup_Show("DELETE_GRAYS")
 	else
