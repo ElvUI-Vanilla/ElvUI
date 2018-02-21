@@ -69,7 +69,7 @@ local function BuildABConfig()
 				order = 8,
 				type = "toggle",
 				name = L["Key Down"],
-				desc = "OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN"
+				desc = OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN
 			},
 			lockActionBars = {
 				order = 9,
