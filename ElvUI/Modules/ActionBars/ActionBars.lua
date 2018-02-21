@@ -386,7 +386,7 @@ function AB:DisableBlizzard()
 		end
 
 		if element ~= MainMenuBar then
-			element:Hide()
+			-- element:Hide()
 		end
 		element:SetAlpha(0)
 	end
