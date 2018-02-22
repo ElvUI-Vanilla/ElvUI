@@ -5,7 +5,7 @@ local AB = E:GetModule("ActionBars");
 --Lua functions
 local _G = _G
 local select, tonumber, pairs, getn = select, tonumber, pairs, getn
-local floor = math.floor
+local floor, mod = math.floor, math.mod
 local find, format = string.find, string.format
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
@@ -174,8 +174,7 @@ function AB:BindUpdate(button, spellmacro)
 		elseif bind.button.keyBoundTarget then
 			bind.button.bindstring = bind.button.keyBoundTarget
         else
-            local modact = 1+(bind.button.action-1)
-            modact = modact - floor(modact/12)*12
+			local modact = mod(1+(bind.button.action-1),12)
 			if bind.button.action < 25 or bind.button.action > 72 then
 				bind.button.bindstring = "ACTIONBUTTON"..modact
 			elseif bind.button.action < 73 and bind.button.action > 60 then
