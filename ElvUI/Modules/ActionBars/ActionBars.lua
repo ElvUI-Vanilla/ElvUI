@@ -383,6 +383,7 @@ function AB:DisableBlizzard()
 			if element == MainMenuBarArtFrame then
 				element:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 			end
+			element:SetScale(0.000001)
 		end
 
 		if element ~= MainMenuBar then
