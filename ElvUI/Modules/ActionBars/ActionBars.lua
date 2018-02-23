@@ -385,7 +385,7 @@ function AB:DisableBlizzard()
 			end
 		end
 
-		if element ~= MainMenuBar and element ~= BonusActionBarFrame then
+		if element ~= MainMenuBar then
 			element:Hide()
 		end
 		element:SetAlpha(0)
@@ -491,6 +491,8 @@ function AB:Initialize()
 	self:SecureHook("ActionButton_Update")
 	self:RawHook("ActionButton_GetPagedID")
 	-- self:SecureHook("PetActionBar_Update", "UpdatePet")
+
+	BonusActionBarFrame:Show()
 end
 
 local function InitializeCallback()
