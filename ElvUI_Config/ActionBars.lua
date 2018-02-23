@@ -69,7 +69,7 @@ local function BuildABConfig()
 				order = 8,
 				type = "toggle",
 				name = L["Key Down"],
-				desc = "OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN"
+				desc = OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN
 			},
 			lockActionBars = {
 				order = 9,
@@ -79,7 +79,7 @@ local function BuildABConfig()
 				set = function(info, value)
 					E.db.actionbar[ info[getn(info)] ] = value
 					AB:UpdateButtonSettings()
-					SetCVar("lockActionBars", (value == true and 1 or 0))
+					-- SetCVar("lockActionBars", (value == true and 1 or 0))
 					LOCK_ACTIONBAR = (value == true and "1" or "0")
 				end
 			},
