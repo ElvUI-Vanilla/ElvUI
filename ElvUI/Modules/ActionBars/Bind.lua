@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local AB = E:GetModule("ActionBars");
 
 --Cache global variables
@@ -6,7 +6,7 @@ local AB = E:GetModule("ActionBars");
 local _G = _G
 local select, tonumber, pairs, getn = select, tonumber, pairs, getn
 local floor, mod = math.floor, math.mod
-local find, format = string.find, string.format
+local find, format, upper = string.find, string.format, string.upper
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 local EnumerateFrames = EnumerateFrames
@@ -16,10 +16,9 @@ local LoadBindings, SaveBindings = LoadBindings, SaveBindings
 local GetCurrentBindingSet = GetCurrentBindingSet
 local SetBinding = SetBinding
 local GetBindingKey = GetBindingKey
-local IsAltKeyDown, IsControlKeyDown = IsAltKeyDown, IsControlKeyDown
-local IsShiftKeyDown, IsModifiedClick = IsShiftKeyDown, IsModifiedClick
-local InCombatLockdown = InCombatLockdown
-local GameTooltip_ShowCompareItem = GameTooltip_ShowCompareItem
+local IsAltKeyDown = IsAltKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsShiftKeyDown = IsShiftKeyDown
 local GetMacroInfo = GetMacroInfo
 local GameTooltip_Hide = GameTooltip_Hide
 local CHARACTER_SPECIFIC_KEYBINDING_TOOLTIP = CHARACTER_SPECIFIC_KEYBINDING_TOOLTIP
@@ -80,13 +79,12 @@ function AB:BindListener(key)
 
 	if key == "MiddleButton" then key = "BUTTON3" end
 	if find(key, "Button%d") then
-		key = key:upper()
+		key = upper(key)
 	end
 
 	local alt = IsAltKeyDown() and "ALT-" or ""
 	local ctrl = IsControlKeyDown() and "CTRL-" or ""
 	local shift = IsShiftKeyDown() and "SHIFT-" or ""
-
 	if not bind.spellmacro or bind.spellmacro == "PET" or bind.spellmacro == "SHAPESHIFT" then
 		SetBinding(alt..ctrl..shift..key, bind.button.bindstring)
 	else
@@ -98,7 +96,7 @@ function AB:BindListener(key)
 end
 
 function AB:BindUpdate(button, spellmacro)
-	if not bind.active or InCombatLockdown() then return end
+	if not bind.active then return end
 
 	bind.button = button
 	bind.spellmacro = spellmacro
@@ -116,7 +114,7 @@ function AB:BindUpdate(button, spellmacro)
 	if spellmacro == "MACRO" then
 		bind.button.id = bind.button:GetID()
 
-		if floor(.5+select(2,MacroFrameTab1Text:GetTextColor())*10)/10==.8 then bind.button.id = bind.button.id + MAX_ACCOUNT_MACROS end
+		if floor(.5 + select(2,MacroFrameTab1Text:GetTextColor()) * 10) / 10 == .8 then bind.button.id = bind.button.id + MAX_MACROS end
 
 		bind.button.name = GetMacroInfo(bind.button.id)
 
@@ -148,21 +146,21 @@ function AB:BindUpdate(button, spellmacro)
 
 		GameTooltip:AddLine(L["Trigger"])
 		GameTooltip:Show()
-		GameTooltip:SetScript("OnHide", function(tt)
-			tt:SetOwner(bind, "ANCHOR_NONE")
-			tt:SetPoint("BOTTOM", bind, "TOP", 0, 1)
-			tt:AddLine(bind.button.name, 1, 1, 1)
+		GameTooltip:SetScript("OnHide", function()
+			this:SetOwner(bind, "ANCHOR_NONE")
+			this:SetPoint("BOTTOM", bind, "TOP", 0, 1)
+			this:AddLine(bind.button.name, 1, 1, 1)
 			bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 			if getn(bind.button.bindings) == 0 then
-				tt:AddLine(L["No bindings set."], .6, .6, .6)
+				this:AddLine(L["No bindings set."], .6, .6, .6)
 			else
-				tt:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+				this:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
 				for i = 1, getn(bind.button.bindings) do
-					tt:AddDoubleLine(i, bind.button.bindings[i])
+					this:AddDoubleLine(i, bind.button.bindings[i])
 				end
 			end
-			tt:Show()
-			tt:SetScript("OnHide", nil)
+			this:Show()
+			this:SetScript("OnHide", nil)
 		end)
 	else
 		bind.button.action = tonumber(button.action)
@@ -174,7 +172,7 @@ function AB:BindUpdate(button, spellmacro)
 		elseif bind.button.keyBoundTarget then
 			bind.button.bindstring = bind.button.keyBoundTarget
         else
-			local modact = mod(1+(bind.button.action-1),12)
+			local modact = mod(1 + (bind.button.action - 1), 12)
 			if bind.button.action < 25 or bind.button.action > 72 then
 				bind.button.bindstring = "ACTIONBUTTON"..modact
 			elseif bind.button.action < 73 and bind.button.action > 60 then
@@ -190,21 +188,21 @@ function AB:BindUpdate(button, spellmacro)
 
 		GameTooltip:AddLine(L["Trigger"])
 		GameTooltip:Show()
-		GameTooltip:SetScript("OnHide", function(tt)
-			tt:SetOwner(bind, "ANCHOR_TOP")
-			tt:SetPoint("BOTTOM", bind, "TOP", 0, 4)
-			tt:AddLine(bind.button.name, 1, 1, 1)
+		GameTooltip:SetScript("OnHide", function()
+			this:SetOwner(bind, "ANCHOR_TOP")
+			this:SetPoint("BOTTOM", bind, "TOP", 0, 4)
+			this:AddLine(bind.button.name, 1, 1, 1)
 			bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 			if getn(bind.button.bindings) == 0 then
-				tt:AddLine(L["No bindings set."], .6, .6, .6)
+				this:AddLine(L["No bindings set."], .6, .6, .6)
 			else
-				tt:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+				this:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
 				for i = 1, getn(bind.button.bindings) do
-					tt:AddDoubleLine(i, bind.button.bindings[i])
+					this:AddDoubleLine(i, bind.button.bindings[i])
 				end
 			end
-			tt:Show()
-			tt:SetScript("OnHide", nil)
+			this:Show()
+			this:SetScript("OnHide", nil)
 		end)
 	end
 end
@@ -230,15 +228,15 @@ end
 
 function AB:RegisterMacro(addon)
 	if addon == "Blizzard_MacroUI" then
-		for i=1, MAX_ACCOUNT_MACROS do
+		for i = 1, MAX_MACROS do
 			local b = _G["MacroButton"..i]
-			HookScript(b, "OnEnter", function(b) AB:BindUpdate(b, "MACRO") end)
+			HookScript(b, "OnEnter", function() AB:BindUpdate(this, "MACRO") end)
 		end
 	end
 end
 
 function AB:ChangeBindingProfile()
-	if ( ElvUIBindPopupWindowCheckButton:GetChecked() ) then
+	if ElvUIBindPopupWindowCheckButton:GetChecked() then
 		LoadBindings(2)
 		SaveBindings(2)
 	else
@@ -258,11 +256,11 @@ function AB:LoadKeyBinder()
 	bind.texture:SetTexture(0, 0, 0, .25)
 	bind:Hide()
 
-	bind:SetScript("OnEnter", function(self) local db = self.button:GetParent().db if db and db.mouseover then AB:Button_OnEnter(self.button) end end)
-	bind:SetScript("OnLeave", function(self) AB:BindHide() local db = self.button:GetParent().db if db and db.mouseover then AB:Button_OnLeave(self.button) end end)
-	bind:SetScript("OnKeyUp", function(_, key) self:BindListener(key) end)
-	bind:SetScript("OnMouseUp", function(_, key) self:BindListener(key) end)
-	bind:SetScript("OnMouseWheel", function(_, delta) if delta>0 then self:BindListener("MOUSEWHEELUP") else self:BindListener("MOUSEWHEELDOWN") end end)
+	bind:SetScript("OnEnter", function() local db = this.button:GetParent().db if db and db.mouseover then AB:Button_OnEnter(this.button) end end)
+	bind:SetScript("OnLeave", function() AB:BindHide() local db = this.button:GetParent().db if db and db.mouseover then AB:Button_OnLeave(this.button) end end)
+	bind:SetScript("OnKeyUp", function() self:BindListener(arg1) end)
+	bind:SetScript("OnMouseUp", function() self:BindListener(arg1) end)
+	bind:SetScript("OnMouseWheel", function() if arg1 > 0 then self:BindListener("MOUSEWHEELUP") else self:BindListener("MOUSEWHEELDOWN") end end)
 
 	local b = EnumerateFrames()
 	while b do
