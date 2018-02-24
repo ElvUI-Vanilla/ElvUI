@@ -201,13 +201,11 @@ local function SetupChat()
 end
 
 local function SetupCVars()
-	-- SetCVar("screenshotQuality", 10)
-	-- SetCVar("showNewbieTips", 0)
+	SHOW_NEWBIE_TIPS = 0
 	SetCVar("showLootSpam", 1)
 	SetCVar("UberTooltips", 1)
-	-- SetCVar("alwaysShowActionBars", 1)
-	-- SetCVar("lockActionBars", 1)
-
+	ALWAYS_SHOW_MULTIBARS = 1
+	LOCK_ACTIONBAR = 1
 	SetActionBarToggles(1, 0, 1, 1)
 	TutorialFrame_HideAllAlerts()
 	ClearTutorials()
