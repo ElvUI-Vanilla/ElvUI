@@ -96,18 +96,34 @@ function E:BGStats()
 	E:Print(L["Battleground datatexts will now show again if you are inside a battleground."])
 end
 
-local function OnCallback(command)
-	MacroEditBox:GetScript("OnEvent")(MacroEditBox, "EXECUTE_CHAT_LINE", command)
+-- Set up a private editbox to handle macro execution
+local commando
+local editbox = CreateFrame("Editbox", "MacroEditBox")
+editbox:RegisterEvent("EXECUTE_CHAT_LINE")
+editbox:SetScript("OnEvent",
+	function(self, event)
+		if event == "EXECUTE_CHAT_LINE" then
+			local defaulteditbox = pcall(ChatFrameEditBox)
+			self:SetText(commando)
+			ChatEdit_SendText(self)
+		end
+	end
+)
+editbox:Hide()
+
+local function OnCallback()
+	MacroEditBox:GetScript("OnEvent")(MacroEditBox, "EXECUTE_CHAT_LINE")
 end
 
 function E:DelayScriptCall(msg)
 	local secs, command = match(msg, "^([^%s]+)%s+(.*)$")
 	secs = tonumber(secs)
-	if (not secs) or (getn(command) == 0) then
+	commando = command
+	if not secs or not command then
 		self:Print("usage: /in <seconds> <command>")
 		self:Print("example: /in 1.5 /say hi")
 	else
-		E:ScheduleTimer(OnCallback, secs, command)
+		E:ScheduleTimer(OnCallback, secs)
 	end
 end
 
@@ -124,7 +140,7 @@ function E:LoadCommands()
 	self:RegisterChatCommand("disable", "DisableAddon")
 	self:RegisterChatCommand("farmmode", "FarmMode")
 
---	if E:GetModule("ActionBars") and E.private.actionbar.enable then
---		self:RegisterChatCommand("kb", E:GetModule("ActionBars").ActivateBindMode)
---	end
+	if E:GetModule("ActionBars") and E.private.actionbar.enable then
+		self:RegisterChatCommand("kb", E:GetModule("ActionBars").ActivateBindMode)
+	end
 end
