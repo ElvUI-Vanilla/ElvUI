@@ -6,7 +6,7 @@ local AB = E:GetModule("ActionBars");
 local _G = _G
 local select, tonumber, pairs, getn = select, tonumber, pairs, getn
 local floor, mod = math.floor, math.mod
-local find, format, upper = string.find, string.format, string.upper
+local find, format, upper, sub = string.find, string.format, string.upper, string.sub
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 local EnumerateFrames = EnumerateFrames
@@ -163,27 +163,17 @@ function AB:BindUpdate(button, spellmacro)
 			this:SetScript("OnHide", nil)
 		end)
 	else
-		bind.button.action = tonumber(button.action)
 		bind.button.name = button:GetName()
 
-		if not bind.button.name then return end
-		if (not bind.button.action or bind.button.action < 1 or bind.button.action > 132) and not (bind.button.keyBoundTarget) then
-			bind.button.bindstring = "CLICK "..bind.button.name..":LeftButton"
-		elseif bind.button.keyBoundTarget then
-			bind.button.bindstring = bind.button.keyBoundTarget
-        else
-			local modact = mod(1 + (bind.button.action - 1), 12)
-			if bind.button.action < 25 or bind.button.action > 72 then
-				bind.button.bindstring = "ACTIONBUTTON"..modact
-			elseif bind.button.action < 73 and bind.button.action > 60 then
-				bind.button.bindstring = "MULTIACTIONBAR1BUTTON"..modact
-			elseif bind.button.action < 61 and bind.button.action > 48 then
-				bind.button.bindstring = "MULTIACTIONBAR2BUTTON"..modact
-			elseif bind.button.action < 49 and bind.button.action > 36 then
-				bind.button.bindstring = "MULTIACTIONBAR4BUTTON"..modact
-			elseif bind.button.action < 37 and bind.button.action > 24 then
-				bind.button.bindstring = "MULTIACTIONBAR3BUTTON"..modact
-			end
+		bind.button.bindstring = bind.button.buttonType
+		if not bind.button.bindstring and find(bind.button.name, "BonusActionButton") then
+			bind.button.bindstring = "ACTIONBUTTON"
+		end
+
+		if tonumber(sub(bind.button.name, -2)) then
+			bind.button.bindstring = bind.button.bindstring .. sub(bind.button.name, -2)
+		elseif tonumber(sub(bind.button.name, -1)) then
+			bind.button.bindstring = bind.button.bindstring .. sub(bind.button.name, -1)
 		end
 
 		GameTooltip:AddLine(L["Trigger"])
@@ -210,13 +200,17 @@ end
 local script
 local shapeshift = ShapeshiftButton1:GetScript("OnClick")
 local pet = PetActionButton1:GetScript("OnClick")
-local button = ActionButton1:GetScript("OnClick")
 
 function AB:RegisterButton(b, override)
-    if b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") then
-		script = b:GetScript("OnClick")
-		if script == button or override then
+	if b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") then
+		local buttonName = b:GetName()
+		if find(buttonName, "MultiBarLeftButton")
+		or find(buttonName, "MultiBarRightButton")
+		or find(buttonName, "MultiBarBottomLeftButton")
+		or find(buttonName, "MultiBarBottomRightButton")
+		or find(buttonName, "BonusActionButton") or override then
 			HookScript(b, "OnEnter", function() self:BindUpdate(b) end)
+			script = b:GetScript("OnClick")
 			if script == shapeshift then
 				HookScript(b, "OnEnter", function() self:BindUpdate(b, "SHAPESHIFT") end)
 			elseif script == pet then
