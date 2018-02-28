@@ -166,7 +166,7 @@ function AB:BindUpdate(button, spellmacro)
 		bind.button.name = button:GetName()
 
 		bind.button.bindstring = bind.button.buttonType
-		if not bind.button.bindstring and find(bind.button.name, "BonusActionButton") then
+		if not bind.button.bindstring and (find(bind.button.name, "BonusActionButton") or find(bind.button.name, "ActionButton")) then
 			bind.button.bindstring = "ACTIONBUTTON"
 		end
 
@@ -208,7 +208,8 @@ function AB:RegisterButton(b, override)
 		or find(buttonName, "MultiBarRightButton")
 		or find(buttonName, "MultiBarBottomLeftButton")
 		or find(buttonName, "MultiBarBottomRightButton")
-		or find(buttonName, "BonusActionButton") or override then
+		or find(buttonName, "BonusActionButton")
+		or find(buttonName, "ActionButton") or override then
 			HookScript(b, "OnEnter", function() self:BindUpdate(b) end)
 			script = b:GetScript("OnClick")
 			if script == shapeshift then
