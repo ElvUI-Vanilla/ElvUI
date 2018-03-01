@@ -492,7 +492,7 @@ function AB:Initialize()
 	self:RawHook("ActionButton_GetPagedID")
 	-- self:SecureHook("PetActionBar_Update", "UpdatePet")
 
-	if E.myclass == "WARRIOR" or E.myclass == "DRUID" then
+	if E.myclass == "WARRIOR" then
 		BonusActionBarFrame:Show()
 	end
 end
