@@ -5,7 +5,7 @@ local LSM = LibStub("LibSharedMedia-3.0");
 --Cache global variables
 --Lua functions
 local unpack = unpack
-local find, format = string.find, string.format
+local find, format, lower = string.find, string.format, string.lower
 local strsplit = strsplit
 local tsort, getn = table.sort, table.getn
 local ceil = math.ceil
@@ -77,7 +77,11 @@ function UF:Construct_AuraIcon(button)
 
 	button:RegisterForClicks("RightButtonUp")
 	button:SetScript("OnClick", function(self)
-		if E.db.unitframe.auraBlacklistModifier == "NONE" or not ((E.db.unitframe.auraBlacklistModifier == "SHIFT" and IsShiftKeyDown()) or (E.db.unitframe.auraBlacklistModifier == "ALT" and IsAltKeyDown()) or (E.db.unitframe.auraBlacklistModifier == "CTRL" and IsControlKeyDown())) then return; end
+        if E.db.unitframe.auraBlacklistModifier == "NONE"
+        or not ((E.db.unitframe.auraBlacklistModifier == "SHIFT" and IsShiftKeyDown())
+            or (E.db.unitframe.auraBlacklistModifier == "ALT" and IsAltKeyDown())
+            or (E.db.unitframe.auraBlacklistModifier == "CTRL" and IsControlKeyDown())) then return end
+
 		local auraName = self.name
 
 		if auraName then
@@ -116,7 +120,7 @@ function UF:Configure_Auras(frame, auraType)
 	local db = frame.db
 
 	local auras = frame[auraType]
-	auraType = auraType:lower()
+	auraType = lower(auraType)
 	local rows = db[auraType].numrows
 
 	local totalWidth = frame.UNIT_WIDTH - frame.SPACING*2
@@ -138,7 +142,8 @@ function UF:Configure_Auras(frame, auraType)
 	end
 
 	local attachTo = self:GetAuraAnchorFrame(frame, db[auraType].attachTo, db.debuffs.attachTo == "BUFFS" and db.buffs.attachTo == "DEBUFFS")
-	local x, y = E:GetXYOffset(db[auraType].anchorPoint, frame.SPACING) --Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
+    --Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
+    local x, y = E:GetXYOffset(db[auraType].anchorPoint, frame.SPACING)
 
 	if db[auraType].attachTo == "FRAME" then
 		y = 0
@@ -151,7 +156,7 @@ function UF:Configure_Auras(frame, auraType)
 		x = 0
 	end
 
-	if (auraType == "buffs" and frame.Debuffs.attachTo and frame.Debuffs.attachTo == frame.Buffs and db[auraType].attachTo == "DEBUFFS") then
+	if auraType == "buffs" and frame.Debuffs.attachTo and frame.Debuffs.attachTo == frame.Buffs and db[auraType].attachTo == "DEBUFFS" then
 		--Update Debuffs first, as we would otherwise get conflicting anchor points
 		--This is usually only an issue on profile change
 		ReverseUpdate(frame)
@@ -219,13 +224,13 @@ function UF:Configure_Auras(frame, auraType)
 end
 
 local function SortAurasByTime(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
 			local aTime = a.expiration or -1
 			local bTime = b.expiration or -1
-			if (aTime and bTime) then
-				if(sortDirection == "DESCENDING") then
+			if aTime and bTime then
+				if sortDirection == "DESCENDING" then
 					return aTime < bTime
 				else
 					return aTime > bTime
@@ -238,13 +243,13 @@ local function SortAurasByTime(a, b)
 end
 
 local function SortAurasByName(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
 			local aName = a.spell or ""
 			local bName = b.spell or ""
-			if (aName and bName) then
-				if(sortDirection == "DESCENDING") then
+			if aName and bName then
+				if sortDirection == "DESCENDING" then
 					return aName < bName
 				else
 					return aName > bName
@@ -257,13 +262,13 @@ local function SortAurasByName(a, b)
 end
 
 local function SortAurasByDuration(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
 			local aTime = a.duration or -1
 			local bTime = b.duration or -1
-			if (aTime and bTime) then
-				if(sortDirection == "DESCENDING") then
+			if aTime and bTime then
+				if sortDirection == "DESCENDING" then
 					return aTime < bTime
 				else
 					return aTime > bTime
@@ -276,12 +281,12 @@ local function SortAurasByDuration(a, b)
 end
 
 local function SortAurasByCaster(a, b)
-	if (a and b and a:GetParent().db) then
+	if a and b and a:GetParent().db then
 		if a:IsShown() and b:IsShown() then
 			local sortDirection = a:GetParent().db.sortDirection
 			local aPlayer = a.isPlayer or false
 			local bPlayer = b.isPlayer or false
-			if(sortDirection == "DESCENDING") then
+			if sortDirection == "DESCENDING" then
 				return (aPlayer and not bPlayer)
 			else
 				return (not aPlayer and bPlayer)
@@ -296,13 +301,13 @@ function UF:SortAuras()
 	if not self.db then return end
 
 	--Sorting by Index is Default
-	if(self.db.sortMethod == "TIME_REMAINING") then
+	if self.db.sortMethod == "TIME_REMAINING" then
 		tsort(self, SortAurasByTime)
-	elseif(self.db.sortMethod == "NAME") then
+    elseif self.db.sortMethod == "NAME" then
 		tsort(self, SortAurasByName)
-	elseif(self.db.sortMethod == "DURATION") then
+	elseif self.db.sortMethod == "DURATION" then
 		tsort(self, SortAurasByDuration)
-	elseif (self.db.sortMethod == "PLAYER") then
+	elseif self.db.sortMethod == "PLAYER" then
 		tsort(self, SortAurasByCaster)
 	end
 
@@ -314,20 +319,20 @@ end
 function UF:UpdateAuraIconSettings(auras, noCycle)
 	local frame = auras:GetParent()
 	local type = auras.type
-	if(noCycle) then
+	if noCycle then
 		frame = auras:GetParent():GetParent()
 		type = auras:GetParent().type
 	end
-	if(not frame.db) then return end
+	if not frame.db then return end
 
 	local db = frame.db[type]
 	local unitframeFont = LSM:Fetch("font", E.db["unitframe"].font)
 	local unitframeFontOutline = E.db["unitframe"].fontOutline
 	local index = 1
 	auras.db = db
-	if(db) then
-		if(not noCycle) then
-			while(auras[index]) do
+	if db then
+		if not noCycle then
+			while auras[index] do
 				local button = auras[index]
 				button.text:FontTemplate(unitframeFont, db.fontSize, unitframeFontOutline)
 				button.count:FontTemplate(unitframeFont, db.countFontSize or db.fontSize, unitframeFontOutline)
@@ -352,8 +357,6 @@ function UF:UpdateAuraIconSettings(auras, noCycle)
 	end
 end
 
-local unstableAffliction = GetSpellInfo(30108)
-local vampiricTouch = GetSpellInfo(34914)
 function UF:PostUpdateAura(unit, button)
 	local auras = button:GetParent()
 	local frame = auras:GetParent()
@@ -374,11 +377,7 @@ function UF:PostUpdateAura(unit, button)
 			button.icon:SetDesaturated((unit and not find(unit, "arena%d")) and true or false)
 		else
 			local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
-			if button.name and (button.name == unstableAffliction or button.name == vampiricTouch) and E.myclass ~= "WARLOCK" then
-				button:SetBackdropBorderColor(0.05, 0.85, 0.94)
-			else
-				button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
-			end
+            button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
 			button.icon:SetDesaturated(false)
 		end
 	else
@@ -429,7 +428,7 @@ function UF:UpdateAuraTimer(elapsed)
 	if self.expirationSaved <= 0 then
 		self:SetScript("OnUpdate", nil)
 
-		if(self.text:GetFont()) then
+		if self.text:GetFont() then
 			self.text:SetText("")
 		end
 
@@ -448,7 +447,7 @@ end
 
 function UF:AuraFilter(unit, button, name, _, _, _, dispelType, duration, expiration, caster, isStealable, _, spellID)
 	local db = self:GetParent().db
-	if not db or not db[self.type] then return true; end
+	if not db or not db[self.type] then return true end
 
 	db = db[self.type]
 
