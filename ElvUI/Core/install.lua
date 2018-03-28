@@ -559,7 +559,7 @@ function E:SetupLayout(layout, noDataReset)
 		E.db.unitframe.units.arena.castbar.width = 200
 	end
 
-	if(layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER")) then
+	if layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER") then
 		if not E.db.movers then E.db.movers = {} end
 		E.db.unitframe.units.player.castbar.width = E.PixelMode and 406 or 436
 		E.db.unitframe.units.player.castbar.height = 28
@@ -691,7 +691,7 @@ local function SetupAuras(style)
 		E:GetModule("UnitFrames"):CreateAndUpdateUF("target")
 	end
 
-	if(InstallStepComplete) then
+	if InstallStepComplete then
 		InstallStepComplete.message = L["Auras Set"]
 		InstallStepComplete:Show()
 	end

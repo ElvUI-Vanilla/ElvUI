@@ -119,6 +119,7 @@ function UF:Configure_Auras(frame, auraType)
 	if not frame.VARIABLES_SET then return end
 	local db = frame.db
 
+	print(format("DEBUG: UF:Configure_Auras(%s, %s)", frame:GetName(), auraType))
 	local auras = frame[auraType]
 	auraType = lower(auraType)
 	local rows = db[auraType].numrows
@@ -372,7 +373,7 @@ function UF:PostUpdateAura(unit, button)
 	end
 
 	if button.isDebuff then
-		if(not button.isFriend and not button.isPlayer) then --[[and (not E.isDebuffWhiteList[name])]]
+		if not button.isFriend and not button.isPlayer then --[[and (not E.isDebuffWhiteList[name])]]
 			button:SetBackdropBorderColor(0.9, 0.1, 0.1)
 			button.icon:SetDesaturated((unit and not find(unit, "arena%d")) and true or false)
 		else
