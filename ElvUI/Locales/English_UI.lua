@@ -257,7 +257,7 @@ L["Tooltip"] = true;
 L["Vehicle Seat Frame"] = true;
 L["Watch Frame"] = true;
 L["Weapons"] = true;
-L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."
+L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done.\nOptions:\nShift + RightClick - Hides mover temporarily.\nCtrl + RightClick - Resets mover position to default."
 
 --Plugin Installer
 L["ElvUI Plugin Installation"] = true;
