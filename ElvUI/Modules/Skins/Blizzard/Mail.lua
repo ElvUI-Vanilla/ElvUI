@@ -165,10 +165,8 @@ local function LoadSkin()
 		local _, stationeryIcon, _, _, _, _, _, hasItem = GetInboxHeaderInfo(index)
 
 		if hasItem then
-			local itemName = GetInboxItem(index)
+			local itemName, _, _, quality = GetInboxItem(index)
 			if itemName then
-				local _, itemString = GetItemInfoByName(itemName)
-				local _, _, quality = GetItemInfo(itemString, "item:(%d+)")
 				if quality then
 					OpenMailPackageButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else
