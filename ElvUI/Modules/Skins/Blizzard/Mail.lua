@@ -51,10 +51,8 @@ local function LoadSkin()
 
 				button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				if packageIcon and not isGM then
-					local itemName = GetInboxItem(index)
+					local itemName, _, _, quality = GetInboxItem(index)
 					if itemName then
-						local _, itemString = GetItemInfoByName(itemName)
-						local _, _, quality = GetItemInfo(itemString, "item:(%d+)")
 						if quality then
 							button:SetBackdropBorderColor(GetItemQualityColor(quality))
 						else
