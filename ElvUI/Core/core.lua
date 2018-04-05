@@ -23,7 +23,6 @@ local SendAddonMessage = SendAddonMessage
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 local MAX_TALENT_TABS = MAX_TALENT_TABS
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 _, E.myclass = UnitClass("player") -- Constants
 _, E.myrace = UnitRace("player")
