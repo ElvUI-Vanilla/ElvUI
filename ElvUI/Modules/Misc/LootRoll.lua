@@ -137,8 +137,8 @@ end
 
 local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext)
 	local f = CreateFrame("Button", nil, parent)
-	E:Point(f, unpack(args))
-	f:Size(FRAME_HEIGHT - 4)
+	-- E:Point(f, unpack(args))
+	E:Size(f, FRAME_HEIGHT - 4)
 	f:SetNormalTexture(ntex)
 	if(ptex) then f:SetPushedTexture(ptex) end
 	f:SetHighlightTexture(htex)
@@ -149,23 +149,23 @@ local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext)
 	f:SetScript("OnLeave", HideTip)
 	f:SetScript("OnClick", ClickRoll)
 	local txt = f:CreateFontString(nil, nil)
-	txt:FontTemplate(nil, nil, "OUTLINE")
-	txt:Point("CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1.2 or 0)
+	E:FontTemplate(txt, nil, nil, "OUTLINE")
+	E:Point(txt, "CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1.2 or 0)
 	return f, txt
 end
 
 function M:CreateRollFrame()
 	local frame = CreateFrame("Frame", nil, E.UIParent)
-	frame:Size(FRAME_WIDTH, FRAME_HEIGHT)
-	frame:SetTemplate("Default")
+	E:Size(frame, FRAME_WIDTH, FRAME_HEIGHT)
+	E:SetTemplate(frame, "Default")
 	frame:SetScript("OnEvent", OnEvent)
 	frame:RegisterEvent("CANCEL_LOOT_ROLL")
 	frame:Hide()
 
 	local button = CreateFrame("Button", nil, frame)
-	button:Point("RIGHT", frame, "LEFT", -(E.Spacing*3), 0)
-	button:Size(FRAME_HEIGHT - (E.Border * 2))
-	button:CreateBackdrop("Default")
+	E:Point(button, "RIGHT", frame, "LEFT", -(E.Spacing*3), 0)
+	E:Size(button, FRAME_HEIGHT - (E.Border * 2))
+	E:CreateBackdrop(button, "Default")
 	button:SetScript("OnEnter", SetItemTip)
 	button:SetScript("OnLeave", HideTip2)
 	button:SetScript("OnUpdate", ItemOnUpdate)
@@ -177,14 +177,14 @@ function M:CreateRollFrame()
 	button.icon:SetTexCoord(unpack(E.TexCoords))
 
 	local tfade = frame:CreateTexture(nil, "BORDER")
-	tfade:Point("TOPLEFT", frame, "TOPLEFT", 4, 0)
-	tfade:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 0)
+	E:Point(tfade, "TOPLEFT", frame, "TOPLEFT", 4, 0)
+	E:Point(tfade, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 0)
 	tfade:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
 	tfade:SetBlendMode("ADD")
 	tfade:SetGradientAlpha("VERTICAL", .1, .1, .1, 0, .1, .1, .1, 0)
 
 	local status = CreateFrame("StatusBar", nil, frame)
-	status:SetInside()
+	E:SetInside(status)
 	status:SetScript("OnUpdate", StatusUpdate)
 	status:SetFrameLevel(status:GetFrameLevel() - 1)
 	status:SetStatusBarTexture(E["media"].normTex)
@@ -197,7 +197,7 @@ function M:CreateRollFrame()
 	status.bg:SetAlpha(0.1)
 	status.bg:SetAllPoints()
 	local spark = frame:CreateTexture(nil, "OVERLAY")
-	spark:Size(14, FRAME_HEIGHT)
+	E:Size(spark, 14, FRAME_HEIGHT)
 	spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 	spark:SetBlendMode("ADD")
 	status.spark = spark
@@ -209,15 +209,15 @@ function M:CreateRollFrame()
 	frame.need, frame.greed, frame.pass = needtext, greedtext, passtext
 
 	local bind = frame:CreateFontString()
-	bind:Point("LEFT", pass, "RIGHT", 3, 1)
-	bind:FontTemplate(nil, nil, "OUTLINE")
+	E:Point(bind, "LEFT", pass, "RIGHT", 3, 1)
+	E:FontTemplate(bind, nil, nil, "OUTLINE")
 	frame.fsbind = bind
 
 	local loot = frame:CreateFontString(nil, "ARTWORK")
-	loot:FontTemplate(nil, nil, "OUTLINE")
-	loot:Point("LEFT", bind, "RIGHT", 0, 0)
-	loot:Point("RIGHT", frame, "RIGHT", -5, 0)
-	loot:Size(200, 10)
+	E:FontTemplate(loot, nil, nil, "OUTLINE")
+	E:Point(loot, "LEFT", bind, "RIGHT", 0, 0)
+	E:Point(loot, "RIGHT", frame, "RIGHT", -5, 0)
+	E:Size(loot, 200, 10)
 	loot:SetJustifyH("LEFT")
 	frame.fsloot = loot
 
@@ -235,9 +235,9 @@ local function GetFrame()
 
 	local f = M:CreateRollFrame()
 	if(pos == "TOP") then
-		f:Point("TOP", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "BOTTOM", 0, -4)
+		E:Point(f, "TOP", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "BOTTOM", 0, -4)
 	else
-		f:Point("BOTTOM", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "TOP", 0, 4)
+		E:Point(f, "BOTTOM", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "TOP", 0, 4)
 	end
 
 	tinsert(M.RollBars, f)
