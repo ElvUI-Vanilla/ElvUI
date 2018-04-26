@@ -2,7 +2,7 @@
 	<Script file="ActionBars.lua"/>
 	<Script file="Microbar.lua"/>
 	<Script file="BarPet.lua"/>
-	<Script file="ButtonColoring.lua"/>
 	<Script file="BarShapeShift.lua"/>
+	<Script file="ButtonColoring.lua"/>
 	<Script file="Bind.lua"/>
 </Ui>

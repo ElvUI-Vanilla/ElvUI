@@ -264,7 +264,7 @@ function AB:UpdateButtonSettings()
 	end
 
 	--self:PositionAndSizeBarPet()
-	--self:PositionAndSizeBarShapeShift()
+	self:PositionAndSizeBarShapeShift()
 end
 
 function AB:StyleButton(button, noBackdrop)
@@ -484,6 +484,8 @@ function AB:Initialize()
 	for i = 1, 5 do
 		self:CreateBar(i)
 	end
+
+	self:CreateBarShapeShift()
 
 	self:UpdateButtonSettings()
 	self:LoadKeyBinder()
