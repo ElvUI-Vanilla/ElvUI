@@ -36,7 +36,6 @@ function AB:StyleShapeShift()
 	local texture, name, isActive, isCastable, _
 	local buttonName, button, icon, cooldown
 	local numForms = GetNumShapeshiftForms()
-	local stance = GetShapeshiftFormInfo(numForms)
 
 	for i = 1, NUM_SHAPESHIFT_SLOTS do
 		buttonName = "ElvUI_StanceBarButton"..i
@@ -76,7 +75,7 @@ function AB:StyleShapeShift()
 					button:SetChecked(self.db.barShapeShift.style ~= "darkenInactive")
 				end
 			else
-				if numForms == 1 or stance == 0 then
+				if numForms == 1 then
 					button:SetChecked(false)
 				else
 					button:SetChecked(self.db.barShapeShift.style == "darkenInactive")
@@ -109,7 +108,7 @@ function AB:PositionAndSizeBarShapeShift()
 	local heightMult = self.db["barShapeShift"].heightMult
 	if bar.mover then
 		bar.mover.positionOverride = point
-		E:UpdatePositionOverride(bar.mover:GetName())
+		E:UpdatePositionOverride(bar:GetName())
 	end
 	bar.db = self.db["barShapeShift"]
 	bar.db.position = nil --Depreciated
