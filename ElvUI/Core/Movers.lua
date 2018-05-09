@@ -165,7 +165,7 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 		E.AssignFrameToNudge(this)
 		coordFrame.child = this
 		UpdateCoords(coordFrame)
-		--coordFrame:GetScript("OnUpdate")(coordFrame)
+		coordFrame:GetScript("OnUpdate")(coordFrame)
 	end
 
 	local function OnMouseDown(button)
