@@ -149,6 +149,7 @@ function AB:PositionAndSizeBarShapeShift()
 		bar:SetScale(1)
 		bar:SetAlpha(bar.db.alpha)
 		E:EnableMover(bar.mover:GetName())
+		bar:SetPoint("CENTER", 0, 0)
 	else
 		bar:SetScale(0.0001)
 		bar:SetAlpha(0)
