@@ -201,8 +201,135 @@ local function BuildABConfig()
 			}
 		}
 	}
-	group["stanceBar"] = {
+	group["barPet"] = {
 		order = 6,
+		name = L["Pet Bar"],
+		type = "group",
+		guiInline = false,
+		disabled = function() return not E.private.actionbar.enable end,
+		get = function(info) return E.db.actionbar["barPet"][ info[getn(info)] ] end,
+		set = function(info, value) E.db.actionbar["barPet"][ info[getn(info)] ] = value AB:PositionAndSizeBarPet() end,
+		args = {
+			info = {
+				order = 1,
+				type = "header",
+				name = L["Pet Bar"]
+			},
+			enabled = {
+				order = 2,
+				type = "toggle",
+				name = L["Enable"]
+			},
+			restorePosition = {
+				order = 3,
+				type = "execute",
+				name = L["Restore Bar"],
+				desc = L["Restore the actionbars default settings"],
+				func = function() E:CopyTable(E.db.actionbar["barPet"], P.actionbar["barPet"]) E:ResetMovers(L["Pet Bar"]) AB:PositionAndSizeBarPet() end,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			spacer = {
+				order = 4,
+				type = "description",
+				name = " "
+			},
+			backdrop = {
+				order = 5,
+				type = "toggle",
+				name = L["Backdrop"],
+				desc = L["Toggles the display of the actionbars backdrop."],
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			mouseover = {
+				order = 6,
+				type = "toggle",
+				name = L["Mouse Over"],
+				desc = L["The frame is not shown unless you mouse over the frame."],
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			inheritGlobalFade = {
+				order = 7,
+				type = "toggle",
+				name = L["Inherit Global Fade"],
+				desc = L["Inherit the global fade, mousing over, targetting, setting focus, losing health, entering combat will set the remove transparency. Otherwise it will use the transparency level in the general actionbar settings for global fade alpha."],
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			point = {
+				order = 8,
+				type = "select",
+				name = L["Anchor Point"],
+				desc = L["The first button anchors itself to this point on the bar."],
+				values = points,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			buttons = {
+				order = 8,
+				type = "range",
+				name = L["Buttons"],
+				desc = L["The amount of buttons to display."],
+				min = 1, max = NUM_PET_ACTION_SLOTS, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			buttonsPerRow = {
+				order = 10,
+				type = "range",
+				name = L["Buttons Per Row"],
+				desc = L["The amount of buttons to display per row."],
+				min = 1, max = NUM_PET_ACTION_SLOTS, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			buttonsize = {
+				order = 11,
+				type = "range",
+				name = L["Button Size"],
+				desc = L["The size of the action buttons."],
+				min = 15, max = 60, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			buttonspacing = {
+				order = 12,
+				type = "range",
+				name = L["Button Spacing"],
+				desc = L["The spacing between buttons."],
+				min = -1, max = 10, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			backdropSpacing = {
+				order = 13,
+				type = "range",
+				name = L["Backdrop Spacing"],
+				desc = L["The spacing between the backdrop and the buttons."],
+				min = 0, max = 10, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			heightMult = {
+				order = 14,
+				type = "range",
+				name = L["Height Multiplier"],
+				desc = L["Multiply the backdrops height or width by this value. This is usefull if you wish to have more than one bar behind a backdrop."],
+				min = 1, max = 5, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			widthMult = {
+				order = 15,
+				type = "range",
+				name = L["Width Multiplier"],
+				desc = L["Multiply the backdrops height or width by this value. This is usefull if you wish to have more than one bar behind a backdrop."],
+				min = 1, max = 5, step = 1,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			},
+			alpha = {
+				order = 16,
+				type = "range",
+				isPercent = true,
+				name = L["Alpha"],
+				min = 0, max = 1, step = 0.01,
+				disabled = function() return not E.db.actionbar.barPet.enabled end
+			}
+		}
+	}
+	group["stanceBar"] = {
+		order = 7,
 		name = L["Stance Bar"],
 		type = "group",
 		guiInline = false,
@@ -336,26 +463,11 @@ local function BuildABConfig()
 					["classic"] = L["Classic"]
 				},
 				disabled = function() return not E.db.actionbar.barShapeShift.enabled end
-			},
-			visibility = {
-				order = 18,
-				type = "input",
-				name = L["Visibility State"],
-				desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
-				width = "full",
-				multiline = true,
-				set = function(info, value)
-					if value and value:match("[\n\r]") then
-						value = value:gsub("[\n\r]","")
-					end
-					E.db.actionbar["barShapeShift"]["visibility"] = value;
-					AB:UpdateButtonSettings()
-				end
 			}
 		}
 	}
 	group["microbar"] = {
-		order = 7,
+		order = 8,
 		type = "group",
 		name = L["Micro Bar"],
 		get = function(info) return E.db.actionbar.microbar[ info[getn(info)] ] end,
