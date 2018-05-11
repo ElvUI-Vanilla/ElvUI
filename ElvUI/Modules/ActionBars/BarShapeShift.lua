@@ -49,7 +49,6 @@ function AB:StyleShapeShift()
 			if self.db.barShapeShift.style == "darkenInactive" then
 				if name then
 					texture = texture
-					-- texture = GetSpellTexture(name, BOOKTYPE_SPELL)
 				end
 			end
 

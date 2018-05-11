@@ -25,13 +25,13 @@ local function GetPoint(obj)
 end
 
 local function UpdateCoords(self)
-	local mover = self.child;
-	local x, y, _, nudgePoint, nudgeInversePoint = E:CalculateMoverPoints(mover);
+	local mover = self.child or self
+	local x, y, _, nudgePoint, nudgeInversePoint = E:CalculateMoverPoints(mover)
 
-	local coordX, coordY = E:GetXYOffset(nudgeInversePoint, 1);
-	ElvUIMoverNudgeWindow:ClearAllPoints();
-	ElvUIMoverNudgeWindow:SetPoint(nudgePoint, mover, nudgeInversePoint, coordX, coordY);
-	E:UpdateNudgeFrame(mover, x, y);
+	local coordX, coordY = E:GetXYOffset(nudgeInversePoint, 1)
+	ElvUIMoverNudgeWindow:ClearAllPoints()
+	ElvUIMoverNudgeWindow:SetPoint(nudgePoint, mover, nudgeInversePoint, coordX, coordY)
+	E:UpdateNudgeFrame(mover, x, y)
 end
 
 local isDragging = false
