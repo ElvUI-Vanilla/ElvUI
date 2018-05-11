@@ -263,7 +263,7 @@ function AB:UpdateButtonSettings()
 		self:PositionAndSizeBar("bar"..i)
 	end
 
-	--self:PositionAndSizeBarPet()
+	self:PositionAndSizeBarPet()
 	self:PositionAndSizeBarShapeShift()
 end
 
@@ -275,14 +275,12 @@ function AB:StyleButton(button, noBackdrop)
 	local hotkey = _G[name.."HotKey"]
 	local border = _G[name.."Border"]
 	local macroName = _G[name.."Name"]
-	local normal = _G[name.."NormalTexture"]
-	local normal2 = button:GetNormalTexture()
+	local normal = button:GetNormalTexture()
 	local buttonCooldown = _G[name.."Cooldown"]
 	local color = self.db.fontColor
 
 	if flash then flash:SetTexture(nil) end
 	if normal then normal:SetTexture(nil) normal:Hide() normal:SetAlpha(0) end
-	if normal2 then normal2:SetTexture(nil) normal2:Hide() normal2:SetAlpha(0) end
 	if border then E:Kill(border) end
 
 	if not button.noBackdrop then
@@ -485,6 +483,7 @@ function AB:Initialize()
 		self:CreateBar(i)
 	end
 
+	self:CreateBarPet()
 	self:CreateBarShapeShift()
 
 	self:UpdateButtonSettings()
@@ -492,7 +491,7 @@ function AB:Initialize()
 
 	self:SecureHook("ActionButton_Update")
 	self:RawHook("ActionButton_GetPagedID")
-	-- self:SecureHook("PetActionBar_Update", "UpdatePet")
+	self:SecureHook("PetActionBar_Update", "UpdatePet")
 
 	if E.myclass == "WARRIOR" then
 		BonusActionBarFrame:Show()
