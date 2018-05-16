@@ -64,8 +64,8 @@ button.isDebuff - indicates if the button holds a debuff (boolean)
 local ns = oUF
 local oUF = ns.oUF
 
-local tinsert = table.insert
-local floor, min = math.floor, math.min
+local tinsert, getn = table.insert, table.getn
+local floor, min, mod = math.floor, math.min, math.mod
 
 local CreateFrame = CreateFrame
 local GetTime = GetTime
@@ -250,7 +250,7 @@ local function SetPosition(element, from, to)
 
 		-- Bail out if the to range is out of scope.
 		if(not button) then break end
-		local col = (i - 1) % cols
+		local col = mod((i - 1), cols)
 		local row = floor((i - 1) / cols)
 
 		button:ClearAllPoints()
@@ -277,7 +277,7 @@ local function filterIcons(element, unit, filter, limit, isDebuff, offset, dontH
 	end
 
 	if not dontHide then
-		for i = visible + offset + 1, #element do
+		for i = visible + offset + 1, getn(element) do
 			element[i]:Hide()
 		end
 	end

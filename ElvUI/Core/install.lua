@@ -665,17 +665,17 @@ local function SetupAuras(style)
 		UF:Configure_AuraBars(frame)
 	end
 
-	frame = UF["focus"]
-	E:CopyTable(E.db.unitframe.units.focus.buffs, P.unitframe.units.focus.buffs)
-	E:CopyTable(E.db.unitframe.units.focus.debuffs, P.unitframe.units.focus.debuffs)
-	E:CopyTable(E.db.unitframe.units.focus.aurabar, P.unitframe.units.focus.aurabar)
-	E.db.unitframe.units.focus.smartAuraDisplay = P.unitframe.units.focus.smartAuraDisplay
+	-- frame = UF["focus"]
+	-- E:CopyTable(E.db.unitframe.units.focus.buffs, P.unitframe.units.focus.buffs)
+	-- E:CopyTable(E.db.unitframe.units.focus.debuffs, P.unitframe.units.focus.debuffs)
+	-- E:CopyTable(E.db.unitframe.units.focus.aurabar, P.unitframe.units.focus.aurabar)
+	-- E.db.unitframe.units.focus.smartAuraDisplay = P.unitframe.units.focus.smartAuraDisplay
 
-	if frame then
-		UF:Configure_Auras(frame, "Buffs")
-		UF:Configure_Auras(frame, "Debuffs")
-		UF:Configure_AuraBars(frame)
-	end
+	-- if frame then
+	-- 	UF:Configure_Auras(frame, "Buffs")
+	-- 	UF:Configure_Auras(frame, "Debuffs")
+	-- 	UF:Configure_AuraBars(frame)
+	-- end
 
 	if not style then
 		E.db.unitframe.units.player.buffs.enable = true

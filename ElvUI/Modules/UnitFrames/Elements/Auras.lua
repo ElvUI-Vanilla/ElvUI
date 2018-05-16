@@ -29,7 +29,7 @@ function UF:Construct_Buffs(frame)
 	buffs:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 10) --Make them appear above any text element
 	buffs.type = "buffs"
 	--Set initial width to prevent division by zero. This value doesn't matter, as it will be updated later
-	buffs:Width(100)
+	E:Width(buffs, 100)
 
 	return buffs
 end
@@ -44,7 +44,7 @@ function UF:Construct_Debuffs(frame)
 	debuffs.type = "debuffs"
 	debuffs:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 10) --Make them appear above any text element
 	--Set initial width to prevent division by zero. This value doesn't matter, as it will be updated later
-	debuffs:Width(100)
+	E:Width(debuffs, 100)
 
 	return debuffs
 end
@@ -77,10 +77,10 @@ function UF:Construct_AuraIcon(button)
 
 	button:RegisterForClicks("RightButtonUp")
 	button:SetScript("OnClick", function(self)
-        if E.db.unitframe.auraBlacklistModifier == "NONE"
-        or not ((E.db.unitframe.auraBlacklistModifier == "SHIFT" and IsShiftKeyDown())
-            or (E.db.unitframe.auraBlacklistModifier == "ALT" and IsAltKeyDown())
-            or (E.db.unitframe.auraBlacklistModifier == "CTRL" and IsControlKeyDown())) then return end
+		if E.db.unitframe.auraBlacklistModifier == "NONE"
+		or not ((E.db.unitframe.auraBlacklistModifier == "SHIFT" and IsShiftKeyDown())
+			or (E.db.unitframe.auraBlacklistModifier == "ALT" and IsAltKeyDown())
+			or (E.db.unitframe.auraBlacklistModifier == "CTRL" and IsControlKeyDown())) then return end
 
 		local auraName = self.name
 
@@ -119,7 +119,6 @@ function UF:Configure_Auras(frame, auraType)
 	if not frame.VARIABLES_SET then return end
 	local db = frame.db
 
-	print(format("DEBUG: UF:Configure_Auras(%s, %s)", frame:GetName(), auraType))
 	local auras = frame[auraType]
 	auraType = lower(auraType)
 	local rows = db[auraType].numrows
@@ -132,7 +131,7 @@ function UF:Configure_Auras(frame, auraType)
 			totalWidth = totalWidth - powerOffset
 		end
 	end
-	auras:Width(totalWidth)
+	E:Width(auras, totalWidth)
 
 	auras.forceShow = frame.forceShowAuras
 	auras.num = db[auraType].perrow * rows
@@ -143,8 +142,8 @@ function UF:Configure_Auras(frame, auraType)
 	end
 
 	local attachTo = self:GetAuraAnchorFrame(frame, db[auraType].attachTo, db.debuffs.attachTo == "BUFFS" and db.buffs.attachTo == "DEBUFFS")
-    --Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
-    local x, y = E:GetXYOffset(db[auraType].anchorPoint, frame.SPACING)
+	--Use frame.SPACING override since it may be different from E.Spacing due to forced thin borders
+	local x, y = E:GetXYOffset(db[auraType].anchorPoint, frame.SPACING)
 
 	if db[auraType].attachTo == "FRAME" then
 		y = 0
@@ -165,8 +164,8 @@ function UF:Configure_Auras(frame, auraType)
 	end
 
 	auras:ClearAllPoints()
-	auras:Point(E.InversePoints[db[auraType].anchorPoint], attachTo, db[auraType].anchorPoint, x + db[auraType].xOffset, y + db[auraType].yOffset)
-	auras:Height(auras.size * rows)
+	E:Point(auras, E.InversePoints[db[auraType].anchorPoint], attachTo, db[auraType].anchorPoint, x + db[auraType].xOffset, y + db[auraType].yOffset)
+	E:Height(auras, auras.size * rows)
 	auras["growth-y"] = find(db[auraType].anchorPoint, "TOP") and "UP" or "DOWN"
 	auras["growth-x"] = db[auraType].anchorPoint == "LEFT" and "LEFT" or  db[auraType].anchorPoint == "RIGHT" and "RIGHT" or (find(db[auraType].anchorPoint, "LEFT") and "RIGHT" or "LEFT")
 	auras.initialAnchor = E.InversePoints[db[auraType].anchorPoint]
@@ -304,7 +303,7 @@ function UF:SortAuras()
 	--Sorting by Index is Default
 	if self.db.sortMethod == "TIME_REMAINING" then
 		tsort(self, SortAurasByTime)
-    elseif self.db.sortMethod == "NAME" then
+	elseif self.db.sortMethod == "NAME" then
 		tsort(self, SortAurasByName)
 	elseif self.db.sortMethod == "DURATION" then
 		tsort(self, SortAurasByDuration)
@@ -378,7 +377,7 @@ function UF:PostUpdateAura(unit, button)
 			button.icon:SetDesaturated((unit and not find(unit, "arena%d")) and true or false)
 		else
 			local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
-            button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
+			button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
 			button.icon:SetDesaturated(false)
 		end
 	else

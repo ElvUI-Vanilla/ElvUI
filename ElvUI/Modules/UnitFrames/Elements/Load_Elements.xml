@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="AuraBars.lua"/>
 	<Script file="Auras.lua"/>
 	<Script file="CombatIndicator.lua"/>
 	<Script file="Health.lua"/>

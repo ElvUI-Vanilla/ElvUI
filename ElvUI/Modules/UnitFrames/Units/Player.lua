@@ -22,9 +22,13 @@ function UF:Construct_PlayerFrame(frame)
 
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
+	frame.Buffs = self:Construct_Buffs(frame)
+	frame.Debuffs = self:Construct_Debuffs(frame)
+	-- frame.Castbar = self:Construct_Castbar(frame, L["Player Castbar"])
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
+	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
