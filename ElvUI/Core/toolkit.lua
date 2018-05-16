@@ -47,7 +47,8 @@ end
 
 function E:Size(frame, width, height)
 	assert(width)
-	frame:SetSize(E:Scale(width), E:Scale(height or width))
+	frame:SetWidth(E:Scale(width))
+	frame:SetHeight(E:Scale(height or width))
 end
 
 function E:Width(frame, width)
