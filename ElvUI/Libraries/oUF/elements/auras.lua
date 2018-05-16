@@ -80,7 +80,9 @@ local VISIBLE = 1
 local HIDDEN = 0
 
 local function UpdateTooltip(self)
-	if self.filter == 'HELPFUL' then
+	if self:GetParent().__owner.unit == "player" then
+		GameTooltip:SetPlayerBuff(self:GetID())
+	elseif self.filter == 'HELPFUL' then
 		GameTooltip:SetUnitBuff(self:GetParent().__owner.unit, self:GetID(), self.filter)
 	else
 		GameTooltip:SetUnitDebuff(self:GetParent().__owner.unit, self:GetID(), self.filter)
@@ -146,6 +148,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 	if unit == "player" then
 		local idx = GetPlayerBuff(index - 1, filter)
 		if idx < 0 then return end
+		index = idx
 		texture = GetPlayerBuffTexture(idx)
 		count = GetPlayerBuffApplications(idx)
 		dispelType = GetPlayerBuffDispelType(idx)
