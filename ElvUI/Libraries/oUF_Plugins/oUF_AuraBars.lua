@@ -370,7 +370,7 @@ end
 
 local function Enable(self)
 	if self.AuraBars then
-		self:RegisterEvent("UNIT_AURA", Update)
+		self:RegisterEvent("PLAYER_AURAS_CHANGED", Update)
 		self.AuraBars:Height(1)
 		self.AuraBars.bars = self.AuraBars.bars or {}
 		self.AuraBars.SetAnchors = SetAnchors
@@ -383,7 +383,7 @@ end
 local function Disable(self)
 	local auraFrame = self.AuraBars
 	if auraFrame then
-		self:UnregisterEvent("UNIT_AURA", Update)
+		self:UnregisterEvent("PLAYER_AURAS_CHANGED", Update)
 		auraFrame:SetScript("OnUpdate", nil)
 	end
 end
