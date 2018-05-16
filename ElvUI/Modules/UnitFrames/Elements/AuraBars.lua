@@ -24,7 +24,7 @@ function UF:Construct_AuraBars()
 
 	E:SetTemplate(self, "Default", nil, nil, UF.thinBorders, true)
 	local inset = UF.thinBorders and E.mult or nil
-	bar:SetInside(self, inset, inset)
+	E:SetInside(bar, self, inset, inset)
 	UF["statusbars"][bar] = true
 	UF:Update_StatusBar(bar)
 
@@ -34,12 +34,12 @@ function UF:Construct_AuraBars()
 	UF:Update_FontString(bar.spellname)
 
 	bar.spellname:ClearAllPoints()
-	bar.spellname:Point("LEFT", bar, "LEFT", 2, 0)
-	bar.spellname:Point("RIGHT", bar.spelltime, "LEFT", -4, 0)
-	bar.spellname:SetWordWrap(false)
+	E:Point(bar.spellname, "LEFT", bar, "LEFT", 2, 0)
+	E:Point(bar.spellname, "RIGHT", bar.spelltime, "LEFT", -4, 0)
+	-- bar.spellname:SetWordWrap(false)
 
-	bar.iconHolder:SetTemplate("Default", nil, nil, UF.thinBorders, true)
-	bar.icon:SetInside(bar.iconHolder, inset, inset)
+	E:SetTemplate(bar.iconHolder, "Default", nil, nil, UF.thinBorders, true)
+	E:SetInside(bar.icon, bar.iconHolder, inset, inset)
 	bar.icon:SetDrawLayer("OVERLAY")
 
 	bar.bg = bar:CreateTexture(nil, "BORDER")
@@ -255,11 +255,11 @@ function UF:ColorizeAuraBars()
 		if not frame:IsVisible() then break end
 		local spellName = frame.statusBar.aura.name
 		local spellID = frame.statusBar.aura.spellID
-		local colors = E.global.unitframe.AuraBarColors[spellID] or E.global.unitframe.AuraBarColors[tostring(spellID)] or E.global.unitframe.AuraBarColors[spellName]
+		-- local colors = E.global.unitframe.AuraBarColors[spellID] or E.global.unitframe.AuraBarColors[tostring(spellID)] or E.global.unitframe.AuraBarColors[spellName]
 
-		if E.db.unitframe.colors.auraBarTurtle and (E.global.unitframe.aurafilters.TurtleBuffs.spells[spellID] or E.global.unitframe.aurafilters.TurtleBuffs.spells[spellName]) and not colors then
-			colors = E.db.unitframe.colors.auraBarTurtleColor
-		end
+		-- if E.db.unitframe.colors.auraBarTurtle and (E.global.unitframe.aurafilters.TurtleBuffs.spells[spellID] or E.global.unitframe.aurafilters.TurtleBuffs.spells[spellName]) and not colors then
+		-- 	colors = E.db.unitframe.colors.auraBarTurtleColor
+		-- end
 
 		if colors then
 			frame.statusBar:SetStatusBarColor(colors.r, colors.g, colors.b)
@@ -275,7 +275,7 @@ function UF:ColorizeAuraBars()
 			UF:ToggleTransparentStatusBar(false, frame.statusBar, frame.statusBar.bg, nil, true)
 		end
 
-		if(UF.db.colors.transparentAurabars) then
+		if UF.db.colors.transparentAurabars then
 			local _, _, _, alpha = frame:GetBackdropColor()
 			if colors then
 				frame:SetBackdropColor(colors.r * 0.58, colors.g * 0.58, colors.b * 0.58, alpha)

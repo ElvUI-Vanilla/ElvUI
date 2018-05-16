@@ -69,8 +69,8 @@ local function CreateAuraBar(oUF, anchor)
 	local auraBarParent = oUF.AuraBars
 
 	local frame = CreateFrame("Frame", nil, auraBarParent)
-	frame:Height(auraBarParent.auraBarHeight or 20)
-	frame:Width((auraBarParent.auraBarWidth or auraBarParent:GetWidth()) - (frame:GetHeight() + (auraBarParent.gap or 0)))
+	frame:SetHeight(auraBarParent.auraBarHeight or 20)
+	frame:SetWidth((auraBarParent.auraBarWidth or auraBarParent:GetWidth()) - (frame:GetHeight() + (auraBarParent.gap or 0)))
 	frame.anchor = anchor
 
 	-- the main bar
@@ -97,7 +97,7 @@ local function CreateAuraBar(oUF, anchor)
 
 	local spark = statusBar:CreateTexture(nil, "OVERLAY", nil)
 	spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
-	spark:Width(12)
+	spark:SetWidth(12)
 	spark:SetBlendMode("ADD")
 	spark:SetPoint("CENTER", statusBar:GetStatusBarTexture(), "RIGHT")
 	statusBar.spark = spark
@@ -121,10 +121,10 @@ local function CreateAuraBar(oUF, anchor)
 	else
 		statusBar.spelltime:SetFont(auraBarParent.spellTimeFont or [[Fonts\FRIZQT__.TTF]], auraBarParent.spellTimeSize or 10)
 	end
-	statusBar.spelltime:SetTextColor(1 ,1, 1)
-	statusBar.spelltime:SetJustifyH"RIGHT"
-	statusBar.spelltime:SetJustifyV"CENTER"
-	statusBar.spelltime:SetPoint"RIGHT"
+	statusBar.spelltime:SetTextColor(1, 1, 1)
+	statusBar.spelltime:SetJustifyH("RIGHT")
+	statusBar.spelltime:SetJustifyV("CENTER")
+	statusBar.spelltime:SetPoint("RIGHT", 0, 0)
 
 	statusBar.spellname = statusBar:CreateFontString(nil, "ARTWORK")
 	if auraBarParent.spellNameObject then
@@ -133,9 +133,9 @@ local function CreateAuraBar(oUF, anchor)
 		statusBar.spellname:SetFont(auraBarParent.spellNameFont or [[Fonts\FRIZQT__.TTF]], auraBarParent.spellNameSize or 10)
 	end
 	statusBar.spellname:SetTextColor(1, 1, 1)
-	statusBar.spellname:SetJustifyH"LEFT"
-	statusBar.spellname:SetJustifyV"CENTER"
-	statusBar.spellname:SetPoint"LEFT"
+	statusBar.spellname:SetJustifyH("LEFT")
+	statusBar.spellname:SetJustifyV("CENTER")
+	statusBar.spellname:SetPoint("LEFT", 0, 0)
 	statusBar.spellname:SetPoint("RIGHT", statusBar.spelltime, "LEFT")
 
 	if auraBarParent.PostCreateBar then
@@ -288,7 +288,7 @@ local function Update(self, event, unit)
 	end
 
 	for index = 1 , lastAuraIndex do
-		if auraBars:GetWidth() == 0 then break end
+		-- if auraBars:GetWidth() == 0 then break end
 		local aura = auras[index]
 		local frame = bars[index]
 
@@ -333,7 +333,7 @@ local function Update(self, event, unit)
 
 		bar.icon:SetTexture(bar.aura.icon)
 
-		bar.spellname:SetText(bar.aura.count > 1 and format("%s [%d]", bar.aura.name, bar.aura.count) or bar.aura.name)
+		-- bar.spellname:SetText(bar.aura.count > 1 and format("%s [%d]", bar.aura.name, bar.aura.count) or bar.aura.name)
 		bar.spelltime:SetText(not bar.noTime and FormatTime(bar.aura.expirationTime-GetTime()))
 
 		-- Colour bars
@@ -370,7 +370,8 @@ end
 
 local function Enable(self)
 	if self.AuraBars then
-		self:RegisterEvent("PLAYER_AURAS_CHANGED", Update)
+		self:RegisterEvent("PLAYER_AURAS_CHANGED")
+		self:SetScript("OnEvent", function() Update(self, event, "player") end)
 		self.AuraBars:SetHeight(1)
 		self.AuraBars.bars = self.AuraBars.bars or {}
 		self.AuraBars.SetAnchors = SetAnchors
