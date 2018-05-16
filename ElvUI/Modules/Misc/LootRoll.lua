@@ -24,6 +24,7 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local pos = "TOP"
 local cancelled_rolls = {}
 local FRAME_WIDTH, FRAME_HEIGHT = 328, 28
+local dummy = CreateFrame("FRAME", nil, E.UIParent)
 M.RollBars = {}
 
 local locale = GetLocale()
@@ -114,7 +115,8 @@ local function LootClick(frame)
 	end
 end
 
-local function OnEvent(frame, _, rollID)
+local function OnEvent(frame)
+	local rollID = arg1
 	cancelled_rolls[rollID] = true
 	if frame.rollID ~= rollID then return end
 
@@ -127,7 +129,7 @@ local function StatusUpdate(frame)
 	if not frame.parent.rollID then return end
 	local t = GetLootRollTimeLeft(frame.parent.rollID)
 	local perc = t / frame.parent.time
-	frame.spark:Point("CENTER", frame, "LEFT", perc * frame:GetWidth(), 0)
+	E:Point(frame.spark, "CENTER", frame, "LEFT", perc * frame:GetWidth(), 0)
 	frame:SetValue(t)
 
 	if t > 1000000000 then
@@ -135,9 +137,9 @@ local function StatusUpdate(frame)
 	end
 end
 
-local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext)
+local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, point, relativeFrame, relativePoint, ofsx, ofsy)
 	local f = CreateFrame("Button", nil, parent)
-	-- E:Point(f, unpack(args))
+	E:Point(f, point, relativeFrame, relativePoint, ofsx, ofsy)
 	E:Size(f, FRAME_HEIGHT - 4)
 	f:SetNormalTexture(ntex)
 	if(ptex) then f:SetPushedTexture(ptex) end
@@ -145,9 +147,9 @@ local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext)
 	f.rolltype = rolltype
 	f.parent = parent
 	f.tiptext = tiptext
-	f:SetScript("OnEnter", SetTip)
+	f:SetScript("OnEnter", function() SetTip(f) end)
 	f:SetScript("OnLeave", HideTip)
-	f:SetScript("OnClick", ClickRoll)
+	f:SetScript("OnClick", function() ClickRoll(f) end)
 	local txt = f:CreateFontString(nil, nil)
 	E:FontTemplate(txt, nil, nil, "OUTLINE")
 	E:Point(txt, "CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1.2 or 0)
@@ -158,7 +160,7 @@ function M:CreateRollFrame()
 	local frame = CreateFrame("Frame", nil, E.UIParent)
 	E:Size(frame, FRAME_WIDTH, FRAME_HEIGHT)
 	E:SetTemplate(frame, "Default")
-	frame:SetScript("OnEvent", OnEvent)
+	frame:SetScript("OnEvent", function() OnEvent(frame) end)
 	frame:RegisterEvent("CANCEL_LOOT_ROLL")
 	frame:Hide()
 
@@ -166,10 +168,10 @@ function M:CreateRollFrame()
 	E:Point(button, "RIGHT", frame, "LEFT", -(E.Spacing*3), 0)
 	E:Size(button, FRAME_HEIGHT - (E.Border * 2))
 	E:CreateBackdrop(button, "Default")
-	-- button:SetScript("OnEnter", SetItemTip)
+	button:SetScript("OnEnter", function() SetItemTip(button) end)
 	button:SetScript("OnLeave", HideTip2)
-	button:SetScript("OnUpdate", ItemOnUpdate)
-	button:SetScript("OnClick", LootClick)
+	button:SetScript("OnUpdate", function() ItemOnUpdate(button) end)
+	button:SetScript("OnClick", function() LootClick(button) end)
 	frame.button = button
 
 	button.icon = button:CreateTexture(nil, "OVERLAY")
@@ -185,7 +187,7 @@ function M:CreateRollFrame()
 
 	local status = CreateFrame("StatusBar", nil, frame)
 	E:SetInside(status)
-	-- status:SetScript("OnUpdate", StatusUpdate)
+	status:SetScript("OnUpdate", function() StatusUpdate(status) end)
 	status:SetFrameLevel(status:GetFrameLevel() - 1)
 	status:SetStatusBarTexture(E["media"].normTex)
 	E:RegisterStatusBar(status)
@@ -228,7 +230,7 @@ end
 
 local function GetFrame()
 	for _, f in ipairs(M.RollBars) do
-		if(not f.rollID) then
+		if not f.rollID then
 			return f
 		end
 	end
@@ -255,7 +257,7 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f.need:SetText(0)
 	f.greed:SetText(0)
 	f.pass:SetText(0)
-	
+
 	local texture, name, count, quality, bindOnPickUp = GetLootRollItemInfo(rollID)
 	f.button.icon:SetTexture(texture)
 	f.button.link = GetLootRollItemLink(rollID)
@@ -282,7 +284,7 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f:Show()
 
 	if E.db.general.autoRoll and UnitLevel("player") == MAX_PLAYER_LEVEL and quality == 2 and not bindOnPickUp then
-			RollOnLoot(rollID, 2)
+		RollOnLoot(rollID, 2)
 	end
 end
 
@@ -316,8 +318,18 @@ end
 function M:LoadLootRoll()
 	if not E.private.general.lootRoll then return end
 
-	self:RegisterEvent("CHAT_MSG_LOOT")
-	self:RegisterEvent("START_LOOT_ROLL")
+	dummy:RegisterEvent("START_LOOT_ROLL")
+	-- dummy:RegisterEvent("CHAT_MSG_LOOT")
+	dummy:SetScript("OnEvent", function()
+		if event == "START_LOOT_ROLL" then
+			M:START_LOOT_ROLL("START_LOOT_ROLL", arg1, arg2)
+		elseif event == "CHAT_MSG_LOOT" then
+			M:CHAT_MSG_LOOT("CHAT_MSG_LOOT", arg1)
+		end
+	end)
+
+	-- self:RegisterEvent("CHAT_MSG_LOOT")
+	-- self:RegisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("CANCEL_LOOT_ROLL")
 end
