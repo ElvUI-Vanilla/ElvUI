@@ -24,6 +24,7 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local pos = "TOP"
 local cancelled_rolls = {}
 local FRAME_WIDTH, FRAME_HEIGHT = 328, 28
+local dummy = CreateFrame("FRAME", nil, E.UIParent)
 M.RollBars = {}
 
 local locale = GetLocale()
@@ -72,12 +73,12 @@ local rolltypes = {"need", "greed", [0] = "pass"}
 local function SetTip(frame)
 	GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
 	GameTooltip:SetText(frame.tiptext)
-	if(frame:IsEnabled() == 0) then
+	if frame:IsEnabled() == 0 then
 		GameTooltip:AddLine("|cffff3333"..L["Can't Roll"])
 	end
 
 	for name, tbl in pairs(frame.parent.rolls) do
-		if(tbl[1] == rolltypes[frame.rolltype] and tbl[2]) then
+		if tbl[1] == rolltypes[frame.rolltype] and tbl[2] then
 			local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[tbl[2]] or RAID_CLASS_COLORS[tbl[2]]
 			GameTooltip:AddLine(name, classColor.r, classColor.g, classColor.b)
 		end
@@ -86,13 +87,13 @@ local function SetTip(frame)
 end
 
 local function SetItemTip(frame)
-	if(not frame.link) then return end
+	if not frame.link then return end
 	GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT")
 	GameTooltip:SetHyperlink(frame.link)
-	if(IsShiftKeyDown()) then
-		GameTooltip_ShowCompareItem()
-	end
-	if(IsModifiedClick("DRESSUP")) then
+	-- if IsShiftKeyDown() then
+	-- 	GameTooltip_ShowCompareItem()
+	-- end
+	if IsModifiedClick("DRESSUP") then
 		ShowInspectCursor()
 	else
 		ResetCursor()
@@ -100,23 +101,24 @@ local function SetItemTip(frame)
 end
 
 local function ItemOnUpdate(self)
-	if(IsShiftKeyDown()) then
-		GameTooltip_ShowCompareItem()
-	end
+	-- if IsShiftKeyDown() then
+	-- 	GameTooltip_ShowCompareItem()
+	-- end
 	CursorOnUpdate(self)
 end
 
 local function LootClick(frame)
-	if(IsControlKeyDown()) then
+	if IsControlKeyDown() then
 		DressUpItemLink(frame.link)
-	elseif(IsShiftKeyDown()) then
+	elseif IsShiftKeyDown() then
 		ChatEdit_InsertLink(frame.link)
 	end
 end
 
-local function OnEvent(frame, _, rollID)
+local function OnEvent(frame)
+	local rollID = arg1
 	cancelled_rolls[rollID] = true
-	if(frame.rollID ~= rollID) then return end
+	if frame.rollID ~= rollID then return end
 
 	frame.rollID = nil
 	frame.time = nil
@@ -124,52 +126,52 @@ local function OnEvent(frame, _, rollID)
 end
 
 local function StatusUpdate(frame)
-	if(not frame.parent.rollID) then return end
+	if not frame.parent.rollID then return end
 	local t = GetLootRollTimeLeft(frame.parent.rollID)
 	local perc = t / frame.parent.time
-	frame.spark:Point("CENTER", frame, "LEFT", perc * frame:GetWidth(), 0)
+	E:Point(frame.spark, "CENTER", frame, "LEFT", perc * frame:GetWidth(), 0)
 	frame:SetValue(t)
 
-	if(t > 1000000000) then
+	if t > 1000000000 then
 		frame:GetParent():Hide()
 	end
 end
 
-local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext)
+local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, point, relativeFrame, relativePoint, ofsx, ofsy)
 	local f = CreateFrame("Button", nil, parent)
-	E:Point(f, unpack(args))
-	f:Size(FRAME_HEIGHT - 4)
+	E:Point(f, point, relativeFrame, relativePoint, ofsx, ofsy)
+	E:Size(f, FRAME_HEIGHT - 4)
 	f:SetNormalTexture(ntex)
 	if(ptex) then f:SetPushedTexture(ptex) end
 	f:SetHighlightTexture(htex)
 	f.rolltype = rolltype
 	f.parent = parent
 	f.tiptext = tiptext
-	f:SetScript("OnEnter", SetTip)
+	f:SetScript("OnEnter", function() SetTip(f) end)
 	f:SetScript("OnLeave", HideTip)
-	f:SetScript("OnClick", ClickRoll)
+	f:SetScript("OnClick", function() ClickRoll(f) end)
 	local txt = f:CreateFontString(nil, nil)
-	txt:FontTemplate(nil, nil, "OUTLINE")
-	txt:Point("CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1.2 or 0)
+	E:FontTemplate(txt, nil, nil, "OUTLINE")
+	E:Point(txt, "CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1.2 or 0)
 	return f, txt
 end
 
 function M:CreateRollFrame()
 	local frame = CreateFrame("Frame", nil, E.UIParent)
-	frame:Size(FRAME_WIDTH, FRAME_HEIGHT)
-	frame:SetTemplate("Default")
-	frame:SetScript("OnEvent", OnEvent)
+	E:Size(frame, FRAME_WIDTH, FRAME_HEIGHT)
+	E:SetTemplate(frame, "Default")
+	frame:SetScript("OnEvent", function() OnEvent(frame) end)
 	frame:RegisterEvent("CANCEL_LOOT_ROLL")
 	frame:Hide()
 
 	local button = CreateFrame("Button", nil, frame)
-	button:Point("RIGHT", frame, "LEFT", -(E.Spacing*3), 0)
-	button:Size(FRAME_HEIGHT - (E.Border * 2))
-	button:CreateBackdrop("Default")
-	button:SetScript("OnEnter", SetItemTip)
+	E:Point(button, "RIGHT", frame, "LEFT", -(E.Spacing*3), 0)
+	E:Size(button, FRAME_HEIGHT - (E.Border * 2))
+	E:CreateBackdrop(button, "Default")
+	button:SetScript("OnEnter", function() SetItemTip(button) end)
 	button:SetScript("OnLeave", HideTip2)
-	button:SetScript("OnUpdate", ItemOnUpdate)
-	button:SetScript("OnClick", LootClick)
+	button:SetScript("OnUpdate", function() ItemOnUpdate(button) end)
+	button:SetScript("OnClick", function() LootClick(button) end)
 	frame.button = button
 
 	button.icon = button:CreateTexture(nil, "OVERLAY")
@@ -177,15 +179,15 @@ function M:CreateRollFrame()
 	button.icon:SetTexCoord(unpack(E.TexCoords))
 
 	local tfade = frame:CreateTexture(nil, "BORDER")
-	tfade:Point("TOPLEFT", frame, "TOPLEFT", 4, 0)
-	tfade:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 0)
+	E:Point(tfade, "TOPLEFT", frame, "TOPLEFT", 4, 0)
+	E:Point(tfade, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 0)
 	tfade:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
 	tfade:SetBlendMode("ADD")
 	tfade:SetGradientAlpha("VERTICAL", .1, .1, .1, 0, .1, .1, .1, 0)
 
 	local status = CreateFrame("StatusBar", nil, frame)
-	status:SetInside()
-	status:SetScript("OnUpdate", StatusUpdate)
+	E:SetInside(status)
+	status:SetScript("OnUpdate", function() StatusUpdate(status) end)
 	status:SetFrameLevel(status:GetFrameLevel() - 1)
 	status:SetStatusBarTexture(E["media"].normTex)
 	E:RegisterStatusBar(status)
@@ -197,7 +199,7 @@ function M:CreateRollFrame()
 	status.bg:SetAlpha(0.1)
 	status.bg:SetAllPoints()
 	local spark = frame:CreateTexture(nil, "OVERLAY")
-	spark:Size(14, FRAME_HEIGHT)
+	E:Size(spark, 14, FRAME_HEIGHT)
 	spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 	spark:SetBlendMode("ADD")
 	status.spark = spark
@@ -209,15 +211,15 @@ function M:CreateRollFrame()
 	frame.need, frame.greed, frame.pass = needtext, greedtext, passtext
 
 	local bind = frame:CreateFontString()
-	bind:Point("LEFT", pass, "RIGHT", 3, 1)
-	bind:FontTemplate(nil, nil, "OUTLINE")
+	E:Point(bind, "LEFT", pass, "RIGHT", 3, 1)
+	E:FontTemplate(bind, nil, nil, "OUTLINE")
 	frame.fsbind = bind
 
 	local loot = frame:CreateFontString(nil, "ARTWORK")
-	loot:FontTemplate(nil, nil, "OUTLINE")
-	loot:Point("LEFT", bind, "RIGHT", 0, 0)
-	loot:Point("RIGHT", frame, "RIGHT", -5, 0)
-	loot:Size(200, 10)
+	E:FontTemplate(loot, nil, nil, "OUTLINE")
+	E:Point(loot, "LEFT", bind, "RIGHT", 0, 0)
+	E:Point(loot, "RIGHT", frame, "RIGHT", -5, 0)
+	E:Size(loot, 200, 10)
 	loot:SetJustifyH("LEFT")
 	frame.fsloot = loot
 
@@ -228,16 +230,16 @@ end
 
 local function GetFrame()
 	for _, f in ipairs(M.RollBars) do
-		if(not f.rollID) then
+		if not f.rollID then
 			return f
 		end
 	end
 
 	local f = M:CreateRollFrame()
-	if(pos == "TOP") then
-		f:Point("TOP", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "BOTTOM", 0, -4)
+	if pos == "TOP" then
+		E:Point(f, "TOP", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "BOTTOM", 0, -4)
 	else
-		f:Point("BOTTOM", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "TOP", 0, 4)
+		E:Point(f, "BOTTOM", next(M.RollBars) and M.RollBars[getn(M.RollBars)] or AlertFrameHolder, "TOP", 0, 4)
 	end
 
 	tinsert(M.RollBars, f)
@@ -246,7 +248,7 @@ local function GetFrame()
 end
 
 function M:START_LOOT_ROLL(_, rollID, time)
-	if(cancelled_rolls[rollID]) then return end
+	if cancelled_rolls[rollID] then return end
 
 	local f = GetFrame()
 	f.rollID = rollID
@@ -281,8 +283,8 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f:SetPoint("CENTER", WorldFrame, "CENTER")
 	f:Show()
 
-	if(E.db.general.autoRoll and UnitLevel("player") == MAX_PLAYER_LEVEL and quality == 2 and not bindOnPickUp) then
-			RollOnLoot(rollID, 2)
+	if E.db.general.autoRoll and UnitLevel("player") == MAX_PLAYER_LEVEL and quality == 2 and not bindOnPickUp then
+		RollOnLoot(rollID, 2)
 	end
 end
 
@@ -290,21 +292,21 @@ function M:ParseRollChoice(msg)
 	if not msg then return end
 	for i, v in pairs(rollpairs) do
 		local _, _, playername, itemname = find(msg, i)
-		if(locale == "ruRU" and (v == "greed" or v == "need")) then
+		if locale == "ruRU" and (v == "greed" or v == "need") then
 			local temp = playername
 			playername = itemname
 			itemname = temp
 		end
-		if(playername and itemname and playername ~= "Everyone") then return playername, itemname, v end
+		if playername and itemname and playername ~= "Everyone" then return playername, itemname, v end
 	end
 end
 
 function M:CHAT_MSG_LOOT(_, msg)
 	local playername, itemname, rolltype = self:ParseRollChoice(msg)
-	if(playername and itemname and rolltype) then
+	if playername and itemname and rolltype then
 		local class = select(2, UnitClass(playername))
 		for _, f in ipairs(M.RollBars) do
-			if(f.rollID and f.button.link == itemname and not f.rolls[playername]) then
+			if f.rollID and f.button.link == itemname and not f.rolls[playername] then
 				f.rolls[playername] = { rolltype, class }
 				f[rolltype]:SetText(tonumber(f[rolltype]:GetText()) + 1)
 				return
@@ -314,10 +316,20 @@ function M:CHAT_MSG_LOOT(_, msg)
 end
 
 function M:LoadLootRoll()
-	if(not E.private.general.lootRoll) then return end
+	if not E.private.general.lootRoll then return end
 
-	self:RegisterEvent("CHAT_MSG_LOOT")
-	self:RegisterEvent("START_LOOT_ROLL")
+	dummy:RegisterEvent("START_LOOT_ROLL")
+	-- dummy:RegisterEvent("CHAT_MSG_LOOT")
+	dummy:SetScript("OnEvent", function()
+		if event == "START_LOOT_ROLL" then
+			M:START_LOOT_ROLL("START_LOOT_ROLL", arg1, arg2)
+		elseif event == "CHAT_MSG_LOOT" then
+			M:CHAT_MSG_LOOT("CHAT_MSG_LOOT", arg1)
+		end
+	end)
+
+	-- self:RegisterEvent("CHAT_MSG_LOOT")
+	-- self:RegisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("CANCEL_LOOT_ROLL")
 end
