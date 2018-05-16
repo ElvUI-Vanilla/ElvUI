@@ -53,27 +53,27 @@ function UF:Construct_AuraIcon(button)
 	local offset = UF.thinBorders and E.mult or E.Border
 
 	button.text = button.cd:CreateFontString(nil, "OVERLAY")
-	button.text:Point("CENTER", 1, 1)
+	E:Point(button.text, "CENTER", 1, 1)
 	button.text:SetJustifyH("CENTER")
 
-	button:SetTemplate("Default", nil, nil, UF.thinBorders, true)
+	E:SetTemplate(button, "Default", nil, nil, UF.thinBorders, true)
 
 	button.cd.noOCC = true
 	button.cd.noCooldownCount = true
-	button.cd:SetReverse(true)
-	button.cd:SetDrawEdge(true)
-	button.cd:SetInside(button, offset, offset)
+	-- button.cd:SetReverse(true)
+	-- button.cd:SetDrawEdge(true)
+	E:SetInside(button.cd, button, offset, offset)
 
-	button.icon:SetInside(button, offset, offset)
+	E:SetInside(button.icon, button, offset, offset)
 	button.icon:SetTexCoord(unpack(E.TexCoords))
 	button.icon:SetDrawLayer("ARTWORK")
 
 	button.count:ClearAllPoints()
-	button.count:Point("BOTTOMRIGHT", 1, 1)
+	E:Point(button.count, "BOTTOMRIGHT", 1, 1)
 	button.count:SetJustifyH("RIGHT")
 
 	button.overlay:SetTexture(nil)
-	button.stealable:SetTexture(nil)
+	-- button.stealable:SetTexture(nil)
 
 	button:RegisterForClicks("RightButtonUp")
 	button:SetScript("OnClick", function(self)
@@ -334,8 +334,8 @@ function UF:UpdateAuraIconSettings(auras, noCycle)
 		if not noCycle then
 			while auras[index] do
 				local button = auras[index]
-				button.text:FontTemplate(unitframeFont, db.fontSize, unitframeFontOutline)
-				button.count:FontTemplate(unitframeFont, db.countFontSize or db.fontSize, unitframeFontOutline)
+				E:FontTemplate(button.text, unitframeFont, db.fontSize, unitframeFontOutline)
+				E:FontTemplate(button.count, unitframeFont, db.countFontSize or db.fontSize, unitframeFontOutline)
 
 				if db.clickThrough and button:IsMouseEnabled() then
 					button:EnableMouse(false)
@@ -345,8 +345,8 @@ function UF:UpdateAuraIconSettings(auras, noCycle)
 				index = index + 1
 			end
 		else
-			auras.text:FontTemplate(unitframeFont, db.fontSize, unitframeFontOutline)
-			auras.count:FontTemplate(unitframeFont, db.countFontSize or db.fontSize, unitframeFontOutline)
+			E:FontTemplate(auras.text, unitframeFont, db.fontSize, unitframeFontOutline)
+			E:FontTemplate(auras.count, unitframeFont, db.countFontSize or db.fontSize, unitframeFontOutline)
 
 			if db.clickThrough and auras:IsMouseEnabled() then
 				auras:EnableMouse(false)

@@ -97,7 +97,7 @@ local function createAuraIcon(element, index)
 	local button = CreateFrame('Button', '$parentButton' .. index, element)
 	button:RegisterForClicks('RightButtonUp')
 
-	local cd = CreateFrame('Cooldown', '$parentCooldown', button, 'oUF_CooldownFrameTemplate')
+	local cd = CreateFrame('Frame', '$parentCooldown', button, 'oUF_CooldownFrameTemplate')
 	cd:SetAllPoints()
 
 	local icon = button:CreateTexture(nil, 'BORDER')
@@ -189,7 +189,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 			-- complicated.
 			if button.cd and not element.disableCooldown then
 				if duration and duration > 0 then
-					button.cd:SetCooldown(GetTime() - (duration - expiration), duration)
+					-- button.cd:SetCooldown(GetTime() - (duration - expiration), duration)
 					button.cd:Show()
 				else
 					button.cd:Hide()
