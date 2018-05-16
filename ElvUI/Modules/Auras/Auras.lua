@@ -12,13 +12,15 @@ local format = string.format
 local wipe, tinsert, tsort, tremove = table.wipe, table.insert, table.sort, table.remove
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local UnitAura = UnitAura
-local CancelItemTempEnchantment = CancelItemTempEnchantment
-local CancelUnitBuff = CancelUnitBuff
 local GetInventoryItemQuality = GetInventoryItemQuality
 local GetItemQualityColor = GetItemQualityColor
 local GetWeaponEnchantInfo = GetWeaponEnchantInfo
 local GetInventoryItemTexture = GetInventoryItemTexture
+local GetPlayerBuff = GetPlayerBuff
+local GetPlayerBuffTexture = GetPlayerBuffTexture
+local GetPlayerBuffApplications = GetPlayerBuffApplications
+local GetPlayerBuffDispelType = GetPlayerBuffDispelType
+local GetPlayerBuffTimeLeft = GetPlayerBuffTimeLeft
 
 local DIRECTION_TO_POINT = {
 	DOWN_RIGHT = "TOPLEFT",
