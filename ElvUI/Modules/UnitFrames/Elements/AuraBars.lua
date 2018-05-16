@@ -92,11 +92,11 @@ function UF:Configure_AuraBars(frame)
 		local debuffColor = self.db.colors.auraBarDebuff
 		local attachTo = frame
 
-		if(E:CheckClassColor(buffColor.r, buffColor.g, buffColor.b)) then
+		if E:CheckClassColor(buffColor.r, buffColor.g, buffColor.b) then
 			buffColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
 		end
 
-		if(E:CheckClassColor(debuffColor.r, debuffColor.g, debuffColor.b)) then
+		if E:CheckClassColor(debuffColor.r, debuffColor.g, debuffColor.b) then
 			debuffColor = E.myclass == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass])
 		end
 
@@ -223,6 +223,8 @@ function UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allow
 	-- 		end
 	-- 	end
 	-- end
+
+	return true
 end
 
 function UF:AuraBarFilter(unit, name, _, _, _, debuffType, duration, _, unitCaster, isStealable, _, spellID)
