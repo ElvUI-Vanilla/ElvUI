@@ -3,7 +3,7 @@ local oUF = ns.oUF
 assert(oUF, "oUF_AuraBars was unable to locate oUF install.")
 
 local format = string.format
-local floor, huge, min = math.floor, math.huge, math.min
+local floor, huge, min, mod = math.floor, math.huge, math.min, math.mod
 local tsort, getn = table.sort, table.getn
 local tremove = table.remove
 local random = math.random
@@ -15,13 +15,13 @@ local UnitIsFriend = UnitIsFriend
 local DAY, HOUR, MINUTE = 86400, 3600, 60
 local function FormatTime(s)
 	if s < MINUTE then
-		return ("%.1fs"):format(s)
+		return format("%.1fs", s)
 	elseif s < HOUR then
-		return ("%dm %ds"):format(s/60%60, s%60)
+		return format("%dm %ds", mod(s/60,60), mod(s,60))
 	elseif s < DAY then
-		return ("%dh %dm"):format(s/(60*60), s/60%60)
+		return format("%dh %dm", s/(60*60), mod(s/60,60))
 	else
-		return ("%dd %dh"):format(s/DAY, (s / HOUR) - (floor(s/DAY) * 24))
+		return format("%dd %dh", s/DAY, (s / HOUR) - (floor(s/DAY) * 24))
 	end
 end
 
@@ -95,10 +95,10 @@ local function CreateAuraBar(oUF, anchor)
 		end
 	end
 
-	local spark = statusBar:CreateTexture(nil, "OVERLAY", nil);
-	spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]]);
-	spark:Width(12);
-	spark:SetBlendMode("ADD");
+	local spark = statusBar:CreateTexture(nil, "OVERLAY", nil)
+	spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+	spark:Width(12)
+	spark:SetBlendMode("ADD")
 	spark:SetPoint("CENTER", statusBar:GetStatusBarTexture(), "RIGHT")
 	statusBar.spark = spark
 
@@ -149,7 +149,7 @@ local function UpdateBars(auraBars)
 	local bars = auraBars.bars
 	local timenow = GetTime()
 
-	for index = 1, #bars do
+	for index = 1, getn(bars) do
 		local frame = bars[index]
 		local bar = frame.statusBar
 		if not frame:IsVisible() then
@@ -210,7 +210,7 @@ local function Update(self, event, unit)
 	local auras = {}
 	local lastAuraIndex = 0
 	local counter = 0
-	if(auraBars.forceShow) then
+	if auraBars.forceShow then
 		for index = 1, auraBars.maxBars do
 			local spellID = 47540
 			local name, rank, icon = GetSpellInfo(spellID)
@@ -269,12 +269,12 @@ local function Update(self, event, unit)
 		end
 	end
 
-	if(auraBars.sort and not auraBars.forceShow) then
+	if auraBars.sort and not auraBars.forceShow then
 		tsort(auras, type(auraBars.sort) == "function" and auraBars.sort or sort)
 	end
 
-	for i=1, #auras do
-		if(i > auraBars.maxBars) then
+	for i=1, getn(auras) do
+		if i > auraBars.maxBars then
 			tremove(auras, i)
 		else
 			lastAuraIndex = i
@@ -284,11 +284,11 @@ local function Update(self, event, unit)
 	-- Show and configure bars for buffs/debuffs.
 	local bars = auraBars.bars
 	if lastAuraIndex == 0 then
-		self.AuraBars:Height(1)
+		self.AuraBars:SetHeight(1)
 	end
 
 	for index = 1 , lastAuraIndex do
-		if (auraBars:GetWidth() == 0) then break; end
+		if auraBars:GetWidth() == 0 then break end
 		local aura = auras[index]
 		local frame = bars[index]
 
@@ -299,11 +299,11 @@ local function Update(self, event, unit)
 
 		if index == lastAuraIndex then
 			if self.AuraBars.down then
-				self.AuraBars:Height(self.AuraBars:GetTop() - frame:GetBottom())
+				self.AuraBars:SetHeight(self.AuraBars:GetTop() - frame:GetBottom())
 			elseif frame:GetTop() and self.AuraBars:GetBottom() then
-				self.AuraBars:Height(frame:GetTop() - self.AuraBars:GetBottom())
+				self.AuraBars:SetHeight(frame:GetTop() - self.AuraBars:GetBottom())
 			else
-				self.AuraBars:Height(20)
+				self.AuraBars:SetHeight(20)
 			end
 		end
 
@@ -321,7 +321,7 @@ local function Update(self, event, unit)
 			if auraBars.scaleTime and auraBars.scaleTime > 0 then
 				local maxvalue = min(auraBars.scaleTime, bar.aura.duration)
 				bar:SetMinMaxValues(0, auraBars.scaleTime)
-				bar:Width(
+				bar:SetWidth(
 					( maxvalue / auraBars.scaleTime ) *
 					(	( auraBars.auraBarWidth or auraBars:GetWidth() ) -
 						( bar:GetHeight() + (auraBars.gap or 0) ) ) ) 				-- icon size + gap
@@ -371,10 +371,10 @@ end
 local function Enable(self)
 	if self.AuraBars then
 		self:RegisterEvent("PLAYER_AURAS_CHANGED", Update)
-		self.AuraBars:Height(1)
+		self.AuraBars:SetHeight(1)
 		self.AuraBars.bars = self.AuraBars.bars or {}
 		self.AuraBars.SetAnchors = SetAnchors
-		self.AuraBars:SetScript("OnUpdate", UpdateBars)
+		self.AuraBars:SetScript("OnUpdate", function() UpdateBars(self.AuraBars) end)
 		self.AuraBars.maxBars = self.AuraBars.maxBars or 40
 		return true
 	end
