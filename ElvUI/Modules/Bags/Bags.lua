@@ -149,10 +149,10 @@ function B:OpenEditbox()
 end
 
 function B:ResetAndClear()
-	local editbox = self:GetParent().editBox or this
+	local editbox = this.editBox or this
 	if editbox then editbox:SetText(SEARCH) end
 
-	self:ClearFocus()
+	editbox:ClearFocus()
 	B:SearchReset()
 end
 
