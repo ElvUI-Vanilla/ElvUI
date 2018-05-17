@@ -13,18 +13,18 @@ local function LoadSkin()
 
 	E:StripTextures(MacroFrame)
 	E:CreateBackdrop(MacroFrame, "Transparent")
-	MacroFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	MacroFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 71)
+	E:Point(MacroFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(MacroFrame.backdrop, "BOTTOMRIGHT", -32, 71)
 
 	MacroFrame.bg = CreateFrame("Frame", nil, MacroFrame)
 	E:SetTemplate(MacroFrame.bg, "Transparent", true)
-	MacroFrame.bg:SetPoint("TOPLEFT", MacroButton1, -10, 10)
-	MacroFrame.bg:SetPoint("BOTTOMRIGHT", MacroButton18, 10, -10)
+	E:Point(MacroFrame.bg, "TOPLEFT", MacroButton1, -10, 10)
+	E:Point(MacroFrame.bg, "BOTTOMRIGHT", MacroButton18, 10, -10)
 
 	E:StripTextures(MacroFrameTextBackground)
 	E:CreateBackdrop(MacroFrameTextBackground, "Default")
-	MacroFrameTextBackground.backdrop:SetPoint("TOPLEFT", 6, -3)
-	MacroFrameTextBackground.backdrop:SetPoint("BOTTOMRIGHT", -2, 3)
+	E:Point(MacroFrameTextBackground.backdrop, "TOPLEFT", 6, -3)
+	E:Point(MacroFrameTextBackground.backdrop, "BOTTOMRIGHT", -2, 3)
 
 	local Buttons = {
 		"MacroFrameTab1",
@@ -45,11 +45,11 @@ local function LoadSkin()
 	for i = 1, 2 do
 		local tab = _G["MacroFrameTab"..i]
 
-		tab:SetHeight(22)
+		E:Height(tab, 22)
 	end
 
-	MacroFrameTab1:SetPoint("TOPLEFT", MacroFrame, "TOPLEFT", 85, -39)
-	MacroFrameTab2:SetPoint("LEFT", MacroFrameTab1, "RIGHT", 4, 0)
+	E:Point(MacroFrameTab1, "TOPLEFT", MacroFrame, "TOPLEFT", 85, -39)
+	E:Point(MacroFrameTab2, "LEFT", MacroFrameTab1, "RIGHT", 4, 0)
 
 	S:HandleCloseButton(MacroFrameCloseButton)
 
@@ -57,9 +57,9 @@ local function LoadSkin()
 	S:HandleScrollBar(MacroPopupScrollFrameScrollBar)
 
 	MacroEditButton:ClearAllPoints()
-	MacroEditButton:SetPoint("BOTTOMLEFT", MacroFrameSelectedMacroButton, "BOTTOMRIGHT", 10, 0)
+	E:Point(MacroEditButton, "BOTTOMLEFT", MacroFrameSelectedMacroButton, "BOTTOMRIGHT", 10, 0)
 
-	MacroFrameSelectedMacroName:SetPoint("TOPLEFT", MacroFrameSelectedMacroBackground, "TOPRIGHT", -4, -10)
+	E:Point(MacroFrameSelectedMacroName, "TOPLEFT", MacroFrameSelectedMacroBackground, "TOPRIGHT", -4, -10)
 
 	E:StripTextures(MacroFrameSelectedMacroButton)
 	E:SetTemplate(MacroFrameSelectedMacroButton, "Transparent")
@@ -70,7 +70,7 @@ local function LoadSkin()
 	E:SetInside(MacroFrameSelectedMacroButtonIcon)
 
 	MacroFrameCharLimitText:ClearAllPoints()
-	MacroFrameCharLimitText:SetPoint("BOTTOM", MacroFrameTextBackground, 0, -9)
+	E:Point(MacroFrameCharLimitText, "BOTTOM", MacroFrameTextBackground, 0, -9)
 
 	for i = 1, MAX_MACROS do
 		local Button = _G["MacroButton"..i]
@@ -91,10 +91,10 @@ local function LoadSkin()
 	S:HandleIconSelectionFrame(MacroPopupFrame, NUM_MACRO_ICONS_SHOWN, "MacroPopupButton", "MacroPopup")
 
 	E:CreateBackdrop(MacroPopupScrollFrame, "Transparent")
-	MacroPopupScrollFrame.backdrop:SetPoint("TOPLEFT", 51, 2)
-	MacroPopupScrollFrame.backdrop:SetPoint("BOTTOMRIGHT", 0, 4)
+	E:Point(MacroPopupScrollFrame.backdrop, "TOPLEFT", 51, 2)
+	E:Point(MacroPopupScrollFrame.backdrop, "BOTTOMRIGHT", 0, 4)
 
-	MacroPopupFrame:SetPoint("TOPLEFT", MacroFrame, "TOPRIGHT", -41, 1)
+	E:Point(MacroPopupFrame, "TOPLEFT", MacroFrame, "TOPRIGHT", -41, 1)
 end
 
 S:AddCallbackForAddon("Blizzard_MacroUI", "Macro", LoadSkin)

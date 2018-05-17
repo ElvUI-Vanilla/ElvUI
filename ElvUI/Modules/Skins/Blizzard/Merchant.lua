@@ -19,8 +19,8 @@ local function LoadSkin()
 
 	E:StripTextures(MerchantFrame, true)
 	E:CreateBackdrop(MerchantFrame, "Transparent")
-	MerchantFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	MerchantFrame.backdrop:SetPoint("BOTTOMRIGHT", -28, 60)
+	E:Point(MerchantFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(MerchantFrame.backdrop, "BOTTOMRIGHT", -28, 60)
 
 	S:HandleCloseButton(MerchantFrameCloseButton, MerchantFrame.backdrop)
 
@@ -37,13 +37,13 @@ local function LoadSkin()
 		E:StripTextures(itemButton)
 		E:StyleButton(itemButton)
 		E:SetTemplate(itemButton, "Default", true)
-		itemButton:SetPoint("TOPLEFT", item, "TOPLEFT", 4, -4)
+		E:Point(itemButton, "TOPLEFT", item, "TOPLEFT", 4, -4)
 
 		iconTexture:SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(iconTexture)
 
 		_G["MerchantItem"..i.."MoneyFrame"]:ClearAllPoints()
-		_G["MerchantItem"..i.."MoneyFrame"]:SetPoint("BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 3, 0)
+		E:Point(_G["MerchantItem"..i.."MoneyFrame"], "BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 3, 0)
 	end
 
 	S:HandleNextPrevButton(MerchantNextPageButton)
@@ -74,8 +74,8 @@ local function LoadSkin()
 
 	E:StripTextures(MerchantBuyBackItem, true)
 	E:CreateBackdrop(MerchantBuyBackItem, "Transparent")
-	MerchantBuyBackItem.backdrop:SetPoint("TOPLEFT", -6, 6)
-	MerchantBuyBackItem.backdrop:SetPoint("BOTTOMRIGHT", 6, -6)
+	E:Point(MerchantBuyBackItem.backdrop, "TOPLEFT", -6, 6)
+	E:Point(MerchantBuyBackItem.backdrop, "BOTTOMRIGHT", 6, -6)
 
 	E:StripTextures(MerchantBuyBackItemItemButton)
 	E:StyleButton(MerchantBuyBackItemItemButton)

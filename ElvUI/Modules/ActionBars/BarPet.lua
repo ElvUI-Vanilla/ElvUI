@@ -121,11 +121,9 @@ function AB:PositionAndSizeBarPet()
 
 	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult-1)) + (backdropSpacing*2) + ((self.db["barPet"].backdrop and E.Border or E.Spacing)*2)
 	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult-1)) + (backdropSpacing*2) + ((self.db["barPet"].backdrop and E.Border or E.Spacing)*2)
-	bar:SetWidth(barWidth)
-	bar:SetHeight(barHeight)
+	E:Size(bar, barWidth, barHeight)
 
-	bar.mover:SetWidth(bar:GetWidth())
-	bar.mover:SetHeight(bar:GetHeight())
+	E:Size(bar.mover, bar:GetWidth(), bar:GetHeight())
 
 	if self.db["barPet"].enabled then
 		bar:SetScale(1)
@@ -171,8 +169,7 @@ function AB:PositionAndSizeBarPet()
 		lastColumnButton = _G["PetActionButton"..i - buttonsPerRow]
 		button:SetParent(bar)
 		button:ClearAllPoints()
-		button:SetWidth(size)
-		button:SetHeight(size)
+		E:Size(button, size)
 		button:Show()
 
 		if i == 1 then
@@ -187,7 +184,7 @@ function AB:PositionAndSizeBarPet()
 				x, y = -firstButtonSpacing, firstButtonSpacing
 			end
 
-			button:SetPoint(point, bar, point, x, y)
+			E:Point(button, point, bar, point, x, y)
 		elseif mod((i - 1), buttonsPerRow) == 0 then
 			local x = 0
 			local y = -buttonSpacing
@@ -197,7 +194,7 @@ function AB:PositionAndSizeBarPet()
 				buttonPoint = "BOTTOM"
 				anchorPoint = "TOP"
 			end
-			button:SetPoint(buttonPoint, lastColumnButton, anchorPoint, x, y)
+			E:Point(button, buttonPoint, lastColumnButton, anchorPoint, x, y)
 		else
 			local x = buttonSpacing
 			local y = 0
@@ -208,7 +205,7 @@ function AB:PositionAndSizeBarPet()
 				anchorPoint = "LEFT"
 			end
 
-			button:SetPoint(buttonPoint, lastButton, anchorPoint, x, y)
+			E:Point(button, buttonPoint, lastButton, anchorPoint, x, y)
 		end
 
 		if i > numButtons then
@@ -242,9 +239,9 @@ function AB:CreateBarPet()
 	E:CreateBackdrop(bar, "Default")
 	bar.backdrop:SetAllPoints()
 	if self.db["bar4"].enabled then
-		bar:SetPoint("RIGHT", ElvUI_Bar4, "LEFT", -4, 0)
+		E:Point(bar, "RIGHT", ElvUI_Bar4, "LEFT", -4, 0)
 	else
-		bar:SetPoint("RIGHT", E.UIParent, "RIGHT", -4, 0)
+		E:Point(bar, "RIGHT", E.UIParent, "RIGHT", -4, 0)
 	end
 
 	PetActionBarFrame.showgrid = 1

@@ -14,8 +14,8 @@ local function LoadSkin()
 
 	E:StripTextures(AuctionFrame, true)
 	E:CreateBackdrop(AuctionFrame, "Transparent")
-	AuctionFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	AuctionFrame.backdrop:SetPoint("BOTTOMRIGHT", 0, 4)
+	E:Point(AuctionFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(AuctionFrame.backdrop, "BOTTOMRIGHT", 0, 4)
 
 	E:StripTextures(BrowseFilterScrollFrame)
 	E:StripTextures(BrowseScrollFrame)
@@ -41,9 +41,9 @@ local function LoadSkin()
 	E:SetOutside(AuctionDressUpFrame.backdrop, AuctionDressUpBackgroundTop, nil, nil, AuctionDressUpBackgroundBot)
 
 	S:HandleRotateButton(AuctionDressUpModelRotateLeftButton)
-	AuctionDressUpModelRotateLeftButton:SetPoint("TOPLEFT", AuctionDressUpFrame, 8, -17)
+	E:Point(AuctionDressUpModelRotateLeftButton, "TOPLEFT", AuctionDressUpFrame, 8, -17)
 	S:HandleRotateButton(AuctionDressUpModelRotateRightButton)
-	AuctionDressUpModelRotateRightButton:SetPoint("TOPLEFT", AuctionDressUpModelRotateLeftButton, "TOPRIGHT", 3, 0)
+	E:Point(AuctionDressUpModelRotateRightButton, "TOPLEFT", AuctionDressUpModelRotateLeftButton, "TOPRIGHT", 3, 0)
 
 	S:HandleButton(AuctionDressUpFrameResetButton)
 	S:HandleCloseButton(AuctionDressUpFrameCloseButton, AuctionDressUpFrame.backdrop)
@@ -66,24 +66,24 @@ local function LoadSkin()
 	end
 
 	--Fix Button Positions
-	AuctionsCloseButton:SetPoint("BOTTOMRIGHT", AuctionFrameAuctions, "BOTTOMRIGHT", 66, 14)
-	AuctionsCancelAuctionButton:SetPoint("RIGHT", AuctionsCloseButton, "LEFT", -4, 0)
-	BidBuyoutButton:SetPoint("RIGHT", BidCloseButton, "LEFT", -4, 0)
-	BidBidButton:SetPoint("RIGHT", BidBuyoutButton, "LEFT", -4, 0)
-	BrowseBuyoutButton:SetPoint("RIGHT", BrowseCloseButton, "LEFT", -4, 0)
-	BrowseBidButton:SetPoint("RIGHT", BrowseBuyoutButton, "LEFT", -4, 0)
-	AuctionsCreateAuctionButton:SetPoint("BOTTOMLEFT", 18, 44)
+	E:Point(AuctionsCloseButton, "BOTTOMRIGHT", AuctionFrameAuctions, "BOTTOMRIGHT", 66, 14)
+	E:Point(AuctionsCancelAuctionButton, "RIGHT", AuctionsCloseButton, "LEFT", -4, 0)
+	E:Point(BidBuyoutButton, "RIGHT", BidCloseButton, "LEFT", -4, 0)
+	E:Point(BidBidButton, "RIGHT", BidBuyoutButton, "LEFT", -4, 0)
+	E:Point(BrowseBuyoutButton, "RIGHT", BrowseCloseButton, "LEFT", -4, 0)
+	E:Point(BrowseBidButton, "RIGHT", BrowseBuyoutButton, "LEFT", -4, 0)
+	E:Point(AuctionsCreateAuctionButton, "BOTTOMLEFT", 18, 44)
 
 	BrowseSearchButton:ClearAllPoints()
-	BrowseSearchButton:SetPoint("TOPRIGHT", AuctionFrameBrowse, "TOPRIGHT", 25, -30)
+	E:Point(BrowseSearchButton, "TOPRIGHT", AuctionFrameBrowse, "TOPRIGHT", 25, -30)
 
 	S:HandleNextPrevButton(BrowseNextPageButton)
 	BrowseNextPageButton:ClearAllPoints()
-	BrowseNextPageButton:SetPoint("BOTTOMLEFT", BrowseSearchButton, "BOTTOMRIGHT", 10, -27)
+	E:Point(BrowseNextPageButton, "BOTTOMLEFT", BrowseSearchButton, "BOTTOMRIGHT", 10, -27)
 
 	S:HandleNextPrevButton(BrowsePrevPageButton)
 	BrowsePrevPageButton:ClearAllPoints()
-	BrowsePrevPageButton:SetPoint("BOTTOMRIGHT", BrowseSearchButton, "BOTTOMLEFT", -10, -27)
+	E:Point(BrowsePrevPageButton, "BOTTOMRIGHT", BrowseSearchButton, "BOTTOMLEFT", -10, -27)
 
 	E:StripTextures(AuctionsItemButton)
 	E:SetTemplate(AuctionsItemButton, "Default", true)
@@ -139,7 +139,7 @@ local function LoadSkin()
 	end
 
 	AuctionFrameTab1:ClearAllPoints()
-	AuctionFrameTab1:SetPoint("BOTTOMLEFT", AuctionFrame, "BOTTOMLEFT", 25, -26)
+	E:Point(AuctionFrameTab1, "BOTTOMLEFT", AuctionFrame, "BOTTOMLEFT", 25, -26)
 	AuctionFrameTab1.SetPoint = E.noop
 
 	for i = 1, NUM_FILTERS_TO_DISPLAY do
@@ -172,31 +172,31 @@ local function LoadSkin()
 		_G[editbox]:SetTextInsets(1, 1, -1, 1)
 	end
 
-	BrowseBidPrice:SetPoint("BOTTOM", -15, 18)
-	BrowseBidText:SetPoint("BOTTOMRIGHT", AuctionFrameBrowse, "BOTTOM", -116, 21)
+	E:Point(BrowseBidPrice, "BOTTOM", -15, 18)
+	E:Point(BrowseBidText, "BOTTOMRIGHT", AuctionFrameBrowse, "BOTTOM", -116, 21)
 
-	BrowseMinLevel:SetWidth(32)
+	E:Width(BrowseMinLevel, 32)
 
-	BrowseLevelHyphen:SetPoint("LEFT", BrowseMinLevel, "RIGHT", -7, 1)
+	E:Point(BrowseLevelHyphen, "LEFT", BrowseMinLevel, "RIGHT", -7, 1)
 
-	BrowseMaxLevel:SetPoint("LEFT", BrowseMinLevel, "RIGHT", 8, 0)
-	BrowseMaxLevel:SetWidth(32)
-	BrowseLevelText:SetPoint("BOTTOMLEFT", AuctionFrameBrowse, "TOPLEFT", 195, -48)
+	E:Point(BrowseMaxLevel, "LEFT", BrowseMinLevel, "RIGHT", 8, 0)
+	E:Width(BrowseMaxLevel, 32)
+	E:Point(BrowseLevelText, "BOTTOMLEFT", AuctionFrameBrowse, "TOPLEFT", 195, -48)
 
-	BrowseName:SetWidth(164)
-	BrowseName:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 20, -54)
-	BrowseNameText:SetPoint("TOPLEFT", BrowseName, "TOPLEFT", 0, 16)
+	E:Width(BrowseName, 164)
+	E:Point(BrowseName, "TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 20, -54)
+	E:Point(BrowseNameText, "TOPLEFT", BrowseName, "TOPLEFT", 0, 16)
 
 	S:HandleCheckBox(IsUsableCheckButton)
 	IsUsableCheckButton:ClearAllPoints()
-	IsUsableCheckButton:SetPoint("RIGHT", BrowseIsUsableText, "LEFT", 2, 0)
-	BrowseIsUsableText:SetPoint("TOPLEFT", 440, -40)
+	E:Point(IsUsableCheckButton, "RIGHT", BrowseIsUsableText, "LEFT", 2, 0)
+	E:Point(BrowseIsUsableText, "TOPLEFT", 440, -40)
 
 	S:HandleCheckBox(ShowOnPlayerCheckButton)
 	ShowOnPlayerCheckButton:ClearAllPoints()
-	ShowOnPlayerCheckButton:SetPoint("RIGHT", BrowseShowOnCharacterText, "LEFT", 2, 0)
+	E:Point(ShowOnPlayerCheckButton, "RIGHT", BrowseShowOnCharacterText, "LEFT", 2, 0)
 
-	BrowseShowOnCharacterText:SetPoint("TOPLEFT", 440, -60)
+	E:Point(BrowseShowOnCharacterText, "TOPLEFT", 440, -60)
 
 	for i = 1, NUM_BROWSE_TO_DISPLAY do
 		local button = _G["BrowseButton"..i]
@@ -228,8 +228,8 @@ local function LoadSkin()
 		E:StyleButton(button, false, true)
 		_G["BrowseButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
-		button:GetHighlightTexture():SetPoint("TOPLEFT", icon, "TOPRIGHT", 2, 0)
-		button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
+		E:Point(button:GetHighlightTexture(), "TOPLEFT", icon, "TOPRIGHT", 2, 0)
+		E:Point(button:GetHighlightTexture(), "BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
 		-- button:GetPushedTexture():SetAllPoints(button:GetHighlightTexture())
 	end
 
@@ -263,8 +263,8 @@ local function LoadSkin()
 		E:StyleButton(button, false, true)
 		_G["AuctionsButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
-		button:GetHighlightTexture():SetPoint("TOPLEFT", icon, "TOPRIGHT", 2, 0)
-		button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
+		E:Point(button:GetHighlightTexture(), "TOPLEFT", icon, "TOPRIGHT", 2, 0)
+		E:Point(button:GetHighlightTexture(), "BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
 		-- button:GetPushedTexture():SetAllPoints(button:GetHighlightTexture())
 	end
 
@@ -298,42 +298,42 @@ local function LoadSkin()
 		E:StyleButton(button, false, true)
 		_G["BidButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
-		button:GetHighlightTexture():SetPoint("TOPLEFT", icon, "TOPRIGHT", 2, 0)
-		button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
+		E:Point(button:GetHighlightTexture(), "TOPLEFT", icon, "TOPRIGHT", 2, 0)
+		E:Point(button:GetHighlightTexture(), "BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 5)
 		-- button:GetPushedTexture():SetAllPoints(button:GetHighlightTexture())
 	end
 
 	--Custom Backdrops
 	AuctionFrameBrowse.bg1 = CreateFrame("Frame", nil, AuctionFrameBrowse)
 	E:SetTemplate(AuctionFrameBrowse.bg1, "Default")
-	AuctionFrameBrowse.bg1:SetPoint("TOPLEFT", 20, -103)
-	AuctionFrameBrowse.bg1:SetPoint("BOTTOMRIGHT", -575, 40)
+	E:Point(AuctionFrameBrowse.bg1, "TOPLEFT", 20, -103)
+	E:Point(AuctionFrameBrowse.bg1, "BOTTOMRIGHT", -575, 40)
 	BrowseNoResultsText:SetParent(AuctionFrameBrowse.bg1)
 	BrowseSearchCountText:SetParent(AuctionFrameBrowse.bg1)
 	AuctionFrameBrowse.bg1:SetFrameLevel(AuctionFrameBrowse.bg1:GetFrameLevel() - 1)
 
 	AuctionFrameBrowse.bg2 = CreateFrame("Frame", nil, AuctionFrameBrowse)
 	E:SetTemplate(AuctionFrameBrowse.bg2, "Default")
-	AuctionFrameBrowse.bg2:SetPoint("TOPLEFT", AuctionFrameBrowse.bg1, "TOPRIGHT", 4, 0)
-	AuctionFrameBrowse.bg2:SetPoint("BOTTOMRIGHT", AuctionFrame, "BOTTOMRIGHT", -8, 40)
+	E:Point(AuctionFrameBrowse.bg2, "TOPLEFT", AuctionFrameBrowse.bg1, "TOPRIGHT", 4, 0)
+	E:Point(AuctionFrameBrowse.bg2, "BOTTOMRIGHT", AuctionFrame, "BOTTOMRIGHT", -8, 40)
 	AuctionFrameBrowse.bg2:SetFrameLevel(AuctionFrameBrowse.bg2:GetFrameLevel() - 1)
 
 	AuctionFrameBid.bg = CreateFrame("Frame", nil, AuctionFrameBid)
 	E:SetTemplate(AuctionFrameBid.bg, "Default")
-	AuctionFrameBid.bg:SetPoint("TOPLEFT", 20, -72)
-	AuctionFrameBid.bg:SetPoint("BOTTOMRIGHT", 66, 40)
+	E:Point(AuctionFrameBid.bg, "TOPLEFT", 20, -72)
+	E:Point(AuctionFrameBid.bg, "BOTTOMRIGHT", 66, 40)
 	AuctionFrameBid.bg:SetFrameLevel(AuctionFrameBid.bg:GetFrameLevel() - 1)
 
 	AuctionFrameAuctions.bg1 = CreateFrame("Frame", nil, AuctionFrameAuctions)
 	E:SetTemplate(AuctionFrameAuctions.bg1, "Default")
-	AuctionFrameAuctions.bg1:SetPoint("TOPLEFT", 15, -72)
-	AuctionFrameAuctions.bg1:SetPoint("BOTTOMRIGHT", -545, 40)
+	E:Point(AuctionFrameAuctions.bg1, "TOPLEFT", 15, -72)
+	E:Point(AuctionFrameAuctions.bg1, "BOTTOMRIGHT", -545, 40)
 	AuctionFrameAuctions.bg1:SetFrameLevel(AuctionFrameAuctions.bg1:GetFrameLevel() - 1)
 
 	AuctionFrameAuctions.bg2 = CreateFrame("Frame", nil, AuctionFrameAuctions)
 	E:SetTemplate(AuctionFrameAuctions.bg2, "Default")
-	AuctionFrameAuctions.bg2:SetPoint("TOPLEFT", AuctionFrameAuctions.bg1, "TOPRIGHT", 3, 0)
-	AuctionFrameAuctions.bg2:SetPoint("BOTTOMRIGHT", AuctionFrame, -8, 40)
+	E:Point(AuctionFrameAuctions.bg2, "TOPLEFT", AuctionFrameAuctions.bg1, "TOPRIGHT", 3, 0)
+	E:Point(AuctionFrameAuctions.bg2, "BOTTOMRIGHT", AuctionFrame, -8, 40)
 	AuctionFrameAuctions.bg2:SetFrameLevel(AuctionFrameAuctions.bg2:GetFrameLevel() - 1)
 end
 

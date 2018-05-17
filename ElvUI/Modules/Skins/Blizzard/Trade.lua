@@ -15,10 +15,10 @@ local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trade ~= true then return end
 
 	E:StripTextures(TradeFrame, true)
-	TradeFrame:SetWidth(400)
+	E:Width(TradeFrame, 400)
 	E:CreateBackdrop(TradeFrame, "Transparent")
-	TradeFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	TradeFrame.backdrop:SetPoint("BOTTOMRIGHT", -28, 48)
+	E:Point(TradeFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(TradeFrame.backdrop, "BOTTOMRIGHT", -28, 48)
 
 	S:HandleCloseButton(TradeFrameCloseButton, TradeFrame.backdrop)
 
@@ -55,18 +55,18 @@ local function LoadSkin()
 
 		playerButton.bg = CreateFrame("Frame", nil, playerButton)
 		E:SetTemplate(playerButton.bg, "Default")
-		playerButton.bg:SetPoint("TOPLEFT", playerButton, "TOPRIGHT", 4, 0)
-		playerButton.bg:SetPoint("BOTTOMRIGHT", playerNameFrame, "BOTTOMRIGHT", -5, 14)
+		E:Point(playerButton.bg, "TOPLEFT", playerButton, "TOPRIGHT", 4, 0)
+		E:Point(playerButton.bg, "BOTTOMRIGHT", playerNameFrame, "BOTTOMRIGHT", -5, 14)
 		playerButton.bg:SetFrameLevel(playerButton:GetFrameLevel() - 4)
 
 		recipientButton.bg = CreateFrame("Frame", nil, recipientButton)
 		E:SetTemplate(recipientButton.bg, "Default")
-		recipientButton.bg:SetPoint("TOPLEFT", recipientButton, "TOPRIGHT", 4, 0)
-		recipientButton.bg:SetPoint("BOTTOMRIGHT", recipientNameFrame, "BOTTOMRIGHT", -5, 14)
+		E:Point(recipientButton.bg, "TOPLEFT", recipientButton, "TOPRIGHT", 4, 0)
+		E:Point(recipientButton.bg, "BOTTOMRIGHT", recipientNameFrame, "BOTTOMRIGHT", -5, 14)
 		recipientButton.bg:SetFrameLevel(recipientButton:GetFrameLevel() - 4)
 	end
 
-	TradePlayerItem1:SetPoint("TOPLEFT", 24, -104)
+	E:Point(TradePlayerItem1, "TOPLEFT", 24, -104)
 
 	TradeHighlightPlayerTop:SetTexture(0, 1, 0, 0.2)
 	TradeHighlightPlayerBottom:SetTexture(0, 1, 0, 0.2)
@@ -85,7 +85,7 @@ local function LoadSkin()
 	TradeHighlightRecipientEnchantMiddle:SetTexture(0, 1, 0, 0.2)
 
 	S:HandleButton(TradeFrameTradeButton)
-	TradeFrameTradeButton:SetPoint("BOTTOMRIGHT", -120, 55)
+	E:Point(TradeFrameTradeButton, "BOTTOMRIGHT", -120, 55)
 
 	S:HandleButton(TradeFrameCancelButton)
 

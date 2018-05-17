@@ -51,8 +51,8 @@ function LoadSkin()
 			if not rp.backdrop then
 				_G["RaidPullout"..i.."MenuBackdrop"]:SetBackdrop(nil)
 				E:CreateBackdrop(rp, "Transparent")
-				rp.backdrop:SetPoint("TOPLEFT", 9, -17)
-				rp.backdrop:SetPoint("BOTTOMRIGHT", -7, 10)
+				E:Point(rp.backdrop, "TOPLEFT", 9, -17)
+				E:Point(rp.backdrop, "BOTTOMRIGHT", -7, 10)
 			end
 		end
 	end
@@ -73,19 +73,19 @@ function LoadSkin()
 					_G[sBar]:SetStatusBarTexture(E["media"].normTex)
 				end
 
-				_G[pfBName.."ManaBar"]:SetPoint("TOP", "$parentHealthBar", "BOTTOM", 0, 0)
-				_G[pfBName.."Target"]:SetPoint("TOP", "$parentManaBar", "BOTTOM", 0, -1)
+				E:Point(_G[pfBName.."ManaBar"], "TOP", "$parentHealthBar", "BOTTOM", 0, 0)
+				E:Point(_G[pfBName.."Target"], "TOP", "$parentManaBar", "BOTTOM", 0, -1)
 
 				E:CreateBackdrop(pfBObj, "Default")
-				pfBObj.backdrop:SetPoint("TOPLEFT", E.PixelMode and 0 or -1, -(E.PixelMode and 10 or 9))
-				pfBObj.backdrop:SetPoint("BOTTOMRIGHT", E.PixelMode and 0 or 1, E.PixelMode and 1 or 0)
+				E:Point(pfBObj.backdrop, "TOPLEFT", E.PixelMode and 0 or -1, -(E.PixelMode and 10 or 9))
+				E:Point(pfBObj.backdrop, "BOTTOMRIGHT", E.PixelMode and 0 or 1, E.PixelMode and 1 or 0)
 			end
 
 			if not _G[pfBName.."TargetTargetFrame"].backdrop then
 				E:StripTextures(_G[pfBName.."TargetTargetFrame"])
 				E:CreateBackdrop(_G[pfBName.."TargetTargetFrame"], "Default")
-				_G[pfBName.."TargetTargetFrame"].backdrop:SetPoint("TOPLEFT", E.PixelMode and 10 or 9, -(E.PixelMode and 15 or 14))
-				_G[pfBName.."TargetTargetFrame"].backdrop:SetPoint("BOTTOMRIGHT", -(E.PixelMode and 10 or 9), E.PixelMode and 8 or 7)
+				E:Point(_G[pfBName.."TargetTargetFrame"].backdrop, "TOPLEFT", E.PixelMode and 10 or 9, -(E.PixelMode and 15 or 14))
+				E:Point(_G[pfBName.."TargetTargetFrame"].backdrop, "BOTTOMRIGHT", -(E.PixelMode and 10 or 9), E.PixelMode and 8 or 7)
 			end
 		end
 	end)]]
@@ -99,9 +99,9 @@ function LoadSkin()
 	S:HandleButton(ReadyCheckFrameYesButton)
 	S:HandleButton(ReadyCheckFrameNoButton)
 
-	ReadyCheckFrameYesButton:SetPoint("RIGHT", ReadyCheckFrame, "CENTER", -1, 0)
-	ReadyCheckFrameNoButton:SetPoint("LEFT", ReadyCheckFrameYesButton, "RIGHT", 3, 0)
-	ReadyCheckFrameText:SetPoint("TOP", ReadyCheckFrame, "TOP", 0, -18)
+	E:Point(ReadyCheckFrameYesButton, "RIGHT", ReadyCheckFrame, "CENTER", -1, 0)
+	E:Point(ReadyCheckFrameNoButton, "LEFT", ReadyCheckFrameYesButton, "RIGHT", 3, 0)
+	E:Point(ReadyCheckFrameText, "TOP", ReadyCheckFrame, "TOP", 0, -18)
 end
 
 S:AddCallbackForAddon("Blizzard_RaidUI", "RaidUI", LoadSkin)

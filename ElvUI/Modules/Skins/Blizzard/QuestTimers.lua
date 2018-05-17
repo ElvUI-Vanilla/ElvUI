@@ -12,7 +12,7 @@ local function LoadSkin()
 	E:StripTextures(QuestTimerFrame)
 	E:SetTemplate(QuestTimerFrame, "Transparent")
 
-	QuestTimerHeader:SetPoint("TOP", 1, 8)
+	E:Point(QuestTimerHeader, "TOP", 1, 8)
 
 	E:CreateMover(QuestTimerFrame, "QuestTimerFrameMover", QUEST_TIMERS)
 
@@ -20,14 +20,13 @@ local function LoadSkin()
 	QuestTimerFrame:SetAllPoints(QuestTimerFrameMover)
 
 	local QuestTimerFrameHolder = CreateFrame("Frame", "QuestTimerFrameHolder", E.UIParent)
-	QuestTimerFrameHolder:SetWidth(150)
-	QuestTimerFrameHolder:SetHeight(22)
-	QuestTimerFrameHolder:SetPoint("TOP", QuestTimerFrameMover, "TOP")
+	E:Size(QuestTimerFrameHolder, 150, 22)
+	E:Point(QuestTimerFrameHolder, "TOP", QuestTimerFrameMover, "TOP")
 
 	hooksecurefunc(QuestTimerFrame, "SetPoint", function(_, _, parent)
 		if parent ~= QuestTimerFrameHolder then
 			QuestTimerFrame:ClearAllPoints()
-			QuestTimerFrame:SetPoint("TOP", QuestTimerFrameHolder, "TOP")
+			E:Point(QuestTimerFrame, "TOP", QuestTimerFrameHolder, "TOP")
 		end
 	end)
 end

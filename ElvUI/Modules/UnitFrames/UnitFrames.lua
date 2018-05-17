@@ -462,13 +462,13 @@ function UF.groupPrototype:Configure_Groups(self)
 		if math.mod(i - 1, db.groupsPerRowCol) == 0 then
 			if DIRECTION_TO_POINT[direction] == "LEFT" or DIRECTION_TO_POINT[direction] == "RIGHT" then
 				if group then
-					group:SetPoint(point, self, point, 0, height * yMult)
+					E:Point(group, point, self, point, 0, height * yMult)
 				end
 				height = height + UNIT_HEIGHT + db.verticalSpacing
 				newRows = newRows + 1
 			else
 				if group then
-					group:SetPoint(point, self, point, width * xMult, 0)
+					E:Point(group, point, self, point, width * xMult, 0)
 				end
 				width = width + db.width + db.horizontalSpacing
 
@@ -478,22 +478,22 @@ function UF.groupPrototype:Configure_Groups(self)
 			if DIRECTION_TO_POINT[direction] == "LEFT" or DIRECTION_TO_POINT[direction] == "RIGHT" then
 				if newRows == 1 then
 					if group then
-						group:SetPoint(point, self, point, width * xMult, 0)
+						E:Point(group, point, self, point, width * xMult, 0)
 					end
 					width = width + ((db.width + db.horizontalSpacing) * 5)
 					newCols = newCols + 1
 				elseif group then
-					group:SetPoint(point, self, point, (((db.width + db.horizontalSpacing) * 5) * (math.mod(i-1, db.groupsPerRowCol))) * xMult, ((UNIT_HEIGHT + db.verticalSpacing) * (newRows - 1)) * yMult)
+					E:Point(group, point, self, point, (((db.width + db.horizontalSpacing) * 5) * (math.mod(i-1, db.groupsPerRowCol))) * xMult, ((UNIT_HEIGHT + db.verticalSpacing) * (newRows - 1)) * yMult)
 				end
 			else
 				if newCols == 1 then
 					if group then
-						group:SetPoint(point, self, point, 0, height * yMult)
+						E:Point(group, point, self, point, 0, height * yMult)
 					end
 					height = height + ((UNIT_HEIGHT + db.verticalSpacing) * 5)
 					newRows = newRows + 1
 				elseif group then
-					group:SetPoint(point, self, point, ((db.width + db.horizontalSpacing) * (newCols - 1)) * xMult, (((UNIT_HEIGHT + db.verticalSpacing) * 5) * (math.mod(i-1, db.groupsPerRowCol))) * yMult)
+					E:Point(group, point, self, point, ((db.width + db.horizontalSpacing) * (newCols - 1)) * xMult, (((UNIT_HEIGHT + db.verticalSpacing) * 5) * (math.mod(i-1, db.groupsPerRowCol))) * yMult)
 				end
 			end
 		end
@@ -516,8 +516,7 @@ function UF.groupPrototype:Configure_Groups(self)
 		self:GetScript("OnSizeChanged")(self) --Mover size is not updated if frame is hidden, so call an update manually
 	end
 
-	self:SetWidth(width - db.horizontalSpacing)
-	self:SetHeight(height - db.verticalSpacing)
+	E:Size(self, width - db.horizontalSpacing, height - db.verticalSpacing)
 end
 
 function UF.groupPrototype:Update(self)
@@ -1037,13 +1036,13 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 
 		backdropTex:ClearAllPoints()
 		if statusBarOrientation == "VERTICAL" then
-			backdropTex:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
-			backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "TOPLEFT")
-			backdropTex:SetPoint("BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
+			E:Point(backdropTex, "TOPLEFT", statusBar, "TOPLEFT")
+			E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "TOPLEFT")
+			E:Point(backdropTex, "BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
 		else
-			backdropTex:SetPoint("TOPLEFT", statusBarTex, "TOPRIGHT")
-			backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
-			backdropTex:SetPoint("BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
+			E:Point(backdropTex, "TOPLEFT", statusBarTex, "TOPRIGHT")
+			E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
+			E:Point(backdropTex, "BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
 		end
 
 		if invertBackdropTex then
@@ -1072,13 +1071,13 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 		if adjustBackdropPoints then
 			backdropTex:ClearAllPoints()
 			if statusBarOrientation == "VERTICAL" then
-				backdropTex:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
-				backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "TOPLEFT")
-				backdropTex:SetPoint("BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
+				E:Point(backdropTex, "TOPLEFT", statusBar, "TOPLEFT")
+				E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "TOPLEFT")
+				E:Point(backdropTex, "BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
 			else
-				backdropTex:SetPoint("TOPLEFT", statusBarTex, "TOPRIGHT")
-				backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
-				backdropTex:SetPoint("BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
+				E:Point(backdropTex, "TOPLEFT", statusBarTex, "TOPRIGHT")
+				E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
+				E:Point(backdropTex, "BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
 			end
 		end
 

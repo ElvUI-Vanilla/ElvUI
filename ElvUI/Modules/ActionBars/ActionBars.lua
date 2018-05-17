@@ -73,8 +73,7 @@ function AB:PositionAndSizeBar(barName)
 
 	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult-1)) + ((self.db[barName].backdrop and (E.Border + backdropSpacing) or E.Spacing)*2)
 	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult-1)) + ((self.db[barName].backdrop and (E.Border + backdropSpacing) or E.Spacing)*2)
-	bar:SetWidth(barWidth)
-	bar:SetHeight(barHeight)
+	E:Size(bar, barWidth, barHeight)
 
 	bar.mouseover = self.db[barName].mouseover
 
@@ -107,8 +106,7 @@ function AB:PositionAndSizeBar(barName)
 
 		button:SetParent(bar)
 
-		button:SetWidth(size)
-		button:SetHeight(size)
+		E:Size(button, size)
 		ActionButton_ShowGrid(button)
 
 		if i == 1 then
@@ -121,7 +119,7 @@ function AB:PositionAndSizeBar(barName)
 			else
 				x, y = -firstButtonSpacing, firstButtonSpacing
 			end
-			button:SetPoint(point, bar, point, x, y)
+			E:Point(button, point, bar, point, x, y)
 		elseif mod((i - 1), buttonsPerRow) == 0 then
 			x = 0
 			y = -buttonSpacing
@@ -131,7 +129,7 @@ function AB:PositionAndSizeBar(barName)
 				buttonPoint = "BOTTOM"
 				anchorPoint = "TOP"
 			end
-			button:SetPoint(buttonPoint, lastColumnButton, anchorPoint, x, y)
+			E:Point(button, buttonPoint, lastColumnButton, anchorPoint, x, y)
 		else
 			x = buttonSpacing
 			y = 0
@@ -141,7 +139,7 @@ function AB:PositionAndSizeBar(barName)
 				buttonPoint = "RIGHT"
 				anchorPoint = "LEFT"
 			end
-			button:SetPoint(buttonPoint, lastButton, anchorPoint, x, y)
+			E:Point(button, buttonPoint, lastButton, anchorPoint, x, y)
 		end
 
 		if i > numButtons then
@@ -181,13 +179,13 @@ end
 function AB:CreateBar(id)
 	local bar = CreateFrame("Button", "ElvUI_Bar"..id, E.UIParent)
 	local point, anchor, attachTo, x, y = split(",", self["barDefaults"]["bar"..id].position)
-	bar:SetPoint(point, anchor, attachTo, x, y)
+	E:Point(bar, point, anchor, attachTo, x, y)
 	bar.id = id
 	E:CreateBackdrop(bar, "Default")
 	bar:SetFrameStrata("LOW")
 	local offset = E.Spacing
-	bar.backdrop:SetPoint("TOPLEFT", bar, "TOPLEFT", offset, -offset)
-	bar.backdrop:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -offset, offset)
+	E:Point(bar.backdrop, "TOPLEFT", bar, "TOPLEFT", offset, -offset)
+	E:Point(bar.backdrop, "BOTTOMRIGHT", bar, "BOTTOMRIGHT", -offset, offset)
 	bar.buttons = {}
 	self:HookScript(bar, "OnEnter", "Bar_OnEnter")
 	self:HookScript(bar, "OnLeave", "Bar_OnLeave")
@@ -289,7 +287,7 @@ function AB:StyleButton(button, noBackdrop)
 
 	if count then
 		count:ClearAllPoints()
-		count:SetPoint("BOTTOMRIGHT", 0, 2)
+		E:Point(count, "BOTTOMRIGHT", 0, 2)
 		E:FontTemplate(count, LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 		count:SetTextColor(color.r, color.g, color.b)
 	end
@@ -440,7 +438,7 @@ function AB:FixKeybindText(button)
 	end
 
 	hotkey:ClearAllPoints()
-	hotkey:SetPoint("TOPRIGHT", 0, -3)
+	E:Point(hotkey, "TOPRIGHT", 0, -3)
 end
 
 function AB:ActionButton_Update()

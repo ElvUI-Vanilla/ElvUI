@@ -54,7 +54,7 @@ function E:DropDown(list, frame, xOffset, yOffset)
 
 			frame.buttons[i].text = frame.buttons[i]:CreateFontString(nil, "BORDER")
 			frame.buttons[i].text:SetAllPoints()
-			frame.buttons[i].text:FontTemplate()
+			E:FontTemplate(frame.buttons[i].text)
 			frame.buttons[i].text:SetJustifyH("LEFT")
 
 			frame.buttons[i]:SetScript("OnEnter", OnEnter)
@@ -62,28 +62,26 @@ function E:DropDown(list, frame, xOffset, yOffset)
 		end
 
 		frame.buttons[i]:Show()
-		frame.buttons[i]:SetHeight(BUTTON_HEIGHT)
-		frame.buttons[i]:SetWidth(BUTTON_WIDTH)
+		E:Size(frame.buttons[i], BUTTON_WIDTH, BUTTON_HEIGHT)
 		frame.buttons[i].text:SetText(list[i].text)
 		frame.buttons[i].func = list[i].func
 		frame.buttons[i]:SetScript("OnClick", OnClick)
 
 		if i == 1 then
-			frame.buttons[i]:SetPoint("TOPLEFT", frame, "TOPLEFT", PADDING, -PADDING)
+			E:Point(frame.buttons[i], "TOPLEFT", frame, "TOPLEFT", PADDING, -PADDING)
 		else
-			frame.buttons[i]:SetPoint("TOPLEFT", frame.buttons[i-1], "BOTTOMLEFT")
+			E:Point(frame.buttons[i], "TOPLEFT", frame.buttons[i-1], "BOTTOMLEFT")
 		end
 	end
 
-	frame:SetHeight((getn(list) * BUTTON_HEIGHT) + PADDING * 2)
-	frame:SetWidth(BUTTON_WIDTH + PADDING * 2)
+	E:Size(frame, BUTTON_WIDTH + PADDING * 2, (getn(list) * BUTTON_HEIGHT) + PADDING * 2)
 
 	local UIScale = UIParent:GetScale()
 	local x, y = GetCursorPosition()
 	x = x/UIScale
 	y = y/UIScale
 	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x + xOffset, y + yOffset)
+	E:Point(frame, "TOPLEFT", UIParent, "BOTTOMLEFT", x + xOffset, y + yOffset)
 
 	ToggleFrame(frame)
 end

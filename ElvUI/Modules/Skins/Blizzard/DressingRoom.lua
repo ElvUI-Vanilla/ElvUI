@@ -11,8 +11,8 @@ local function LoadSkin()
 
 	E:StripTextures(DressUpFrame)
 	E:CreateBackdrop(DressUpFrame, "Transparent")
-	DressUpFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
-	DressUpFrame.backdrop:SetPoint("BOTTOMRIGHT", -33, 73)
+	E:Point(DressUpFrame.backdrop, "TOPLEFT", 10, -12)
+	E:Point(DressUpFrame.backdrop, "BOTTOMRIGHT", -33, 73)
 
 	E:Kill(DressUpFramePortrait)
 
@@ -22,19 +22,19 @@ local function LoadSkin()
 	DressUpBackgroundBotLeft:SetDesaturated(true)
 	DressUpBackgroundBotRight:SetDesaturated(true)
 
-	DressUpFrameDescriptionText:SetPoint("CENTER", DressUpFrameTitleText, "BOTTOM", -5, -22)
+	E:Point(DressUpFrameDescriptionText, "CENTER", DressUpFrameTitleText, "BOTTOM", -5, -22)
 
 	S:HandleCloseButton(DressUpFrameCloseButton)
 
 	S:HandleRotateButton(DressUpModelRotateLeftButton)
-	DressUpModelRotateLeftButton:SetPoint("TOPLEFT", DressUpFrame, 25, -79)
+	E:Point(DressUpModelRotateLeftButton, "TOPLEFT", DressUpFrame, 25, -79)
 	S:HandleRotateButton(DressUpModelRotateRightButton)
-	DressUpModelRotateRightButton:SetPoint("TOPLEFT", DressUpModelRotateLeftButton, "TOPRIGHT", 3, 0)
+	E:Point(DressUpModelRotateRightButton, "TOPLEFT", DressUpModelRotateLeftButton, "TOPRIGHT", 3, 0)
 
 	S:HandleButton(DressUpFrameCancelButton)
-	DressUpFrameCancelButton:SetPoint("CENTER", DressUpFrame, "TOPLEFT", 306, -423)
+	E:Point(DressUpFrameCancelButton, "CENTER", DressUpFrame, "TOPLEFT", 306, -423)
 	S:HandleButton(DressUpFrameResetButton)
-	DressUpFrameResetButton:SetPoint("RIGHT", DressUpFrameCancelButton, "LEFT", -3, 0)
+	E:Point(DressUpFrameResetButton, "RIGHT", DressUpFrameCancelButton, "LEFT", -3, 0)
 
 	E:CreateBackdrop(DressUpModel, "Default")
 	E:SetOutside(DressUpModel.backdrop, DressUpBackgroundTopLeft, nil, nil, DressUpModel)

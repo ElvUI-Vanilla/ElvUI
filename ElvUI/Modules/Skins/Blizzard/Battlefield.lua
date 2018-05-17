@@ -12,8 +12,8 @@ local function LoadSkin()
 	E:StripTextures(BattlefieldFrame)
 
 	E:CreateBackdrop(BattlefieldFrame, "Transparent")
-	BattlefieldFrame.backdrop:SetPoint("TOPLEFT", 11, -12)
-	BattlefieldFrame.backdrop:SetPoint("BOTTOMRIGHT", -34, 74)
+	E:Point(BattlefieldFrame.backdrop, "TOPLEFT", 11, -12)
+	E:Point(BattlefieldFrame.backdrop, "BOTTOMRIGHT", -34, 74)
 
 	E:StripTextures(BattlefieldListScrollFrame)
 	S:HandleScrollBar(BattlefieldListScrollFrameScrollBar)

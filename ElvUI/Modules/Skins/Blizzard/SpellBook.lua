@@ -12,8 +12,8 @@ local function LoadSkin()
 
 	E:StripTextures(SpellBookFrame, true)
 	E:CreateBackdrop(SpellBookFrame, "Transparent")
-	SpellBookFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
-	SpellBookFrame.backdrop:SetPoint("BOTTOMRIGHT", -31, 75)
+	E:Point(SpellBookFrame.backdrop, "TOPLEFT", 10, -12)
+	E:Point(SpellBookFrame.backdrop, "BOTTOMRIGHT", -31, 75)
 
 	for i = 1, 3 do
 		local tab = _G["SpellBookFrameTabButton"..i]
@@ -23,8 +23,8 @@ local function LoadSkin()
 
 		S:HandleTab(tab)
 
-		tab.backdrop:SetPoint("TOPLEFT", 14, E.PixelMode and -17 or -19)
-		tab.backdrop:SetPoint("BOTTOMRIGHT", -14, 19)
+		E:Point(tab.backdrop, "TOPLEFT", 14, E.PixelMode and -17 or -19)
+		E:Point(tab.backdrop, "BOTTOMRIGHT", -14, 19)
 	end
 
 	S:HandleNextPrevButton(SpellBookPrevPageButton)

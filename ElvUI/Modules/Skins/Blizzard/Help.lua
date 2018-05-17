@@ -29,11 +29,11 @@ local function LoadSkin()
 
 	E:StripTextures(HelpFrame)
 	E:CreateBackdrop(HelpFrame, "Transparent")
-	HelpFrame.backdrop:SetPoint("TOPLEFT", 6, -2)
-	HelpFrame.backdrop:SetPoint("BOTTOMRIGHT", -45, 14)
+	E:Point(HelpFrame.backdrop, "TOPLEFT", 6, -2)
+	E:Point(HelpFrame.backdrop, "BOTTOMRIGHT", -45, 14)
 
 	S:HandleCloseButton(HelpFrameCloseButton)
-	HelpFrameCloseButton:SetPoint("TOPRIGHT", -42, 0)
+	E:Point(HelpFrameCloseButton, "TOPRIGHT", -42, 0)
 
 	for i = 1, getn(helpFrameButtons) do
 		local helpButton = _G["HelpFrame"..helpFrameButtons[i]]
@@ -51,9 +51,9 @@ local function LoadSkin()
 			title:SetTexture("")
 			title:ClearAllPoints()
 			if title == _G["GameMenuFrameHeader"] then
-				title:SetPoint("TOP", GameMenuFrame, 0, 0)
+				E:Point(title, "TOP", GameMenuFrame, 0, 0)
 			else
-				title:SetPoint("TOP", BlizzardHeader[i], -22, -8)
+				E:Point(title, "TOP", BlizzardHeader[i], -22, -8)
 			end
 		end
 	end
@@ -63,7 +63,7 @@ local function LoadSkin()
 	S:HandleScrollBar(HelpFrameOpenTicketScrollFrame)
 	S:HandleScrollBar(HelpFrameOpenTicketScrollFrameScrollBar)
 
-	HelpFrameOpenTicketSubmit:SetPoint("RIGHT", HelpFrameOpenTicketCancel, "LEFT", -2, 0)
+	E:Point(HelpFrameOpenTicketSubmit, "RIGHT", HelpFrameOpenTicketCancel, "LEFT", -2, 0)
 
 	E:Kill(HelpFrameHarassmentDivider)
 	E:Kill(HelpFrameHarassmentDivider2)

@@ -22,8 +22,8 @@ local function LoadSkin()
 	E:StripTextures(LootFrame)
 
 	E:CreateBackdrop(LootFrame, "Transparent")
-	LootFrame.backdrop:SetPoint("TOPLEFT", 13, -14)
-	LootFrame.backdrop:SetPoint("BOTTOMRIGHT", -68, 5)
+	E:Point(LootFrame.backdrop, "TOPLEFT", 13, -14)
+	E:Point(LootFrame.backdrop, "BOTTOMRIGHT", -68, 5)
 
 	LootFramePortraitOverlay:SetParent(E.HiddenFrame)
 
@@ -39,7 +39,7 @@ local function LoadSkin()
 	end]]
 
 	--[[LootFrame.Title:ClearAllPoints()
-	LootFrame.Title:SetPoint("TOPLEFT", LootFrame.backdrop, "TOPLEFT", 4, -4)
+	E:Point(LootFrame.Title, "TOPLEFT", LootFrame.backdrop, "TOPLEFT", 4, -4)
 	LootFrame.Title:SetJustifyH("LEFT")]]
 
 	S:HandleNextPrevButton(LootFrameDownButton)
@@ -48,8 +48,8 @@ local function LoadSkin()
 	S:SquareButton_SetIcon(LootFrameDownButton, "DOWN")
 
 	LootFrameDownButton:ClearAllPoints()
-	LootFrameDownButton:SetPoint("RIGHT", LootFrameNext, "RIGHT", 32, 0)
-	LootFramePrev:SetPoint("BOTTOMLEFT", 57, 22)
+	E:Point(LootFrameDownButton, "RIGHT", LootFrameNext, "RIGHT", 32, 0)
+	E:Point(LootFramePrev, "BOTTOMLEFT", 57, 22)
 
 	hooksecurefunc("LootFrame_Update", function()
 		local numLootItems = LootFrame.numLootItems
@@ -127,9 +127,8 @@ local function LoadRollSkin()
 
 		local decoration = _G[frameName.."Decoration"]
 		decoration:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Gold-Dragon")
-		decoration:SetWidth(130)
-		decoration:SetHeight(130)
-		decoration:SetPoint("TOPLEFT", -37, 20)
+		E:Size(decoration, 130)
+		E:Point(decoration, "TOPLEFT", -37, 20)
 
 		local pass = _G[frameName.."PassButton"]
 		S:HandleCloseButton(pass, frame)

@@ -141,14 +141,13 @@ function AB:PositionAndSizeBarShapeShift()
 
 	local barWidth = (size * (buttonsPerRow * widthMult)) + ((buttonSpacing * (buttonsPerRow - 1)) * widthMult) + (buttonSpacing * (widthMult-1)) + ((self.db["barShapeShift"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
 	local barHeight = (size * (numColumns * heightMult)) + ((buttonSpacing * (numColumns - 1)) * heightMult) + (buttonSpacing * (heightMult-1)) + ((self.db["barShapeShift"].backdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2)
-	bar:SetWidth(barWidth)
-	bar:SetHeight(barHeight)
+	E:Size(bar, barWidth, barHeight)
 
 	if self.db["barShapeShift"].enabled then
 		bar:SetScale(1)
 		bar:SetAlpha(bar.db.alpha)
 		E:EnableMover(bar.mover:GetName())
-		bar:SetPoint("CENTER", 0, 0)
+		E:Point(bar, "CENTER", 0, 0)
 	else
 		bar:SetScale(0.0001)
 		bar:SetAlpha(0)
@@ -182,8 +181,7 @@ function AB:PositionAndSizeBarShapeShift()
 		lastColumnButton = _G["ElvUI_StanceBarButton"..i-buttonsPerRow]
 		button:SetParent(bar)
 		button:ClearAllPoints()
-		button:SetWidth(size)
-		button:SetHeight(size)
+		E:Size(button, size)
 
 		if self.db["barShapeShift"].mouseover == true then
 			bar:SetAlpha(0)
@@ -203,7 +201,7 @@ function AB:PositionAndSizeBarShapeShift()
 				x, y = -firstButtonSpacing, firstButtonSpacing
 			end
 
-			button:SetPoint(point, bar, point, x, y)
+			E:Point(button, point, bar, point, x, y)
 		elseif mod((i - 1), buttonsPerRow) == 0 then
 			local x = 0
 			local y = -buttonSpacing
@@ -213,7 +211,7 @@ function AB:PositionAndSizeBarShapeShift()
 				buttonPoint = "BOTTOM"
 				anchorPoint = "TOP"
 			end
-			button:SetPoint(buttonPoint, lastColumnButton, anchorPoint, x, y)
+			E:Point(button, buttonPoint, lastColumnButton, anchorPoint, x, y)
 		else
 			local x = buttonSpacing
 			local y = 0
@@ -224,7 +222,7 @@ function AB:PositionAndSizeBarShapeShift()
 				anchorPoint = "LEFT"
 			end
 
-			button:SetPoint(buttonPoint, lastButton, anchorPoint, x, y)
+			E:Point(button, buttonPoint, lastButton, anchorPoint, x, y)
 		end
 
 		if i > numButtons then
@@ -289,7 +287,7 @@ end
 function AB:CreateBarShapeShift()
 	E:CreateBackdrop(bar, "Default")
 	bar.backdrop:SetAllPoints()
-	bar:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", 4, -4)
+	E:Point(bar, "TOPLEFT", E.UIParent, "TOPLEFT", 4, -4)
 	bar.buttons = {}
 
 	self:HookScript(bar, "OnEnter", "Bar_OnEnter")

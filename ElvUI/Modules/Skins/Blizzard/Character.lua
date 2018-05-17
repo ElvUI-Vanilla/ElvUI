@@ -22,8 +22,8 @@ local function LoadSkin()
 	E:StripTextures(CharacterFrame, true)
 
 	E:CreateBackdrop(CharacterFrame, "Transparent")
-	CharacterFrame.backdrop:SetPoint("TOPLEFT", 11, -12)
-	CharacterFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 76)
+	E:Point(CharacterFrame.backdrop, "TOPLEFT", 11, -12)
+	E:Point(CharacterFrame.backdrop, "BOTTOMRIGHT", -32, 76)
 
 	S:HandleCloseButton(CharacterFrameCloseButton)
 
@@ -35,17 +35,16 @@ local function LoadSkin()
 	E:StripTextures(PaperDollFrame)
 
 	S:HandleRotateButton(CharacterModelFrameRotateLeftButton)
-	CharacterModelFrameRotateLeftButton:SetPoint("TOPLEFT", 3, -3)
+	E:Point(CharacterModelFrameRotateLeftButton, "TOPLEFT", 3, -3)
 	S:HandleRotateButton(CharacterModelFrameRotateRightButton)
-	CharacterModelFrameRotateRightButton:SetPoint("TOPLEFT", CharacterModelFrameRotateLeftButton, "TOPRIGHT", 3, 0)
+	E:Point(CharacterModelFrameRotateRightButton, "TOPLEFT", CharacterModelFrameRotateLeftButton, "TOPRIGHT", 3, 0)
 
 	E:StripTextures(CharacterAttributesFrame)
 
 	local function HandleResistanceFrame(frameName)
 		for i = 1, 5 do
 			local frame = _G[frameName..i]
-			frame:SetWidth(24)
-			frame:SetHeight(24)
+			E:Size(frame, 24)
 
 			local icon, text = _G[frameName..i]:GetRegions()
 			E:SetInside(icon)
@@ -56,7 +55,7 @@ local function LoadSkin()
 
 			if i ~= 1 then
 				frame:ClearAllPoints()
-				frame:SetPoint("TOP", _G[frameName..i-1], "BOTTOM", 0, -(E.Border + E.Spacing))
+				E:Point(frame, "TOP", _G[frameName..i-1], "BOTTOM", 0, -(E.Border + E.Spacing))
 			end
 		end
 	end
@@ -116,35 +115,33 @@ local function LoadSkin()
 		E:StripTextures(factionBar)
 		E:CreateBackdrop(factionBar, "Default")
 		factionBar:SetStatusBarTexture(E.media.normTex)
-		factionBar:SetWidth(108)
-		factionBar:SetHeight(13)
+		E:Size(factionBar, 108, 13)
 		E:RegisterStatusBar(factionBar)
 
 		if i == 1 then
-			factionBar:SetPoint("TOPLEFT", 190, -86)
+			E:Point(factionBar, "TOPLEFT", 190, -86)
 		end
 
-		factionName:SetPoint("LEFT", factionBar, "LEFT", -150, 0)
-		factionName:SetWidth(140)
+		E:Point(factionName, "LEFT", factionBar, "LEFT", -150, 0)
+		E:Width(factionName, 140)
 		factionName.SetWidth = E.noop
 
 		E:StripTextures(factionAtWarCheck)
-		factionAtWarCheck:SetPoint("LEFT", factionBar, "RIGHT", 0, 0)
+		E:Point(factionAtWarCheck, "LEFT", factionBar, "RIGHT", 0, 0)
 
 		factionAtWarCheck.Icon = factionAtWarCheck:CreateTexture(nil, "OVERLAY")
-		factionAtWarCheck.Icon:SetPoint("LEFT", 6, -8)
-		factionAtWarCheck.Icon:SetWidth(32)
-		factionAtWarCheck.Icon:SetHeight(32)
+		E:Point(factionAtWarCheck.Icon, "LEFT", 6, -8)
+		E:Size(factionAtWarCheck.Icon, 32)
 		factionAtWarCheck.Icon:SetTexture("Interface\\Buttons\\UI-CheckBox-SwordCheck")
 
 		E:StripTextures(factionHeader)
 		factionHeader:SetNormalTexture(nil)
 		factionHeader.SetNormalTexture = E.noop
-		factionHeader:SetPoint("TOPLEFT", factionBar, "TOPLEFT", -175, 0)
+		E:Point(factionHeader, "TOPLEFT", factionBar, "TOPLEFT", -175, 0)
 
 		factionHeader.Text = factionHeader:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(factionHeader.Text, nil, 22)
-		factionHeader.Text:SetPoint("LEFT", 3, 0)
+		E:Point(factionHeader.Text, "LEFT", 3, 0)
 		factionHeader.Text:SetText("+")
 	end
 
@@ -156,10 +153,10 @@ local function LoadSkin()
 
 	S:HandleRotateButton(PetModelFrameRotateLeftButton)
 	PetModelFrameRotateLeftButton:ClearAllPoints()
-	PetModelFrameRotateLeftButton:SetPoint("TOPLEFT", 3, -3)
+	E:Point(PetModelFrameRotateLeftButton, "TOPLEFT", 3, -3)
 	S:HandleRotateButton(PetModelFrameRotateRightButton)
 	PetModelFrameRotateRightButton:ClearAllPoints()
-	PetModelFrameRotateRightButton:SetPoint("TOPLEFT", PetModelFrameRotateLeftButton, "TOPRIGHT", 3, 0)
+	E:Point(PetModelFrameRotateRightButton, "TOPLEFT", PetModelFrameRotateLeftButton, "TOPRIGHT", 3, 0)
 
 	E:StripTextures(PetAttributesFrame)
 
@@ -168,8 +165,7 @@ local function LoadSkin()
 
 	for i = 1, 5 do
 		local frame = _G["PetMagicResFrame"..i]
-		frame:SetWidth(24)
-		frame:SetHeight(24)
+		E:Size(frame, 24)
 	end
 
 	PetMagicResFrame1:GetRegions():SetTexCoord(0.21875, 0.78125, 0.25, 0.3203125)
@@ -199,12 +195,11 @@ local function LoadSkin()
 		end
 	end
 
-	PetPaperDollPetInfo:SetPoint("TOPLEFT", PetModelFrameRotateLeftButton, "BOTTOMLEFT", 9, -3)
+	E:Point(PetPaperDollPetInfo, "TOPLEFT", PetModelFrameRotateLeftButton, "BOTTOMLEFT", 9, -3)
 	PetPaperDollPetInfo:GetRegions():SetTexCoord(0.04, 0.15, 0.06, 0.30)
 	PetPaperDollPetInfo:SetFrameLevel(PetModelFrame:GetFrameLevel() + 2)
 	E:CreateBackdrop(PetPaperDollPetInfo, "Default")
-	PetPaperDollPetInfo:SetWidth(24)
-	PetPaperDollPetInfo:SetHeight(24)
+	E:Size(PetPaperDollPetInfo, 24)
 
 	PetPaperDollPetInfo:RegisterEvent("UNIT_HAPPINESS")
 	PetPaperDollPetInfo:SetScript("OnEvent", updHappiness)
@@ -234,10 +229,10 @@ local function LoadSkin()
 
 	E:StripTextures(ReputationDetailFrame)
 	E:SetTemplate(ReputationDetailFrame, "Transparent")
-	ReputationDetailFrame:SetPoint("TOPLEFT", ReputationFrame, "TOPRIGHT", -31, -12)
+	E:Point(ReputationDetailFrame, "TOPLEFT", ReputationFrame, "TOPRIGHT", -31, -12)
 
 	S:HandleCloseButton(ReputationDetailCloseButton)
-	ReputationDetailCloseButton:SetPoint("TOPRIGHT", 2, 2)
+	E:Point(ReputationDetailCloseButton, "TOPRIGHT", 2, 2)
 
 	S:HandleCheckBox(ReputationDetailAtWarCheckBox)
 	S:HandleCheckBox(ReputationDetailInactiveCheckBox)
@@ -249,14 +244,14 @@ local function LoadSkin()
 
 	SkillFrameExpandButtonFrame:DisableDrawLayer("BACKGROUND")
 
-	SkillFrameCollapseAllButton:SetPoint("LEFT", SkillFrameExpandTabLeft, "RIGHT", -40, -3)
+	E:Point(SkillFrameCollapseAllButton, "LEFT", SkillFrameExpandTabLeft, "RIGHT", -40, -3)
 	SkillFrameCollapseAllButton:SetNormalTexture("")
 	SkillFrameCollapseAllButton.SetNormalTexture = E.noop
 	SkillFrameCollapseAllButton:SetHighlightTexture(nil)
 
 	SkillFrameCollapseAllButton.Text = SkillFrameCollapseAllButton:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(SkillFrameCollapseAllButton.Text, nil, 22)
-	SkillFrameCollapseAllButton.Text:SetPoint("CENTER", -10, 0)
+	E:Point(SkillFrameCollapseAllButton.Text, "CENTER", -10, 0)
 	SkillFrameCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(SkillFrameCollapseAllButton, "SetNormalTexture", function(self, texture)
@@ -285,7 +280,7 @@ local function LoadSkin()
 
 		label.Text = label:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(label.Text, nil, 22)
-		label.Text:SetPoint("LEFT", 3, 0)
+		E:Point(label.Text, "LEFT", 3, 0)
 		label.Text:SetText("+")
 
 		hooksecurefunc(label, "SetNormalTexture", function(self, texture)
@@ -310,14 +305,12 @@ local function LoadSkin()
 	E:RegisterStatusBar(SkillDetailStatusBar)
 
 	E:StripTextures(SkillDetailStatusBarUnlearnButton)
-	SkillDetailStatusBarUnlearnButton:SetPoint("LEFT", SkillDetailStatusBarBorder, "RIGHT", -2, -5)
-	SkillDetailStatusBarUnlearnButton:SetWidth(36)
-	SkillDetailStatusBarUnlearnButton:SetHeight(36)
+	E:Point(SkillDetailStatusBarUnlearnButton, "LEFT", SkillDetailStatusBarBorder, "RIGHT", -2, -5)
+	E:Size(SkillDetailStatusBarUnlearnButton, 36)
 
 	SkillDetailStatusBarUnlearnButton.Icon = SkillDetailStatusBarUnlearnButton:CreateTexture(nil, "OVERLAY")
-	SkillDetailStatusBarUnlearnButton.Icon:SetPoint("LEFT", 7, 5)
-	SkillDetailStatusBarUnlearnButton.Icon:SetWidth(18)
-	SkillDetailStatusBarUnlearnButton.Icon:SetHeight(18)
+	E:Point(SkillDetailStatusBarUnlearnButton.Icon, "LEFT", 7, 5)
+	E:Size(SkillDetailStatusBarUnlearnButton.Icon, 18)
 	SkillDetailStatusBarUnlearnButton.Icon:SetTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Up")
 
 

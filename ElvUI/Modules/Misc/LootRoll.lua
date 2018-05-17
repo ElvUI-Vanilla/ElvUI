@@ -142,7 +142,7 @@ local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, poi
 	E:Point(f, point, relativeFrame, relativePoint, ofsx, ofsy)
 	E:Size(f, FRAME_HEIGHT - 4)
 	f:SetNormalTexture(ntex)
-	if(ptex) then f:SetPushedTexture(ptex) end
+	if ptex then f:SetPushedTexture(ptex) end
 	f:SetHighlightTexture(htex)
 	f.rolltype = rolltype
 	f.parent = parent
@@ -280,7 +280,7 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f.status:SetMinMaxValues(0, time)
 	f.status:SetValue(time)
 
-	f:SetPoint("CENTER", WorldFrame, "CENTER")
+	E:Point(f, "CENTER", WorldFrame, "CENTER")
 	f:Show()
 
 	if E.db.general.autoRoll and UnitLevel("player") == MAX_PLAYER_LEVEL and quality == 2 and not bindOnPickUp then

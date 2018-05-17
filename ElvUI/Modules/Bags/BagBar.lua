@@ -68,50 +68,46 @@ function B:SizeAndPositionBagBar()
 		ElvUIBags.backdrop:Hide()
 	end
 
-	ElvUIKeyRingButton:SetWidth(bagBarSize)
-	ElvUIKeyRingButton:SetHeight(bagBarSize)
+	E:Size(ElvUIKeyRingButton, bagBarSize)
 	ElvUIKeyRingButton:ClearAllPoints()
 
 	for i = 1, getn(ElvUIBags.buttons) do
 		local button = ElvUIBags.buttons[i]
 		local prevButton = ElvUIBags.buttons[i-1]
-		button:SetWidth(E.db.bags.bagBar.size)
-		button:SetHeight(E.db.bags.bagBar.size)
+		E:Size(button, E.db.bags.bagBar.size)
 		button:ClearAllPoints()
 
 		if growthDirection == "HORIZONTAL" and sortDirection == "ASCENDING" then
 			if i == 1 then
-				button:SetPoint("LEFT", ElvUIBags, "LEFT", (showBackdrop and (backdropSpacing + E.Border) or 0), 0)
+				E:Point(button, "LEFT", ElvUIBags, "LEFT", (showBackdrop and (backdropSpacing + E.Border) or 0), 0)
 			elseif prevButton then
-				button:SetPoint("LEFT", prevButton, "RIGHT", buttonSpacing, 0)
+				E:Point(button, "LEFT", prevButton, "RIGHT", buttonSpacing, 0)
 			end
 		elseif growthDirection == "VERTICAL" and sortDirection == "ASCENDING" then
 			if i == 1 then
-				button:SetPoint("TOP", ElvUIBags, "TOP", 0, -(showBackdrop and (backdropSpacing + E.Border) or 0))
+				E:Point(button, "TOP", ElvUIBags, "TOP", 0, -(showBackdrop and (backdropSpacing + E.Border) or 0))
 			elseif prevButton then
-				button:SetPoint("TOP", prevButton, "BOTTOM", 0, -buttonSpacing)
+				E:Point(button, "TOP", prevButton, "BOTTOM", 0, -buttonSpacing)
 			end
 		elseif growthDirection == "HORIZONTAL" and sortDirection == "DESCENDING" then
 			if i == 1 then
-				button:SetPoint("RIGHT", ElvUIBags, "RIGHT", -(showBackdrop and (backdropSpacing + E.Border) or 0), 0)
+				E:Point(button, "RIGHT", ElvUIBags, "RIGHT", -(showBackdrop and (backdropSpacing + E.Border) or 0), 0)
 			elseif prevButton then
-				button:SetPoint("RIGHT", prevButton, "LEFT", -buttonSpacing, 0)
+				E:Point(button, "RIGHT", prevButton, "LEFT", -buttonSpacing, 0)
 			end
 		else
 			if i == 1 then
-				button:SetPoint("BOTTOM", ElvUIBags, "BOTTOM", 0, (showBackdrop and (backdropSpacing + E.Border) or 0))
+				E:Point(button, "BOTTOM", ElvUIBags, "BOTTOM", 0, (showBackdrop and (backdropSpacing + E.Border) or 0))
 			elseif prevButton then
-				button:SetPoint("BOTTOM", prevButton, "TOP", 0, buttonSpacing)
+				E:Point(button, "BOTTOM", prevButton, "TOP", 0, buttonSpacing)
 			end
 		end
 	end
 
 	if growthDirection == "HORIZONTAL" then
-		ElvUIBags:SetWidth(bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
-		ElvUIBags:SetHeight(bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
+		E:Size(ElvUIBags, bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2), bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
 	else
-		ElvUIBags:SetHeight(bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
-		ElvUIBags:SetWidth(bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2))
+		E:Size(ElvUIBags, bagBarSize + ((showBackdrop and (E.Border + backdropSpacing) or E.Spacing)*2), bagBarSize*(TOTAL_BAGS) + buttonSpacing*(TOTAL_BAGS-1) + ((showBackdrop == true and (E.Border + backdropSpacing) or E.Spacing)*2))
 	end
 end
 
@@ -119,7 +115,7 @@ function B:LoadBagBar()
 	if not E.private.bags.bagBar then return end
 
 	local ElvUIBags = CreateFrame("Frame", "ElvUIBags", E.UIParent)
-	ElvUIBags:SetPoint("TOPRIGHT", RightChatPanel, "TOPLEFT", -4, 0)
+	E:Point(ElvUIBags, "TOPRIGHT", RightChatPanel, "TOPLEFT", -4, 0)
 	ElvUIBags.buttons = {}
 	E:CreateBackdrop(ElvUIBags)
 	ElvUIBags.backdrop:SetAllPoints()
@@ -132,7 +128,7 @@ function B:LoadBagBar()
 	MainMenuBarBackpackButton:ClearAllPoints()
 	E:FontTemplate(MainMenuBarBackpackButtonCount, nil, 10)
 	MainMenuBarBackpackButtonCount:ClearAllPoints()
-	MainMenuBarBackpackButtonCount:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -1, 4)
+	E:Point(MainMenuBarBackpackButtonCount, "BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -1, 4)
 	MainMenuBarBackpackButton:Show()
 	MainMenuBarBackpackButton:SetAlpha(1)
 	HookScript(MainMenuBarBackpackButton, "OnEnter", OnEnter)

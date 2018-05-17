@@ -12,8 +12,8 @@ local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.bgscore ~= true then return end
 
 	E:CreateBackdrop(WorldStateScoreFrame, "Transparent")
-	WorldStateScoreFrame.backdrop:SetPoint("TOPLEFT", 10, -15)
-	WorldStateScoreFrame.backdrop:SetPoint("BOTTOMRIGHT", -113, 67)
+	E:Point(WorldStateScoreFrame.backdrop, "TOPLEFT", 10, -15)
+	E:Point(WorldStateScoreFrame.backdrop, "BOTTOMRIGHT", -113, 67)
 
 	E:StripTextures(WorldStateScoreFrame)
 

@@ -14,8 +14,7 @@ local function LoadSkin()
 		local button = _G["TutorialFrameAlertButton"..i]
 		local icon = button:GetNormalTexture()
 
-		button:SetWidth(35)
-		button:SetHeight(45)
+		E:Size(button, 35, 45)
 		E:SetTemplate(button, "Default", true)
 		E:StyleButton(button, nil, true)
 

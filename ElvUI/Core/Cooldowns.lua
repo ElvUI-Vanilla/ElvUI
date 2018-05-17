@@ -86,7 +86,7 @@ function E:CreateCooldownTimer(parent)
 	timer:SetScript("OnUpdate", function() Cooldown_OnUpdate(this, arg1) end)
 
 	local text = timer:CreateFontString(nil, "OVERLAY")
-	text:SetPoint("CENTER", 1, 1)
+	E:Point(text, "CENTER", 1, 1)
 	text:SetJustifyH("CENTER")
 	timer.text = text
 

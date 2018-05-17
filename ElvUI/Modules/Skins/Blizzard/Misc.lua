@@ -47,7 +47,7 @@ local function LoadSkin()
 				E:SetTemplate(this, "Transparent", true)
 				this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
 				this:ClearAllPoints()
-				this:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 35)
+				E:Point(this, "BOTTOMLEFT", ChatFrame1, "TOPLEFT", 0, 35)
 			end)
 		else
 			HookScript(_G[ChatMenus[i]], "OnShow", function()
@@ -61,18 +61,16 @@ local function LoadSkin()
 		local width, height = (f:GetWidth() * .54), f:GetHeight()
 
 		local left = f:CreateTexture(nil, "HIGHLIGHT")
-		left:SetWidth(width)
-		left:SetHeight(height)
-		left:SetPoint("LEFT", f, "CENTER")
+		E:Size(left, width, height)
+		E:Point(left, "LEFT", f, "CENTER")
 		left:SetTexture(1, 1, 1, 0.3)
-		left:SetHeight(16)
+		E:Height(left, 16)
 
 		local right = f:CreateTexture(nil, "HIGHLIGHT")
-		right:SetWidth(width)
-		right:SetHeight(height)
-		right:SetPoint("RIGHT", f, "CENTER")
+		E:Size(right, width, height)
+		E:Point(right, "RIGHT", f, "CENTER")
 		right:SetTexture(1, 1, 1, 0.3)
-		right:SetHeight(16)
+		E:Height(right, 16)
 	end
 
 	for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
@@ -100,11 +98,11 @@ local function LoadSkin()
 				buttonHighlight:SetAllPoints(button)
 
 				if i == 1 then
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -8, 0)
+					E:Point(buttonHighlight, "TOPLEFT", button, "TOPLEFT", -8, 0)
+					E:Point(buttonHighlight, "TOPRIGHT", button, "TOPRIGHT", -8, 0)
 				else
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -4, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", -4, 0)
+					E:Point(buttonHighlight, "TOPLEFT", button, "TOPLEFT", -4, 0)
+					E:Point(buttonHighlight, "TOPRIGHT", button, "TOPRIGHT", -4, 0)
 				end
 			end
 		end
@@ -120,7 +118,7 @@ local function LoadSkin()
 			E:SetTemplate(buttonBackdropMenu, "Transparent")
 
 			if i == 2 then
-				buttonBackdropMenu:SetPoint("TOPRIGHT", -4, 0)
+				E:Point(buttonBackdropMenu, "TOPRIGHT", -4, 0)
 			end
 
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
@@ -132,8 +130,8 @@ local function LoadSkin()
 				buttonHighlight:SetAllPoints(button)
 
 				if i == 2 then
-					buttonHighlight:SetPoint("TOPLEFT", button, "TOPLEFT", -8, 0)
-					buttonHighlight:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
+					E:Point(buttonHighlight, "TOPLEFT", button, "TOPLEFT", -8, 0)
+					E:Point(buttonHighlight, "TOPRIGHT", button, "TOPRIGHT", 0, 0)
 				end
 			end
 		end
@@ -157,8 +155,8 @@ local function LoadSkin()
 		itemFrameBox:DisableDrawLayer("BACKGROUND")
 
 		S:HandleEditBox(itemFrameBox)
-		itemFrameBox.backdrop:SetPoint("TOPLEFT", -2, -4)
-		itemFrameBox.backdrop:SetPoint("BOTTOMRIGHT", 2, 4)
+		E:Point(itemFrameBox.backdrop, "TOPLEFT", -2, -4)
+		E:Point(itemFrameBox.backdrop, "BOTTOMRIGHT", 2, 4)
 
 		E:StripTextures(closeButton)
 		S:HandleCloseButton(closeButton)
@@ -169,7 +167,7 @@ local function LoadSkin()
 		end
 		 --select(8, wideBox:GetRegions()):Hide()
 		S:HandleEditBox(wideBox)
-		wideBox:SetHeight(22)
+		E:Height(wideBox, 22)
 
 		for j = 1, 2 do
 			S:HandleButton(_G["StaticPopup"..i.."Button"..j])
@@ -208,9 +206,9 @@ local function LoadSkin()
 			title:SetTexture("")
 			title:ClearAllPoints()
 			if title == _G["GameMenuFrameHeader"] then
-				title:SetPoint("TOP", GameMenuFrame, 0, 7)
+				E:Point(title, "TOP", GameMenuFrame, 0, 7)
 			else
-				title:SetPoint("TOP", BlizzardHeader[i], 0, 0)
+				E:Point(title, "TOP", BlizzardHeader[i], 0, 0)
 			end
 		end
 	end
@@ -240,17 +238,17 @@ local function LoadSkin()
 
 	-- if a button position is not really where we want, we move it here
 	OptionsFrameCancel:ClearAllPoints()
-	OptionsFrameCancel:SetPoint("BOTTOMLEFT",OptionsFrame,"BOTTOMRIGHT",-105,15)
+	E:Point(OptionsFrameCancel, "BOTTOMLEFT",OptionsFrame,"BOTTOMRIGHT",-105,15)
 	OptionsFrameOkay:ClearAllPoints()
-	OptionsFrameOkay:SetPoint("RIGHT",OptionsFrameCancel,"LEFT",-4,0)
+	E:Point(OptionsFrameOkay, "RIGHT",OptionsFrameCancel,"LEFT",-4,0)
 	SoundOptionsFrameOkay:ClearAllPoints()
-	SoundOptionsFrameOkay:SetPoint("RIGHT",SoundOptionsFrameCancel,"LEFT",-4,0)
+	E:Point(SoundOptionsFrameOkay, "RIGHT",SoundOptionsFrameCancel,"LEFT",-4,0)
 	UIOptionsFrameOkay:ClearAllPoints()
-	UIOptionsFrameOkay:SetPoint("RIGHT",UIOptionsFrameCancel,"LEFT", -4,0)
+	E:Point(UIOptionsFrameOkay, "RIGHT",UIOptionsFrameCancel,"LEFT", -4,0)
 
 	-- others
 	ZoneTextFrame:ClearAllPoints()
-	ZoneTextFrame:SetPoint("TOP", UIParent, 0, -128)
+	E:Point(ZoneTextFrame, "TOP", UIParent, 0, -128)
 
 	E:StripTextures(CoinPickupFrame)
 	E:SetTemplate(CoinPickupFrame, "Transparent")
@@ -263,8 +261,8 @@ local function LoadSkin()
 
 	StackSplitFrame.bg1 = CreateFrame("Frame", nil, StackSplitFrame)
 	E:SetTemplate(StackSplitFrame.bg1, "Transparent")
-	StackSplitFrame.bg1:SetPoint("TOPLEFT", 10, -15)
-	StackSplitFrame.bg1:SetPoint("BOTTOMRIGHT", -10, 55)
+	E:Point(StackSplitFrame.bg1, "TOPLEFT", 10, -15)
+	E:Point(StackSplitFrame.bg1, "BOTTOMRIGHT", -10, 55)
 	StackSplitFrame.bg1:SetFrameLevel(StackSplitFrame.bg1:GetFrameLevel() - 1)
 
 	-- Declension frame
@@ -325,13 +323,13 @@ local function LoadSkin()
 	end
 
 	BasicOptions.backdrop = CreateFrame("Frame", nil, BasicOptions)
-	BasicOptions.backdrop:SetPoint("TOPLEFT", BasicOptionsGeneral, -20, 35)
-	BasicOptions.backdrop:SetPoint("BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
+	E:Point(BasicOptions.backdrop, "TOPLEFT", BasicOptionsGeneral, -20, 35)
+	E:Point(BasicOptions.backdrop, "BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
 	E:SetTemplate(BasicOptions.backdrop, "Transparent")
 
 	AdvancedOptions.backdrop = CreateFrame("Frame", nil, AdvancedOptions)
-	AdvancedOptions.backdrop:SetPoint("TOPLEFT", BasicOptionsGeneral, -20, 35)
-	AdvancedOptions.backdrop:SetPoint("BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
+	E:Point(AdvancedOptions.backdrop, "TOPLEFT", BasicOptionsGeneral, -20, 35)
+	E:Point(AdvancedOptions.backdrop, "BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
 	E:SetTemplate(AdvancedOptions.backdrop, "Transparent")
 
 	for i = 1, 2 do
@@ -342,8 +340,8 @@ local function LoadSkin()
 		tab:SetFrameLevel(tab:GetParent():GetFrameLevel() + 2)
 		tab.backdrop:SetFrameLevel(tab:GetParent():GetFrameLevel() + 1)
 
-		tab.backdrop:SetPoint("TOPLEFT", 5, E.PixelMode and -14 or -16)
-		tab.backdrop:SetPoint("BOTTOMRIGHT", -5, E.PixelMode and -4 or -6)
+		E:Point(tab.backdrop, "TOPLEFT", 5, E.PixelMode and -14 or -16)
+		E:Point(tab.backdrop, "BOTTOMRIGHT", -5, E.PixelMode and -4 or -6)
 
 		tab:SetScript("OnClick", function()
 			PanelTemplates_Tab_OnClick(UIOptionsFrame)
@@ -377,11 +375,11 @@ local function LoadSkin()
 	end--]]
 
 	OptionsFrameDefaults:ClearAllPoints()
-	OptionsFrameDefaults:SetPoint("TOPLEFT", OptionsFrame, "BOTTOMLEFT", 15, 36)
+	E:Point(OptionsFrameDefaults, "TOPLEFT", OptionsFrame, "BOTTOMLEFT", 15, 36)
 
 	S:HandleButton(UIOptionsFrameResetTutorials)
 
-	SoundOptionsFrameCheckButton1:SetPoint("TOPLEFT", "SoundOptionsFrame", "TOPLEFT", 16, -15)
+	E:Point(SoundOptionsFrameCheckButton1, "TOPLEFT", "SoundOptionsFrame", "TOPLEFT", 16, -15)
 
 	-- Interface Options Frame Dropdown
 	local interfacedropdown ={

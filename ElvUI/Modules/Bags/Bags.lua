@@ -376,7 +376,7 @@ function B:Layout(isBank)
 	local holderWidth = ((buttonSize + buttonSpacing) * numContainerColumns) - buttonSpacing
 	local numContainerRows = 0
 	local countColor = E.db.bags.countFontColor
-	f.holderFrame:SetWidth(holderWidth)
+	E:Width(f.holderFrame, holderWidth)
 
 	f.totalSlots = 0
 	local lastButton
@@ -423,20 +423,18 @@ function B:Layout(isBank)
 				f.ContainerHolder[i].iconTexture:SetTexCoord(unpack(E.TexCoords))
 			end
 
-			f.ContainerHolder:SetWidth(((buttonSize + buttonSpacing) * (isBank and i - 1 or i)) + buttonSpacing)
-			f.ContainerHolder:SetHeight(buttonSize + (buttonSpacing * 2))
+			E:Size(f.ContainerHolder, ((buttonSize + buttonSpacing) * (isBank and i - 1 or i)) + buttonSpacing, buttonSize + (buttonSpacing * 2))
 
 			--[[if isBank then
 				BankFrameItemButton_OnUpdate()
 			end--]]
 
-			f.ContainerHolder[i]:SetWidth(buttonSize)
-			f.ContainerHolder[i]:SetHeight(buttonSize)
+			E:Size(f.ContainerHolder[i], buttonSize)
 			f.ContainerHolder[i]:ClearAllPoints()
 			if (isBank and i == 2) or (not isBank and i == 1) then
-				f.ContainerHolder[i]:SetPoint("BOTTOMLEFT", f.ContainerHolder, "BOTTOMLEFT", buttonSpacing, buttonSpacing)
+				E:Point(f.ContainerHolder[i], "BOTTOMLEFT", f.ContainerHolder, "BOTTOMLEFT", buttonSpacing, buttonSpacing)
 			else
-				f.ContainerHolder[i]:SetPoint("LEFT", lastContainerButton, "RIGHT", buttonSpacing, 0)
+				E:Point(f.ContainerHolder[i], "LEFT", lastContainerButton, "RIGHT", buttonSpacing, 0)
 			end
 
 			lastContainerButton = f.ContainerHolder[i]
@@ -473,7 +471,7 @@ function B:Layout(isBank)
 
 					f.Bags[bagID][slotID].Count = _G[f.Bags[bagID][slotID]:GetName().."Count"]
 					f.Bags[bagID][slotID].Count:ClearAllPoints()
-					f.Bags[bagID][slotID].Count:SetPoint("BOTTOMRIGHT", 0, 2)
+					E:Point(f.Bags[bagID][slotID].Count, "BOTTOMRIGHT", 0, 2)
 					E:FontTemplate(f.Bags[bagID][slotID].Count, E.LSM:Fetch("font", E.db.bags.countFont), E.db.bags.countFontSize, E.db.bags.countFontOutline)
 					f.Bags[bagID][slotID].Count:SetTextColor(countColor.r, countColor.g, countColor.b)
 
@@ -489,13 +487,12 @@ function B:Layout(isBank)
 					end
 
 					f.Bags[bagID][slotID].itemLevel = f.Bags[bagID][slotID]:CreateFontString(nil, "OVERLAY")
-					f.Bags[bagID][slotID].itemLevel:SetPoint("BOTTOMRIGHT", 0, 2)
+					E:Point(f.Bags[bagID][slotID].itemLevel, "BOTTOMRIGHT", 0, 2)
 					E:FontTemplate(f.Bags[bagID][slotID].itemLevel, E.LSM:Fetch("font", E.db.bags.itemLevelFont), E.db.bags.itemLevelFontSize, E.db.bags.itemLevelFontOutline)
 				end
 
 				f.Bags[bagID][slotID]:SetID(slotID)
-				f.Bags[bagID][slotID]:SetWidth(buttonSize)
-				f.Bags[bagID][slotID]:SetHeight(buttonSize)
+				E:Size(f.Bags[bagID][slotID], buttonSize)
 
 				f:UpdateSlot(bagID, slotID)
 
@@ -505,14 +502,14 @@ function B:Layout(isBank)
 
 				if lastButton then
 					if mod(f.totalSlots - 1, numContainerColumns) == 0 then
-						f.Bags[bagID][slotID]:SetPoint("TOP", lastRowButton, "BOTTOM", 0, -buttonSpacing)
+						E:Point(f.Bags[bagID][slotID], "TOP", lastRowButton, "BOTTOM", 0, -buttonSpacing)
 						lastRowButton = f.Bags[bagID][slotID]
 						numContainerRows = numContainerRows + 1
 					else
-						f.Bags[bagID][slotID]:SetPoint("LEFT", lastButton, "RIGHT", buttonSpacing, 0)
+						E:Point(f.Bags[bagID][slotID], "LEFT", lastButton, "RIGHT", buttonSpacing, 0)
 					end
 				else
-					f.Bags[bagID][slotID]:SetPoint("TOPLEFT", f.holderFrame, "TOPLEFT")
+					E:Point(f.Bags[bagID][slotID], "TOPLEFT", f.holderFrame, "TOPLEFT")
 					lastRowButton = f.Bags[bagID][slotID]
 					numContainerRows = numContainerRows + 1
 				end
@@ -564,18 +561,17 @@ function B:Layout(isBank)
 			end
 
 			f.keyFrame.slots[i]:ClearAllPoints()
-			f.keyFrame.slots[i]:SetWidth(buttonSize)
-			f.keyFrame.slots[i]:SetHeight(buttonSize)
+			E:Size(f.keyFrame.slots[i], buttonSize)
 			if f.keyFrame.slots[i-1] then
 				if mod(totalSlots - 1, numKeyColumns) == 0 then
-					f.keyFrame.slots[i]:SetPoint("TOP", lastRowButton, "BOTTOM", 0, -buttonSpacing)
+					E:Point(f.keyFrame.slots[i], "TOP", lastRowButton, "BOTTOM", 0, -buttonSpacing)
 					lastRowButton = f.keyFrame.slots[i]
 					numKeyRows = numKeyRows + 1
 				else
-					f.keyFrame.slots[i]:SetPoint("RIGHT", f.keyFrame.slots[i-1], "LEFT", -buttonSpacing, 0)
+					E:Point(f.keyFrame.slots[i], "RIGHT", f.keyFrame.slots[i-1], "LEFT", -buttonSpacing, 0)
 				end
 			else
-				f.keyFrame.slots[i]:SetPoint("TOPRIGHT", f.keyFrame, "TOPRIGHT", -buttonSpacing, -buttonSpacing)
+				E:Point(f.keyFrame.slots[i], "TOPRIGHT", f.keyFrame, "TOPRIGHT", -buttonSpacing, -buttonSpacing)
 				lastRowButton = f.keyFrame.slots[i]
 			end
 
@@ -585,12 +581,10 @@ function B:Layout(isBank)
 		if numKey < numKeyColumns then
 			numKeyColumns = numKey
 		end
-		f.keyFrame:SetWidth(((buttonSize + buttonSpacing) * numKeyColumns) + buttonSpacing)
-		f.keyFrame:SetHeight(((buttonSize + buttonSpacing) * numKeyRows) + buttonSpacing)
+		E:Size(f.keyFrame, ((buttonSize + buttonSpacing) * numKeyColumns) + buttonSpacing, ((buttonSize + buttonSpacing) * numKeyRows) + buttonSpacing)
 	end
 
-	f:SetWidth(containerWidth)
-	f:SetHeight((((buttonSize + buttonSpacing) * numContainerRows) - buttonSpacing) + f.topOffset + f.bottomOffset) -- 8 is the cussion of the f.holderFrame
+	E:Size(f, containerWidth, (((buttonSize + buttonSpacing) * numContainerRows) - buttonSpacing) + f.topOffset + f.bottomOffset)
 end
 
 function B:UpdateKeySlot(slotID)
@@ -790,7 +784,7 @@ function B:ContructContainerFrame(name, isBank)
 
 	local mover = (isBank and ElvUIBankMover or ElvUIBagMover)
 	if mover then
-		f:SetPoint(mover.POINT, mover)
+		E:Point(f, mover.POINT, mover)
 		f.mover = mover
 	end
 
@@ -811,31 +805,30 @@ function B:ContructContainerFrame(name, isBank)
 	f:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 	f.closeButton = CreateFrame("Button", name.."CloseButton", f, "UIPanelCloseButton")
-	f.closeButton:SetPoint("TOPRIGHT", -4, -4)
+	E:Point(f.closeButton, "TOPRIGHT", -4, -4)
 
 	E:GetModule("Skins"):HandleCloseButton(f.closeButton)
 
 	f.holderFrame = CreateFrame("Frame", nil, f)
-	f.holderFrame:SetPoint("TOP", f, "TOP", 0, -f.topOffset)
-	f.holderFrame:SetPoint("BOTTOM", f, "BOTTOM", 0, 8)
+	E:Point(f.holderFrame, "TOP", f, "TOP", 0, -f.topOffset)
+	E:Point(f.holderFrame, "BOTTOM", f, "BOTTOM", 0, 8)
 
 	f.ContainerHolder = CreateFrame("Button", name.."ContainerHolder", f)
-	f.ContainerHolder:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, 1)
+	E:Point(f.ContainerHolder, "BOTTOMLEFT", f, "TOPLEFT", 0, 1)
 	E:SetTemplate(f.ContainerHolder, "Transparent")
 	f.ContainerHolder:Hide()
 
 	if isBank then
 		f.bagText = f:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(f.bagText)
-		f.bagText:SetPoint("BOTTOMRIGHT", f.holderFrame, "TOPRIGHT", -2, 4)
+		E:Point(f.bagText, "BOTTOMRIGHT", f.holderFrame, "TOPRIGHT", -2, 4)
 		f.bagText:SetJustifyH("RIGHT")
 		f.bagText:SetText(L["Bank"])
 
 		f.sortButton = CreateFrame("Button", name.."SortButton", f)
-		f.sortButton:SetWidth(16 + E.Border)
-		f.sortButton:SetHeight(16 + E.Border)
+		E:Size(f.sortButton, 16 + E.Border)
 		E:SetTemplate(f.sortButton)
-		f.sortButton:SetPoint("RIGHT", f.bagText, "LEFT", -5, E.Border * 2)
+		E:Point(f.sortButton, "RIGHT", f.bagText, "LEFT", -5, E.Border * 2)
 		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
 		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetNormalTexture())
@@ -856,10 +849,9 @@ function B:ContructContainerFrame(name, isBank)
 		end
 
 		f.bagsButton = CreateFrame("Button", name.."BagsButton", f.holderFrame)
-		f.bagsButton:SetWidth(16 + E.Border)
-		f.bagsButton:SetHeight(16 + E.Border)
+		E:Size(f.bagsButton, 16 + E.Border)
 		E:SetTemplate(f.bagsButton)
-		f.bagsButton:SetPoint("RIGHT", f.sortButton, "LEFT", -5, 0)
+		E:Point(f.bagsButton, "RIGHT", f.sortButton, "LEFT", -5, 0)
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.bagsButton:GetNormalTexture())
@@ -881,10 +873,9 @@ function B:ContructContainerFrame(name, isBank)
 		end)
 
 		f.purchaseBagButton = CreateFrame("Button", nil, f.holderFrame)
-		f.purchaseBagButton:SetWidth(16 + E.Border)
-		f.purchaseBagButton:SetHeight(16 + E.Border)
+		E:Size(f.purchaseBagButton, 16 + E.Border)
 		E:SetTemplate(f.purchaseBagButton)
-		f.purchaseBagButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -5, 0)
+		E:Point(f.purchaseBagButton, "RIGHT", f.bagsButton, "LEFT", -5, 0)
 		f.purchaseBagButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
 		f.purchaseBagButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.purchaseBagButton:GetNormalTexture())
@@ -915,10 +906,10 @@ function B:ContructContainerFrame(name, isBank)
 		f.editBox = CreateFrame("EditBox", name.."EditBox", f)
 		f.editBox:SetFrameLevel(f.editBox:GetFrameLevel() + 2)
 		E:CreateBackdrop(f.editBox, "Default")
-		f.editBox.backdrop:SetPoint("TOPLEFT", f.editBox, "TOPLEFT", -20, 2)
-		f.editBox:SetHeight(15)
-		f.editBox:SetPoint("BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
-		f.editBox:SetPoint("RIGHT", f.purchaseBagButton, "LEFT", -5, 0)
+		E:Point(f.editBox.backdrop, "TOPLEFT", f.editBox, "TOPLEFT", -20, 2)
+		E:Height(f.editBox, 15)
+		E:Point(f.editBox, "BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
+		E:Point(f.editBox, "RIGHT", f.purchaseBagButton, "LEFT", -5, 0)
 		f.editBox:SetAutoFocus(false)
 		f.editBox:SetScript("OnEscapePressed", self.ResetAndClear)
 		f.editBox:SetScript("OnEnterPressed", function() this:ClearFocus() end)
@@ -930,12 +921,11 @@ function B:ContructContainerFrame(name, isBank)
 
 		f.editBox.searchIcon = f.editBox:CreateTexture(nil, "OVERLAY")
 		f.editBox.searchIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\UI-Searchbox-Icon")
-		f.editBox.searchIcon:SetPoint("LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
-		f.editBox.searchIcon:SetWidth(15)
-		f.editBox.searchIcon:SetHeight(15)
+		E:Point(f.editBox.searchIcon, "LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
+		E:Size(f.editBox.searchIcon, 15)
 	else
 		f.keyFrame = CreateFrame("Frame", name.."KeyFrame", f)
-		f.keyFrame:SetPoint("TOPRIGHT", f, "TOPLEFT", -(E.PixelMode and 1 or 3), 0)
+		E:Point(f.keyFrame, "TOPRIGHT", f, "TOPLEFT", -(E.PixelMode and 1 or 3), 0)
 		E:SetTemplate(f.keyFrame, "Transparent")
 		f.keyFrame:SetID(KEYRING_CONTAINER)
 		f.keyFrame.slots = {}
@@ -943,14 +933,13 @@ function B:ContructContainerFrame(name, isBank)
 
 		f.goldText = f:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(f.goldText)
-		f.goldText:SetPoint("BOTTOMRIGHT", f.holderFrame, "TOPRIGHT", -2, 4)
+		E:Point(f.goldText, "BOTTOMRIGHT", f.holderFrame, "TOPRIGHT", -2, 4)
 		f.goldText:SetJustifyH("RIGHT")
 
 		f.sortButton = CreateFrame("Button", name.."SortButton", f)
-		f.sortButton:SetWidth(16 + E.Border)
-		f.sortButton:SetHeight(16 + E.Border)
+		E:Size(f.sortButton, 16 + E.Border)
 		E:SetTemplate(f.sortButton)
-		f.sortButton:SetPoint("RIGHT", f.goldText, "LEFT", -5, E.Border * 2)
+		E:Point(f.sortButton, "RIGHT", f.goldText, "LEFT", -5, E.Border * 2)
 		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
 		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetNormalTexture())
@@ -971,10 +960,9 @@ function B:ContructContainerFrame(name, isBank)
 		end
 
 		f.keyButton = CreateFrame("Button", name.."KeyButton", f)
-		f.keyButton:SetWidth(16 + E.Border)
-		f.keyButton:SetHeight(16 + E.Border)
+		E:Size(f.keyButton, 16 + E.Border)
 		E:SetTemplate(f.keyButton)
-		f.keyButton:SetPoint("RIGHT", f.sortButton, "LEFT", -5, 0)
+		E:Point(f.keyButton, "RIGHT", f.sortButton, "LEFT", -5, 0)
 		f.keyButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Key_14")
 		f.keyButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.keyButton:GetNormalTexture())
@@ -988,10 +976,9 @@ function B:ContructContainerFrame(name, isBank)
 		f.keyButton:SetScript("OnClick", function() ToggleFrame(f.keyFrame) end)
 
 		f.bagsButton = CreateFrame("Button", name.."BagsButton", f)
-		f.bagsButton:SetWidth(16 + E.Border)
-		f.bagsButton:SetHeight(16 + E.Border)
+		E:Size(f.bagsButton, 16 + E.Border)
 		E:SetTemplate(f.bagsButton)
-		f.bagsButton:SetPoint("RIGHT", f.keyButton, "LEFT", -5, 0)
+		E:Point(f.bagsButton, "RIGHT", f.keyButton, "LEFT", -5, 0)
 		f.bagsButton:SetNormalTexture("Interface\\Buttons\\Button-Backpack-Up")
 		f.bagsButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.bagsButton:GetNormalTexture())
@@ -1005,10 +992,9 @@ function B:ContructContainerFrame(name, isBank)
 		f.bagsButton:SetScript("OnClick", function() ToggleFrame(f.ContainerHolder) end)
 
 		f.vendorGraysButton = CreateFrame("Button", nil, f.holderFrame)
-		f.vendorGraysButton:SetWidth(16 + E.Border)
-		f.vendorGraysButton:SetHeight(16 + E.Border)
+		E:Size(f.vendorGraysButton, 16 + E.Border)
 		E:SetTemplate(f.vendorGraysButton)
-		f.vendorGraysButton:SetPoint("RIGHT", f.bagsButton, "LEFT", -5, 0)
+		E:Point(f.vendorGraysButton, "RIGHT", f.bagsButton, "LEFT", -5, 0)
 		f.vendorGraysButton:SetNormalTexture("Interface\\ICONS\\INV_Misc_Coin_01")
 		f.vendorGraysButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.vendorGraysButton:GetNormalTexture())
@@ -1024,10 +1010,10 @@ function B:ContructContainerFrame(name, isBank)
 		f.editBox = CreateFrame("EditBox", name.."EditBox", f)
 		f.editBox:SetFrameLevel(f.editBox:GetFrameLevel() + 2)
 		E:CreateBackdrop(f.editBox, "Default")
-		f.editBox.backdrop:SetPoint("TOPLEFT", f.editBox, "TOPLEFT", -20, 2)
-		f.editBox:SetHeight(15)
-		f.editBox:SetPoint("BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
-		f.editBox:SetPoint("RIGHT", f.vendorGraysButton, "LEFT", -5, 0)
+		E:Point(f.editBox.backdrop, "TOPLEFT", f.editBox, "TOPLEFT", -20, 2)
+		E:Height(f.editBox, 15)
+		E:Point(f.editBox, "BOTTOMLEFT", f.holderFrame, "TOPLEFT", (E.Border * 2) + 18, E.Border * 2 + 2)
+		E:Point(f.editBox, "RIGHT", f.vendorGraysButton, "LEFT", -5, 0)
 		f.editBox:SetAutoFocus(false)
 		f.editBox:SetScript("OnEscapePressed", self.ResetAndClear)
 		f.editBox:SetScript("OnEnterPressed", function() this:ClearFocus() end)
@@ -1039,9 +1025,8 @@ function B:ContructContainerFrame(name, isBank)
 
 		f.editBox.searchIcon = f.editBox:CreateTexture(nil, "OVERLAY")
 		f.editBox.searchIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\UI-Searchbox-Icon")
-		f.editBox.searchIcon:SetPoint("LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
-		f.editBox.searchIcon:SetWidth(15)
-		f.editBox.searchIcon:SetHeight(15)
+		E:Point(f.editBox.searchIcon, "LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
+		E:Size(f.editBox.searchIcon, 15)
 
 		f:SetScript("OnHide", function()
 			CloseBackpack()
@@ -1183,7 +1168,7 @@ function B:PostBagMove()
 
 	if bagFrame then
 		bagFrame:ClearAllPoints()
-		bagFrame:SetPoint(self.POINT, self)
+		E:Point(bagFrame, self.POINT, self)
 	end
 end
 
@@ -1191,12 +1176,11 @@ function B:Initialize()
 	self:LoadBagBar()
 
 	local BagFrameHolder = CreateFrame("Frame", nil, E.UIParent)
-	BagFrameHolder:SetWidth(200)
-	BagFrameHolder:SetHeight(22)
+	E:Size(BagFrameHolder, 200, 22)
 	BagFrameHolder:SetFrameLevel(BagFrameHolder:GetFrameLevel() + 400)
 
 	if not E.private.bags.enable then
-		BagFrameHolder:SetPoint("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border*2), 22 + E.Border*4 - E.Spacing*2)
+		E:Point(BagFrameHolder, "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border*2), 22 + E.Border*4 - E.Spacing*2)
 		E:CreateMover(BagFrameHolder, "ElvUIBagMover", L["Bag Mover"], nil, nil, B.PostBagMove)
 
 		-- self:SecureHook("UpdateContainerFrameAnchors")
@@ -1207,13 +1191,12 @@ function B:Initialize()
 	self.db = E.db.bags
 	self.BagFrames = {}
 
-	BagFrameHolder:SetPoint("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 22 + E.Border*4 - E.Spacing*2)
+	E:Point(BagFrameHolder, "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 22 + E.Border*4 - E.Spacing*2)
 	E:CreateMover(BagFrameHolder, "ElvUIBagMover", L["Bag Mover (Grow Up)"], nil, nil, B.PostBagMove)
 
 	local BankFrameHolder = CreateFrame("Frame", nil, E.UIParent)
-	BankFrameHolder:SetWidth(200)
-	BankFrameHolder:SetHeight(22)
-	BankFrameHolder:SetPoint("BOTTOMLEFT", LeftChatPanel, "BOTTOMLEFT", 0, 22 + E.Border*4 - E.Spacing*2)
+	E:Size(BankFrameHolder, 200, 22)
+	E:Point(BankFrameHolder, "BOTTOMLEFT", LeftChatPanel, "BOTTOMLEFT", 0, 22 + E.Border*4 - E.Spacing*2)
 	BankFrameHolder:SetFrameLevel(BankFrameHolder:GetFrameLevel() + 400)
 	E:CreateMover(BankFrameHolder, "ElvUIBankMover", L["Bank Mover (Grow Up)"], nil, nil, B.PostBagMove)
 

@@ -50,8 +50,8 @@ function AB:HandleMicroButton(button)
 
 	local f = CreateFrame("Frame", nil, button)
 	f:SetFrameLevel(1)
-	f:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 2, 0)
-	f:SetPoint("TOPRIGHT", button, "TOPRIGHT", -2, -28)
+	E:Point(f, "BOTTOMLEFT", button, "BOTTOMLEFT", 2, 0)
+	E:Point(f, "TOPRIGHT", button, "TOPRIGHT", -2, -28)
 	E:SetTemplate(f, "Default", true)
 	button.backdrop = f
 
@@ -80,12 +80,12 @@ function AB:UpdateMicroPositionDimensions()
 		button:ClearAllPoints()
 
 		if prevButton == microBar then
-			button:SetPoint("TOPLEFT", prevButton, "TOPLEFT", -2 + E.Border, 28 - E.Border)
+			E:Point(button, "TOPLEFT", prevButton, "TOPLEFT", -2 + E.Border, 28 - E.Border)
 		elseif mod((i - 1), self.db.microbar.buttonsPerRow) == 0 then
-			button:SetPoint("TOP", lastColumnButton, "BOTTOM", 0, 28 - self.db.microbar.yOffset)
+			E:Point(button, "TOP", lastColumnButton, "BOTTOM", 0, 28 - self.db.microbar.yOffset)
 			numRows = numRows + 1
 		else
-			button:SetPoint("LEFT", prevButton, "RIGHT", - 4 + self.db.microbar.xOffset, 0)
+			E:Point(button, "LEFT", prevButton, "RIGHT", - 4 + self.db.microbar.xOffset, 0)
 		end
 	end
 
@@ -95,8 +95,7 @@ function AB:UpdateMicroPositionDimensions()
 		microBar:SetAlpha(self.db.microbar.alpha)
 	end
 
-	microBar:SetWidth(((CharacterMicroButton:GetWidth() - 4) * self.db.microbar.buttonsPerRow) + (self.db.microbar.xOffset * (self.db.microbar.buttonsPerRow - 1)) + E.Border * 2)
-	microBar:SetHeight(((CharacterMicroButton:GetHeight() - 28) * numRows) + (self.db.microbar.yOffset * (numRows - 1)) + E.Border * 2)
+	E:Size(microBar, ((CharacterMicroButton:GetWidth() - 4) * self.db.microbar.buttonsPerRow) + (self.db.microbar.xOffset * (self.db.microbar.buttonsPerRow - 1)) + E.Border * 2, ((CharacterMicroButton:GetHeight() - 28) * numRows) + (self.db.microbar.yOffset * (numRows - 1)) + E.Border * 2)
 
 	if self.db.microbar.enabled then
 		microBar:Show()
@@ -112,7 +111,7 @@ function AB:UpdateMicroPositionDimensions()
 end
 
 function AB:SetupMicroBar()
-	microBar:SetPoint("TOPLEFT", 4, -48)
+	E:Point(microBar, "TOPLEFT", 4, -48)
 
 	for i = 1, getn(MICRO_BUTTONS) do
 		self:HandleMicroButton(_G[MICRO_BUTTONS[i]])
