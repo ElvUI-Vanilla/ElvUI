@@ -20,8 +20,8 @@ function LoadSkin()
 	-- Friends Frame
 	E:StripTextures(FriendsFrame, true)
 	E:CreateBackdrop(FriendsFrame, "Transparent")
-	FriendsFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
-	FriendsFrame.backdrop:SetPoint("BOTTOMRIGHT", -33, 76)
+	E:Point(FriendsFrame.backdrop, "TOPLEFT", 10, -12)
+	E:Point(FriendsFrame.backdrop, "BOTTOMRIGHT", -33, 76)
 
 	S:HandleCloseButton(FriendsFrameCloseButton)
 
@@ -34,8 +34,8 @@ function LoadSkin()
 		local tab = _G["FriendsFrameToggleTab"..i]
 		E:StripTextures(tab)
 		E:CreateBackdrop(tab, "Default", true)
-		tab.backdrop:SetPoint("TOPLEFT", 3, -7)
-		tab.backdrop:SetPoint("BOTTOMRIGHT", -2, -1)
+		E:Point(tab.backdrop, "TOPLEFT", 3, -7)
+		E:Point(tab.backdrop, "BOTTOMRIGHT", -2, -1)
 
 		tab:SetScript("OnEnter", S.SetModifiedBackdrop)
 		tab:SetScript("OnLeave", S.SetOriginalBackdrop)
@@ -48,16 +48,16 @@ function LoadSkin()
 		local width, height = (f:GetWidth() * (scale or 0.5)), f:GetHeight()
 
 		local leftGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		leftGrad:SetWidth(width)
+		E:Width(leftGrad, width)
 		leftGrad:SetHeight(height)
-		leftGrad:SetPoint("LEFT", f, "CENTER")
+		E:Point(leftGrad, "LEFT", f, "CENTER")
 		leftGrad:SetTexture(E.media.blankTex)
 		leftGrad:SetGradientAlpha("Horizontal", r, g, b, 0.35, r, g, b, 0)
 
 		local rightGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		rightGrad:SetWidth(width)
+		E:Width(rightGrad, width)
 		rightGrad:SetHeight(height)
-		rightGrad:SetPoint("RIGHT", f, "CENTER")
+		E:Point(rightGrad, "RIGHT", f, "CENTER")
 		rightGrad:SetTexture(E.media.blankTex)
 		rightGrad:SetGradientAlpha("Horizontal", r, g, b, 0, r, g, b, 0.35)
 	end
@@ -71,23 +71,23 @@ function LoadSkin()
 	S:HandleScrollBar(FriendsFrameFriendsScrollFrameScrollBar)
 
 	S:HandleButton(FriendsFrameAddFriendButton)
-	FriendsFrameAddFriendButton:SetPoint("BOTTOMLEFT", 17, 102)
+	E:Point(FriendsFrameAddFriendButton, "BOTTOMLEFT", 17, 102)
 
 	S:HandleButton(FriendsFrameSendMessageButton)
 
 	S:HandleButton(FriendsFrameRemoveFriendButton)
-	FriendsFrameRemoveFriendButton:SetPoint("TOP", FriendsFrameAddFriendButton, "BOTTOM", 0, -2)
+	E:Point(FriendsFrameRemoveFriendButton, "TOP", FriendsFrameAddFriendButton, "BOTTOM", 0, -2)
 
 	S:HandleButton(FriendsFrameGroupInviteButton)
-	FriendsFrameGroupInviteButton:SetPoint("TOP", FriendsFrameSendMessageButton, "BOTTOM", 0, -2)
+	E:Point(FriendsFrameGroupInviteButton, "TOP", FriendsFrameSendMessageButton, "BOTTOM", 0, -2)
 
 	-- Ignore List Frame
 	for i = 1, 2 do
 		local tab = _G["IgnoreFrameToggleTab"..i]
 		E:StripTextures(tab)
 		E:CreateBackdrop(tab, "Default", true)
-		tab.backdrop:SetPoint("TOPLEFT", 3, -7)
-		tab.backdrop:SetPoint("BOTTOMRIGHT", -2, -1)
+		E:Point(tab.backdrop, "TOPLEFT", 3, -7)
+		E:Point(tab.backdrop, "BOTTOMRIGHT", -2, -1)
 
 		tab:SetScript("OnEnter", function() S:SetModifiedBackdrop(this) end)
 		tab:SetScript("OnLeave", function() S:SetOriginalBackdrop(this) end)
@@ -102,18 +102,18 @@ function LoadSkin()
 
 	-- Who Frame
 	WhoFrameColumnHeader3:ClearAllPoints()
-	WhoFrameColumnHeader3:SetPoint("TOPLEFT", 20, -70)
+	E:Point(WhoFrameColumnHeader3, "TOPLEFT", 20, -70)
 
 	WhoFrameColumnHeader4:ClearAllPoints()
-	WhoFrameColumnHeader4:SetPoint("LEFT", WhoFrameColumnHeader3, "RIGHT", -2, -0)
-	WhoFrameColumnHeader4:SetWidth(48)
+	E:Point(WhoFrameColumnHeader4, "LEFT", WhoFrameColumnHeader3, "RIGHT", -2, -0)
+	E:Width(WhoFrameColumnHeader4, 48)
 
 	WhoFrameColumnHeader1:ClearAllPoints()
-	WhoFrameColumnHeader1:SetPoint("LEFT", WhoFrameColumnHeader4, "RIGHT", -2, -0)
-	WhoFrameColumnHeader1:SetWidth(105)
+	E:Point(WhoFrameColumnHeader1, "LEFT", WhoFrameColumnHeader4, "RIGHT", -2, -0)
+	E:Width(WhoFrameColumnHeader1, 105)
 
 	WhoFrameColumnHeader2:ClearAllPoints()
-	WhoFrameColumnHeader2:SetPoint("LEFT", WhoFrameColumnHeader1, "RIGHT", -2, -0)
+	E:Point(WhoFrameColumnHeader2, "LEFT", WhoFrameColumnHeader1, "RIGHT", -2, -0)
 
 	for i = 1, 4 do
 		E:StripTextures(_G["WhoFrameColumnHeader"..i])
@@ -128,9 +128,8 @@ function LoadSkin()
 		local name = _G["WhoFrameButton"..i.."Name"]
 
 		button.icon = button:CreateTexture("$parentIcon", "ARTWORK")
-		button.icon:SetPoint("LEFT", 45, 0)
-		button.icon:SetWidth(15)
-		button.icon:SetHeight(15)
+		E:Point(button.icon, "LEFT", 45, 0)
+		E:Size(button.icon, 15)
 		button.icon:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\Icons-Classes")
 
 		E:CreateBackdrop(button, "Default", true)
@@ -138,12 +137,11 @@ function LoadSkin()
 		StyleButton(button)
 
 		level:ClearAllPoints()
-		level:SetPoint("TOPLEFT", 12, -2)
+		E:Point(level, "TOPLEFT", 12, -2)
 
-		name:SetWidth(100)
-		name:SetHeight(14)
+		E:Size(name, 100, 14)
 		name:ClearAllPoints()
-		name:SetPoint("LEFT", 85, 0)
+		E:Point(name, "LEFT", 85, 0)
 
 		_G["WhoFrameButton"..i.."Class"]:Hide()
 	end
@@ -152,17 +150,16 @@ function LoadSkin()
 	S:HandleScrollBar(WhoListScrollFrameScrollBar)
 
 	S:HandleEditBox(WhoFrameEditBox)
-	WhoFrameEditBox:SetPoint("BOTTOMLEFT", 17, 108)
-	WhoFrameEditBox:SetWidth(338)
-	WhoFrameEditBox:SetHeight(18)
+	E:Point(WhoFrameEditBox, "BOTTOMLEFT", 17, 108)
+	E:Size(WhoFrameEditBox, 338, 18)
 
 	S:HandleButton(WhoFrameWhoButton)
 	WhoFrameWhoButton:ClearAllPoints()
-	WhoFrameWhoButton:SetPoint("BOTTOMLEFT", 16, 82)
+	E:Point(WhoFrameWhoButton, "BOTTOMLEFT", 16, 82)
 
 	S:HandleButton(WhoFrameAddFriendButton)
-	WhoFrameAddFriendButton:SetPoint("LEFT", WhoFrameWhoButton, "RIGHT", 3, 0)
-	WhoFrameAddFriendButton:SetPoint("RIGHT", WhoFrameGroupInviteButton, "LEFT", -3, 0)
+	E:Point(WhoFrameAddFriendButton, "LEFT", WhoFrameWhoButton, "RIGHT", 3, 0)
+	E:Point(WhoFrameAddFriendButton, "RIGHT", WhoFrameGroupInviteButton, "LEFT", -3, 0)
 
 	S:HandleButton(WhoFrameGroupInviteButton)
 
@@ -218,19 +215,19 @@ function LoadSkin()
 
 	-- Guild Frame
 	GuildFrameColumnHeader3:ClearAllPoints()
-	GuildFrameColumnHeader3:SetPoint("TOPLEFT", 20, -70)
+	E:Point(GuildFrameColumnHeader3, "TOPLEFT", 20, -70)
 
 	GuildFrameColumnHeader4:ClearAllPoints()
-	GuildFrameColumnHeader4:SetPoint("LEFT", GuildFrameColumnHeader3, "RIGHT", -2, -0)
-	GuildFrameColumnHeader4:SetWidth(48)
+	E:Point(GuildFrameColumnHeader4, "LEFT", GuildFrameColumnHeader3, "RIGHT", -2, -0)
+	E:Width(GuildFrameColumnHeader4, 48)
 
 	GuildFrameColumnHeader1:ClearAllPoints()
-	GuildFrameColumnHeader1:SetPoint("LEFT", GuildFrameColumnHeader4, "RIGHT", -2, -0)
-	GuildFrameColumnHeader1:SetWidth(105)
+	E:Point(GuildFrameColumnHeader1, "LEFT", GuildFrameColumnHeader4, "RIGHT", -2, -0)
+	E:Width(GuildFrameColumnHeader1, 105)
 
 	GuildFrameColumnHeader2:ClearAllPoints()
-	GuildFrameColumnHeader2:SetPoint("LEFT", GuildFrameColumnHeader1, "RIGHT", -2, -0)
-	GuildFrameColumnHeader2:SetWidth(127)
+	E:Point(GuildFrameColumnHeader2, "LEFT", GuildFrameColumnHeader1, "RIGHT", -2, -0)
+	E:Width(GuildFrameColumnHeader2, 127)
 
 	for i = 1, GUILDMEMBERS_TO_DISPLAY do
 		local button = _G["GuildFrameButton"..i]
@@ -239,21 +236,19 @@ function LoadSkin()
 		StyleButton(_G["GuildFrameGuildStatusButton"..i])
 
 		button.icon = button:CreateTexture("$parentIcon", "ARTWORK")
-		button.icon:SetPoint("LEFT", 48, -3)
-		button.icon:SetWidth(15)
-		button.icon:SetHeight(15)
+		E:Point(button.icon, "LEFT", 48, -3)
+		E:Size(button.icon, 15)
 		button.icon:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\Icons-Classes")
 
 		E:CreateBackdrop(button, "Default", true)
 		button.backdrop:SetAllPoints(button.icon)
 
 		_G["GuildFrameButton"..i.."Level"]:ClearAllPoints()
-		_G["GuildFrameButton"..i.."Level"]:SetPoint("TOPLEFT", 10, -3)
+		E:Point(_G["GuildFrameButton"..i.."Level"], "TOPLEFT", 10, -3)
 
-		_G["GuildFrameButton"..i.."Name"]:SetWidth(100)
-		_G["GuildFrameButton"..i.."Name"]:SetHeight(14)
+		E:Size(_G["GuildFrameButton"..i.."Name"], 100, 14)
 		_G["GuildFrameButton"..i.."Name"]:ClearAllPoints()
-		_G["GuildFrameButton"..i.."Name"]:SetPoint("LEFT", 85, -3)
+		E:Point(_G["GuildFrameButton"..i.."Name"], "LEFT", 85, -3)
 
 		_G["GuildFrameButton"..i.."Class"]:Hide()
 	end
@@ -327,20 +322,20 @@ function LoadSkin()
 	-- Member Detail Frame
 	E:StripTextures(GuildMemberDetailFrame)
 	E:CreateBackdrop(GuildMemberDetailFrame, "Transparent")
-	GuildMemberDetailFrame:SetPoint("TOPLEFT", GuildFrame, "TOPRIGHT", -31, -13)
+	E:Point(GuildMemberDetailFrame, "TOPLEFT", GuildFrame, "TOPRIGHT", -31, -13)
 
 	S:HandleCloseButton(GuildMemberDetailCloseButton)
-	GuildMemberDetailCloseButton:SetPoint("TOPRIGHT", 2, 2)
+	E:Point(GuildMemberDetailCloseButton, "TOPRIGHT", 2, 2)
 
 	S:HandleButton(GuildFrameControlButton)
 	S:HandleButton(GuildMemberRemoveButton)
-	GuildMemberRemoveButton:SetPoint("BOTTOMLEFT", 8, 7)
+	E:Point(GuildMemberRemoveButton, "BOTTOMLEFT", 8, 7)
 	S:HandleButton(GuildMemberGroupInviteButton)
-	GuildMemberGroupInviteButton:SetPoint("LEFT", GuildMemberRemoveButton, "RIGHT", 3, 0)
+	E:Point(GuildMemberGroupInviteButton, "LEFT", GuildMemberRemoveButton, "RIGHT", 3, 0)
 
 	S:HandleNextPrevButton(GuildFramePromoteButton, true)
 	S:HandleNextPrevButton(GuildFrameDemoteButton, true)
-	GuildFrameDemoteButton:SetPoint("LEFT", GuildFramePromoteButton, "RIGHT", 2, 0)
+	E:Point(GuildFrameDemoteButton, "LEFT", GuildFramePromoteButton, "RIGHT", 2, 0)
 
 	E:SetTemplate(GuildMemberNoteBackground, "Default")
 	E:SetTemplate(GuildMemberOfficerNoteBackground, "Default")
@@ -348,8 +343,8 @@ function LoadSkin()
 	-- Info Frame
 	E:StripTextures(GuildInfoFrame)
 	E:CreateBackdrop(GuildInfoFrame, "Transparent")
-	GuildInfoFrame.backdrop:SetPoint("TOPLEFT", 3, -6)
-	GuildInfoFrame.backdrop:SetPoint("BOTTOMRIGHT", -2, 3)
+	E:Point(GuildInfoFrame.backdrop, "TOPLEFT", 3, -6)
+	E:Point(GuildInfoFrame.backdrop, "BOTTOMRIGHT", -2, 3)
 
 	E:SetTemplate(GuildInfoTextBackground, "Default")
 	S:HandleScrollBar(GuildInfoFrameScrollFrameScrollBar)
@@ -357,19 +352,18 @@ function LoadSkin()
 	S:HandleCloseButton(GuildInfoCloseButton)
 
 	S:HandleButton(GuildInfoSaveButton)
-	GuildInfoSaveButton:SetPoint("BOTTOMLEFT", 8, 11)
+	E:Point(GuildInfoSaveButton, "BOTTOMLEFT", 8, 11)
 	S:HandleButton(GuildInfoCancelButton)
-	GuildInfoCancelButton:SetPoint("LEFT", GuildInfoSaveButton, "RIGHT", 3, 0)
+	E:Point(GuildInfoCancelButton, "LEFT", GuildInfoSaveButton, "RIGHT", 3, 0)
 
 	-- Control Frame
 	E:StripTextures(GuildControlPopupFrame)
 	E:CreateBackdrop(GuildControlPopupFrame, "Transparent")
-	GuildControlPopupFrame.backdrop:SetPoint("TOPLEFT", 3, -6)
-	GuildControlPopupFrame.backdrop:SetPoint("BOTTOMRIGHT", -27, 27)
+	E:Point(GuildControlPopupFrame.backdrop, "TOPLEFT", 3, -6)
+	E:Point(GuildControlPopupFrame.backdrop, "BOTTOMRIGHT", -27, 27)
 
 	S:HandleDropDownBox(GuildControlPopupFrameDropDown, 185)
-	GuildControlPopupFrameDropDownButton:SetWidth(16)
-	GuildControlPopupFrameDropDownButton:SetHeight(16)
+	E:Size(GuildControlPopupFrameDropDownButton, 16)
 
 	local function SkinPlusMinus(f, minus)
 		f:SetNormalTexture("")
@@ -383,7 +377,7 @@ function LoadSkin()
 
 		f.Text = f:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(f.Text, nil, 22)
-		f.Text:SetPoint("LEFT", 5, 0)
+		E:Point(f.Text, "LEFT", 5, 0)
 		if minus then
 			f.Text:SetText("-")
 		else
@@ -391,13 +385,13 @@ function LoadSkin()
 		end
 	end
 
-	GuildControlPopupFrameAddRankButton:SetPoint("LEFT", GuildControlPopupFrameDropDown, "RIGHT", -8, 3)
+	E:Point(GuildControlPopupFrameAddRankButton, "LEFT", GuildControlPopupFrameDropDown, "RIGHT", -8, 3)
 	SkinPlusMinus(GuildControlPopupFrameAddRankButton)
 	SkinPlusMinus(GuildControlPopupFrameRemoveRankButton, true)
 
 	S:HandleEditBox(GuildControlPopupFrameEditBox)
-	GuildControlPopupFrameEditBox.backdrop:SetPoint("TOPLEFT", 0, -5)
-	GuildControlPopupFrameEditBox.backdrop:SetPoint("BOTTOMRIGHT", 0, 5)
+	E:Point(GuildControlPopupFrameEditBox.backdrop, "TOPLEFT", 0, -5)
+	E:Point(GuildControlPopupFrameEditBox.backdrop, "BOTTOMRIGHT", 0, 5)
 
 	for i = 1, 17 do
 		local Checkbox = _G["GuildControlPopupFrameCheckbox"..i]
@@ -419,9 +413,9 @@ function LoadSkin()
 
 	HookScript(RaidInfoFrame, "OnShow", function()
 		if GetNumRaidMembers() > 0 then
-			RaidInfoFrame:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", -14, -12)
+			E:Point(RaidInfoFrame, "TOPLEFT", RaidFrame, "TOPRIGHT", -14, -12)
 		else
-			RaidInfoFrame:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", -34, -12)
+			E:Point(RaidInfoFrame, "TOPLEFT", RaidFrame, "TOPRIGHT", -34, -12)
 		end
 	end)
 

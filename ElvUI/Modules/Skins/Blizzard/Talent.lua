@@ -12,8 +12,8 @@ local function LoadSkin()
 
 	E:StripTextures(TalentFrame)
 	E:CreateBackdrop(TalentFrame, "Transparent")
-	TalentFrame.backdrop:SetPoint("TOPLEFT", 13, -12)
-	TalentFrame.backdrop:SetPoint("BOTTOMRIGHT", -31, 76)
+	E:Point(TalentFrame.backdrop, "TOPLEFT", 13, -12)
+	E:Point(TalentFrame.backdrop, "BOTTOMRIGHT", -31, 76)
 
 	TalentFramePortrait:Hide()
 
@@ -27,14 +27,14 @@ local function LoadSkin()
 
 	E:StripTextures(TalentFrameScrollFrame)
 	E:CreateBackdrop(TalentFrameScrollFrame, "Default")
-	TalentFrameScrollFrame.backdrop:SetPoint("TOPLEFT", -1, 2)
-	TalentFrameScrollFrame.backdrop:SetPoint("BOTTOMRIGHT", 6, -2)
+	E:Point(TalentFrameScrollFrame.backdrop, "TOPLEFT", -1, 2)
+	E:Point(TalentFrameScrollFrame.backdrop, "BOTTOMRIGHT", 6, -2)
 
 	S:HandleScrollBar(TalentFrameScrollFrameScrollBar)
-	TalentFrameScrollFrameScrollBar:SetPoint("TOPLEFT", TalentFrameScrollFrame, "TOPRIGHT", 10, -16)
+	E:Point(TalentFrameScrollFrameScrollBar, "TOPLEFT", TalentFrameScrollFrame, "TOPRIGHT", 10, -16)
 
-	TalentFrameSpentPoints:SetPoint("TOP", 0, -42)
-	TalentFrameTalentPointsText:SetPoint("BOTTOMRIGHT", TalentFrame, "BOTTOMLEFT", 220, 84)
+	E:Point(TalentFrameSpentPoints, "TOP", 0, -42)
+	E:Point(TalentFrameTalentPointsText, "BOTTOMRIGHT", TalentFrame, "BOTTOMLEFT", 220, 84)
 
 	for i = 1, MAX_NUM_TALENTS do
 		local talent = _G["TalentFrameTalent"..i]

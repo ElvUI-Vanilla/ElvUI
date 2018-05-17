@@ -13,15 +13,15 @@ local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trainer ~= true then return end
 
 	E:CreateBackdrop(ClassTrainerFrame, "Transparent")
-	ClassTrainerFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	ClassTrainerFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 74)
+	E:Point(ClassTrainerFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(ClassTrainerFrame.backdrop, "BOTTOMRIGHT", -32, 74)
 
 	E:StripTextures(ClassTrainerFrame, true)
 
 	E:StripTextures(ClassTrainerExpandButtonFrame)
 
 	S:HandleDropDownBox(ClassTrainerFrameFilterDropDown)
-	ClassTrainerFrameFilterDropDown:SetPoint("TOPRIGHT", -40, -64)
+	E:Point(ClassTrainerFrameFilterDropDown, "TOPRIGHT", -40, -64)
 
 	E:StripTextures(ClassTrainerListScrollFrame)
 	S:HandleScrollBar(ClassTrainerListScrollFrameScrollBar)
@@ -56,7 +56,7 @@ local function LoadSkin()
 
 		skillButton.Text = skillButton:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(skillButton.Text, nil, 22)
-		skillButton.Text:SetPoint("LEFT", 3, 0)
+		E:Point(skillButton.Text, "LEFT", 3, 0)
 		skillButton.Text:SetText("+")
 
 		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
@@ -79,7 +79,7 @@ local function LoadSkin()
 
 	ClassTrainerCollapseAllButton.Text = ClassTrainerCollapseAllButton:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(ClassTrainerCollapseAllButton.Text, nil, 22)
-	ClassTrainerCollapseAllButton.Text:SetPoint("LEFT", 3, 0)
+	E:Point(ClassTrainerCollapseAllButton.Text, "LEFT", 3, 0)
 	ClassTrainerCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(ClassTrainerCollapseAllButton, "SetNormalTexture", function(self, texture)

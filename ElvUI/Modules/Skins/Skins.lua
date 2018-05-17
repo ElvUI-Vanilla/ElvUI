@@ -87,22 +87,20 @@ function S:HandleScrollBar(frame, thumbTrim)
 		if not _G[name.."ScrollUpButton"].icon then
 			S:HandleNextPrevButton(_G[name.."ScrollUpButton"])
 			S:SquareButton_SetIcon(_G[name.."ScrollUpButton"], "UP")
-			_G[name.."ScrollUpButton"]:SetWidth(_G[name.."ScrollUpButton"]:GetWidth() + 7)
-			_G[name.."ScrollUpButton"]:SetHeight(_G[name.."ScrollUpButton"]:GetHeight() + 7)
+			E:Size(_G[name.."ScrollUpButton"], _G[name.."ScrollUpButton"]:GetWidth() + 7, _G[name.."ScrollUpButton"]:GetHeight() + 7)
 		end
 
 		E:StripTextures(_G[name .."ScrollDownButton"])
 		if not _G[name.."ScrollDownButton"].icon then
 			S:HandleNextPrevButton(_G[name.."ScrollDownButton"])
 			S:SquareButton_SetIcon(_G[name.."ScrollDownButton"], "DOWN")
-			_G[name.."ScrollDownButton"]:SetWidth(_G[name.."ScrollDownButton"]:GetWidth() + 7)
-			_G[name.."ScrollDownButton"]:SetHeight(_G[name.."ScrollDownButton"]:GetHeight() + 7)
+			E:Size(_G[name.."ScrollDownButton"], _G[name.."ScrollDownButton"]:GetWidth() + 7, _G[name.."ScrollDownButton"]:GetHeight() + 7)
 		end
 
 		if not frame.trackbg then
 			frame.trackbg = CreateFrame("Frame", nil, frame)
-			frame.trackbg:SetPoint("TOPLEFT", _G[name .."ScrollUpButton"], "BOTTOMLEFT", 0, -1)
-			frame.trackbg:SetPoint("BOTTOMRIGHT", _G[name .."ScrollDownButton"], "TOPRIGHT", 0, 1)
+			E:Point(frame.trackbg, "TOPLEFT", _G[name .."ScrollUpButton"], "BOTTOMLEFT", 0, -1)
+			E:Point(frame.trackbg, "BOTTOMRIGHT", _G[name .."ScrollDownButton"], "TOPRIGHT", 0, 1)
 			E:SetTemplate(frame.trackbg, "Transparent")
 		end
 
@@ -111,9 +109,9 @@ function S:HandleScrollBar(frame, thumbTrim)
 			frame:GetThumbTexture():SetTexture(nil)
 			if not frame.thumbbg then
 				frame.thumbbg = CreateFrame("Frame", nil, frame)
-				frame:GetThumbTexture():SetHeight(24)
-				frame.thumbbg:SetPoint("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 1, -thumbTrim)
-				frame.thumbbg:SetPoint("BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -1, thumbTrim)
+				E:Height(frame:GetThumbTexture(), 24)
+				E:Point(frame.thumbbg, "TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 1, -thumbTrim)
+				E:Point(frame.thumbbg, "BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -1, thumbTrim)
 				E:SetTemplate(frame.thumbbg, "Default", true, true)
 				frame.thumbbg:SetBackdropColor(0.6, 0.6, 0.6)
 				if frame.trackbg then
@@ -151,8 +149,8 @@ function S:HandleTab(tab)
 	tab.backdrop = CreateFrame("Frame", nil, tab)
 	E:SetTemplate(tab.backdrop, "Default")
 	tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
-	tab.backdrop:SetPoint("TOPLEFT", 10, E.PixelMode and -1 or -3)
-	tab.backdrop:SetPoint("BOTTOMRIGHT", -10, 3)
+	E:Point(tab.backdrop, "TOPLEFT", 10, E.PixelMode and -1 or -3)
+	E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 3)
 end
 
 function S:HandleNextPrevButton(btn, buttonOverride)
@@ -166,19 +164,18 @@ function S:HandleNextPrevButton(btn, buttonOverride)
 
 	if not btn.icon then
 		btn.icon = btn:CreateTexture(nil, "ARTWORK")
-		btn.icon:SetWidth(13)
-		btn.icon:SetHeight(13)
-		btn.icon:SetPoint("CENTER", 0, 0)
+		E:Size(btn.icon, 13)
+		E:Point(btn.icon, "CENTER", 0, 0)
 		btn.icon:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\SquareButtonTextures.blp")
 		btn.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
 		btn:SetScript("OnMouseDown", function()
 			if btn:IsEnabled() == 1 then
-				this.icon:SetPoint("CENTER", -1, -1)
+				E:Point(this.icon, "CENTER", -1, -1)
 			end
 		end)
 		btn:SetScript("OnMouseUp", function()
-			this.icon:SetPoint("CENTER", 0, 0)
+			E:Point(this.icon, "CENTER", 0, 0)
 		end)
 
 		hooksecurefunc(btn, "Disable", function(self)
@@ -211,14 +208,12 @@ function S:HandleNextPrevButton(btn, buttonOverride)
 	end
 
 	S:HandleButton(btn)
-	btn:SetWidth(btn:GetWidth() - 7)
-	btn:SetHeight(btn:GetHeight() - 7)
+	E:Size(btn, btn:GetWidth() - 7, btn:GetHeight() - 7)
 end
 
 function S:HandleRotateButton(btn)
 	E:SetTemplate(btn, "Default")
-	btn:SetWidth(btn:GetWidth() - 14)
-	btn:SetHeight(btn:GetHeight() - 14)
+	E:Size(btn, btn:GetWidth() - 14, btn:GetHeight() - 14)
 
 	btn:GetNormalTexture():SetTexCoord(0.27, 0.73, 0.27, 0.68)
 	btn:GetPushedTexture():SetTexCoord(0.27, 0.73, 0.27, 0.68)
@@ -243,7 +238,7 @@ function S:HandleEditBox(frame)
 		if _G[frame:GetName() .."Mid"] then E:Kill(_G[frame:GetName() .."Mid"]) end
 
 		if gfind(frame:GetName(), "Silver") or gfind(frame:GetName(), "Copper") then
-			frame.backdrop:SetPoint("BOTTOMRIGHT", -12, -2)
+			E:Point(frame.backdrop, "BOTTOMRIGHT", -12, -2)
 		end
 	end
 end
@@ -255,22 +250,22 @@ function S:HandleDropDownBox(frame, width)
 	if not width then width = 155 end
 
 	E:StripTextures(frame)
-	frame:SetWidth(width)
+	E:Width(frame, width)
 
 	if _G[frame:GetName().."Text"] then
 		_G[frame:GetName().."Text"]:ClearAllPoints()
-		_G[frame:GetName().."Text"]:SetPoint("RIGHT", button, "LEFT", -2, 0)
+		E:Point(_G[frame:GetName().."Text"], "RIGHT", button, "LEFT", -2, 0)
 	end
 
 	if button then
 		button:ClearAllPoints()
-		button:SetPoint("RIGHT", frame, "RIGHT", -10, 3)
+		E:Point(button, "RIGHT", frame, "RIGHT", -10, 3)
 
 		self:HandleNextPrevButton(button, true)
 	end
 	E:CreateBackdrop(frame, "Default")
-	frame.backdrop:SetPoint("TOPLEFT", 20, -2)
-	frame.backdrop:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
+	E:Point(frame.backdrop, "TOPLEFT", 20, -2)
+	E:Point(frame.backdrop, "BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
 	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
 end
 
@@ -282,8 +277,7 @@ function S:HandleCheckBox(frame, noBackdrop)
 
 	if noBackdrop then
 		E:SetTemplate(frame, "Default")
-		frame:SetWidth(16)
-		frame:SetHeight(16)
+		E:Size(frame, 16)
 	else
 		E:CreateBackdrop(frame, "Default")
 		E:SetInside(frame.backdrop, nil, 4, 4)
@@ -345,8 +339,8 @@ function S:HandleCloseButton(f, point, text)
 
 	if not f.backdrop then
 		E:CreateBackdrop(f, "Default", true)
-		f.backdrop:SetPoint("TOPLEFT", 7, -8)
-		f.backdrop:SetPoint("BOTTOMRIGHT", -8, 8)
+		E:Point(f.backdrop, "TOPLEFT", 7, -8)
+		E:Point(f.backdrop, "BOTTOMRIGHT", -8, 8)
 
 		HookScript(f, "OnEnter", function() S:SetModifiedBackdrop(this) end)
 		HookScript(f, "OnLeave", function() S:SetOriginalBackdrop(this) end)
@@ -357,11 +351,11 @@ function S:HandleCloseButton(f, point, text)
 		f.text:SetFont([[Interface\AddOns\ElvUI\Media\Fonts\PT_Sans_Narrow.ttf]], 16, "OUTLINE")
 		f.text:SetText(text)
 		f.text:SetJustifyH("CENTER")
-		f.text:SetPoint("CENTER", f, "CENTER", -1, 1)
+		E:Point(f.text, "CENTER", f, "CENTER", -1, 1)
 	end
 
 	if point then
-		f:SetPoint("TOPRIGHT", point, "TOPRIGHT", 2, 2)
+		E:Point(f, "TOPRIGHT", point, "TOPRIGHT", 2, 2)
 	end
 end
 
@@ -378,18 +372,17 @@ function S:HandleSliderFrame(frame)
 	end)
 	frame:SetThumbTexture(E["media"].blankTex)
 	frame:GetThumbTexture():SetVertexColor(0.3, 0.3, 0.3)
-	frame:GetThumbTexture():SetWidth(SIZE-2)
-	frame:GetThumbTexture():SetHeight(SIZE-2)
+	E:Size(frame:GetThumbTexture(), SIZE-2)
 	if orientation == "VERTICAL" then
-		frame:SetWidth(SIZE)
+		E:Width(frame, SIZE)
 	else
-		frame:SetHeight(SIZE)
+		E:Height(frame, SIZE)
 
 		for _, region in ipairs({frame:GetRegions()}) do
 			if region and region:GetObjectType() == "FontString" then
 				local point, anchor, anchorPoint, x, y = region:GetPoint()
 				if find(anchorPoint, "BOTTOM") then
-					region:SetPoint(point, anchor, anchorPoint, x, y - 4)
+					E:Point(region, point, anchor, anchorPoint, x, y - 4)
 				end
 			end
 		end
@@ -399,7 +392,7 @@ function S:HandleSliderFrame(frame)
 			if region and region:GetObjectType() == "FontString" then
 				local point, anchor, anchorPoint, x, y = region:GetPoint()
 				if anchorPoint:find("BOTTOM") then
-					region:SetPoint(point, anchor, anchorPoint, x, y - 4)
+					E:Point(region, point, anchor, anchorPoint, x, y - 4)
 				end
 			end
 		end]]
@@ -422,8 +415,8 @@ function S:HandleIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNa
 	editBox:DisableDrawLayer("BACKGROUND") --Removes textures around it
 
 	E:CreateBackdrop(frame, "Transparent")
-	frame.backdrop:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -12)
-	frame.backdrop:SetPoint("BOTTOMRIGHT", cancelButton, "BOTTOMRIGHT", 5, -5)
+	E:Point(frame.backdrop, "TOPLEFT", frame, "TOPLEFT", 10, -12)
+	E:Point(frame.backdrop, "BOTTOMRIGHT", cancelButton, "BOTTOMRIGHT", 5, -5)
 
 	S:HandleButton(okayButton)
 	S:HandleButton(cancelButton)

@@ -61,8 +61,8 @@ local function LoadSkin()
 
 		E:StripTextures(containerFrame, true)
 		E:CreateBackdrop(containerFrame, "Transparent")
-		containerFrame.backdrop:SetPoint("TOPLEFT", 9, -4)
-		containerFrame.backdrop:SetPoint("BOTTOMRIGHT", -4, 2)
+		E:Point(containerFrame.backdrop, "TOPLEFT", 9, -4)
+		E:Point(containerFrame.backdrop, "BOTTOMRIGHT", -4, 2)
 
 		S:HandleCloseButton(containerFrameClose)
 
@@ -92,8 +92,8 @@ local function LoadSkin()
 
 	-- BankFrame
 	E:CreateBackdrop(BankFrame, "Transparent")
-	BankFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	BankFrame.backdrop:SetPoint("BOTTOMRIGHT", -26, 93)
+	E:Point(BankFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(BankFrame.backdrop, "BOTTOMRIGHT", -26, 93)
 
 	E:StripTextures(BankFrame, true)
 
@@ -115,8 +115,8 @@ local function LoadSkin()
 
 	BankFrame.itemBackdrop = CreateFrame("Frame", "BankFrameItemBackdrop", BankFrame)
 	E:SetTemplate(BankFrame.itemBackdrop, "Default")
-	BankFrame.itemBackdrop:SetPoint("TOPLEFT", BankFrameItem1, "TOPLEFT", -6, 6)
-	BankFrame.itemBackdrop:SetPoint("BOTTOMRIGHT", BankFrameItem24, "BOTTOMRIGHT", 6, -6)
+	E:Point(BankFrame.itemBackdrop, "TOPLEFT", BankFrameItem1, "TOPLEFT", -6, 6)
+	E:Point(BankFrame.itemBackdrop, "BOTTOMRIGHT", BankFrameItem24, "BOTTOMRIGHT", 6, -6)
 	BankFrame.itemBackdrop:SetFrameLevel(BankFrame:GetFrameLevel())
 
 	for i = 1, NUM_BANKBAGSLOTS, 1 do
@@ -137,8 +137,8 @@ local function LoadSkin()
 
 	BankFrame.bagBackdrop = CreateFrame("Frame", "BankFrameBagBackdrop", BankFrame)
 	E:SetTemplate(BankFrame.bagBackdrop, "Default")
-	BankFrame.bagBackdrop:SetPoint("TOPLEFT", BankFrameBag1, "TOPLEFT", -6, 6)
-	BankFrame.bagBackdrop:SetPoint("BOTTOMRIGHT", BankFrameBag6, "BOTTOMRIGHT", 6, -6)
+	E:Point(BankFrame.bagBackdrop, "TOPLEFT", BankFrameBag1, "TOPLEFT", -6, 6)
+	E:Point(BankFrame.bagBackdrop, "BOTTOMRIGHT", BankFrameBag6, "BOTTOMRIGHT", 6, -6)
 	BankFrame.bagBackdrop:SetFrameLevel(BankFrame:GetFrameLevel())
 
 	S:HandleButton(BankFramePurchaseButton)

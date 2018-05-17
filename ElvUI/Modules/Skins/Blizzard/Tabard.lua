@@ -13,8 +13,8 @@ local function LoadSkin()
 	E:StripTextures(TabardFrame)
 	E:Kill(TabardFramePortrait)
 	E:CreateBackdrop(TabardFrame, "Transparent")
-	TabardFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
-	TabardFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 74)
+	E:Point(TabardFrame.backdrop, "TOPLEFT", 10, -12)
+	E:Point(TabardFrame.backdrop, "BOTTOMRIGHT", -32, 74)
 	E:CreateBackdrop(TabardModel, "Default")
 	S:HandleButton(TabardFrameCancelButton)
 	S:HandleButton(TabardFrameAcceptButton)
@@ -32,24 +32,24 @@ local function LoadSkin()
 
 		if(i > 1) then
 			_G[custom]:ClearAllPoints()
-			_G[custom]:SetPoint("TOP", _G["TabardFrameCustomization"..i-1], "BOTTOM", 0, -6)
+			E:Point(_G[custom], "TOP", _G["TabardFrameCustomization"..i-1], "BOTTOM", 0, -6)
 		else
 			local point, anchor, point2, x, y = _G[custom]:GetPoint()
-			_G[custom]:SetPoint(point, anchor, point2, x, y+4)
+			E:Point(_G[custom], point, anchor, point2, x, y+4)
 		end
 	end
 
-	TabardCharacterModelRotateLeftButton:SetPoint("BOTTOMLEFT", 4, 4)
-	TabardCharacterModelRotateRightButton:SetPoint("TOPLEFT", TabardCharacterModelRotateLeftButton, "TOPRIGHT", 4, 0)
-	hooksecurefunc(TabardCharacterModelRotateLeftButton, "SetPoint", function(self, point, _, _, xOffset, yOffset)
+	E:Point(TabardCharacterModelRotateLeftButton, "BOTTOMLEFT", 4, 4)
+	E:Point(TabardCharacterModelRotateRightButton, "TOPLEFT", TabardCharacterModelRotateLeftButton, "TOPRIGHT", 4, 0)
+	hooksecurefunc(TabardCharacterModelRotateLeftButton, "SetPoint" , function(self, point, _, _, xOffset, yOffset)
 		if point ~= "BOTTOMLEFT" or xOffset ~= 4 or yOffset ~= 4 then
-			self:SetPoint("BOTTOMLEFT", 4, 4)
+			E:Point(self, "BOTTOMLEFT", 4, 4)
 		end
 	end)
 
-	hooksecurefunc(TabardCharacterModelRotateRightButton, "SetPoint", function(self, point, _, _, xOffset, yOffset)
+	hooksecurefunc(TabardCharacterModelRotateRightButton, "SetPoint" , function(self, point, _, _, xOffset, yOffset)
 		if point ~= "TOPLEFT" or xOffset ~= 4 or yOffset ~= 0 then
-			self:SetPoint("TOPLEFT", TabardCharacterModelRotateLeftButton, "TOPRIGHT", 4, 0)
+			E:Point(self, "TOPLEFT", TabardCharacterModelRotateLeftButton, "TOPRIGHT", 4, 0)
 		end
 	end)
 end

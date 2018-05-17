@@ -19,14 +19,13 @@ local function LoadSkin()
 
 	E:StripTextures(TradeSkillFrame, true)
 	E:CreateBackdrop(TradeSkillFrame, "Transparent")
-	TradeSkillFrame.backdrop:SetPoint("TOPLEFT", 10, -11)
-	TradeSkillFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 74)
+	E:Point(TradeSkillFrame.backdrop, "TOPLEFT", 10, -11)
+	E:Point(TradeSkillFrame.backdrop, "BOTTOMRIGHT", -32, 74)
 
 	E:StripTextures(TradeSkillRankFrameBorder)
-	TradeSkillRankFrame:SetWidth(322)
-	TradeSkillRankFrame:SetHeight(16)
+	E:Size(TradeSkillRankFrame, 322, 16)
 	TradeSkillRankFrame:ClearAllPoints()
-	TradeSkillRankFrame:SetPoint("TOP", -10, -45)
+	E:Point(TradeSkillRankFrame, "TOP", -10, -45)
 	E:CreateBackdrop(TradeSkillRankFrame)
 	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
 	TradeSkillRankFrame:SetStatusBarColor(0.13, 0.35, 0.80)
@@ -43,7 +42,7 @@ local function LoadSkin()
 
 	TradeSkillCollapseAllButton.Text = TradeSkillCollapseAllButton:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(TradeSkillCollapseAllButton.Text, nil, 22)
-	TradeSkillCollapseAllButton.Text:SetPoint("LEFT", 3, 0)
+	E:Point(TradeSkillCollapseAllButton.Text, "LEFT", 3, 0)
 	TradeSkillCollapseAllButton.Text:SetText("+")
 
 	hooksecurefunc(TradeSkillCollapseAllButton, "SetNormalTexture", function(self, texture)
@@ -56,14 +55,14 @@ local function LoadSkin()
 
 	S:HandleDropDownBox(TradeSkillInvSlotDropDown, 140)
 	TradeSkillSubClassDropDown:ClearAllPoints()
-	TradeSkillInvSlotDropDown:SetPoint("TOPRIGHT", TradeSkillFrame, "TOPRIGHT", -32, -68)
+	E:Point(TradeSkillInvSlotDropDown, "TOPRIGHT", TradeSkillFrame, "TOPRIGHT", -32, -68)
 
 	S:HandleDropDownBox(TradeSkillSubClassDropDown, 140)
 	TradeSkillSubClassDropDown:ClearAllPoints()
-	TradeSkillSubClassDropDown:SetPoint("RIGHT", TradeSkillInvSlotDropDown, "RIGHT", -120, 0)
+	E:Point(TradeSkillSubClassDropDown, "RIGHT", TradeSkillInvSlotDropDown, "RIGHT", -120, 0)
 
 	TradeSkillFrameTitleText:ClearAllPoints()
-	TradeSkillFrameTitleText:SetPoint("TOP", TradeSkillFrame, "TOP", 0, -18)
+	E:Point(TradeSkillFrameTitleText, "TOP", TradeSkillFrame, "TOP", 0, -18)
 
 	for i = 1, TRADE_SKILLS_DISPLAYED do
 		local skillButton = _G["TradeSkillSkill"..i]
@@ -75,7 +74,7 @@ local function LoadSkin()
 
 		skillButton.Text = skillButton:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(skillButton.Text, nil, 22)
-		skillButton.Text:SetPoint("LEFT", 3, 0)
+		E:Point(skillButton.Text, "LEFT", 3, 0)
 		skillButton.Text:SetText("+")
 
 		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
@@ -139,9 +138,8 @@ local function LoadSkin()
 			E:SetInside(TradeSkillSkillIcon:GetNormalTexture())
 		end
 
-		TradeSkillSkillIcon:SetWidth(40)
-		TradeSkillSkillIcon:SetHeight(40)
-		TradeSkillSkillIcon:SetPoint("TOPLEFT", 2, -3)
+		E:Size(TradeSkillSkillIcon, 40)
+		E:Point(TradeSkillSkillIcon, "TOPLEFT", 2, -3)
 
 		local skillLink = GetTradeSkillItemLink(id)
 		if skillLink then

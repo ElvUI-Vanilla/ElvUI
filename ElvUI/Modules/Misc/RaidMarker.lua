@@ -39,7 +39,7 @@ function M:RaidMarkShowIcons()
 	end
 	local x, y = GetCursorPosition()
 	local scale = E.UIParent:GetEffectiveScale()
-	self.RaidMarkFrame:SetPoint("CENTER", E.UIParent, "BOTTOMLEFT", x / scale, y / scale)
+	E:Point(self.RaidMarkFrame, "CENTER", E.UIParent, "BOTTOMLEFT", x / scale, y / scale)
 	self.RaidMarkFrame:Show()
 end
 
@@ -61,8 +61,8 @@ M:RegisterEvent("PLAYER_TARGET_CHANGED", "RaidMark_OnEvent")
 
 function M:RaidMarkButton_OnEnter()
 	this.Texture:ClearAllPoints()
-	this.Texture:SetPoint("TOPLEFT", -10, 10)
-	this.Texture:SetPoint("BOTTOMRIGHT", 10, -10)
+	E:Point(this.Texture, "TOPLEFT", -10, 10)
+	E:Point(this.Texture, "BOTTOMRIGHT", 10, -10)
 end
 
 function M:RaidMarkButton_OnLeave()
@@ -78,14 +78,12 @@ end
 function M:LoadRaidMarker()
 	local marker = CreateFrame("Frame", nil, E.UIParent)
 	marker:EnableMouse(true)
-	marker:SetWidth(100)
-	marker:SetHeight(100)
+	E:Size(marker, 100)
 	marker:SetFrameStrata("DIALOG")
 
 	for i = 1, 8 do
 		local button = CreateFrame("Button", "RaidMarkIconButton" .. i, marker)
-		button:SetWidth(40)
-		button:SetHeight(40)
+		E:Size(button, 40)
 		button:SetID(i)
 		button.Texture = button:CreateTexture(button:GetName() .. "NormalTexture", "ARTWORK")
 		button.Texture:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
@@ -96,10 +94,10 @@ function M:LoadRaidMarker()
 		button:SetScript("OnEnter", M.RaidMarkButton_OnEnter)
 		button:SetScript("OnLeave", M.RaidMarkButton_OnLeave)
 		if i == 8 then
-			button:SetPoint("CENTER", 0, 0)
+			E:Point(button, "CENTER", 0, 0)
 		else
 			local angle = pi / 0.7 * i
-			button:SetPoint("CENTER", sin(angle) * 60, cos(angle) * 60)
+			E:Point(button, "CENTER", sin(angle) * 60, cos(angle) * 60)
 		end
 	end
 

@@ -38,14 +38,12 @@ local function LoadSkin()
 		local text = _G["MirrorTimer"..i.."Text"]
 
 		E:StripTextures(mirrorTimer)
-		mirrorTimer:SetWidth(222)
-		mirrorTimer:SetHeight(18)
+		E:Size(mirrorTimer, 222, 18)
 		mirrorTimer.label = text
 		statusBar:SetStatusBarTexture(E["media"].normTex)
 		E:RegisterStatusBar(statusBar)
 		E:CreateBackdrop(statusBar)
-		statusBar:SetWidth(222)
-		statusBar:SetHeight(18)
+		E:Size(statusBar, 222, 18)
 		text:Hide()
 
 		local TimerText = mirrorTimer:CreateFontString(nil, "OVERLAY")

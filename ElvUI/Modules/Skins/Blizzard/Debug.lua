@@ -49,10 +49,10 @@ local function LoadSkin()
 
 	S:HandleButton(ScriptErrorsFrame.close)
 
-	ScriptErrorsFrame.reload:SetPoint("BOTTOMLEFT", 12, 8)
-	ScriptErrorsFrame.previous:SetPoint("BOTTOM", ScriptErrorsFrame, "BOTTOM", -50, 7)
-	ScriptErrorsFrame.next:SetPoint("BOTTOM", ScriptErrorsFrame, "BOTTOM", 50, 7)
-	ScriptErrorsFrame.close:SetPoint("BOTTOMRIGHT", -12, 8)
+	E:Point(ScriptErrorsFrame.reload, "BOTTOMLEFT", 12, 8)
+	E:Point(ScriptErrorsFrame.previous, "BOTTOM", ScriptErrorsFrame, "BOTTOM", -50, 7)
+	E:Point(ScriptErrorsFrame.next, "BOTTOM", ScriptErrorsFrame, "BOTTOM", 50, 7)
+	E:Point(ScriptErrorsFrame.close, "BOTTOMRIGHT", -12, 8)
 
 	local noscalemult = E.mult * GetCVar("uiScale")
 	HookScript(FrameStackTooltip, "OnShow", function()

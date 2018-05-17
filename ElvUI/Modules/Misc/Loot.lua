@@ -35,7 +35,7 @@ local iconSize = 30
 local sq, ss, sn
 local OnEnter = function()
 	local slot = this:GetID()
-	if(LootSlotIsItem(slot)) then
+	if LootSlotIsItem(slot) then
 		GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
 		GameTooltip:SetLootItem(slot)
 		CursorUpdate(this)
@@ -46,7 +46,7 @@ local OnEnter = function()
 end
 
 local OnLeave = function()
-	if this.quality and (this.quality > 1) then
+	if this.quality and this.quality > 1 then
 		local color = ITEM_QUALITY_COLORS[this.quality]
 		this.drop:SetVertexColor(color.r, color.g, color.b)
 	else
@@ -82,21 +82,21 @@ local function anchorSlots(self)
 	local shownSlots = 0
 	for i = 1, getn(self.slots) do
 		local frame = self.slots[i]
-		if(frame:IsShown()) then
+		if frame:IsShown() then
 			shownSlots = shownSlots + 1
 
-			frame:SetPoint("TOP", lootFrame, 4, (-8 + iconSize) - (shownSlots * iconSize))
+			E:Point(frame, "TOP", lootFrame, 4, (-8 + iconSize) - (shownSlots * iconSize))
 		end
 	end
 
-	self:SetHeight(max(shownSlots * iconSize + 16, 20))
+	E:Height(self, max(shownSlots * iconSize + 16, 20))
 end
 
 local function createSlot(id)
 	local frame = CreateFrame("LootButton", "ElvLootSlot"..id, lootFrame)
-	frame:SetPoint("LEFT", 8, 0)
-	frame:SetPoint("RIGHT", -8, 0)
-	frame:SetHeight(iconSize - 2)
+	E:Point(frame, "LEFT", 8, 0)
+	E:Point(frame, "RIGHT", -8, 0)
+	E:Height(frame, iconSize - 2)
 	frame:SetID(id)
 
 	frame:SetScript("OnEnter", OnEnter)
@@ -105,9 +105,8 @@ local function createSlot(id)
 	frame:SetScript("OnShow", OnShow)
 
 	local iconFrame = CreateFrame("Frame", nil, frame)
-	iconFrame:SetWidth(iconSize - 2)
-	iconFrame:SetHeight(iconSize - 2)
-	iconFrame:SetPoint("RIGHT", frame)
+	E:Size(iconFrame, iconSize - 2)
+	E:Point(iconFrame, "RIGHT", frame)
 	E:SetTemplate(iconFrame, "Default")
 	frame.iconFrame = iconFrame
 	E["frames"][iconFrame] = nil
@@ -119,23 +118,23 @@ local function createSlot(id)
 
 	local count = iconFrame:CreateFontString(nil, "OVERLAY")
 	count:SetJustifyH("RIGHT")
-	count:SetPoint("BOTTOMRIGHT", iconFrame, -2, 2)
+	E:Point(count, "BOTTOMRIGHT", iconFrame, -2, 2)
 	E:FontTemplate(count, nil, nil, "OUTLINE")
 	count:SetText(1)
 	frame.count = count
 
 	local name = frame:CreateFontString(nil, "OVERLAY")
 	name:SetJustifyH("LEFT")
-	name:SetPoint("LEFT", frame)
-	name:SetPoint("RIGHT", icon, "LEFT")
+	E:Point(name, "LEFT", frame)
+	E:Point(name, "RIGHT", icon, "LEFT")
 	name:SetNonSpaceWrap(true)
 	E:FontTemplate(name, nil, nil, "OUTLINE")
 	frame.name = name
 
 	local drop = frame:CreateTexture(nil, "ARTWORK")
 	drop:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
-	drop:SetPoint("LEFT", icon, "RIGHT", 0, 0)
-	drop:SetPoint("RIGHT", frame)
+	E:Point(drop, "LEFT", icon, "RIGHT", 0, 0)
+	E:Point(drop, "RIGHT", frame)
 	drop:SetAllPoints(frame)
 	drop:SetAlpha(.3)
 	frame.drop = drop
@@ -171,15 +170,15 @@ end
 function M:LOOT_OPENED(_, autoLoot)
 	lootFrame:Show()
 
-	if(not lootFrame:IsShown()) then
+	if not lootFrame:IsShown() then
 		CloseLoot(autoLoot == 0)
 	end
 
 	local items = GetNumLootItems()
 
-	if(IsFishingLoot()) then
+	if IsFishingLoot() then
 		lootFrame.title:SetText(L["Fishy Loot"])
-	elseif(not UnitIsFriend("player", "target") and UnitIsDead("target")) then
+	elseif not UnitIsFriend("player", "target") and UnitIsDead("target") then
 		lootFrame.title:SetText(UnitName("target"))
 	else
 		lootFrame.title:SetText(LOOT)
@@ -192,33 +191,33 @@ function M:LOOT_OPENED(_, autoLoot)
 		y = y / lootFrame:GetEffectiveScale()
 
 		lootFrame:ClearAllPoints()
-		lootFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x - 40, y + 20)
+		E:Point(lootFrame, "TOPLEFT", UIParent, "BOTTOMLEFT", x - 40, y + 20)
 		lootFrame:GetCenter()
 		lootFrame:Raise()
 	else
 		lootFrame:ClearAllPoints()
-		lootFrame:SetPoint("TOPLEFT", lootFrameHolder, "TOPLEFT")
+		E:Point(lootFrame, "TOPLEFT", lootFrameHolder, "TOPLEFT")
 	end
 
 	local m, w, t = 0, 0, lootFrame.title:GetStringWidth()
-	if(items > 0) then
+	if items > 0 then
 		for i = 1, items do
 			local slot = lootFrame.slots[i] or createSlot(i)
 			local texture, item, quantity, quality = GetLootSlotInfo(i)
 			local color = ITEM_QUALITY_COLORS[quality]
 
-			if(LootSlotIsCoin(i)) then
+			if LootSlotIsCoin(i) then
 				item = gsub(item, "\n", ", ")
 			end
 
-			if quantity and (quantity > 1) then
+			if quantity and quantity > 1 then
 				slot.count:SetText(quantity)
 				slot.count:Show()
 			else
 				slot.count:Hide()
 			end
 
-			if quality and (quality > 1) then
+			if quality and quality > 1 then
 				slot.drop:SetVertexColor(color.r, color.g, color.b)
 				slot.drop:Show()
 			else
@@ -268,28 +267,26 @@ function M:LOOT_OPENED(_, autoLoot)
 
 	local color = ITEM_QUALITY_COLORS[m]
 	lootFrame:SetBackdropBorderColor(color.r, color.g, color.b, .8)
-	lootFrame:SetWidth(max(w, t))
+	E:Width(lootFrame, max(w, t))
 end
 
 function M:LoadLoot()
 	if not E.private.general.loot then return end
 
 	lootFrameHolder = CreateFrame("Frame", "ElvLootFrameHolder", E.UIParent)
-	lootFrameHolder:SetPoint("TOPLEFT", 36, -195)
-	lootFrameHolder:SetWidth(150)
-	lootFrameHolder:SetHeight(22)
+	E:Point(lootFrameHolder, "TOPLEFT", 36, -195)
+	E:Size(lootFrameHolder, 150, 22)
 
 	lootFrame = CreateFrame("Button", "ElvLootFrame", lootFrameHolder)
 	lootFrame:SetClampedToScreen(true)
-	lootFrame:SetPoint("TOPLEFT", 0, 0)
-	lootFrame:SetWidth(256)
-	lootFrame:SetHeight(64)
+	E:Point(lootFrame, "TOPLEFT", 0, 0)
+	E:Size(lootFrame, 256, 64)
 	E:SetTemplate(lootFrame, "Transparent")
 	lootFrame:SetFrameStrata("FULLSCREEN")
 	lootFrame:SetToplevel(true)
 	lootFrame.title = lootFrame:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(lootFrame.title, nil, nil, "OUTLINE")
-	lootFrame.title:SetPoint("BOTTOMLEFT", lootFrame, "TOPLEFT", 0, 1)
+	E:Point(lootFrame.title, "BOTTOMLEFT", lootFrame, "TOPLEFT", 0, 1)
 	lootFrame.slots = {}
 	lootFrame:SetScript("OnHide", function()
 		StaticPopup_Hide("CONFIRM_LOOT_DISTRIBUTION")
@@ -311,9 +308,9 @@ function M:LoadLoot()
 	tinsert(UISpecialFrames, "ElvLootFrame")
 
 	function _G.GroupLootDropDown_GiveLoot()
-		if(sq >= MASTER_LOOT_THREHOLD) then
+		if sq >= MASTER_LOOT_THREHOLD then
 			local dialog = StaticPopup_Show("CONFIRM_LOOT_DISTRIBUTION", ITEM_QUALITY_COLORS[sq].hex..sn..FONT_COLOR_CODE_CLOSE, this:GetText())
-			if (dialog) then
+			if dialog then
 				dialog.data = this.value
 			end
 		else

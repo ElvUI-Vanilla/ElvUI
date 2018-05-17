@@ -72,22 +72,22 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 
 	if not E:HasMoverBeenMoved("TooltipMover") then
 		if ElvUI_ContainerFrame and ElvUI_ContainerFrame:IsShown() then
-			tt:SetPoint("BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18)
+			E:Point(tt, "BOTTOMRIGHT", ElvUI_ContainerFrame, "TOPRIGHT", 0, 18)
 		elseif RightChatPanel:GetAlpha() == 1 and RightChatPanel:IsShown() then
-			tt:SetPoint("BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", 0, 18)
+			E:Point(tt, "BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", 0, 18)
 		else
-			tt:SetPoint("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18)
+			E:Point(tt, "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 18)
 		end
 	else
 		local point = E:GetScreenQuadrant(TooltipMover)
 		if point == "TOPLEFT" then
-			tt:SetPoint("TOPLEFT", TooltipMover)
+			E:Point(tt, "TOPLEFT", TooltipMover)
 		elseif point == "TOPRIGHT" then
-			tt:SetPoint("TOPRIGHT", TooltipMover)
+			E:Point(tt, "TOPRIGHT", TooltipMover)
 		elseif point == "BOTTOMLEFT" or point == "LEFT" then
-			tt:SetPoint("BOTTOMLEFT", TooltipMover)
+			E:Point(tt, "BOTTOMLEFT", TooltipMover)
 		else
-			tt:SetPoint("BOTTOMRIGHT", TooltipMover)
+			E:Point(tt, "BOTTOMRIGHT", TooltipMover)
 		end
 	end
 end
@@ -304,10 +304,10 @@ function TT:Initialize()
 	if E.private.tooltip.enable ~= true then return end
 	E.Tooltip = TT
 
-	GameTooltipStatusBar:SetHeight(self.db.healthBar.height)
+	E:Height(GameTooltipStatusBar, self.db.healthBar.height)
 	GameTooltipStatusBar:SetScript("OnValueChanged", nil)
 	GameTooltipStatusBar.text = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
-	GameTooltipStatusBar.text:SetPoint("CENTER", GameTooltipStatusBar, 0, -3)
+	E:Point(GameTooltipStatusBar.text, "CENTER", GameTooltipStatusBar, 0, -3)
 	E:FontTemplate(GameTooltipStatusBar.text, E.LSM:Fetch("font", self.db.healthBar.font), self.db.healthBar.fontSize, self.db.healthBar.fontOutline)
 
 	if not GameTooltip.hasMoney then

@@ -52,8 +52,7 @@ function E:FarmMode(msg)
 	if E.private.general.minimap.enable ~= true then return end
 	if msg and type(tonumber(msg)) == "number" and tonumber(msg) <= 500 and tonumber(msg) >= 20 then
 		E.db.farmSize = tonumber(msg)
-		FarmModeMap:SetWidth(tonumber(msg))
-		FarmModeMap:SetHeight(tonumber(msg))
+		E:Size(FarmModeMap, tonumber(msg))
 	end
 
 	FarmMode()

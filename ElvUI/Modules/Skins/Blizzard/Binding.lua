@@ -11,8 +11,8 @@ local function LoadSkin()
 
 	E:StripTextures(KeyBindingFrame)
 	E:CreateBackdrop(KeyBindingFrame, "Transparent")
-	KeyBindingFrame.backdrop:SetPoint("TOPLEFT", 2, 0)
-	KeyBindingFrame.backdrop:SetPoint("BOTTOMRIGHT", -42, 12)
+	E:Point(KeyBindingFrame.backdrop, "TOPLEFT", 2, 0)
+	E:Point(KeyBindingFrame.backdrop, "BOTTOMRIGHT", -42, 12)
 
 	local bindingKey1, bindingKey2
 	for i = 1, KEY_BINDINGS_DISPLAYED do
@@ -21,7 +21,7 @@ local function LoadSkin()
 
 		S:HandleButton(bindingKey1)
 		S:HandleButton(bindingKey2)
-		bindingKey2:SetPoint("LEFT", bindingKey1, "RIGHT", 1, 0)
+		E:Point(bindingKey2, "LEFT", bindingKey1, "RIGHT", 1, 0)
 	end
 
 	S:HandleScrollBar(KeyBindingFrameScrollFrameScrollBar)
@@ -31,9 +31,9 @@ local function LoadSkin()
 	S:HandleButton(KeyBindingFrameDefaultButton)
 	S:HandleButton(KeyBindingFrameCancelButton)
 	S:HandleButton(KeyBindingFrameOkayButton)
-	KeyBindingFrameOkayButton:SetPoint("RIGHT", KeyBindingFrameCancelButton, "LEFT", -3, 0)
+	E:Point(KeyBindingFrameOkayButton, "RIGHT", KeyBindingFrameCancelButton, "LEFT", -3, 0)
 	S:HandleButton(KeyBindingFrameUnbindButton)
-	KeyBindingFrameUnbindButton:SetPoint("RIGHT", KeyBindingFrameOkayButton, "LEFT", -3, 0)
+	E:Point(KeyBindingFrameUnbindButton, "RIGHT", KeyBindingFrameOkayButton, "LEFT", -3, 0)
 end
 
 S:AddCallbackForAddon("Blizzard_BindingUI", "Binding", LoadSkin)

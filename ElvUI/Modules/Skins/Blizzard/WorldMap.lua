@@ -10,8 +10,8 @@ local function LoadSkin()
 	S:HandleDropDownBox(WorldMapContinentDropDown, 170)
 	S:HandleDropDownBox(WorldMapZoneDropDown, 170)
 
-	WorldMapZoneDropDown:SetPoint("LEFT", WorldMapContinentDropDown, "RIGHT", -24, 0)
-	WorldMapZoomOutButton:SetPoint("LEFT", WorldMapZoneDropDown, "RIGHT", -4, 3)
+	E:Point(WorldMapZoneDropDown, "LEFT", WorldMapContinentDropDown, "RIGHT", -24, 0)
+	E:Point(WorldMapZoomOutButton, "LEFT", WorldMapZoneDropDown, "RIGHT", -4, 3)
 
 	S:HandleButton(WorldMapZoomOutButton)
 

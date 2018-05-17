@@ -16,15 +16,15 @@ local function LoadSkin()
 	S:HandleScrollBar(ItemTextScrollFrameScrollBar)
 
 	E:CreateBackdrop(ItemTextFrame, "Transparent")
-	ItemTextFrame.backdrop:SetPoint("TOPLEFT", 13, -13)
-	ItemTextFrame.backdrop:SetPoint("BOTTOMRIGHT", -32, 74)
+	E:Point(ItemTextFrame.backdrop, "TOPLEFT", 13, -13)
+	E:Point(ItemTextFrame.backdrop, "BOTTOMRIGHT", -32, 74)
 
 	S:HandleNextPrevButton(ItemTextPrevPageButton)
 	S:HandleNextPrevButton(ItemTextNextPageButton)
 	ItemTextPrevPageButton:ClearAllPoints()
 	ItemTextNextPageButton:ClearAllPoints()
-	ItemTextPrevPageButton:SetPoint("TOPLEFT", ItemTextFrame, "TOPLEFT", 30, -50)
-	ItemTextNextPageButton:SetPoint("TOPRIGHT", ItemTextFrame, "TOPRIGHT", -48, -50)
+	E:Point(ItemTextPrevPageButton, "TOPLEFT", ItemTextFrame, "TOPLEFT", 30, -50)
+	E:Point(ItemTextNextPageButton, "TOPRIGHT", ItemTextFrame, "TOPRIGHT", -48, -50)
 
 	S:HandleCloseButton(ItemTextCloseButton)
 
@@ -39,11 +39,11 @@ local function LoadSkin()
 	E:Kill(GossipFramePortrait)
 
 	E:CreateBackdrop(GossipFrame, "Transparent")
-	GossipFrame.backdrop:SetPoint("TOPLEFT", 15, -19)
-	GossipFrame.backdrop:SetPoint("BOTTOMRIGHT", -30, 67)
+	E:Point(GossipFrame.backdrop, "TOPLEFT", 15, -19)
+	E:Point(GossipFrame.backdrop, "BOTTOMRIGHT", -30, 67)
 
 	S:HandleButton(GossipFrameGreetingGoodbyeButton)
-	GossipFrameGreetingGoodbyeButton:SetPoint("BOTTOMRIGHT", GossipFrame, -34, 71)
+	E:Point(GossipFrameGreetingGoodbyeButton, "BOTTOMRIGHT", GossipFrame, -34, 71)
 
 	S:HandleCloseButton(GossipFrameCloseButton)
 

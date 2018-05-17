@@ -18,8 +18,8 @@ local function LoadSkin()
 
 	E:StripTextures(InspectFrame, true)
 	E:CreateBackdrop(InspectFrame, "Transparent")
-	InspectFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
-	InspectFrame.backdrop:SetPoint("BOTTOMRIGHT", -31, 75)
+	E:Point(InspectFrame.backdrop, "TOPLEFT", 10, -12)
+	E:Point(InspectFrame.backdrop, "BOTTOMRIGHT", -31, 75)
 
 	S:HandleCloseButton(InspectFrameCloseButton)
 
@@ -85,10 +85,10 @@ local function LoadSkin()
 	end)
 
 	S:HandleRotateButton(InspectModelRotateLeftButton)
-	InspectModelRotateLeftButton:SetPoint("TOPLEFT", 3, -3)
+	E:Point(InspectModelRotateLeftButton, "TOPLEFT", 3, -3)
 
 	S:HandleRotateButton(InspectModelRotateRightButton)
-	InspectModelRotateRightButton:SetPoint("TOPLEFT", InspectModelRotateLeftButton, "TOPRIGHT", 3, 0)
+	E:Point(InspectModelRotateRightButton, "TOPLEFT", InspectModelRotateLeftButton, "TOPRIGHT", 3, 0)
 
 	E:StripTextures(InspectHonorFrame)
 

@@ -19,8 +19,8 @@ local function LoadSkin()
 	-- Inbox Frame
 	E:StripTextures(MailFrame, true)
 	E:CreateBackdrop(MailFrame, "Transparent")
-	MailFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
-	MailFrame.backdrop:SetPoint("BOTTOMRIGHT", -30, 74)
+	E:Point(MailFrame.backdrop, "TOPLEFT", 10, -12)
+	E:Point(MailFrame.backdrop, "BOTTOMRIGHT", -30, 74)
 
 	for i = 1, INBOXITEMS_TO_DISPLAY do
 		local mail = _G["MailItem"..i]
@@ -29,8 +29,8 @@ local function LoadSkin()
 
 		E:StripTextures(mail)
 		E:CreateBackdrop(mail, "Default")
-		mail.backdrop:SetPoint("TOPLEFT", 2, 1)
-		mail.backdrop:SetPoint("BOTTOMRIGHT", -2, 2)
+		E:Point(mail.backdrop, "TOPLEFT", 2, 1)
+		E:Point(mail.backdrop, "BOTTOMRIGHT", -2, 2)
 
 		E:StripTextures(button)
 		E:SetTemplate(button, "Default", true)
@@ -117,29 +117,29 @@ local function LoadSkin()
 	S:HandleScrollBar(SendMailScrollFrameScrollBar)
 
 	S:HandleEditBox(SendMailNameEditBox)
-	SendMailNameEditBox.backdrop:SetPoint("BOTTOMRIGHT", 2, 0)
-	SendMailNameEditBox:SetPoint("TOPLEFT", 79, -46)
+	E:Point(SendMailNameEditBox.backdrop, "BOTTOMRIGHT", 2, 0)
+	E:Point(SendMailNameEditBox, "TOPLEFT", 79, -46)
 
 	S:HandleEditBox(SendMailSubjectEditBox)
-	SendMailSubjectEditBox.backdrop:SetPoint("BOTTOMRIGHT", 2, 0)
+	E:Point(SendMailSubjectEditBox.backdrop, "BOTTOMRIGHT", 2, 0)
 
 	S:HandleEditBox(SendMailMoneyGold)
 	S:HandleEditBox(SendMailMoneySilver)
 	S:HandleEditBox(SendMailMoneyCopper)
 
 	S:HandleButton(SendMailMailButton)
-	SendMailMailButton:SetPoint("RIGHT", SendMailCancelButton, "LEFT", -2, 0)
+	E:Point(SendMailMailButton, "RIGHT", SendMailCancelButton, "LEFT", -2, 0)
 
 	S:HandleButton(SendMailCancelButton)
-	SendMailCancelButton:SetPoint("BOTTOMRIGHT", -45, 80)
+	E:Point(SendMailCancelButton, "BOTTOMRIGHT", -45, 80)
 
-	SendMailMoneyFrame:SetPoint("BOTTOMLEFT", 170, 84)
+	E:Point(SendMailMoneyFrame, "BOTTOMLEFT", 170, 84)
 
 	-- Open Mail Frame
 	E:StripTextures(OpenMailFrame, true)
 	E:CreateBackdrop(OpenMailFrame, "Transparent")
-	OpenMailFrame.backdrop:SetPoint("TOPLEFT", 12, -12)
-	OpenMailFrame.backdrop:SetPoint("BOTTOMRIGHT", -34, 74)
+	E:Point(OpenMailFrame.backdrop, "TOPLEFT", 12, -12)
+	E:Point(OpenMailFrame.backdrop, "BOTTOMRIGHT", -34, 74)
 
 	E:StripTextures(OpenMailPackageButton)
 	E:StyleButton(OpenMailPackageButton)
@@ -187,10 +187,10 @@ local function LoadSkin()
 	S:HandleCloseButton(OpenMailCloseButton)
 
 	S:HandleButton(OpenMailReplyButton)
-	OpenMailReplyButton:SetPoint("RIGHT", OpenMailDeleteButton, "LEFT", -2, 0)
+	E:Point(OpenMailReplyButton, "RIGHT", OpenMailDeleteButton, "LEFT", -2, 0)
 
 	S:HandleButton(OpenMailDeleteButton)
-	OpenMailDeleteButton:SetPoint("RIGHT", OpenMailCancelButton, "LEFT", -2, 0)
+	E:Point(OpenMailDeleteButton, "RIGHT", OpenMailCancelButton, "LEFT", -2, 0)
 
 	S:HandleButton(OpenMailCancelButton)
 

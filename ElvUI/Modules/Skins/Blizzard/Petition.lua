@@ -11,8 +11,8 @@ local function LoadSkin()
 
 	E:StripTextures(PetitionFrame, true)
 	E:CreateBackdrop(PetitionFrame, "Transparent")
-	PetitionFrame.backdrop:SetPoint("TOPLEFT", 12, -17)
-	PetitionFrame.backdrop:SetPoint("BOTTOMRIGHT", -28, 65)
+	E:Point(PetitionFrame.backdrop, "TOPLEFT", 12, -17)
+	E:Point(PetitionFrame.backdrop, "BOTTOMRIGHT", -28, 65)
 
 	S:HandleButton(PetitionFrameSignButton)
 	S:HandleButton(PetitionFrameRequestButton)
@@ -32,8 +32,8 @@ local function LoadSkin()
 
 	PetitionFrameInstructions:SetTextColor(1, 1, 1)
 
-	PetitionFrameRenameButton:SetPoint("LEFT", PetitionFrameRequestButton, "RIGHT", 3, 0)
-	PetitionFrameRenameButton:SetPoint("RIGHT", PetitionFrameCancelButton, "LEFT", -3, 0)
+	E:Point(PetitionFrameRenameButton, "LEFT", PetitionFrameRequestButton, "RIGHT", 3, 0)
+	E:Point(PetitionFrameRenameButton, "RIGHT", PetitionFrameCancelButton, "LEFT", -3, 0)
 end
 
 S:AddCallback("Petition", LoadSkin)
