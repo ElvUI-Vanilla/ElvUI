@@ -139,9 +139,9 @@ local queue_quiet = {
 lib['WHOLIB_FLAG_ALWAYS_CALLBACK'] = 1
 
 function lib:Reset()
-    self.Queue = {[1]={}, [2]={}, [3]={}}
-    self.Cache = {}
-    self.CacheQueue = {}
+	self.Queue = {[1]={}, [2]={}, [3]={}}
+	self.Cache = {}
+	self.CacheQueue = {}
 end
 
 function lib.Who(defhandler, query, opts)
@@ -169,10 +169,10 @@ function lib.UserInfo(defhandler, name, opts)
 	local self, args, usage = lib, {}, 'UserInfo(name, [opts])'
 	local now = time()
 
-    name = self:CheckArgument(usage, 'name', 'string', name)
-    if strlen(name) == 0 then return end
+	name = self:CheckArgument(usage, 'name', 'string', name)
+	if strlen(name) == 0 then return end
 
-    if string.find(name, "%-") then --[[dbg("ignoring xrealm: "..name)]] return end
+	if string.find(name, "%-") then --[[dbg("ignoring xrealm: "..name)]] return end
 
 	args.name = self:CapitalizeInitial(name)
 	opts = self:CheckArgument(usage, 'opts', 'table', opts, {})
@@ -218,27 +218,27 @@ function lib.UserInfo(defhandler, name, opts)
 		return nil
 	end
 	if (GetLocale() == "ruRU") then -- in ruRU with n- not show information about player in WIM addon
-    if args.name and strlen(args.name) > 0 then
-    	local query = 'и-"' .. args.name .. '"'
-    	cachedName.inqueue = true
-    	if(args.callback ~= nil)then
-    		tinsert(cachedName.callback, args)
-    	end
-    	self.CacheQueue[query] = args.name
-    	dbg('Info(' .. args.name ..') added to queue')
-    	self:AskWho( { query = query, queue = args.queue, flags = 0, info = args.name } )
-    end
+	if args.name and strlen(args.name) > 0 then
+		local query = 'и-"' .. args.name .. '"'
+		cachedName.inqueue = true
+		if(args.callback ~= nil)then
+			tinsert(cachedName.callback, args)
+		end
+		self.CacheQueue[query] = args.name
+		dbg('Info(' .. args.name ..') added to queue')
+		self:AskWho( { query = query, queue = args.queue, flags = 0, info = args.name } )
+	end
 	else
-	    if args.name and strlen(args.name) > 0 then
-    	local query = 'n-"' .. args.name .. '"'
-    	cachedName.inqueue = true
-    	if(args.callback ~= nil)then
-    		tinsert(cachedName.callback, args)
-    	end
-    	self.CacheQueue[query] = args.name
-    	dbg('Info(' .. args.name ..') added to queue')
-    	self:AskWho( { query = query, queue = args.queue, flags = 0, info = args.name } )
-    end
+		if args.name and strlen(args.name) > 0 then
+		local query = 'n-"' .. args.name .. '"'
+		cachedName.inqueue = true
+		if(args.callback ~= nil)then
+			tinsert(cachedName.callback, args)
+		end
+		self.CacheQueue[query] = args.name
+		dbg('Info(' .. args.name ..') added to queue')
+		self:AskWho( { query = query, queue = args.queue, flags = 0, info = args.name } )
+	end
 	end
 	return nil
 end
@@ -256,11 +256,11 @@ function lib.CachedUserInfo(_, name)
 end
 
 function lib.GetWhoLibDebug(_, mode)
-    return lib.Debug
+	return lib.Debug
 end
 
 function lib.SetWhoLibDebug(_, mode)
-    lib.Debug = mode
+	lib.Debug = mode
 	dbg = mode and dbgfunc or NOP
 end
 
@@ -298,12 +298,12 @@ end
 ---
 
 function lib:AllQueuesEmpty()
-    local queueCount = getn(self.Queue[1]) + getn(self.Queue[2]) + getn(self.Queue[3]) + getn(self.CacheQueue)
+	local queueCount = getn(self.Queue[1]) + getn(self.Queue[2]) + getn(self.Queue[3]) + getn(self.CacheQueue)
 
-    -- Be sure that we have cleared the in-progress status
-    if self.WhoInProgress then
-        queueCount = queueCount + 1
-    end
+	-- Be sure that we have cleared the in-progress status
+	if self.WhoInProgress then
+		queueCount = queueCount + 1
+	end
 
 	return queueCount == 0
 end
@@ -344,19 +344,19 @@ local INSTANT_QUERY_MIN_INTERVAL = 60 -- only once every 1 min
 function lib:UpdateWeights()
    local weightsum, sum, count = 0, 0, 0
    for k,v in pairs(queue_weights) do
-        sum = sum + v
-        weightsum = weightsum + v * getn(self.Queue[k])
+		sum = sum + v
+		weightsum = weightsum + v * getn(self.Queue[k])
    end
 
    if weightsum == 0 then
-        for k,v in pairs(queue_weights) do queue_bounds[k] = v end
-        return
+		for k,v in pairs(queue_weights) do queue_bounds[k] = v end
+		return
    end
 
    local adjust = sum / weightsum
 
    for k,v in pairs(queue_bounds) do
-        queue_bounds[k] = queue_weights[k] * adjust * getn(self.Queue[k])
+		queue_bounds[k] = queue_weights[k] * adjust * getn(self.Queue[k])
    end
 end
 
@@ -376,17 +376,17 @@ function lib:GetNextFromScheduler()
 
    local n,i = math.random(),0
    repeat
-        i=i+1
-        n = n - queue_bounds[i]
+		i=i+1
+		n = n - queue_bounds[i]
    until i >= getn(self.Queue) or n <= 0
 
    dbg(string.format("Q=%d, bound=%d", i, queue_bounds[i]))
 
    if getn(self.Queue[i]) > 0 then
-        dbg(string.format("Q=%d, bound=%d", i, queue_bounds[i]))
-       return i, self.Queue[i]
+		dbg(string.format("Q=%d, bound=%d", i, queue_bounds[i]))
+	   return i, self.Queue[i]
    else
-        dbg("Queues empty, waiting")
+		dbg("Queues empty, waiting")
    end
 end
 
@@ -424,10 +424,10 @@ function lib:AskWhoNext()
 	self.WhoInProgress = false
 
 	local v,k,args = nil
-    local kludge = 10
+	local kludge = 10
 	repeat
-        k, v = self:GetNextFromScheduler()
-        if not k then break end
+		k, v = self:GetNextFromScheduler()
+		if not k then break end
 		if WhoFrame:IsShown() and k > self.WHOLIB_QUEUE_QUIET then
 			break
 		end
@@ -435,7 +435,7 @@ function lib:AskWhoNext()
 			args = tremove(v, 1)
 			break
 		end
-        kludge = kludge - 1
+		kludge = kludge - 1
 	until kludge <= 0
 
 	if args then
@@ -453,9 +453,9 @@ function lib:AskWhoNext()
 			self.Quiet = false
 
 			if args.whotoui then
-    			-- self.hooked.SetWhoToUI(args.whotoui)
-    		else
-    			-- self.hooked.SetWhoToUI(args.gui and true or false)
+				-- self.hooked.SetWhoToUI(args.whotoui)
+			else
+				-- self.hooked.SetWhoToUI(args.gui and true or false)
 			end
 		else
 			-- self.hooked.SetWhoToUI(true)
@@ -469,11 +469,11 @@ function lib:AskWhoNext()
 		self.WhoInProgress = false
 	end
 
-    -- Keep processing the who queue if there is more work
+	-- Keep processing the who queue if there is more work
 	if not self:AllQueuesEmpty() then
 		self:AskWhoNextIn5sec()
-    else
-        dbg("*** Done processing requests ***")
+	else
+		dbg("*** Done processing requests ***")
 	end
 end
 
@@ -486,10 +486,10 @@ function lib:AskWho(args)
 end
 
 function lib:ReturnWho()
-    if not self.Args then
-        self.Quiet = nil
-        return
-    end
+	if not self.Args then
+		self.Quiet = nil
+		return
+	end
 
 	if(self.Args.queue == self.WHOLIB_QUEUE_QUIET or self.Args.queue == self.WHOLIB_QUEUE_SCANNING)then
 		self.Quiet = nil
@@ -723,7 +723,7 @@ end
 local MULTIBYTE_FIRST_CHAR = "^([\192-\255]?%a?[\128-\191]*)"
 
 function lib:CapitalizeInitial(name)
-    return string.gsub(name, MULTIBYTE_FIRST_CHAR, string.upper, 1)
+	return string.gsub(name, MULTIBYTE_FIRST_CHAR, string.upper, 1)
 end
 
 ---
@@ -736,7 +736,7 @@ lib.PossibleEvents = {
 }
 
 function lib:TriggerEvent(...)
-    callbacks:Fire(event, unpack(arg))
+	callbacks:Fire(event, unpack(arg))
 end
 
 ---
@@ -761,7 +761,7 @@ SlashCmdList['WHOLIB_DEBUG'] = function()
 	-- /wholibdebug: toggle debug on/off
 	local self = lib
 
-    self:SetWhoLibDebug(not self.Debug)
+	self:SetWhoLibDebug(not self.Debug)
 end
 
 SLASH_WHOLIB_DEBUG1 = '/wholibdebug'
@@ -889,12 +889,12 @@ end
 FriendsFrame:UnregisterEvent("WHO_LIST_UPDATE")
 
 function lib:WHO_LIST_UPDATE()
-    if not lib.Quiet then
+	if not lib.Quiet then
 		WhoList_Update()
-        FriendsFrame_Update()
-    end
+		FriendsFrame_Update()
+	end
 
-    lib:ProcessWhoResults()
+	lib:ProcessWhoResults()
 end
 
 function lib:ProcessWhoResults()

@@ -232,8 +232,8 @@ function L_UIDropDownMenu_CreateFrames(level, index)
 		newList:SetWidth(180)
 		newList:SetHeight(10)
 
-    	--Allow closing with escape
-    	tinsert(UIMenus, "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS)
+		--Allow closing with escape
+		tinsert(UIMenus, "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS)
 
 		for i=L_UIDROPDOWNMENU_MINBUTTONS+1, L_UIDROPDOWNMENU_MAXBUTTONS do
 			local newButton = CreateFrame("Button", "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS.."Button"..i, newList, "L_UIDropDownMenuButtonTemplate");

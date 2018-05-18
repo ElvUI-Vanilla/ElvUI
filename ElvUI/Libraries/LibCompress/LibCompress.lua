@@ -137,7 +137,7 @@ function LibCompress:TableToString(t)
 	if t == nil then return nil end
 	if type(t)=="string" then return t end
 	local cache={}
-    local function sub_mod(t)
+	local function sub_mod(t)
 		if (type(t)=="table") then
 			for pos,val in pairs(t) do
 				if (type(val)=="table") then
@@ -153,8 +153,8 @@ function LibCompress:TableToString(t)
 		else
 			table_insert(cache, tostring(t))
 		end
-    end
-    sub_mod(t)
+	end
+	sub_mod(t)
 	return table_concat(cache, ",") -- ? maybe use a different delimiter
 end
 
@@ -784,10 +784,10 @@ function LibCompress:Compress(data)
 		n = compression_methods[method](self, data)
 		nTable = {}
 		for i = 1, strlen(n) do
-		    nTable[i] = string.sub(n, i, i)
+			nTable[i] = string.sub(n, i, i)
 		end
 		for i = 1, strlen(result) do
-		    rTable[i] = string.sub(result, i, i)
+			rTable[i] = string.sub(result, i, i)
 		end
 		if getn(nTable) < getn(rTable) then
 			result = nTable

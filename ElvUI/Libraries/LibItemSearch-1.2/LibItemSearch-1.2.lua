@@ -161,10 +161,10 @@ local escapes = {
 }
 
 local function CleanString(str)
-    for k, v in pairs(escapes) do
-        str = string.gsub(str, k, v)
-    end
-    return str
+	for k, v in pairs(escapes) do
+		str = string.gsub(str, k, v)
+	end
+	return str
 end
 
 Lib.Filters.tipPhrases = {
@@ -203,9 +203,9 @@ Lib.Filters.tipPhrases = {
 	cache = setmetatable({}, {__index = function(t, k) local v = {} t[k] = v return v end}),
 
 	keywords = {
-    	[lower(ITEM_SOULBOUND)] = ITEM_BIND_ON_PICKUP,
-    	["bound"] = ITEM_BIND_ON_PICKUP,
-    	["bop"] = ITEM_BIND_ON_PICKUP,
+		[lower(ITEM_SOULBOUND)] = ITEM_BIND_ON_PICKUP,
+		["bound"] = ITEM_BIND_ON_PICKUP,
+		["bop"] = ITEM_BIND_ON_PICKUP,
 		["boe"] = ITEM_BIND_ON_EQUIP,
 		["bou"] = ITEM_BIND_ON_USE
 	}

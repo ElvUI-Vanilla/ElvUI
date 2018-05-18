@@ -185,11 +185,11 @@ function AFK:OnEvent(event, ...)
 
 	if not E.db.general.afk then return end
 	if UnitAffectingCombat("player") or CinematicFrame:IsShown() then return end
-    -- if UnitCastingInfo("player") ~= nil then
-    --     --Don't activate afk if player is crafting stuff, check back in 30 seconds
-    --     self:ScheduleTimer("OnEvent", 30)
-    --     return
-    -- end
+	-- if UnitCastingInfo("player") ~= nil then
+	--     --Don't activate afk if player is crafting stuff, check back in 30 seconds
+	--     self:ScheduleTimer("OnEvent", 30)
+	--     return
+	-- end
 
 	if arg1 == format(MARKED_AFK_MESSAGE, DEFAULT_AFK_MESSAGE) then
 		self:SetAFK(true)
