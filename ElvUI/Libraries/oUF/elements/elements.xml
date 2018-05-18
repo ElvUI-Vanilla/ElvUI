@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="power.lua"/>
-	<!--<Script file="auras.lua"/>-->
+	<Script file="auras.lua"/>
 	<Script file="health.lua"/>
 	<Script file="raidtargetindicator.lua"/>
 	<Script file="leaderindicator.lua"/>

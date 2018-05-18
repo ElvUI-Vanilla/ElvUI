@@ -20,8 +20,11 @@ function UF:Construct_TargetFrame(frame)
 
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
+	frame.Buffs = self:Construct_Buffs(frame)
+	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
+	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 
 	E:Point(frame, "BOTTOMRIGHT", E.UIParent, "BOTTOM", 413, 68)
 	E:CreateMover(frame, frame:GetName().."Mover", L["Target Frame"], nil, nil, nil, "ALL,SOLO")
