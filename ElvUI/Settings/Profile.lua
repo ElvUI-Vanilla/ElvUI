@@ -556,7 +556,7 @@ P["bags"] = {
 		["showBackdrop"] = false,
 		["mouseover"] = false
 	}
-};
+}
 
 --UnitFrame
 P["unitframe"] = {

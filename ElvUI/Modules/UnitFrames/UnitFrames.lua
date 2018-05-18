@@ -821,7 +821,7 @@ hiddenParent:Hide()
 
 local HandleFrame = function(baseName)
 	local frame
-	if(type(baseName) == "string") then
+	if type(baseName) == "string" then
 		frame = _G[baseName]
 	else
 		frame = baseName
@@ -835,17 +835,17 @@ local HandleFrame = function(baseName)
 		frame:SetParent(hiddenParent)
 
 		local health = frame.healthbar
-		if(health) then
+		if health then
 			health:UnregisterAllEvents()
 		end
 
 		local power = frame.manabar
-		if(power) then
+		if power then
 			power:UnregisterAllEvents()
 		end
 
 		local spell = frame.spellbar
-		if(spell) then
+		if spell then
 			spell:UnregisterAllEvents()
 		end
 	end
@@ -868,7 +868,7 @@ function ElvUF:DisableBlizzard(unit)
 		HandleFrame(TargetofTargetFrame)
 	elseif string.match(unit, "(party)%d?$") == "party" and E.private["unitframe"]["disabledBlizzardFrames"].party then
 		local id = string.match(unit, "party(%d)")
-		if(id) then
+		if id then
 			HandleFrame("PartyMemberFrame"..id)
 		else
 			for i = 1, 4 do

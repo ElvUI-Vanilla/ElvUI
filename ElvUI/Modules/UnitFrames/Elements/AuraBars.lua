@@ -227,7 +227,7 @@ function UF:CheckFilter(name, caster, spellID, isFriend, isPlayer, isUnit, allow
 end
 
 function UF:AuraBarFilter(unit, name, _, _, _, debuffType, duration, _, unitCaster, isStealable, _, spellID)
-	if not self.db then return; end
+	if not self.db then return end
 	local db = self.db.aurabar
 
 	if not name then return nil end
