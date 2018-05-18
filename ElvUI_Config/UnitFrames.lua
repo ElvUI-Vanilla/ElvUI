@@ -340,53 +340,53 @@ local function GetOptionsTable_AuraBars(friendlyOnly, updateFunc, groupName)
 			updateFunc(UF, groupName)
 		end,
 	}
-	config.args.filters.args.filterPriority = {
-		order = 22,
-		dragdrop = true,
-		type = "multiselect",
-		name = L["Filter Priority"],
-		dragOnLeave = function() end, --keep this here
-		dragOnEnter = function(info, value)
-			carryFilterTo = info.obj.value
-		end,
-		dragOnMouseDown = function(info, value)
-			carryFilterFrom, carryFilterTo = info.obj.value, nil
-		end,
-		dragOnMouseUp = function(info, value)
-			filterPriority("aurabar", groupName, carryFilterTo, nil, carryFilterFrom) --add it in the new spot
-			carryFilterFrom, carryFilterTo = nil, nil
-		end,
-		dragOnClick = function(info, value)
-			filterPriority("aurabar", groupName, carryFilterFrom, true)
-		end,
-		stateSwitchGetText = function(button, text, value)
-			local friend, enemy = match(text, "^Friendly:([^,]*)"), match(text, "^Enemy:([^,]*)")
-			return (friend and format("|cFF33FF33%s|r %s", L["Friend"], friend)) or (enemy and format("|cFFFF3333%s|r %s", L["Enemy"], enemy))
-		end,
-		stateSwitchOnClick = function(info, value)
-			filterPriority("aurabar", groupName, carryFilterFrom, nil, nil, true)
-		end,
-		values = function()
-			local str = E.db.unitframe.units[groupName].aurabar.priority
-			if str == "" then return nil end
-			return {strsplit(",",str)}
-		end,
-		get = function(info, value)
-			local str = E.db.unitframe.units[groupName].aurabar.priority
-			if str == "" then return nil end
-			local tbl = {strsplit(",",str)}
-			return tbl[value]
-		end,
-		set = function(info, value)
-			E.db.unitframe.units[groupName].aurabar[ info[getn(info)] ] = nil -- this was being set when drag and drop was first added, setting it to nil to clear tester profiles of this variable
-			updateFunc(UF, groupName)
-		end
-	}
-	config.args.filters.args.spacer1 = {
-		order = 23,
-		type = "description",
-		name = L["Use drag and drop to rearrange filter priority or right click to remove a filter."].."\n"..L["Use Shift+LeftClick to toggle between friendly or enemy or normal state. Normal state will allow the filter to be checked on all units. Friendly state is for friendly units only and enemy state is for enemy units."],
-	}
+	-- config.args.filters.args.filterPriority = {
+	-- 	order = 22,
+	-- 	dragdrop = true,
+	-- 	type = "multiselect",
+	-- 	name = L["Filter Priority"],
+	-- 	dragOnLeave = function() end, --keep this here
+	-- 	dragOnEnter = function(info, value)
+	-- 		carryFilterTo = info.obj.value
+	-- 	end,
+	-- 	dragOnMouseDown = function(info, value)
+	-- 		carryFilterFrom, carryFilterTo = info.obj.value, nil
+	-- 	end,
+	-- 	dragOnMouseUp = function(info, value)
+	-- 		filterPriority("aurabar", groupName, carryFilterTo, nil, carryFilterFrom) --add it in the new spot
+	-- 		carryFilterFrom, carryFilterTo = nil, nil
+	-- 	end,
+	-- 	dragOnClick = function(info, value)
+	-- 		filterPriority("aurabar", groupName, carryFilterFrom, true)
+	-- 	end,
+	-- 	stateSwitchGetText = function(button, text, value)
+	-- 		local friend, enemy = match(text, "^Friendly:([^,]*)"), match(text, "^Enemy:([^,]*)")
+	-- 		return (friend and format("|cFF33FF33%s|r %s", L["Friend"], friend)) or (enemy and format("|cFFFF3333%s|r %s", L["Enemy"], enemy))
+	-- 	end,
+	-- 	stateSwitchOnClick = function(info, value)
+	-- 		filterPriority("aurabar", groupName, carryFilterFrom, nil, nil, true)
+	-- 	end,
+	-- 	values = function()
+	-- 		local str = E.db.unitframe.units[groupName].aurabar.priority
+	-- 		if str == "" then return nil end
+	-- 		return {strsplit(",",str)}
+	-- 	end,
+	-- 	get = function(info, value)
+	-- 		local str = E.db.unitframe.units[groupName].aurabar.priority
+	-- 		if str == "" then return nil end
+	-- 		local tbl = {strsplit(",",str)}
+	-- 		return tbl[value]
+	-- 	end,
+	-- 	set = function(info, value)
+	-- 		E.db.unitframe.units[groupName].aurabar[ info[getn(info)] ] = nil -- this was being set when drag and drop was first added, setting it to nil to clear tester profiles of this variable
+	-- 		updateFunc(UF, groupName)
+	-- 	end
+	-- }
+	-- config.args.filters.args.spacer1 = {
+	-- 	order = 23,
+	-- 	type = "description",
+	-- 	name = L["Use drag and drop to rearrange filter priority or right click to remove a filter."].."\n"..L["Use Shift+LeftClick to toggle between friendly or enemy or normal state. Normal state will allow the filter to be checked on all units. Friendly state is for friendly units only and enemy state is for enemy units."],
+	-- }
 
 	return config
 end
@@ -589,53 +589,53 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 			updateFunc(UF, groupName, numUnits)
 		end,
 	}
-	config.args.filters.args.filterPriority = {
-		order = 22,
-		dragdrop = true,
-		type = "multiselect",
-		name = L["Filter Priority"],
-		dragOnLeave = function() end, --keep this here
-		dragOnEnter = function(info, value)
-			carryFilterTo = info.obj.value
-		end,
-		dragOnMouseDown = function(info, value)
-			carryFilterFrom, carryFilterTo = info.obj.value, nil
-		end,
-		dragOnMouseUp = function(info, value)
-			filterPriority(auraType, groupName, carryFilterTo, nil, carryFilterFrom) --add it in the new spot
-			carryFilterFrom, carryFilterTo = nil, nil
-		end,
-		dragOnClick = function(info, value)
-			filterPriority(auraType, groupName, carryFilterFrom, true)
-		end,
-		stateSwitchGetText = function(button, text, value)
-			local friend, enemy = match(text, "^Friendly:([^,]*)"), match(text, "^Enemy:([^,]*)")
-			return (friend and format("|cFF33FF33%s|r %s", L["Friend"], friend)) or (enemy and format("|cFFFF3333%s|r %s", L["Enemy"], enemy))
-		end,
-		stateSwitchOnClick = function(info, value)
-			filterPriority(auraType, groupName, carryFilterFrom, nil, nil, true)
-		end,
-		values = function()
-			local str = E.db.unitframe.units[groupName][auraType].priority
-			if str == "" then return nil end
-			return {strsplit(",",str)}
-		end,
-		get = function(info, value)
-			local str = E.db.unitframe.units[groupName][auraType].priority
-			if str == "" then return nil end
-			local tbl = {strsplit(",",str)}
-			return tbl[value]
-		end,
-		set = function(info, value)
-			E.db.unitframe.units[groupName][auraType][ info[getn(info)] ] = nil -- this was being set when drag and drop was first added, setting it to nil to clear tester profiles of this variable
-			updateFunc(UF, groupName, numUnits)
-		end
-	}
-	config.args.filters.args.spacer1 = {
-		order = 23,
-		type = "description",
-		name = L["Use drag and drop to rearrange filter priority or right click to remove a filter."].."\n"..L["Use Shift+LeftClick to toggle between friendly or enemy or normal state. Normal state will allow the filter to be checked on all units. Friendly state is for friendly units only and enemy state is for enemy units."],
-	}
+	-- config.args.filters.args.filterPriority = {
+	-- 	order = 22,
+	-- 	dragdrop = true,
+	-- 	type = "multiselect",
+	-- 	name = L["Filter Priority"],
+	-- 	dragOnLeave = function() end, --keep this here
+	-- 	dragOnEnter = function(info, value)
+	-- 		carryFilterTo = info.obj.value
+	-- 	end,
+	-- 	dragOnMouseDown = function(info, value)
+	-- 		carryFilterFrom, carryFilterTo = info.obj.value, nil
+	-- 	end,
+	-- 	dragOnMouseUp = function(info, value)
+	-- 		filterPriority(auraType, groupName, carryFilterTo, nil, carryFilterFrom) --add it in the new spot
+	-- 		carryFilterFrom, carryFilterTo = nil, nil
+	-- 	end,
+	-- 	dragOnClick = function(info, value)
+	-- 		filterPriority(auraType, groupName, carryFilterFrom, true)
+	-- 	end,
+	-- 	stateSwitchGetText = function(button, text, value)
+	-- 		local friend, enemy = match(text, "^Friendly:([^,]*)"), match(text, "^Enemy:([^,]*)")
+	-- 		return (friend and format("|cFF33FF33%s|r %s", L["Friend"], friend)) or (enemy and format("|cFFFF3333%s|r %s", L["Enemy"], enemy))
+	-- 	end,
+	-- 	stateSwitchOnClick = function(info, value)
+	-- 		filterPriority(auraType, groupName, carryFilterFrom, nil, nil, true)
+	-- 	end,
+	-- 	values = function()
+	-- 		local str = E.db.unitframe.units[groupName][auraType].priority
+	-- 		if str == "" then return nil end
+	-- 		return {strsplit(",",str)}
+	-- 	end,
+	-- 	get = function(info, value)
+	-- 		local str = E.db.unitframe.units[groupName][auraType].priority
+	-- 		if str == "" then return nil end
+	-- 		local tbl = {strsplit(",",str)}
+	-- 		return tbl[value]
+	-- 	end,
+	-- 	set = function(info, value)
+	-- 		E.db.unitframe.units[groupName][auraType][ info[getn(info)] ] = nil -- this was being set when drag and drop was first added, setting it to nil to clear tester profiles of this variable
+	-- 		updateFunc(UF, groupName, numUnits)
+	-- 	end
+	-- }
+	-- config.args.filters.args.spacer1 = {
+	-- 	order = 23,
+	-- 	type = "description",
+	-- 	name = L["Use drag and drop to rearrange filter priority or right click to remove a filter."].."\n"..L["Use Shift+LeftClick to toggle between friendly or enemy or normal state. Normal state will allow the filter to be checked on all units. Friendly state is for friendly units only and enemy state is for enemy units."],
+	-- }
 
 	return config
 end
@@ -860,7 +860,6 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 
 	return config
 end
-
 
 local function GetOptionsTable_InformationPanel(updateFunc, groupName, numUnits)
 
@@ -2734,10 +2733,10 @@ E.Options.args.unitframe.args.player = {
 		power = GetOptionsTable_Power(true, UF.CreateAndUpdateUF, "player", nil, true),
 		name = GetOptionsTable_Name(UF.CreateAndUpdateUF, "player"),
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUF, "player"),
-		--buffs = GetOptionsTable_Auras(true, "buffs", false, UF.CreateAndUpdateUF, "player"),
-		--debuffs = GetOptionsTable_Auras(true, "debuffs", false, UF.CreateAndUpdateUF, "player"),
+		buffs = GetOptionsTable_Auras(true, "buffs", false, UF.CreateAndUpdateUF, "player"),
+		debuffs = GetOptionsTable_Auras(true, "debuffs", false, UF.CreateAndUpdateUF, "player"),
 		castbar = GetOptionsTable_Castbar(true, UF.CreateAndUpdateUF, "player"),
-		--aurabar = GetOptionsTable_AuraBars(true, UF.CreateAndUpdateUF, "player"),
+		aurabar = GetOptionsTable_AuraBars(true, UF.CreateAndUpdateUF, "player"),
 		raidicon = GetOptionsTable_RaidIcon(UF.CreateAndUpdateUF, "player"),
 		classbar = {
 			order = 1000,
