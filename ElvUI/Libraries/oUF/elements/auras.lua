@@ -227,7 +227,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 	end
 
 	if button.icon then button.icon:SetTexture(texture) end
-	if button.count then button.count:SetText(count > 1 and count) end
+	-- if button.count then button.count:SetText(count > 1 and count) end
 
 	local size = element.size or 16
 	button:SetWidth(size)
