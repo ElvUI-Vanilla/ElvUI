@@ -335,7 +335,8 @@ end
 function mod:OnShow(self)
 	isTarget = false
 
-	E:Size(self, 0.01)
+	self:SetWidth(0.01)
+	self:SetHeight(0.01)
 
 	mod.VisiblePlates[self.UnitFrame] = true
 
