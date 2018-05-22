@@ -543,7 +543,7 @@ function mod:QueueObject(object)
 		object:SetTexture("")
 		object:SetTexCoord(0, 0, 0, 0)
 	elseif objectType == "FontString" then
-		E:Width(object, 0.001)
+		object:SetWidth(0.001)
 	elseif objectType == "StatusBar" then
 		object:SetStatusBarTexture("")
 	end
