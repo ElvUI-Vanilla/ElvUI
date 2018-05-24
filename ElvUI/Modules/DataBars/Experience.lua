@@ -158,6 +158,7 @@ function mod:LoadExperienceBar()
 	E:RegisterStatusBar(self.expBar.rested)
 	self.expBar.rested:SetStatusBarColor(1, 0, 1, 0.2)
 	E:Kill(ExhaustionTick)
+	E:Kill(MainMenuExpBar)
 
 	self:UpdateExperienceDimensions()
 
