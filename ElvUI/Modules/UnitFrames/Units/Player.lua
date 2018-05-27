@@ -82,10 +82,8 @@ function UF:Update_PlayerFrame(frame, db)
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
 
-	frame:SetWidth(frame.UNIT_WIDTH)
-	frame:SetHeight(frame.UNIT_HEIGHT)
-	_G[frame:GetName().."Mover"]:SetWidth(frame:GetWidth())
-	_G[frame:GetName().."Mover"]:SetHeight(frame:GetHeight())
+	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
+	E:Size(_G[frame:GetName().."Mover"], frame:GetWidth(), frame:GetHeight())
 
 	UF:Configure_InfoPanel(frame)
 
