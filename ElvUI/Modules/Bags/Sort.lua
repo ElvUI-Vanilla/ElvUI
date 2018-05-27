@@ -152,15 +152,8 @@ local function UpdateLocation(from, to)
 end
 
 local function PrimarySort(a, b)
-	local aName, _, _, aLvl, _, _, _, _, _, _, aPrice = GetItemInfo(bagIDs[a])
-	local bName, _, _, bLvl, _, _, _, _, _, _, bPrice = GetItemInfo(bagIDs[b])
-
-	if aLvl ~= bLvl and aLvl and bLvl then
-		return aLvl > bLvl
-	end
-	if aPrice ~= bPrice and aPrice and bPrice then
-		return aPrice > bPrice
-	end
+	local aName = GetItemInfo(bagIDs[a])
+	local bName = GetItemInfo(bagIDs[b])
 
 	if aName and bName then
 		return aName < bName
@@ -185,8 +178,8 @@ local function DefaultSort(a, b)
 		end
 	end
 
-	local _, _, aRarity, _, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
-	local _, _, bRarity, _, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
+	local _, _, aRarity, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
+	local _, _, bRarity, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
 
 	aRarity = bagQualities[a]
 	bRarity = bagQualities[b]
@@ -368,19 +361,29 @@ function B:ScanBags()
 	end
 end
 
--- TEMPORARY MAYBE UNTIL ALTERNATIVE FIX
-function B:GetItemFamily(bagType)
-	local itemSubType = select(6, GetItemInfo(match(bagType, "item:(%d+)")))
+local bagType = {
+  ["Bag"] = 0,
+  ["Quiver"] = 1,
+  ["Ammo Pouch"] = 2,
+  ["Soul Bag"] = 4,
+}
 
-	if strupper(itemSubType) == "BAG" then
-		return 0
-	elseif strupper(itemSubType) == "QUIVER" then
-		return  1
-	elseif strupper(itemSubType) == "KEYRING" then
-		return  -2
-	else
-		return nil
+function B:GetItemFamily(bagID)
+	if bagID == KEYRING_CONTAINER then return KEYRING_CONTAINER end
+	if bagID == 0 then return 0 end
+
+	local _, _, id = strfind(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)) or "", "item:(%d+)")
+	if id then
+		local _, _, _, _, itemType, subType = GetItemInfo(id)
+		local bagSubType = bagType[subType]
+
+		if bagSubType == 0 then return 0 end -- based off https://wow.gamepedia.com/ItemFamily
+		if bagSubType == 1 then return 1 end
+		if bagSubType == 2 then return 2 end
+		if bagSubType == 4 then return 4 end
 	end
+
+	return nil
 end
 
 function B:IsSpecialtyBag(bagID)
@@ -392,8 +395,8 @@ function B:IsSpecialtyBag(bagID)
 	local bag = GetInventoryItemLink("player", inventorySlot)
 	if not bag then return false end
 
-	local family = B:GetItemFamily(bag)
-	if family == 0 or family == nil then return false end
+	local family = B:GetItemFamily(bagID)
+	if family == 0 or family == nil then return false else return false end
 
 	return family
 end
@@ -402,7 +405,7 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
 	local itemFamily = B:GetItemFamily(item)
 	if itemFamily and itemFamily > 0 then
-		local equipSlot = select(7, GetItemInfo(item))
+		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
 		end
