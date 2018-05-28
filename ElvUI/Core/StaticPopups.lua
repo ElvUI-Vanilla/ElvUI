@@ -25,25 +25,21 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 	OnShow = function()
 		this.editBox:SetAutoFocus(false)
 		this.editBox.width = this.editBox:GetWidth()
-		this.editBox:SetWidth(220)
+		E:Width(this.editBox, 220)
 		this.editBox:SetText("https://github.com/ElvUI-Vanilla/ElvUI")
 		this.editBox:HighlightText()
-		-- ChatEdit_FocusActiveWindow()
 	end,
 	OnHide = function()
-		this.editBox:SetWidth(this.editBox.width or 50)
+		E:Width(this.editBox, this.editBox.width or 50)
 		this.editBox.width = nil
 	end,
 	hideOnEscape = 1,
 	button1 = OKAY,
-	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	EditBoxOnEnterPressed = function()
-		-- ChatEdit_FocusActiveWindow()
 		this:GetParent():Hide()
 	end,
 	EditBoxOnEscapePressed = function()
-		-- ChatEdit_FocusActiveWindow()
 		this:GetParent():Hide()
 	end,
 	EditBoxOnTextChanged = function()
@@ -52,7 +48,6 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 		end
 		this:HighlightText()
 		this:ClearFocus()
-		-- ChatEdit_FocusActiveWindow()
 	end,
 	OnEditFocusGained = function()
 		this:HighlightText()
@@ -63,7 +58,6 @@ E.PopupDialogs["ELVUI_UPDATE_AVAILABLE"] = {
 E.PopupDialogs["CLIQUE_ADVERT"] = {
 	text = L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."],
 	button1 = YES,
-	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	showAlert = 1
 }
@@ -127,7 +121,6 @@ E.PopupDialogs["INCOMPATIBLE_ADDON"] = {
 E.PopupDialogs["PIXELPERFECT_CHANGED"] = {
 	text = L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."],
 	button1 = ACCEPT,
-	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	timeout = 0,
 	whileDead = 1,
@@ -137,7 +130,6 @@ E.PopupDialogs["PIXELPERFECT_CHANGED"] = {
 E.PopupDialogs["CONFIGAURA_SET"] = {
 	text = L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."],
 	button1 = ACCEPT,
-	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = E.noop,
 	timeout = 0,
 	whileDead = 1,
@@ -235,7 +227,6 @@ E.PopupDialogs["BUY_BANK_SLOT"] = {
 E.PopupDialogs["CANNOT_BUY_BANK_SLOT"] = {
 	text = L["Can't buy anymore slots!"],
 	button1 = ACCEPT,
-	button2 = CLOSE, -- Temporary until further fix
 	timeout = 0,
 	whileDead = 1
 }
@@ -243,7 +234,6 @@ E.PopupDialogs["CANNOT_BUY_BANK_SLOT"] = {
 E.PopupDialogs["NO_BANK_BAGS"] = {
 	text = L["You must purchase a bank slot first!"],
 	button1 = ACCEPT,
-	button2 = CLOSE, -- Temporary until further fix
 	timeout = 0,
 	whileDead = 1
 }
@@ -262,7 +252,6 @@ E.PopupDialogs["RESETUI_CHECK"] = {
 E.PopupDialogs["HARLEM_SHAKE"] = {
 	text = L["ElvUI needs to perform database optimizations please be patient."],
 	button1 = OKAY,
-	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = function()
 		if E.isMassiveShaking then
 			E:StopHarlemShake()
@@ -278,7 +267,6 @@ E.PopupDialogs["HARLEM_SHAKE"] = {
 E.PopupDialogs["HELLO_KITTY"] = {
 	text = L["ElvUI needs to perform database optimizations please be patient."],
 	button1 = OKAY,
-	button2 = CLOSE, -- Temporary until further fix
 	OnAccept = function()
 		E:SetupHelloKitty()
 	end,
@@ -645,7 +633,7 @@ function E:StaticPopup_Resize(dialog, which)
 	end
 
 	if width > maxWidthSoFar then
-		dialog:SetWidth(width)
+		E:Width(dialog, width)
 		dialog.maxWidthSoFar = width
 	end
 
@@ -657,7 +645,7 @@ function E:StaticPopup_Resize(dialog, which)
 	end
 
 	if height > maxHeightSoFar then
-		dialog:SetHeight(height)
+		E:Height(dialog, height)
 		dialog.maxHeightSoFar = height
 	end
 end
@@ -773,9 +761,9 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 		end
 		editBox:SetText("")
 		if info.editBoxWidth then
-			editBox:SetWidth(info.editBoxWidth)
+			E:Width(editBox, info.editBoxWidth)
 		else
-			editBox:SetWidth(130)
+			E:Width(editBox, 130)
 		end
 	else
 		editBox:Hide()
@@ -804,7 +792,9 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 		tinsert(tempButtonLocs, button2)
 
 		for i = getn(tempButtonLocs), 1, -1 do
-			tempButtonLocs[i]:SetText(info["button"..i])
+			if info["button"..i] then
+				tempButtonLocs[i]:SetText(info["button"..i])
+			end
 			tempButtonLocs[i]:Hide()
 			tempButtonLocs[i]:ClearAllPoints()
 			if not (info["button"..i] and (not info["DisplayButton"..i] or info["DisplayButton"..i](dialog))) then
@@ -827,9 +817,9 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 
 			local width = tempButtonLocs[i]:GetTextWidth()
 			if width > 110 then
-				tempButtonLocs[i]:SetWidth(width + 20)
+				E:Width(tempButtonLocs[i], width + 20)
 			else
-				tempButtonLocs[i]:SetWidth(120)
+				E:Width(tempButtonLocs[i], 120)
 			end
 			tempButtonLocs[i]:Enable()
 			tempButtonLocs[i]:Show()
