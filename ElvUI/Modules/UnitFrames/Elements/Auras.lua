@@ -390,7 +390,7 @@ function UF:PostUpdateAura(unit, button)
 
 	local size = button:GetParent().size
 	if size then
-		button:SetSize(size, size)
+		E:Size(button, size)
 	end
 
 	if button.expiration and button.duration and (button.duration ~= 0) then
