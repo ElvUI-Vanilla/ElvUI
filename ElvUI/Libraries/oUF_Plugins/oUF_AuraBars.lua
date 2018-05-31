@@ -370,8 +370,7 @@ end
 
 local function Enable(self)
 	if self.AuraBars then
-		self:RegisterEvent("PLAYER_AURAS_CHANGED")
-		self:SetScript("OnEvent", function() Update(self, event, "player") end)
+		self:RegisterEvent("PLAYER_AURAS_CHANGED", Update)
 		self.AuraBars:SetHeight(1)
 		self.AuraBars.bars = self.AuraBars.bars or {}
 		self.AuraBars.SetAnchors = SetAnchors
