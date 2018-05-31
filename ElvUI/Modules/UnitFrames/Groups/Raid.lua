@@ -32,6 +32,7 @@ function UF:Construct_RaidFrames()
 	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self);
 
+	self.GPS = UF:Construct_GPS(self)
 	self.InfoPanel = UF:Construct_InfoPanel(self)
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
@@ -111,6 +112,8 @@ function UF:Update_RaidFrames(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidIcon(frame)
 

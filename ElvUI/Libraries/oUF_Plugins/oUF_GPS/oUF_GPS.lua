@@ -30,7 +30,6 @@ local GetAngle = function(unit1, unit2)
 	if x1 <= 0 and y1 <= 0 then return nil end
 	local x2, y2 = GetPlayerMapPosition(unit2)
 	if x2 <= 0 and y2 <= 0 then return nil end
-	-- print(pi2, GetPlayerFacing(), y2, y1, x2, x1)
 	return -pi2 - GetPlayerFacing() - atan2(y2 - y1, x2 - x1)
 end
 
@@ -38,39 +37,39 @@ local minThrottle = 0.02
 local numArrows, inRange, unit, GPS
 local Update = function(self, elapsed)
 	if self.elapsed and self.elapsed > (self.throttle or minThrottle)  then
-		numArrows = 0;
+		numArrows = 0
 		for _, object in next, _FRAMES do
 			if object:IsShown()  then
-				GPS = object.GPS;
-				unit = object.unit;
+				GPS = object.GPS
+				unit = object.unit
 				if unit  then
 					if unit and GPS.outOfRange  then
-						inRange = true;
+						inRange = CheckInteractDistance(unit, 4)
 					end
 
 					if not unit or not (UnitInParty(unit) or UnitInRaid(unit)) or UnitIsUnit(unit, "player") or not UnitIsConnected(unit) or (GPS.onMouseOver and (GetMouseFocus() ~= object)) or (GPS.outOfRange and inRange)  then
 						GPS:Hide()
 					else
-						local angle = GetAngle("player", unit);
+						local angle = GetAngle("player", unit)
 						if angle == nil  then
-							GPS:Hide();
+							GPS:Hide()
 						else
-							GPS:Show();
-							RotateTexture(GPS.Texture, angle);
+							GPS:Show()
+							RotateTexture(GPS.Texture, angle)
 
-							numArrows = numArrows + 1;
+							numArrows = numArrows + 1
 						end
 					end
 				else
-					GPS:Hide();
+					GPS:Hide()
 				end
 			end
 		end
 
-		self.elapsed = 0;
-		self.throttle = max(minThrottle, 0.005 * numArrows);
+		self.elapsed = 0
+		self.throttle = max(minThrottle, 0.005 * numArrows)
 	else
-		self.elapsed = (self.elapsed or 0) + tonumber(elapsed);
+		self.elapsed = (self.elapsed or 0) + elapsed
 	end
 end
 

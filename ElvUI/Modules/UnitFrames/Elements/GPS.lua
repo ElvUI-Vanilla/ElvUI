@@ -10,7 +10,7 @@ local CreateFrame = CreateFrame
 function UF:Construct_GPS(frame)
 	local gps = CreateFrame("Frame", nil, frame)
 	gps:SetFrameLevel(frame:GetFrameLevel() + 50)
-	-- gps:Hide()
+	gps:Hide()
 
 	gps.Texture = gps:CreateTexture("OVERLAY")
 	gps.Texture:SetTexture([[Interface\AddOns\ElvUI\media\textures\arrow.tga]])
