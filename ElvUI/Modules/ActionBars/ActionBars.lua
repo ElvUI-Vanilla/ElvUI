@@ -12,6 +12,8 @@ local mod = math.mod
 local CreateFrame = CreateFrame
 local UIFrameFadeIn = UIFrameFadeIn
 local UIFrameFadeOut = UIFrameFadeOut
+local GetNumShapeshiftForms = GetNumShapeshiftForms
+local GetShapeshiftFormInfo = GetShapeshiftFormInfo
 
 E.ActionBars = AB
 
