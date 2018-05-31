@@ -468,6 +468,25 @@ function AB:ActionButton_GetPagedID(button)
 	end
 end
 
+local function IsInShapeshiftForm()
+	for i = 1, GetNumShapeshiftForms() do
+		_, _, active = GetShapeshiftFormInfo(i)
+		if active ~= nil then return true end
+	end
+	return false
+end
+
+function AB:UNIT_PORTRAIT_UPDATE()
+	if arg1 == "player" and E.myclass == "DRUID" then
+		local inForm = IsInShapeshiftForm()
+		if inForm then
+			BonusActionBarFrame:Show()
+		else
+			BonusActionBarFrame:Hide()
+		end
+	end
+end
+
 function AB:Initialize()
 	self.db = E.db.actionbar
 
@@ -490,8 +509,9 @@ function AB:Initialize()
 	self:SecureHook("ActionButton_Update")
 	self:RawHook("ActionButton_GetPagedID")
 	self:SecureHook("PetActionBar_Update", "UpdatePet")
+	self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
 
-	if E.myclass == "WARRIOR" then
+	if E.myclass == "WARRIOR" or (E.myclass == "DRUID" and IsInShapeshiftForm()) then
 		BonusActionBarFrame:Show()
 	end
 end
