@@ -472,7 +472,7 @@ end
 
 local function IsInShapeshiftForm()
 	for i = 1, GetNumShapeshiftForms() do
-		_, _, active = GetShapeshiftFormInfo(i)
+		local _, _, active = GetShapeshiftFormInfo(i)
 		if active ~= nil then return true end
 	end
 	return false
