@@ -5,9 +5,6 @@ local _G = _G
 local tinsert = table.insert
 
 local CreateFrame = CreateFrame
-local InCombatLockdown = InCombatLockdown
-local UnregisterStateDriver = UnregisterStateDriver
-local RegisterStateDriver = RegisterStateDriver
 local IsInInstance = IsInInstance
 
 local ns = oUF
@@ -33,6 +30,7 @@ function UF:Construct_PartyFrames()
 	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 
+	self.GPS = UF:Construct_GPS(self)
 	self.unitframeType = "party"
 
 	UF:Update_StatusBars()
@@ -113,6 +111,8 @@ function UF:Update_PartyFrames(frame, db)
 	UF:Configure_Portrait(frame)
 
 	UF:Configure_RaidIcon(frame)
+
+	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidRoleIcons(frame)
 

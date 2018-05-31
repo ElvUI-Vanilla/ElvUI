@@ -23,6 +23,7 @@ function UF:Construct_TargetFrame(frame)
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.GPS = self:Construct_GPS(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 
@@ -87,6 +88,8 @@ function UF:Update_TargetFrame(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidIcon(frame)
 

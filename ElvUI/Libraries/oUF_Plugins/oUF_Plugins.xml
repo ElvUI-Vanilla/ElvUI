@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="oUF_AuraBars\oUF_AuraBars.xml"/>
 	<Include file="oUF_Smooth\oUF_Smooth.xml"/>
+	<Include file="oUF_GPS\oUF_GPS.xml"/>
 </Ui>
