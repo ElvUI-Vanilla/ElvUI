@@ -1,3 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="oUF_AuraBars.lua"/>
+	<Include file="oUF_AuraBars\oUF_AuraBars.xml"/>
+	<Include file="oUF_Smooth\oUF_Smooth.xml"/>
 </Ui>
