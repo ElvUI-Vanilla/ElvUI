@@ -267,18 +267,18 @@ end
 
 local arrow
 function GetPlayerFacing()
-    if not arrow then
-        local obj = Minimap
-        for i = 1, obj:GetNumChildren() do
-            local child = select(i, obj:GetChildren())
-            if child and child.GetModel and child:GetModel() == "Interface\\Minimap\\MinimapArrow" then
-                arrow = child
-                break
-            end
-        end
-    end
+	if not arrow then
+		local obj = Minimap
+		for i = 1, obj:GetNumChildren() do
+			local child = select(i, obj:GetChildren())
+			if child and child.GetModel and child:GetModel() == "Interface\\Minimap\\MinimapArrow" then
+				arrow = child
+				break
+			end
+		end
+	end
 
-    return arrow and arrow:GetFacing()
+	return arrow and arrow:GetFacing()
 end
 
 function ToggleFrame(frame)
