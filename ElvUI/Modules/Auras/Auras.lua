@@ -416,10 +416,10 @@ function A:UpdateHeader(header)
 
 	local i, aura, buffIndex, icon = 0
 	while true do
-		aura = freshTable()
 		buffIndex = GetPlayerBuff(i, filter)
 		icon = GetPlayerBuffTexture(buffIndex)
-		if not icon then releaseTable(aura) break end
+		if not icon then break end
+		aura = freshTable()
 		aura.count, aura.dispelType, aura.expires = GetPlayerBuffApplications(buffIndex), GetPlayerBuffDispelType(buffIndex), GetPlayerBuffTimeLeft(buffIndex)
 		aura.icon = icon
 		aura.index = buffIndex
