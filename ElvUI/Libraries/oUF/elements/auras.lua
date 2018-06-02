@@ -138,8 +138,8 @@ local function createAuraIcon(element, index)
 	return button
 end
 
-local function customFilter(element, unit, button, name)
-	if name then return true end
+local function customFilter(element, unit, button, texture)
+	if texture then return true end
 end
 
 local function updateIcon(element, unit, index, offset, filter, isDebuff, visible)
@@ -156,7 +156,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 	end
 
 	if element.forceShow then
-		name, rank, texture = GetSpellInfo(26993)
+		texture = "Interface\\Icons\\Spell_Holy_DivineSpirit"
 		count, dispelType, duration, expiration = 5, 'Magic', 0, 60
 	end
 
@@ -198,7 +198,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 	--]]
 	local show = true
 	if not element.forceShow then
-	--	show = (element.CustomFilter or customFilter) (element, unit, button, name, rank, texture, count, dispelType, duration, expiration)
+		show = (element.CustomFilter or customFilter) (element, unit, button, texture, count, dispelType, duration, expiration)
 	end
 
 	if not show then return HIDDEN end

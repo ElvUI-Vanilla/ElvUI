@@ -445,7 +445,7 @@ function UF:UpdateAuraTimer(elapsed)
 	end
 end
 
-function UF:AuraFilter(unit, button, name, _, _, _, dispelType, duration, expiration, caster, isStealable, _, spellID)
+function UF:AuraFilter(unit, button, texture, count, dispelType, duration, expiration)
 	local db = self:GetParent().db
 	if not db or not db[self.type] then return true end
 
@@ -491,10 +491,10 @@ function UF:UpdateBuffsHeaderPosition()
 
 	if numDebuffs == 0 then
 		buffs:ClearAllPoints()
-		buffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		E:Point(buffs, debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	else
 		buffs:ClearAllPoints()
-		buffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		E:Point(buffs, buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	end
 end
 
@@ -506,10 +506,10 @@ function UF:UpdateDebuffsHeaderPosition()
 
 	if numBuffs == 0 then
 		debuffs:ClearAllPoints()
-		debuffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		E:Point(debuff, sbuffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	else
 		debuffs:ClearAllPoints()
-		debuffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		E:Point(debuff, sdebuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	end
 end
 
@@ -522,17 +522,17 @@ function UF:UpdateBuffsPositionAndDebuffHeight()
 
 	if numDebuffs == 0 then
 		buffs:ClearAllPoints()
-		buffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		E:Point(buffs, debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	else
 		buffs:ClearAllPoints()
-		buffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		E:Point(buffs, buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	end
 
 	if numDebuffs > 0 then
 		local numRows = ceil(numDebuffs/db.debuffs.perrow)
-		debuffs:Height(debuffs.size * (numRows > db.debuffs.numrows and db.debuffs.numrows or numRows))
+		E:Height(debuffs, debuffs.size * (numRows > db.debuffs.numrows and db.debuffs.numrows or numRows))
 	else
-		debuffs:Height(debuffs.size)
+		E:Height(debuffs, debuffs.size)
 	end
 end
 
@@ -545,17 +545,17 @@ function UF:UpdateDebuffsPositionAndBuffHeight()
 
 	if numBuffs == 0 then
 		debuffs:ClearAllPoints()
-		debuffs:Point(buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
+		E:Point(debuffs, buffs.point, buffs.attachTo, buffs.anchorPoint, buffs.xOffset, buffs.yOffset)
 	else
 		debuffs:ClearAllPoints()
-		debuffs:Point(debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
+		E:Point(debuffs, debuffs.point, debuffs.attachTo, debuffs.anchorPoint, debuffs.xOffset, debuffs.yOffset)
 	end
 
 	if numBuffs > 0 then
 		local numRows = ceil(numBuffs/db.buffs.perrow)
-		buffs:Height(buffs.size * (numRows > db.buffs.numrows and db.buffs.numrows or numRows))
+		E:Height(buffs, buffs.size * (numRows > db.buffs.numrows and db.buffs.numrows or numRows))
 	else
-		buffs:Height(buffs.size)
+		E:Height(buffs, buffs.size)
 	end
 end
 
@@ -567,9 +567,9 @@ function UF:UpdateBuffsHeight()
 
 	if numBuffs > 0 then
 		local numRows = ceil(numBuffs/db.buffs.perrow)
-		buffs:Height(buffs.size * (numRows > db.buffs.numrows and db.buffs.numrows or numRows))
+		E:Height(buffs, buffs.size * (numRows > db.buffs.numrows and db.buffs.numrows or numRows))
 	else
-		buffs:Height(buffs.size)
+		E:Height(buffs, buffs.size)
 		-- Any way to get rid of the last row as well?
 		-- Using buffs:SetHeight(0) makes frames anchored to this one disappear
 	end
@@ -583,9 +583,9 @@ function UF:UpdateDebuffsHeight()
 
 	if numDebuffs > 0 then
 		local numRows = ceil(numDebuffs/db.debuffs.perrow)
-		debuffs:Height(debuffs.size * (numRows > db.debuffs.numrows and db.debuffs.numrows or numRows))
+		E:Height(debuffs, debuffs.size * (numRows > db.debuffs.numrows and db.debuffs.numrows or numRows))
 	else
-		debuffs:Height(debuffs.size)
+		E:Height(debuffs, debuffs.size)
 		-- Any way to get rid of the last row as well?
 		-- Using debuffs:SetHeight(0) makes frames anchored to this one disappear
 	end

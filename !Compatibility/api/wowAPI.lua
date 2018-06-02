@@ -14,8 +14,8 @@ local GetItemInfo = GetItemInfo
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
 local IsInInstance = IsInInstance
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+--local UnitBuff = UnitBuff
+--local UnitDebuff = UnitDebuff
 local UnitLevel = UnitLevel
 --WoW Variables
 local DUNGEON_DIFFICULTY1 = DUNGEON_DIFFICULTY1
@@ -145,11 +145,11 @@ function UnitAura(unit, i, filter)
 	end
 
 	if not filter or match(filter, "(HELPFUL)") then
-		local name, rank, aura, count, duration, maxDuration = UnitBuff(unit, i, filter)
-		return name, rank, aura, count, nil, duration or 0, maxDuration or 0
+		local texture, count = UnitBuff(unit, i, filter)
+		return texture, count
 	else
-		local name, rank, aura, count, dType, duration, maxDuration = UnitDebuff(unit, i, filter)
-		return name, rank, aura, count, dType, duration or 0, maxDuration or 0
+		local texture, count, dType = UnitDebuff(unit, i, filter)
+		return texture, count, dType
 	end
 end
 

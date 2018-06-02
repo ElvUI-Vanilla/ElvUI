@@ -28,7 +28,6 @@ function UF:Construct_PlayerFrame(frame)
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
-	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
