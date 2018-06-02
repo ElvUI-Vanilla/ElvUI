@@ -98,20 +98,20 @@ local function UpdateTooltip()
 	end
 end
 
-local function OnEnter()
-	if not this:IsVisible() then return end
+local function OnEnter(self)
+	if not self:IsVisible() then return end
 
-	GameTooltip:SetOwner(this, "ANCHOR_BOTTOMLEFT", -5, -5)
-	this:UpdateTooltip()
+	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT", -5, -5)
+	self:UpdateTooltip()
 end
 
 local function OnLeave()
 	GameTooltip:Hide()
 end
 
-local function OnClick()
-	if this.index and this.index > 0 then
-		CancelPlayerBuff(this.index)
+local function OnClick(self)
+	if self.index and self.index >= 0 then
+		CancelPlayerBuff(self.index)
 	end
 end
 
@@ -136,9 +136,9 @@ function A:CreateIcon(button)
 	E:SetInside(button.highlight)
 
 	button.UpdateTooltip = UpdateTooltip
-	button:SetScript("OnEnter", OnEnter)
-	button:SetScript("OnLeave", OnLeave)
-	button:SetScript("OnClick", OnClick)
+	button:SetScript("OnEnter", function() OnEnter(this) end)
+	button:SetScript("OnLeave", function() OnLeave() end)
+	button:SetScript("OnClick", function() OnClick(this) end)
 
 	E:SetTemplate(button, "Default")
 end
@@ -414,15 +414,15 @@ function A:UpdateHeader(header)
 		weaponPosition = 1
 	end
 
-	for i = 0, 23 do
+	for i = 1, 24 do
 		local aura, _ = freshTable()
-		aura.index, aura.untilCancelled = GetPlayerBuff(i, filter)
-		if aura.index < 0 then
-			releaseTable(aura)
-		else
-			aura.icon, aura.count, aura.dispelType, aura.expires = GetPlayerBuffTexture(aura.index), GetPlayerBuffApplications(aura.index), GetPlayerBuffDispelType(aura.index), GetPlayerBuffTimeLeft(aura.index)
+		local buffIndex = GetPlayerBuff(i - 1, filter)
+		aura.icon = GetPlayerBuffTexture(buffIndex)
+		if aura.icon then
+			aura.count, aura.dispelType, aura.expires = GetPlayerBuffApplications(buffIndex), GetPlayerBuffDispelType(buffIndex), GetPlayerBuffTimeLeft(buffIndex)
+			aura.index = buffIndex
 			aura.filter = filter
-			sortingTable[i+1] = aura
+			tinsert(sortingTable, aura)
 		end
 	end
 
