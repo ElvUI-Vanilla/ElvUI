@@ -81,7 +81,7 @@ local HIDDEN = 0
 
 local function UpdateTooltip(self)
 	if self:GetParent().__owner.unit == "player" then
-		GameTooltip:SetPlayerBuff(self:GetID())
+		GameTooltip:SetPlayerBuff(self:GetID() - 1)
 	elseif self.filter == 'HELPFUL' then
 		GameTooltip:SetUnitBuff(self:GetParent().__owner.unit, self:GetID(), self.filter)
 	else
@@ -143,16 +143,18 @@ local function customFilter(element, unit, button, texture)
 end
 
 local function updateIcon(element, unit, index, offset, filter, isDebuff, visible)
-	local texture, count, dispelType, duration, expiration = UnitAura(unit, index, filter)
+	local texture, count, dispelType, duration, expiration
 
 	if unit == "player" then
 		local idx = GetPlayerBuff(index - 1, filter)
-		if idx < 0 then return end
-		index = idx
+		--if idx < 0 then return end
+		--index = idx
 		texture = GetPlayerBuffTexture(idx)
 		count = GetPlayerBuffApplications(idx)
 		dispelType = GetPlayerBuffDispelType(idx)
 		duration = GetPlayerBuffTimeLeft(idx)
+	else
+		texture, count, dispelType, duration, expiration = UnitAura(unit, index, filter)
 	end
 
 	if element.forceShow then
@@ -160,97 +162,99 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 		count, dispelType, duration, expiration = 5, 'Magic', 0, 60
 	end
 
-	if not texture then return end
+	if texture then
+		local position = visible + offset + 1
+		local button = element[position]
+		if not button then
+			--[[ Override: Auras:CreateIcon(position)
+			Used to create the aura button at a given position.
 
-	local position = visible + offset + 1
-	local button = element[position]
-	if not button then
-		--[[ Override: Auras:CreateIcon(position)
-		Used to create the aura button at a given position.
+			* self     - the widget holding the aura buttons
+			* position - the position at which the aura button is to be created (number)
 
-		* self     - the widget holding the aura buttons
-		* position - the position at which the aura button is to be created (number)
+			## Returns
+
+			* button - the button used to represent the aura (Button)
+			--]]
+			button = (element.CreateIcon or createAuraIcon) (element, position)
+
+			tinsert(element, button)
+			element.createdIcons = element.createdIcons + 1
+		end
+
+		button.filter = filter
+		button.isDebuff = isDebuff
+
+		--[[ Override: Auras:CustomFilter(unit, button, ...)
+		Defines a custom filter that controls if the aura button should be shown.
+
+		* self   - the widget holding the aura buttons
+		* unit   - the unit on which the aura is cast (string)
+		* button - the button displaying the aura (Button)
+		* ...    - the return values from [UnitAura](http://wowprogramming.com/docs/api/UnitAura)
 
 		## Returns
 
-		* button - the button used to represent the aura (Button)
+		* show - indicates whether the aura button should be shown (boolean)
 		--]]
-		button = (element.CreateIcon or createAuraIcon) (element, position)
+		local show = true
+		if not element.forceShow then
+			show = (element.CustomFilter or customFilter) (element, unit, button, texture, count, dispelType, duration, expiration)
+		end
 
-		tinsert(element, button)
-		element.createdIcons = element.createdIcons + 1
-	end
+		if show then
+			-- We might want to consider delaying the creation of an actual cooldown
+			-- object to this point, but I think that will just make things needlessly
+			-- complicated.
+			if button.cd and not element.disableCooldown then
+				if duration and duration > 0 then
+					-- button.cd:SetCooldown(GetTime() - (duration - expiration), duration)
+					button.cd:Show()
+				else
+					button.cd:Hide()
+				end
+			end
 
-	button.filter = filter
-	button.isDebuff = isDebuff
+			if button.overlay then
+				if (isDebuff and element.showDebuffType) or (not isDebuff and element.showBuffType) or element.showType then
+					local color = DebuffTypeColor[dispelType] or DebuffTypeColor.none
 
-	--[[ Override: Auras:CustomFilter(unit, button, ...)
-	Defines a custom filter that controls if the aura button should be shown.
+					button.overlay:SetVertexColor(color.r, color.g, color.b)
+					button.overlay:Show()
+				else
+					button.overlay:Hide()
+				end
+			end
 
-	* self   - the widget holding the aura buttons
-	* unit   - the unit on which the aura is cast (string)
-	* button - the button displaying the aura (Button)
-	* ...    - the return values from [UnitAura](http://wowprogramming.com/docs/api/UnitAura)
+			if button.icon then button.icon:SetTexture(texture) end
+			-- if button.count then button.count:SetText(count > 1 and count) end
 
-	## Returns
+			local size = element.size or 16
+			button:SetWidth(size)
+			button:SetHeight(size)
 
-	* show - indicates whether the aura button should be shown (boolean)
-	--]]
-	local show = true
-	if not element.forceShow then
-		show = (element.CustomFilter or customFilter) (element, unit, button, texture, count, dispelType, duration, expiration)
-	end
+			button:EnableMouse(not element.disableMouse)
+			button:SetID(index)
+			button:Show()
 
-	if not show then return HIDDEN end
+			--[[ Callback: Auras:PostUpdateIcon(unit, button, index, position)
+			Called after the aura button has been updated.
 
-	-- We might want to consider delaying the creation of an actual cooldown
-	-- object to this point, but I think that will just make things needlessly
-	-- complicated.
-	if button.cd and not element.disableCooldown then
-		if duration and duration > 0 then
-			-- button.cd:SetCooldown(GetTime() - (duration - expiration), duration)
-			button.cd:Show()
+			* self     - the widget holding the aura buttons
+			* unit     - the unit on which the aura is cast (string)
+			* button   - the updated aura button (Button)
+			* index    - the index of the aura (number)
+			* position - the actual position of the aura button (number)
+			--]]
+			if element.PostUpdateIcon then
+				element:PostUpdateIcon(unit, button, index, position)
+			end
+
+			return VISIBLE
 		else
-			button.cd:Hide()
+			return HIDDEN
 		end
 	end
-
-	if button.overlay then
-		if (isDebuff and element.showDebuffType) or (not isDebuff and element.showBuffType) or element.showType then
-			local color = DebuffTypeColor[dispelType] or DebuffTypeColor.none
-
-			button.overlay:SetVertexColor(color.r, color.g, color.b)
-			button.overlay:Show()
-		else
-			button.overlay:Hide()
-		end
-	end
-
-	if button.icon then button.icon:SetTexture(texture) end
-	-- if button.count then button.count:SetText(count > 1 and count) end
-
-	local size = element.size or 16
-	button:SetWidth(size)
-	button:SetHeight(size)
-
-	button:EnableMouse(not element.disableMouse)
-	button:SetID(index)
-	button:Show()
-
-	--[[ Callback: Auras:PostUpdateIcon(unit, button, index, position)
-	Called after the aura button has been updated.
-
-	* self     - the widget holding the aura buttons
-	* unit     - the unit on which the aura is cast (string)
-	* button   - the updated aura button (Button)
-	* index    - the index of the aura (number)
-	* position - the actual position of the aura button (number)
-	--]]
-	if element.PostUpdateIcon then
-		element:PostUpdateIcon(unit, button, index, position)
-	end
-
-	return VISIBLE
 end
 
 local function SetPosition(element, from, to)
@@ -302,6 +306,8 @@ local function filterIcons(element, unit, filter, limit, isDebuff, offset, dontH
 end
 
 local function UpdateAuras(self, event, unit)
+	if event == "PLAYER_AURAS_CHANGED" then unit = "player" end
+
 	if self.unit ~= unit then return end
 
 	local auras = self.Auras

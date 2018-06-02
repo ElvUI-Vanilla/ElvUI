@@ -22,7 +22,7 @@ local UnitIsUnit = UnitIsUnit
 function UF:Construct_Buffs(frame)
 	local buffs = CreateFrame("Frame", frame:GetName().."Buffs", frame)
 	buffs.spacing = E.Spacing
-	--buffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
+	buffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
 	buffs.PostCreateIcon = self.Construct_AuraIcon
 	buffs.PostUpdateIcon = self.PostUpdateAura
 	--buffs.CustomFilter = self.AuraFilter
@@ -37,7 +37,7 @@ end
 function UF:Construct_Debuffs(frame)
 	local debuffs = CreateFrame("Frame", frame:GetName().."Debuffs", frame)
 	debuffs.spacing = E.Spacing
-	--debuffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
+	debuffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
 	debuffs.PostCreateIcon = self.Construct_AuraIcon
 	debuffs.PostUpdateIcon = self.PostUpdateAura
 	--debuffs.CustomFilter = self.AuraFilter
@@ -298,7 +298,7 @@ local function SortAurasByCaster(a, b)
 end
 
 function UF:SortAuras()
-	if not self.db then return end
+	--[[if not self.db then return end
 
 	--Sorting by Index is Default
 	if self.db.sortMethod == "TIME_REMAINING" then
@@ -309,7 +309,7 @@ function UF:SortAuras()
 		tsort(self, SortAurasByDuration)
 	elseif self.db.sortMethod == "PLAYER" then
 		tsort(self, SortAurasByCaster)
-	end
+	end]]
 
 	--Look into possibly applying filter priorities for auras here.
 
