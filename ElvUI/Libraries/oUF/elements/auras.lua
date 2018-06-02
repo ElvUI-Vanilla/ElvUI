@@ -120,8 +120,8 @@ local function createAuraIcon(element, index)
 	button.overlay = overlay
 
 	button.UpdateTooltip = UpdateTooltip
-	button:SetScript('OnEnter', onEnter)
-	button:SetScript('OnLeave', onLeave)
+	button:SetScript('OnEnter', function() onEnter(this) end)
+	button:SetScript('OnLeave', function() onLeave(this) end)
 
 	button.icon = icon
 	button.count = count
@@ -143,7 +143,7 @@ local function customFilter(element, unit, button, name)
 end
 
 local function updateIcon(element, unit, index, offset, filter, isDebuff, visible)
-	local name, rank, texture, count, dispelType, duration, expiration = UnitAura(unit, index, filter)
+	local texture, count, dispelType, duration, expiration = UnitAura(unit, index, filter)
 
 	if unit == "player" then
 		local idx = GetPlayerBuff(index - 1, filter)
@@ -160,7 +160,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 		count, dispelType, duration, expiration = 5, 'Magic', 0, 60
 	end
 
-	if not name then return end
+	if not texture then return end
 
 	local position = visible + offset + 1
 	local button = element[position]
@@ -198,7 +198,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 	--]]
 	local show = true
 	if not element.forceShow then
-		show = (element.CustomFilter or customFilter) (element, unit, button, name, rank, texture, count, dispelType, duration, expiration)
+	--	show = (element.CustomFilter or customFilter) (element, unit, button, name, rank, texture, count, dispelType, duration, expiration)
 	end
 
 	if not show then return HIDDEN end
@@ -479,6 +479,7 @@ end
 local function Enable(self)
 	if self.Buffs or self.Debuffs or self.Auras then
 		self:RegisterEvent('PLAYER_AURAS_CHANGED', UpdateAuras)
+		self:RegisterEvent('UNIT_AURA', UpdateAuras)
 
 		local buffs = self.Buffs
 		if buffs then
@@ -520,6 +521,7 @@ end
 local function Disable(self)
 	if self.Buffs or self.Debuffs or self.Auras then
 		self:UnregisterEvent('PLAYER_AURAS_CHANGED', UpdateAuras)
+		self:UnregisterEvent('UNIT_AURA', UpdateAuras)
 
 		if self.Buffs then self.Buffs:Hide() end
 		if self.Debuffs then self.Debuffs:Hide() end

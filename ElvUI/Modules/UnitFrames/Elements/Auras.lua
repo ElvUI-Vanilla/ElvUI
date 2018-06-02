@@ -22,10 +22,10 @@ local UnitIsUnit = UnitIsUnit
 function UF:Construct_Buffs(frame)
 	local buffs = CreateFrame("Frame", frame:GetName().."Buffs", frame)
 	buffs.spacing = E.Spacing
-	buffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
+	--buffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
 	buffs.PostCreateIcon = self.Construct_AuraIcon
 	buffs.PostUpdateIcon = self.PostUpdateAura
-	buffs.CustomFilter = self.AuraFilter
+	--buffs.CustomFilter = self.AuraFilter
 	buffs:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 10) --Make them appear above any text element
 	buffs.type = "buffs"
 	--Set initial width to prevent division by zero. This value doesn't matter, as it will be updated later
@@ -37,10 +37,10 @@ end
 function UF:Construct_Debuffs(frame)
 	local debuffs = CreateFrame("Frame", frame:GetName().."Debuffs", frame)
 	debuffs.spacing = E.Spacing
-	debuffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
+	--debuffs.PreSetPosition = (not frame:GetScript("OnUpdate")) and self.SortAuras or nil
 	debuffs.PostCreateIcon = self.Construct_AuraIcon
 	debuffs.PostUpdateIcon = self.PostUpdateAura
-	debuffs.CustomFilter = self.AuraFilter
+	--debuffs.CustomFilter = self.AuraFilter
 	debuffs.type = "debuffs"
 	debuffs:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 10) --Make them appear above any text element
 	--Set initial width to prevent division by zero. This value doesn't matter, as it will be updated later
@@ -138,7 +138,7 @@ function UF:Configure_Auras(frame, auraType)
 	auras.size = db[auraType].sizeOverride ~= 0 and db[auraType].sizeOverride or ((((auras:GetWidth() - (auras.spacing*(auras.num/rows - 1))) / auras.num)) * rows)
 
 	if db[auraType].sizeOverride and db[auraType].sizeOverride > 0 then
-		auras:Width(db[auraType].perrow * db[auraType].sizeOverride)
+		E:Width(auras, db[auraType].perrow * db[auraType].sizeOverride)
 	end
 
 	local attachTo = self:GetAuraAnchorFrame(frame, db[auraType].attachTo, db.debuffs.attachTo == "BUFFS" and db.buffs.attachTo == "DEBUFFS")

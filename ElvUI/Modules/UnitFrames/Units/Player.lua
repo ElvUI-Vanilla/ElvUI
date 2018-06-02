@@ -99,6 +99,10 @@ function UF:Update_PlayerFrame(frame, db)
 
 	UF:Configure_Portrait(frame)
 
+	UF:EnableDisable_Auras(frame)
+	UF:Configure_Auras(frame, "Buffs")
+	UF:Configure_Auras(frame, "Debuffs")
+
 	UF:Configure_RaidIcon(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + db.castbar.height))

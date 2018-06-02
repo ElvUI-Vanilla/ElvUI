@@ -89,6 +89,10 @@ function UF:Update_TargetFrame(frame, db)
 
 	UF:Configure_Portrait(frame)
 
+	UF:EnableDisable_Auras(frame)
+	UF:Configure_Auras(frame, "Buffs")
+	UF:Configure_Auras(frame, "Debuffs")
+
 	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidIcon(frame)
