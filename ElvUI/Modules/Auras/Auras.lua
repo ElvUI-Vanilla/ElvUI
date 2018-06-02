@@ -414,16 +414,18 @@ function A:UpdateHeader(header)
 		weaponPosition = 1
 	end
 
-	for i = 1, 24 do
-		local aura, _ = freshTable()
-		local buffIndex = GetPlayerBuff(i - 1, filter)
-		aura.icon = GetPlayerBuffTexture(buffIndex)
-		if aura.icon then
-			aura.count, aura.dispelType, aura.expires = GetPlayerBuffApplications(buffIndex), GetPlayerBuffDispelType(buffIndex), GetPlayerBuffTimeLeft(buffIndex)
-			aura.index = buffIndex
-			aura.filter = filter
-			tinsert(sortingTable, aura)
-		end
+	local i, aura, buffIndex, icon = 0
+	while true do
+		aura = freshTable()
+		buffIndex = GetPlayerBuff(i, filter)
+		icon = GetPlayerBuffTexture(buffIndex)
+		if not icon then releaseTable(aura) break end
+		aura.count, aura.dispelType, aura.expires = GetPlayerBuffApplications(buffIndex), GetPlayerBuffDispelType(buffIndex), GetPlayerBuffTimeLeft(buffIndex)
+		aura.icon = icon
+		aura.index = buffIndex
+		aura.filter = filter
+		tinsert(sortingTable, aura)
+		i = i + 1
 	end
 
 	local sortMethod = (sorters[db.sortMethod] or sorters["INDEX"])[db.sortDir == "-"][db.seperateOwn]
@@ -431,7 +433,7 @@ function A:UpdateHeader(header)
 
 	self:ConfigureAuras(header, sortingTable, weaponPosition)
 	while sortingTable[1] do
-		releaseTable(wipe(sortingTable))
+		releaseTable(tremove(sortingTable))
 	end
 end
 
