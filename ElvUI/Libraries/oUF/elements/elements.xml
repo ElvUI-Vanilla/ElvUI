@@ -9,8 +9,8 @@
 	<!--<Script file="pvpindicator.lua"/>-->
 	<Script file="portrait.lua"/>
 <!--
-	<Script file="range.lua"/>
-	<Script file="castbar.lua"/>-->
+	<Script file="range.lua"/>-->
+	<Script file="castbar.lua"/>
 	<Script file="tags.lua"/>
 	<Script file="masterlooterindicator.lua"/>
 	<Script file="assistantindicator.lua"/>

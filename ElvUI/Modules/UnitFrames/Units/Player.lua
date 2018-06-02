@@ -24,7 +24,7 @@ function UF:Construct_PlayerFrame(frame)
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	-- frame.Castbar = self:Construct_Castbar(frame, L["Player Castbar"])
+	frame.Castbar = self:Construct_Castbar(frame, L["Player Castbar"])
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
@@ -101,6 +101,8 @@ function UF:Update_PlayerFrame(frame, db)
 	UF:EnableDisable_Auras(frame)
 	UF:Configure_Auras(frame, "Buffs")
 	UF:Configure_Auras(frame, "Debuffs")
+
+	UF:Configure_Castbar(frame)
 
 	UF:Configure_RaidIcon(frame)
 

@@ -174,6 +174,15 @@ P["nameplates"] = {
 				["channelTimeFormat"] = "CURRENT",
 				["timeToHold"] = 0
 			},
+			["castbar"] = {
+				["enable"] = true,
+				["height"] = 8,
+				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
+				["timeToHold"] = 0,
+				["iconPosition"] = "RIGHT",
+			},
 			["buffs"] = {
 				["enable"] = true,
 				["numAuras"] = 4,
