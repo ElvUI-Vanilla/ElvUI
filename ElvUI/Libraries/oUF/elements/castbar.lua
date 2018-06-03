@@ -142,13 +142,14 @@ end
 
 local function SPELLCAST_DELAYED(self, event, delay)
 	local element = self.Castbar
-	local name, _, _, _, startTime = UnitCastingInfo(unit)
-	if(not startTime or not element:IsShown()) then return end
+	if(not delay or not element:IsShown()) then return end
 
-	local duration = GetTime() - (self.startTime / 1000)
+	delay = delay / 1000
+	local duration = GetTime() - (element.startTime / 1000)
 	if(duration < 0) then duration = 0 end
 
-	element.delay = element.delay + element.duration - duration
+	element.startTime = element.startTime + delay
+	element.delay = delay
 	element.duration = duration
 
 	element:SetValue(duration)
@@ -165,11 +166,10 @@ end
 
 local function SPELLCAST_STOP(self, event)
 	local element = self.Castbar
-	if(spellname and (element.castName ~= spellname)) then
-		return
-	end
 
-	element.casting = nil
+	if(element:IsShown()) then
+		element.casting = nil
+	end
 
 	--[[ Callback: Castbar:PostCastStop(unit, name)
 	Called after the element has been updated when a spell cast has finished.
@@ -218,23 +218,17 @@ local function SPELLCAST_CHANNEL_START(self, event, endTime, name)
 	element:Show()
 end
 
-local function SPELLCAST_CHANNEL_UPDATE(self, event, unit)
-	if(self.unit ~= unit and self.realUnit ~= unit) then return end
-
+local function SPELLCAST_CHANNEL_UPDATE(self, event, delay)
 	local element = self.Castbar
-	local name, _, _, _, startTime, endTime = UnitChannelInfo(unit)
-	if(not name or not element:IsShown()) then
+	if(not element:IsShown()) then
 		return
 	end
 
-	local duration = (endTime / 1000) - GetTime()
-	element.delay = element.delay + element.duration - duration
+	delay = delay / 1000
+	local duration = element.startTime + (element.max - GetTime()) - delay
+	element.delay = element.delay - duration
 	element.duration = duration
-	element.max = (endTime - startTime) / 1000
-	element.startTime = startTime / 1000
-	element.endTime = endTime / 1000
-
-	element:SetMinMaxValues(0, element.max)
+	element.startTime = element.startTime - duration
 	element:SetValue(duration)
 
 	--[[ Callback: Castbar:PostChannelUpdate(unit, name)
@@ -298,7 +292,7 @@ local function onUpdate(self, elapsed)
 			self.Spark:SetPoint("CENTER", self, "LEFT", (duration / ((self.startTime + self.max) - self.startTime)) * self:GetWidth(), 0)
 		end
 	elseif(self.channeling) then
-		local duration = (self.max + self.startTime) - GetTime()
+		local duration = self.startTime + (self.max - GetTime())
 
 		if(duration <= 0) then
 			self.channeling = nil
