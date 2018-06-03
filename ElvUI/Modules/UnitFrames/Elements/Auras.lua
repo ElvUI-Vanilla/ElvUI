@@ -372,20 +372,8 @@ function UF:PostUpdateAura(unit, button)
 	end
 
 	if button.isDebuff then
-		if not button.isFriend and not button.isPlayer then --[[and (not E.isDebuffWhiteList[name])]]
-			button:SetBackdropBorderColor(0.9, 0.1, 0.1)
-			button.icon:SetDesaturated((unit and not find(unit, "arena%d")) and true or false)
-		else
-			local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
-			button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
-			button.icon:SetDesaturated(false)
-		end
-	else
-		if button.isStealable and not button.isFriend then
-			button:SetBackdropBorderColor(237/255, 234/255, 142/255)
-		else
-			button:SetBackdropBorderColor(unpack(E["media"].unitframeBorderColor))
-		end
+		local color = (button.dtype and DebuffTypeColor[button.dtype]) or DebuffTypeColor.none
+		button:SetBackdropBorderColor(color.r * 0.6, color.g * 0.6, color.b * 0.6)
 	end
 
 	local size = button:GetParent().size
