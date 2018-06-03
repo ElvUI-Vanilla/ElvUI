@@ -49,11 +49,17 @@ A default texture will be applied to the StatusBar and Texture widgets if they d
     local Text = Castbar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     Text:SetPoint("LEFT", Castbar)
 
+    -- Add spell icon
+    local Icon = Castbar:CreateTexture(nil, 'OVERLAY')
+    Icon:SetSize(20, 20)
+    Icon:SetPoint('TOPLEFT', Castbar, 'TOPLEFT')
+
     -- Register it with oUF
     Castbar.bg = Background
     Castbar.Spark = Spark
     Castbar.Time = Time
     Castbar.Text = Text
+	Castbar.Icon = Icon
     self.Castbar = Castbar
 --]]
 local ns = oUF
@@ -61,7 +67,22 @@ local oUF = ns.oUF
 
 local match = string.match
 
+local GetActionTexture = GetActionTexture
+local GetSpellTexture = GetSpellTexture
 local GetTime = GetTime
+
+local iconTexture
+hooksecurefunc("UseAction", function(id)
+	iconTexture = GetActionTexture(id)
+end)
+
+hooksecurefunc("CastSpell", function(id, bookType)
+	iconTexture = GetSpellTexture(id, bookType)
+end)
+
+hooksecurefunc("UseContainerItem", function(id, index)
+	iconTexture = GetContainerItemInfo(id, index)
+end)
 
 local function SPELLCAST_START(self, event, name, endTime)
 	local element = self.Castbar
@@ -81,6 +102,11 @@ local function SPELLCAST_START(self, event, name, endTime)
 	element:SetValue(0)
 
 	if(element.Text) then element.Text:SetText(name) end
+	if(element.Icon) then
+		if(not iconTexture) then iconTexture = "Interface\\Icons\\Ability_Ambush" end
+		element.Icon:SetTexture(iconTexture)
+		iconTexture = nil
+	end
 	if(element.Time) then element.Time:SetText() end
 
 	--[[ Callback: Castbar:PostCastStart(unit, name)
@@ -167,6 +193,10 @@ end
 local function SPELLCAST_STOP(self, event)
 	local element = self.Castbar
 
+	if(element.casting or element.channeling) then
+		iconTexture = nil
+	end
+
 	if(element:IsShown()) then
 		element.casting = nil
 	end
@@ -204,6 +234,11 @@ local function SPELLCAST_CHANNEL_START(self, event, endTime, name)
 	element:SetValue(endTime)
 
 	if(element.Text) then element.Text:SetText(name) end
+	if(element.Icon) then
+		if(not iconTexture) then iconTexture = "Interface\\Icons\\Ability_Ambush" end
+		element.Icon:SetTexture(iconTexture)
+		iconTexture = nil
+	end
 	if(element.Time) then element.Time:SetText() end
 
 	--[[ Callback: Castbar:PostChannelStart(unit, name)
