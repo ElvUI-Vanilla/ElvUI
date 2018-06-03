@@ -640,7 +640,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 	return config
 end
 
-local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits)
+local function GetOptionsTable_Castbar(updateFunc, groupName, numUnits)
 	local config = {
 		order = 800,
 		type = "group",
@@ -668,7 +668,7 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 					frameName = gsub(frameName, "t(arget)", "T%1")
 
 					if numUnits then
-						for i=1, numUnits do
+						for i = 1, numUnits do
 							local castbar = _G[frameName..i].Castbar
 							if not castbar.oldHide then
 								castbar.oldHide = castbar.Hide
@@ -697,59 +697,54 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 			},
 			configureButton = {
 				order = 4,
+				type = "execute",
 				name = L["Coloring"],
 				desc = L["This opens the UnitFrames Color settings. These settings affect all unitframes."],
-				type = "execute",
-				func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup", "castBars") end,
+				func = function() ACD:SelectGroup("ElvUI", "unitframe", "generalOptionsGroup", "allColorsGroup", "castBars") end
 			},
 			enable = {
-				type = "toggle",
 				order = 5,
-				name = L["Enable"],
+				type = "toggle",
+				name = L["Enable"]
 			},
 			width = {
 				order = 6,
-				name = L["Width"],
 				type = "range",
+				name = L["Width"],
 				softMax = 600,
-				min = 50, max = GetScreenWidth(), step = 1,
+				min = 50, max = GetScreenWidth(), step = 1
 			},
 			height = {
 				order = 7,
-				name = L["Height"],
 				type = "range",
-				min = 10, max = 85, step = 1,
-			},
-			latency = {
-				order = 8,
-				name = L["Latency"],
-				type = "toggle",
+				name = L["Height"],
+				min = 10, max = 85, step = 1
 			},
 			format = {
-				order = 9,
+				order = 8,
 				type = "select",
 				name = L["Format"],
 				values = {
 					["CURRENTMAX"] = L["Current / Max"],
 					["CURRENT"] = L["Current"],
-					["REMAINING"] = L["Remaining"],
-				},
+					["REMAINING"] = L["Remaining"]
+				}
 			},
 			spark = {
-				order = 10,
+				order = 9,
 				type = "toggle",
 				name = L["Spark"],
-				desc = L["Display a spark texture at the end of the castbar statusbar to help show the differance between castbar and backdrop."],
+				desc = L["Display a spark texture at the end of the castbar statusbar to help show the differance between castbar and backdrop."]
 			},
 			insideInfoPanel = {
-				order = 11,
+				order = 10,
+				type = "toggle",
 				name = L["Inside Information Panel"],
 				desc = L["Display the castbar inside the information panel, the icon will be displayed outside the main unitframe."],
-				type = "toggle",
-				disabled = function() return not E.db.unitframe.units[groupName].infoPanel or not E.db.unitframe.units[groupName].infoPanel.enable end,
+				disabled = function() return not E.db.unitframe.units[groupName].infoPanel or not E.db.unitframe.units[groupName].infoPanel.enable end
 			},
 			iconSettings = {
-				order = 13,
+				order = 11,
 				type = "group",
 				name = L["Icon"],
 				guiInline = true,
@@ -758,22 +753,22 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 				args = {
 					icon = {
 						order = 1,
-						name = L["Enable"],
 						type = "toggle",
+						name = L["Enable"]
 					},
 					iconAttached = {
 						order = 2,
-						name = L["Icon Inside Castbar"],
-						desc = L["Display the castbar icon inside the castbar."],
 						type = "toggle",
+						name = L["Icon Inside Castbar"],
+						desc = L["Display the castbar icon inside the castbar."]
 					},
 					iconSize = {
 						order = 3,
+						type = "range",
 						name = L["Icon Size"],
 						desc = L["This dictates the size of the icon when it is not attached to the castbar."],
-						type = "range",
 						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end,
-						min = 8, max = 150, step = 1,
+						min = 8, max = 150, step = 1
 					},
 					iconAttachedTo = {
 						order = 4,
@@ -782,81 +777,34 @@ local function GetOptionsTable_Castbar(hasTicks, updateFunc, groupName, numUnits
 						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end,
 						values = {
 							["Frame"] = L["Frame"],
-							["Castbar"] = L["Castbar"],
-						},
+							["Castbar"] = L["Castbar"]
+						}
 					},
 					iconPosition = {
 						type = "select",
 						order = 5,
 						name = L["Position"],
 						values = positionValues,
-						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end,
+						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end
 					},
 					iconXOffset = {
 						order = 5,
 						type = "range",
 						name = L["xOffset"],
 						min = -300, max = 300, step = 1,
-						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end,
+						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end
 					},
 					iconYOffset = {
 						order = 6,
 						type = "range",
 						name = L["yOffset"],
 						min = -300, max = 300, step = 1,
-						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end,
-					},
-				},
-			},
-		},
+						disabled = function() return E.db.unitframe.units[groupName].castbar.iconAttached end
+					}
+				}
+			}
+		}
 	}
-
-
-	if hasTicks then
-		config.args.displayTarget = {
-			order = 11,
-			type = "toggle",
-			name = L["Display Target"],
-			desc = L["Display the target of your current cast. Useful for mouseover casts."],
-		}
-
-		config.args.ticks = {
-			order = 12,
-			type = "group",
-			guiInline = true,
-			name = L["Ticks"],
-			args = {
-				ticks = {
-					order = 1,
-					type = 'toggle',
-					name = L["Ticks"],
-					desc = L["Display tick marks on the castbar for channelled spells. This will adjust automatically for spells like Drain Soul and add additional ticks based on haste."],
-				},
-				tickColor = {
-					order = 2,
-					type = "color",
-					name = COLOR,
-					hasAlpha = true,
-					get = function(info)
-						local c = E.db.unitframe.units[groupName].castbar.tickColor
-						local d = P.unitframe.units[groupName].castbar.tickColor
-						return c.r, c.g, c.b, c.a, d.r, d.g, d.b, d.a
-					end,
-					set = function(info, r, g, b, a)
-						local c = E.db.unitframe.units[groupName].castbar.tickColor
-						c.r, c.g, c.b, c.a = r, g, b, a
-						updateFunc(UF, groupName, numUnits)
-					end,
-				},
-				tickWidth = {
-					order = 3,
-					type = "range",
-					name = L["Width"],
-					min = 1, max = 20, step = 1,
-				},
-			},
-		}
-	end
 
 	return config
 end
@@ -2735,7 +2683,7 @@ E.Options.args.unitframe.args.player = {
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUF, "player"),
 		buffs = GetOptionsTable_Auras(true, "buffs", false, UF.CreateAndUpdateUF, "player"),
 		debuffs = GetOptionsTable_Auras(true, "debuffs", false, UF.CreateAndUpdateUF, "player"),
-		castbar = GetOptionsTable_Castbar(true, UF.CreateAndUpdateUF, "player"),
+		castbar = GetOptionsTable_Castbar(UF.CreateAndUpdateUF, "player"),
 		aurabar = GetOptionsTable_AuraBars(true, UF.CreateAndUpdateUF, "player"),
 		raidicon = GetOptionsTable_RaidIcon(UF.CreateAndUpdateUF, "player"),
 		classbar = {
@@ -3096,7 +3044,7 @@ E.Options.args.unitframe.args.target = {
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUF, "target"),
 		--buffs = GetOptionsTable_Auras(false, "buffs", false, UF.CreateAndUpdateUF, "target"),
 		--debuffs = GetOptionsTable_Auras(false, "debuffs", false, UF.CreateAndUpdateUF, "target"),
-		castbar = GetOptionsTable_Castbar(false, UF.CreateAndUpdateUF, "target"),
+		--castbar = GetOptionsTable_Castbar(UF.CreateAndUpdateUF, "target"),
 		--aurabar = GetOptionsTable_AuraBars(false, UF.CreateAndUpdateUF, "target"),
 		raidicon = GetOptionsTable_RaidIcon(UF.CreateAndUpdateUF, "target"),
 		GPSArrow = GetOptionsTableForNonGroup_GPS("target"),
@@ -3646,7 +3594,7 @@ E.Options.args.unitframe.args.pet = {
 		portrait = GetOptionsTable_Portrait(UF.CreateAndUpdateUF, "pet"),
 		--buffs = GetOptionsTable_Auras(true, "buffs", false, UF.CreateAndUpdateUF, "pet"),
 		--debuffs = GetOptionsTable_Auras(true, "debuffs", false, UF.CreateAndUpdateUF, "pet"),
-		castbar = GetOptionsTable_Castbar(false, UF.CreateAndUpdateUF, "pet"),
+		--castbar = GetOptionsTable_Castbar(UF.CreateAndUpdateUF, "pet"),
 	},
 }
 

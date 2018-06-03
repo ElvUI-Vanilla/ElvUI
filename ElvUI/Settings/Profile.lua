@@ -174,15 +174,6 @@ P["nameplates"] = {
 				["channelTimeFormat"] = "CURRENT",
 				["timeToHold"] = 0
 			},
-			["castbar"] = {
-				["enable"] = true,
-				["height"] = 8,
-				["hideTime"] = false,
-				["castTimeFormat"] = "CURRENT",
-				["channelTimeFormat"] = "CURRENT",
-				["timeToHold"] = 0,
-				["iconPosition"] = "RIGHT",
-			},
 			["buffs"] = {
 				["enable"] = true,
 				["numAuras"] = 4,
@@ -747,20 +738,15 @@ P["unitframe"] = {
 				["width"] = 270,
 				["height"] = 18,
 				["icon"] = true,
-				["latency"] = true,
 				["format"] = "REMAINING",
-				["ticks"] = true,
 				["spark"] = true,
-				["displayTarget"] = false,
 				["iconSize"] = 42,
 				["iconAttached"] = true,
 				["insideInfoPanel"] = true,
 				["iconAttachedTo"] = "Frame",
 				["iconPosition"] = "LEFT",
 				["iconXOffset"] = -10,
-				["iconYOffset"] = 0,
-				["tickWidth"] = 1,
-				["tickColor"] = {r = 0, g = 0, b = 0, a = 0.8},
+				["iconYOffset"] = 0
 			},
 			["classbar"] = {
 				["enable"] = true,

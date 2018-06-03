@@ -65,9 +65,8 @@ A default texture will be applied to the StatusBar and Texture widgets if they d
 local ns = oUF
 local oUF = ns.oUF
 
-local match = string.match
-
 local GetActionTexture = GetActionTexture
+local GetContainerItemInfo = GetContainerItemInfo
 local GetSpellTexture = GetSpellTexture
 local GetTime = GetTime
 
