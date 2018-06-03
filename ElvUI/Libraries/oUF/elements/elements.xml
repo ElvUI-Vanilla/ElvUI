@@ -6,7 +6,7 @@
 	<Script file="leaderindicator.lua"/>
 	<Script file="combatindicator.lua"/>
 	<Script file="restingindicator.lua"/>
-	<!--<Script file="pvpindicator.lua"/>-->
+	<Script file="pvpindicator.lua"/>
 	<Script file="portrait.lua"/>
 <!--
 	<Script file="range.lua"/>-->
@@ -14,8 +14,7 @@
 	<Script file="tags.lua"/>
 	<Script file="masterlooterindicator.lua"/>
 	<Script file="assistantindicator.lua"/>
-	<!--<Script file="readycheckindicator.lua"/>
-	<Script file="combopoints.lua"/>
+	<!--<Script file="combopoints.lua"/>
 	<Script file="raidroleindicator.lua"/>
 	<Script file="happinessindicator.lua"/>
 -->

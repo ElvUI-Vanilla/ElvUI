@@ -9,6 +9,7 @@
 	<Script file="Portrait.lua"/>
 	<Script file="Power.lua"/>
 	<Script file="InfoPanel.lua"/>
+	<Script file="PvPIndicator.lua"/>
 	<Script file="RaidIcon.lua"/>
 	<Script file="RaidRoleIcons.lua"/>
 	<Script file="RestingIndicator.lua"/>

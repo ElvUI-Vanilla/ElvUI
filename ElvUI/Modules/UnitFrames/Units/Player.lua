@@ -28,6 +28,7 @@ function UF:Construct_PlayerFrame(frame)
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
+	frame.PvPText = self:Construct_PvPIndicator(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
@@ -93,6 +94,8 @@ function UF:Update_PlayerFrame(frame, db)
 	UF:Configure_HealthBar(frame)
 
 	UF:UpdateNameSettings(frame)
+
+	UF:Configure_PVPIndicator(frame)
 
 	UF:Configure_Power(frame)
 

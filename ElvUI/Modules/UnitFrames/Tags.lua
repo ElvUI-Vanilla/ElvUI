@@ -485,6 +485,7 @@ end
 ElvUF.Tags.OnUpdateThrottle["pvptimer"] = 1
 ElvUF.Tags.Methods["pvptimer"] = function(unit)
 	if (UnitIsPVPFreeForAll(unit) or UnitIsPVP(unit)) then
+		--[[
 		local timer = GetPVPTimer()
 
 		if timer ~= 301000 and timer ~= -1 then
@@ -492,8 +493,9 @@ ElvUF.Tags.Methods["pvptimer"] = function(unit)
 			local secs = floor((timer / 1000) - (mins * 60))
 			return format("%s (%01.f:%02.f)", PVP, mins, secs)
 		else
+		]]
 			return PVP
-		end
+		--end
 	else
 		return ""
 	end

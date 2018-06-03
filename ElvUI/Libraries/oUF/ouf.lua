@@ -273,8 +273,8 @@ local function togglemenu(self, unit)
 	ToggleDropDownMenu(1, nil, secureDropdown, "cursor")
 end
 
-local function onShow()
-	return this:UpdateAllElements("OnShow")
+local function onShow(self)
+	return self:UpdateAllElements("OnShow")
 end
 
 local function initObject(unit, style, styleFunc, header, ...)
@@ -332,7 +332,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 		styleFunc(object, objectUnit, not header)
 
 		--object:SetScript("OnAttributeChanged", onAttributeChanged)
-		object:SetScript("OnShow", onShow)
+		object:SetScript("OnShow", function() onShow(this) end)
 
 		activeElements[object] = {}
 		for element in next, elements do

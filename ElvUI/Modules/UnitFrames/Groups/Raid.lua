@@ -30,7 +30,7 @@ function UF:Construct_RaidFrames()
 	self.Portrait2D = UF:Construct_Portrait(self, "texture")
 	self.Name = UF:Construct_NameText(self)
 	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
-	self.RaidTargetIndicator = UF:Construct_RaidIcon(self);
+	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 
 	self.GPS = UF:Construct_GPS(self)
 	self.InfoPanel = UF:Construct_InfoPanel(self)
