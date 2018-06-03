@@ -16,7 +16,6 @@ At least one of the above widgets must be present for the element to work.
 ## Options
 
 .disableMouse       - Disables mouse events (boolean)
-.disableCooldown    - Disables the cooldown spiral (boolean)
 .size               - Aura icon size. Defaults to 16 (number)
 .spacing            - Spacing between each icon. Defaults to 0 (number)
 .['spacing-x']      - Horizontal spacing between each icon. Takes priority over `spacing` (number)
@@ -104,9 +103,6 @@ local function createAuraIcon(element, index)
 	local button = CreateFrame('Button', '$parentButton' .. index, element)
 	button:RegisterForClicks('RightButtonUp')
 
-	local cd = CreateFrame('Frame', '$parentCooldown', button, 'oUF_CooldownFrameTemplate')
-	cd:SetAllPoints()
-
 	local icon = button:CreateTexture(nil, 'BORDER')
 	icon:SetAllPoints()
 
@@ -121,11 +117,10 @@ local function createAuraIcon(element, index)
 
 	button.UpdateTooltip = UpdateTooltip
 	button:SetScript('OnEnter', function() onEnter(this) end)
-	button:SetScript('OnLeave', function() onLeave(this) end)
+	button:SetScript('OnLeave', onLeave)
 
 	button.icon = icon
 	button.count = count
-	button.cd = cd
 
 	--[[ Callback: Auras:PostCreateIcon(button)
 	Called after a new aura button has been created.
@@ -203,18 +198,6 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 		end
 
 		if show then
-			-- We might want to consider delaying the creation of an actual cooldown
-			-- object to this point, but I think that will just make things needlessly
-			-- complicated.
-			if button.cd and not element.disableCooldown then
-				if duration and duration > 0 then
-					-- button.cd:SetCooldown(GetTime() - (duration - expiration), duration)
-					button.cd:Show()
-				else
-					button.cd:Hide()
-				end
-			end
-
 			if button.overlay then
 				if (isDebuff and element.showDebuffType) or (not isDebuff and element.showBuffType) or element.showType then
 					local color = DebuffTypeColor[dispelType] or DebuffTypeColor.none
@@ -227,7 +210,7 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 			end
 
 			if button.icon then button.icon:SetTexture(texture) end
-			-- if button.count then button.count:SetText(count > 1 and count) end
+			if button.count then button.count:SetText(count > 1 and count) end
 
 			local size = element.size or 16
 			button:SetWidth(size)
@@ -339,7 +322,6 @@ local function UpdateAuras(self, event, unit)
 			end
 
 			-- Prevent the button from displaying anything.
-			if button.cd then button.cd:Hide() end
 			if button.icon then button.icon:SetTexture() end
 			if button.overlay then button.overlay:Hide() end
 			if button.stealable then button.stealable:Hide() end
