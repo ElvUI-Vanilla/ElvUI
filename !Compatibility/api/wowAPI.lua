@@ -10,6 +10,7 @@ local unpack = unpack
 local find, format, gsub, lower, match, upper = string.find, string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
+local GetInventoryItemTexture = GetInventoryItemTexture
 local GetItemInfo = GetItemInfo
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
@@ -21,6 +22,7 @@ local UnitLevel = UnitLevel
 local DUNGEON_DIFFICULTY1 = DUNGEON_DIFFICULTY1
 local TIMEMANAGER_AM = gsub(TIME_TWELVEHOURAM, "^.-(%w+)$", "%1")
 local TIMEMANAGER_PM = gsub(TIME_TWELVEHOURPM, "^.-(%w+)$", "%1")
+local DURABILITY_TEMPLATE = gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%d+)")
 --Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
@@ -472,4 +474,24 @@ function GetItemCount(itemName)
 	end
 
 	return count
+end
+
+local scan
+function GetInventoryItemDurability(slot)
+	if not GetInventoryItemTexture("player", slot) then return nil, nil end
+
+	if not scan then
+		scan = CreateFrame("GameTooltip", "DurabilityScan", nil, "ShoppingTooltipTemplate")
+		scan:SetOwner(UIParent, "ANCHOR_NONE")
+	end
+
+	scan:ClearLines()
+	scan:SetInventoryItem("player", slot)
+
+	for i = 4, scan:NumLines() do
+		local text = _G[scan:GetName().."TextLeft"..i]:GetText()
+		for durability, max in string.gfind(text, DURABILITY_TEMPLATE) do
+			return tonumber(durability), tonumber(max)
+		end
+	end
 end
