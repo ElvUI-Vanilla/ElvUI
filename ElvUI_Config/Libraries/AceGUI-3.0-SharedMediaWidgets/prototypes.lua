@@ -16,6 +16,9 @@ local Media = LibStub("LibSharedMedia-3.0")
 
 AGSMW = AGSMW or {}
 
+local next, ipairs = next, ipairs
+local tinsert, tremove = table.insert, table.remove
+
 AceGUIWidgetLSMlists = {
 	['font'] = Media:HashTable("font"),
 	['sound'] = Media:HashTable("sound"),
@@ -160,38 +163,40 @@ do
 		self.slider:SetValue(self.slider:GetValue()+(15*dir*-1))
 	end
 
+	local numContentRepo = 0
 	local function AddFrame(self, frame)
 		frame:SetParent(self.contentframe)
 		frame:SetFrameStrata(self:GetFrameStrata())
 		frame:SetFrameLevel(self:GetFrameLevel() + 100)
 
 		if next(self.contentRepo) then
-			frame:SetPoint("TOPLEFT", self.contentRepo[getn(self.contentRepo)], "BOTTOMLEFT", 0, 0)
-			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
+			frame:SetPoint("TOPLEFT", self.contentRepo[numContentRepo], "BOTTOMLEFT", 0, 0)
 			self.contentframe:SetHeight(self.contentframe:GetHeight() + frame:GetHeight())
-			self.contentRepo[getn(self.contentRepo)+1] = frame
+			numContentRepo = numContentRepo + 1
+			self.contentRepo[numContentRepo] = frame
 		else
 			self.contentframe:SetHeight(frame:GetHeight())
-			frame:SetPoint("TOPLEFT", self.contentframe, "TOPLEFT", 0, 0)
-			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
+			frame:SetPoint("TOPLEFT", self.contentframe, 0, 0)
+			numContentRepo = 1
 			self.contentRepo[1] = frame
 		end
 
-		if self.contentframe:GetHeight() > UIParent:GetHeight()*2/5 - 20 then
-			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -28, 12)
-			self:SetHeight(UIParent:GetHeight()*2/5)
+		if self.contentframe:GetHeight() > GetScreenHeight()*2/5 - 20 then
+			self.scrollframe:SetWidth(128)
+			self:SetHeight(GetScreenHeight()*2/5)
 			self.slider:Show()
-			self:SetScript("OnMouseWheel", OnMouseWheel)
+			self:SetScript("OnMouseWheel", function() OnMouseWheel(this, arg1) end)
 			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, self.contentframe:GetHeight()-self.scrollframe:GetHeight())
 		else
-			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -14, 12)
+			self.scrollframe:SetWidth(142)
 			self:SetHeight(self.contentframe:GetHeight()+25)
 			self.slider:Hide()
 			self:SetScript("OnMouseWheel", nil)
 			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, 0)
 		end
+		frame:SetWidth(self.scrollframe:GetWidth())
 		self.contentframe:SetWidth(self.scrollframe:GetWidth())
 	end
 
@@ -200,6 +205,7 @@ do
 			frame:ReturnSelf()
 			self.contentRepo[i] = nil
 		end
+		numContentRepo = 0
 	end
 
 	local function slider_OnValueChanged()
@@ -210,7 +216,7 @@ do
 	function AGSMW:GetDropDownFrame()
 		local frame
 		if next(DropDownCache) then
-			frame = table.remove(DropDownCache)
+			frame = tremove(DropDownCache)
 		else
 			frame = CreateFrame("Frame", nil, UIParent)
 				frame:SetClampedToScreen(true)
@@ -225,14 +231,13 @@ do
 			frame.contentframe = contentframe
 
 			local scrollframe = CreateFrame("ScrollFrame", nil, frame)
-				scrollframe:SetWidth(160)
+				scrollframe:SetWidth(128)
+				scrollframe:SetHeight((GetScreenHeight()*2/5) - 24)
 				scrollframe:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -13)
-				scrollframe:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 12)
 				scrollframe:SetScrollChild(contentframe)
 			frame.scrollframe = scrollframe
 
 			contentframe:SetPoint("TOPLEFT", scrollframe)
-			contentframe:SetPoint("TOPRIGHT", scrollframe)
 
 			local bgTex = frame:CreateTexture(nil, "ARTWORK")
 				bgTex:SetAllPoints(scrollframe)
@@ -255,7 +260,7 @@ do
 				slider:SetScript("OnValueChanged", slider_OnValueChanged)
 			frame.slider = slider
 		end
-		frame:SetHeight(UIParent:GetHeight()*2/5)
+		frame:SetHeight(GetScreenHeight()*2/5)
 		frame.slider:SetValue(0)
 		frame:Show()
 		return frame
@@ -267,7 +272,7 @@ do
 		frame:Hide()
 		frame:SetBackdrop(frameBackdrop)
 		frame.bgTex:SetTexture(nil)
-		table.insert(DropDownCache, frame)
+		tinsert(DropDownCache, frame)
 		return nil
 	end
 end
