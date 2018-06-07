@@ -17,7 +17,7 @@ local Media = LibStub("LibSharedMedia-3.0")
 AGSMW = AGSMW or {}
 
 local next, ipairs = next, ipairs
-local tinsert, tremove = table.insert, table.remove
+local getn, setn, tinsert, tremove = table.getn, table.setn, table.insert, table.remove
 
 AceGUIWidgetLSMlists = {
 	['font'] = Media:HashTable("font"),
@@ -163,22 +163,19 @@ do
 		self.slider:SetValue(self.slider:GetValue()+(15*dir*-1))
 	end
 
-	local numContentRepo = 0
 	local function AddFrame(self, frame)
 		frame:SetParent(self.contentframe)
 		frame:SetFrameStrata(self:GetFrameStrata())
 		frame:SetFrameLevel(self:GetFrameLevel() + 100)
 
 		if next(self.contentRepo) then
-			frame:SetPoint("TOPLEFT", self.contentRepo[numContentRepo], "BOTTOMLEFT", 0, 0)
+			frame:SetPoint("TOPLEFT", self.contentRepo[getn(self.contentRepo)], "BOTTOMLEFT", 0, 0)
 			self.contentframe:SetHeight(self.contentframe:GetHeight() + frame:GetHeight())
-			numContentRepo = numContentRepo + 1
-			self.contentRepo[numContentRepo] = frame
+			tinsert(self.contentRepo, frame)
 		else
 			self.contentframe:SetHeight(frame:GetHeight())
 			frame:SetPoint("TOPLEFT", self.contentframe, 0, 0)
-			numContentRepo = 1
-			self.contentRepo[1] = frame
+			tinsert(self.contentRepo, frame)
 		end
 
 		if self.contentframe:GetHeight() > GetScreenHeight()*2/5 - 20 then
@@ -205,7 +202,7 @@ do
 			frame:ReturnSelf()
 			self.contentRepo[i] = nil
 		end
-		numContentRepo = 0
+		setn(self.contentRepo, 0)
 	end
 
 	local function slider_OnValueChanged()
