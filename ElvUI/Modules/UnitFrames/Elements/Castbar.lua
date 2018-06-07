@@ -38,6 +38,8 @@ function UF:Construct_Castbar(frame, moverName)
 	castbar:SetClampedToScreen(true)
 	E:CreateBackdrop(castbar, "Default", nil, nil, self.thinBorders, true)
 
+	CreateStatusBarTexturePointer(castbar)
+
 	castbar.Time = castbar:CreateFontString(nil, "OVERLAY")
 	self:Configure_FontString(castbar.Time)
 	castbar.Time:SetPoint("RIGHT", castbar, "RIGHT", -4, 0)
