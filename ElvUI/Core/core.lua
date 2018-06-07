@@ -426,9 +426,9 @@ end
 E.UIParent = CreateFrame("Frame", "ElvUIParent", UIParent)
 E.UIParent:SetFrameLevel(UIParent:GetFrameLevel())
 E.UIParent:SetPoint("CENTER", UIParent, "CENTER")
-E.UIParent:SetHeight(UIParent:GetHeight())
-E.UIParent:SetWidth(UIParent:GetWidth())
-E["snapBars"][table.getn(E["snapBars"]) + 1] = E.UIParent
+E.UIParent:SetHeight(GetScreenHeight())
+E.UIParent:SetWidth(GetScreenWidth())
+tinsert(E["snapBars"], E.UIParent)
 
 E.HiddenFrame = CreateFrame("Frame")
 E.HiddenFrame:Hide()

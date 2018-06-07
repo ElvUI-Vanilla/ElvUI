@@ -154,8 +154,8 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 	end
 
 	if element.forceShow then
-		texture = "Interface\\Icons\\Spell_Holy_DivineSpirit"
-		count, dispelType, duration, expiration = 5, 'Magic', 0, 60
+		texture = 'Interface\\Icons\\Spell_Holy_DivineSpirit'
+		count, dispelType = 5, 'Magic'
 	end
 
 	if texture then

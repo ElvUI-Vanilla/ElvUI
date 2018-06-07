@@ -6,6 +6,7 @@ local Sticky = LibStub("LibSimpleSticky-1.0");
 local _G = _G
 local type, unpack, pairs = type, unpack, pairs
 local format, split, find = string.format, string.split, string.find
+local tinsert = table.insert
 --WoW API / Variables
 local CreateFrame = CreateFrame
 
@@ -72,7 +73,7 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 	end
 
 	E.CreatedMovers[name].mover = f
-	E["snapBars"][getn(E["snapBars"]) + 1] = f
+	tinsert(E["snapBars"], f)
 
 	local fs = f:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(fs)

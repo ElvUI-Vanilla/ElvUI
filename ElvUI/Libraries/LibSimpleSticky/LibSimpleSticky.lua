@@ -24,6 +24,8 @@ local StickyFrames, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not StickyFrames then return end
 
+local ipairs = ipairs
+
 --[[---------------------------------------------------------------------------------
   Class declaration, along with a temporary table to hold any existing OnUpdate
   scripts.
@@ -134,8 +136,7 @@ function StickyFrames:GetUpdateFunc(frame, frameList, xoffset, yoffset, left, to
 		frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x+xoffset, y+yoffset)
 
 		StickyFrames.sticky[frame] = nil
-		for i = 1, table.getn(frameList) do
-			local v = frameList[i]
+		for i, v in ipairs(frameList) do
 			if frame ~= v and frame ~= v:GetParent() and not IsShiftKeyDown() and v:IsVisible() then
 				if self:SnapFrame(frame, v, left, top, right, bottom) then
 					StickyFrames.sticky[frame] = v
