@@ -679,7 +679,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 		if headerUpdate or not self[group].mover then
 			UF["headerFunctions"][group]:Configure_Groups(self[group])
 			if not self[group].isForced and not self[group].blockVisibilityChanges then
-			--	RegisterStateDriver(self[group], "visibility", db.visibility)
+				RegisterStateDriver(self[group], "visibility", db.visibility)
 			end
 		else
 			UF["headerFunctions"][group]:Configure_Groups(self[group])
@@ -693,7 +693,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 				E:EnableMover(self[group].mover:GetName())
 			end
 		else
-		--	UnregisterStateDriver(self[group], "visibility")
+			UnregisterStateDriver(self[group], "visibility")
 			self[group]:Hide()
 			if self[group].mover then
 				E:DisableMover(self[group].mover:GetName())
@@ -708,7 +708,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 			local db = UF.db["units"][group]
 			if db.enable ~= true then
 				UnregisterStateDriver(UF[group], "visibility")
-				--UF[group]:Hide()
+				UF[group]:Hide()
 				if(UF[group].mover) then
 					E:DisableMover(UF[group].mover:GetName())
 				end
