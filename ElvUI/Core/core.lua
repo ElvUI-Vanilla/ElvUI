@@ -15,7 +15,6 @@ local GetActiveTalentGroup = GetActiveTalentGroup
 local GetCVar = GetCVar
 local GetFunctionCPUUsage = GetFunctionCPUUsage
 local GetTalentTabInfo = GetTalentTabInfo
-local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
 local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNumPartyMembers, GetNumRaidMembers
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
@@ -28,6 +27,8 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 _, E.myclass = UnitClass("player") -- Constants
 _, E.myrace = UnitRace("player")
 _, E.myfaction = UnitFactionGroup("player")
+-- The E.myfaction may error when in GM mode
+E.myfaction = E.myfaction or "Others"
 E.myname = UnitName("player")
 E.version = GetAddOnMetadata("ElvUI", "Version")
 E.myrealm = GetRealmName()

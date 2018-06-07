@@ -3,4 +3,7 @@
 	<Script file="LibBabble-3.0.lua"/>
 	<Script file="LibBabble-Class-3.0.lua"/>
 	<Script file="LibBabble-Zone-3.0.lua"/>
+	<Script file="Classy-1.0.lua"/>
+	<Script file="StateDriver-1.0.lua"/>
+	<Script file="Parser.lua"/>
 </Ui>

@@ -80,7 +80,8 @@ local HIDDEN = 0
 
 local function UpdateTooltip(self)
 	if self:GetParent().__owner.unit == "player" then
-		GameTooltip:SetPlayerBuff(self:GetID() - 1)
+		local index = GetPlayerBuff(self:GetID() - 1, self.filter)
+		GameTooltip:SetPlayerBuff(index)
 	elseif self.filter == 'HELPFUL' then
 		GameTooltip:SetUnitBuff(self:GetParent().__owner.unit, self:GetID(), self.filter)
 	else

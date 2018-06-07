@@ -11,9 +11,8 @@ local GetInventoryItemDurability = GetInventoryItemDurability
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetInventorySlotInfo = GetInventorySlotInfo
 local ToggleCharacter = ToggleCharacter
-local DURABILITY_TEMPLATE = string.gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%d+)")
 
-local DURABILITY = "Durability" -- Neel ElvUI locale
+local DURABILITY = "Durability"
 
 local displayString = ""
 local tooltipString = "%d%%"
@@ -33,26 +32,6 @@ local slots = {
 	"ShoulderSlot",
 	"HeadSlot"
 }
-
-local scan
-local function GetInventoryItemDurability(slot)
-	if not GetInventoryItemTexture("player", slot) then return nil, nil end
-
-	if not scan then
-		scan = CreateFrame("GameTooltip", "DurabilityScan", nil, "ShoppingTooltipTemplate")
-		scan:SetOwner(UIParent, "ANCHOR_NONE")
-	end
-
-	scan:ClearLines()
-	scan:SetInventoryItem("player", slot)
-
-	for i = 4, scan:NumLines() do
-		local text = _G[scan:GetName().."TextLeft"..i]:GetText()
-		for durability, max in string.gfind(text, DURABILITY_TEMPLATE) do
-			return tonumber(durability), tonumber(max)
-		end
-	end
-end
 
 local function OnEvent(self, t)
 	lastPanel = self
