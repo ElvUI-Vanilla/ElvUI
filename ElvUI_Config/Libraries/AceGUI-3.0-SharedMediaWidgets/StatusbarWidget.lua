@@ -163,7 +163,7 @@ do
 				f.bar:SetTexture(statusbar)
 				f.obj = self
 				f.dropdown = self.dropdown
-				self.dropdown:AddFrame(f)
+				self.dropdown:AddFrame(f, i)
 			end
 			wipe(sortedlist)
 		end

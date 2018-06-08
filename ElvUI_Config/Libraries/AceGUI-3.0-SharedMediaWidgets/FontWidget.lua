@@ -153,7 +153,7 @@ do
 					f.check:Show()
 				end
 				f.obj = self
-				self.dropdown:AddFrame(f)
+				self.dropdown:AddFrame(f, i)
 			end
 			wipe(sortedlist)
 		end
