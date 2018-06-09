@@ -55,9 +55,9 @@ function UF:Configure_Portrait(frame, dontHide)
 			end
 
 			--portrait:SetAllPoints(frame.Health);
-			portrait:SetWidth(frame.Health:GetWidth() - (frame.BORDER*2))
-			portrait:SetHeight(frame.Health:GetHeight() - (frame.BORDER*2))
-			portrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", frame.BORDER, -frame.BORDER)
+			portrait:SetWidth(frame.Health:GetWidth())
+			portrait:SetHeight(frame.Health:GetHeight())
+			portrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", 0, -frame.BORDER)
 
 			portrait:SetAlpha(0.35);
 			if(not dontHide) then
