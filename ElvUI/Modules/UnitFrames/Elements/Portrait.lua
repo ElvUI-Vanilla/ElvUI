@@ -54,11 +54,11 @@ function UF:Configure_Portrait(frame, dontHide)
 				portrait:SetParent(frame.Health);
 			end
 
-			portrait:SetAllPoints(frame.Health);
+			--portrait:SetAllPoints(frame.Health);
+			portrait:SetWidth(frame.Health:GetWidth() - (frame.BORDER*2))
+			portrait:SetHeight(frame.Health:GetHeight() - (frame.BORDER*2))
+			portrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", frame.BORDER, -frame.BORDER)
 
-			portrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT", - frame.BORDER - frame.SPACING, -(frame.BORDER + frame.SPACING))
-			portrait:SetPoint("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", - frame.BORDER - frame.SPACING, -(frame.BORDER + frame.SPACING))
-	
 			portrait:SetAlpha(0.35);
 			if(not dontHide) then
 				portrait:Show();

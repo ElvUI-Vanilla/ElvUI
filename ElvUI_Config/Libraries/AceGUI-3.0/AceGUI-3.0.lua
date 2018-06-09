@@ -256,7 +256,7 @@ do
 	end
 
 	WidgetBase.Fire = function(self, name, argc, ...)
-		argc = table.getn(arg)
+		argc = arg.n
 		local func = self.events[name]
 		if func then
 			local success, ret = safecall(func, argc+3, self, name, argc, unpack(arg))
@@ -310,8 +310,8 @@ do
 		AceGUI:Release(self)
 	end
 
-	WidgetBase.SetPoint = function(self,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-		return self.frame:SetPoint(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	WidgetBase.SetPoint = function(self, a1,a2,a3,a4,a5)
+		return self.frame:SetPoint(a1,a2,a3,a4,a5)
 	end
 
 	WidgetBase.ClearAllPoints = function(self)
@@ -322,8 +322,8 @@ do
 		return self.frame:GetNumPoints()
 	end
 
-	WidgetBase.GetPoint = function(self,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-		return self.frame:GetPoint(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	WidgetBase.GetPoint = function(self, a1,a2,a3,a4,a5)
+		return self.frame:GetPoint(a1,a2,a3,a4,a5)
 	end
 
 	WidgetBase.GetUserDataTable = function(self)

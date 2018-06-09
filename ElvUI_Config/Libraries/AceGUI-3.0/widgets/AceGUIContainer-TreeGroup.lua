@@ -419,7 +419,6 @@ local methods = {
 	end,
 
 	["RefreshTree"] = function(self,scrollToSelection)
-		local t = GetTime()
 		local buttons = self.buttons
 		local lines = self.lines
 
@@ -542,7 +541,7 @@ local methods = {
 		self.filter = false
 		local status = self.status or self.localstatus
 		local groups = status.groups
-		for i = 1, tgetn(arg) do
+		for i = 1, arg.n do
 			groups[tconcat(arg, "\001", 1, i)] = true
 		end
 		status.selected = uniquevalue
