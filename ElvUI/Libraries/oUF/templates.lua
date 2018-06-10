@@ -1,5 +1,6 @@
 local pairs = pairs
 local ipairs = ipairs
+local upper = string.upper
 
 local unitExistsWatchers = {}
 local unitExistsCache = setmetatable({},{
@@ -94,7 +95,7 @@ end
 -- Given a point return the opposite point and which axes the point
 -- depends on.
 local function getRelativePointAnchor(point)
-	point = strupper(point)
+	point = upper(point)
 	if point == "TOP" then
 		return "BOTTOM", 0, -1
 	elseif point == "BOTTOM" then
@@ -139,7 +140,7 @@ local function fillTable(tbl, ...)
 	for key in pairs(tbl) do
 		tbl[key] = nil
 	end
-	for i = 1, getn(arg), 1 do
+	for i = 1, arg.n, 1 do
 		local key = arg[i]
 		key = tonumber(key) or key
 		tbl[key] = true
@@ -150,7 +151,7 @@ end
 -- the array portion of the table in order
 local function doubleFillTable(tbl, ...)
 	fillTable(tbl, unpack(arg))
-	for i = 1, getn(arg), 1 do
+	for i = 1, arg.n, 1 do
 		tbl[i] = arg[i]
 	end
 end

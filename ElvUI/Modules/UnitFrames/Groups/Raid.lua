@@ -1,14 +1,10 @@
-local E, L, V, P, G = unpack(ElvUI)
-local UF = E:GetModule("UnitFrames")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local UF = E:GetModule("UnitFrames");
 
-local tinsert = table.insert
-
+--Cache global variables
+--Lua functions
+--WoW API / Variables
 local CreateFrame = CreateFrame
-local InCombatLockdown = InCombatLockdown
-local IsInInstance = IsInInstance
-local GetInstanceInfo = GetInstanceInfo
-local UnregisterStateDriver = UnregisterStateDriver
-local RegisterStateDriver = RegisterStateDriver
 
 local ns = oUF
 local ElvUF = ns.oUF
@@ -31,6 +27,8 @@ function UF:Construct_RaidFrames()
 	self.Name = UF:Construct_NameText(self)
 	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
+	self.MouseGlow = UF:Construct_MouseGlow(self)
+ 	self.TargetGlow = UF:Construct_TargetGlow(self)
 
 	self.GPS = UF:Construct_GPS(self)
 	self.InfoPanel = UF:Construct_InfoPanel(self)

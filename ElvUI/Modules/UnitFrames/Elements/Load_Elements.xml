@@ -13,4 +13,5 @@
 	<Script file="RaidIcon.lua"/>
 	<Script file="RaidRoleIcons.lua"/>
 	<Script file="RestingIndicator.lua"/>
+	<Script file="FrameGlow.lua"/>
 </Ui>

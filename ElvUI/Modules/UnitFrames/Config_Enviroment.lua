@@ -10,6 +10,7 @@ local setmetatable, getfenv, setfenv = setmetatable, getfenv, setfenv
 local type, unpack, select, pairs = type, unpack, select, pairs
 local min, random = math.min, math.random
 local format = string.format
+local find = string.find
 --WoW API / Variables
 local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
@@ -166,11 +167,10 @@ end
 function UF:ShowChildUnits(header, ...)
 	header.isForced = true
 
-	for i = 1, getn(args) do
-		local frame = select(i, unpack(args))
+	for i = 1, arg.n do
+		local frame = arg[i]
 		frame:RegisterForClicks(nil)
 		frame:SetID(i)
-		frame.TargetGlow:SetAlpha(0)
 		self:ForceShow(frame)
 	end
 end
@@ -178,10 +178,9 @@ end
 function UF:UnshowChildUnits(header, ...)
 	header.isForced = nil
 
-	for i = 1, getn(args) do
-		local frame = select(i, unpack(args))
+	for i = 1, arg.n do
+		local frame = arg[i]
 		frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
-		frame.TargetGlow:SetAlpha(1)
 		self:UnforceShow(frame)
 	end
 end
@@ -218,14 +217,14 @@ function UF:HeaderConfig(header, configMode)
 			end
 		end
 
-		RegisterStateDriver(header, "visibility", "show")
+		--RegisterStateDriver(header, "visibility", "show")
 	else
 		for func, env in pairs(originalEnvs) do
 			setfenv(func, env)
 			originalEnvs[func] = nil
 		end
 
-		RegisterStateDriver(header, "visibility", header.db.visibility)
+		--RegisterStateDriver(header, "visibility", header.db.visibility)
 
 		if header:GetScript("OnEvent") then
 			header:GetScript("OnEvent")(header, "PLAYER_ENTERING_WORLD")
@@ -238,7 +237,7 @@ function UF:HeaderConfig(header, configMode)
 		if group:IsShown() then
 			group.forceShow = header.forceShow
 			group.forceShowAuras = header.forceShowAuras
-			HookScript(group, "OnAttributeChanged", OnAttributeChanged)
+			--HookScript(group, "OnAttributeChanged", OnAttributeChanged)
 			if configMode then
 				for key in pairs(attributeBlacklist) do
 					group:SetAttribute(key, nil)

@@ -625,6 +625,24 @@ P["unitframe"] = {
 				[3] = {r = 0.33, g = 0.59, b = 0.33},
 			},
 		},
+		["frameGlow"] = {
+			["mainGlow"] = {
+				["enable"] = false,
+				["class"] = false,
+				["color"] = {r = 1, g = 1, b = 1, a = 1}
+			},
+			["targetGlow"] = {
+				["enable"] = false,
+				["class"] = false,
+				["color"] = {r = 1, g = 1, b = 1, a = 1}
+			},
+			["mouseoverGlow"] = {
+				["enable"] = false,
+				["class"] = false,
+				["texture"] = "ElvUI Blank",
+				["color"] = {r = 1, g = 1, b = 1, a = 0.1}
+			}
+		},
 	},
 
 	["units"] = {
@@ -641,6 +659,8 @@ P["unitframe"] = {
 			["threatStyle"] = "GLOW",
 			["smartAuraPosition"] = "DISABLED",
 			["colorOverride"] = "USE_DEFAULT",
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current-percent]",
 				["position"] = "LEFT",
@@ -696,9 +716,9 @@ P["unitframe"] = {
 				["scale"] = 1,
 			},
 			["portrait"] = {
-				["enable"] = true,
+				["enable"] = false,
 				["width"] = 45,
-				["overlay"] = true,
+				["overlay"] = false,
 				["style"] = "3D",
 			},
 			["buffs"] = {
@@ -800,6 +820,8 @@ P["unitframe"] = {
 			["rangeCheck"] = true,
 			["healPrediction"] = true,
 			["middleClickFocus"] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current-percent]",
 				["position"] = "RIGHT",
@@ -949,6 +971,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1034,6 +1058,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1118,6 +1144,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 36,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = true,
 			["healPrediction"] = true,
 			["health"] = {
 				["text_format"] = "",
@@ -1215,6 +1243,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 130,
 			["height"] = 26,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "",
 				["position"] = "RIGHT",
@@ -1303,7 +1333,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 184,
 			["height"] = 54,
-			["targetGlow"] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:current-percent]",
 				["position"] = "LEFT",
@@ -1490,7 +1521,8 @@ P["unitframe"] = {
 			["colorOverride"] = "USE_DEFAULT",
 			["width"] = 80,
 			["height"] = 44,
-			["targetGlow"] = true,
+			["disableMouseoverGlow"] = false,
+			["disableTargetGlow"] = false,
 			["health"] = {
 				["text_format"] = "[healthcolor][health:deficit]",
 				["position"] = "BOTTOM",

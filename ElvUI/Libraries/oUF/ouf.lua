@@ -282,7 +282,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 	for i = 1, num do
 		local object = arg[i]
 		local objectUnit = object.guessUnit or unit
-		local suffix = match(objectUnit or unit, "%w+target")
+		local suffix = objectUnit and match(objectUnit or unit, "%w+target")
 
 		object.__elements = {}
 		object.__registeredEvents = {}
@@ -331,7 +331,6 @@ local function initObject(unit, style, styleFunc, header, ...)
 
 		styleFunc(object, objectUnit, not header)
 
-		object:SetScript("OnAttributeChanged", onAttributeChanged)
 		object:SetScript("OnShow", function() onShow(this) end)
 
 		activeElements[object] = {}
@@ -359,7 +358,6 @@ local function walkObject(object, unit)
 	-- Check if we should leave the main frame blank.
 	if(object.onlyProcessChildren) then
 		object.hasChildren = true
-		object:SetScript("OnAttributeChanged", onAttributeChanged)
 		return initObject(unit, style, styleFunc, header, object:GetChildren())
 	end
 
@@ -542,8 +540,8 @@ do
 			end
 
 			self.menu = togglemenu
-			self:SetAttribute("type1", "target")
-			self:SetAttribute("type2", "menu")
+			--self:SetAttribute("type1", "target")
+			--self:SetAttribute("type2", "menu")
 			self.guessUnit = unit
 			self.unit = "player"
 		--	self.onlyProcessChildren =true
@@ -552,18 +550,18 @@ do
 		styleProxy(nil, self:GetName())
 	end
 
-	-- local setAttribute = function(self, name, value)
-	-- 	if self.attributes[name] ~= value then
-	-- 		self.attributes[name] = value
+	local setAttribute = function(self, name, value)
+		if self.attributes[name] ~= value then
+			self.attributes[name] = value
 
-	-- 		if self:IsVisible() then
-	-- 			SecureGroupHeader_Update(self)
-	-- 		end
-	-- 	end
-	-- end
-	-- local getAttribute = function(self, name)
-	-- 	return self.attributes[name]
-	-- end
+			if self:IsVisible() then
+				SecureGroupHeader_Update(self)
+			end
+		end
+	end
+	local getAttribute = function(self, name)
+		return self.attributes[name]
+	end
 	--[[ oUF:SpawnHeader(overrideName, template, visibility, ...)
 	Used to create a group header and apply the currently active style to it.
 
@@ -594,10 +592,10 @@ do
 		header:Hide()
 
 		header.attributes = {}
-		-- header.SetAttribute = SetAttribute
-		-- header.GetAttribute = GetAttribute
+		header.SetAttribute = setAttribute
+		header.GetAttribute = getAttribute
 
-		header:SetAttribute("template", "SecureUnitButtonTemplate")
+		--header:SetAttribute("template", "SecureUnitButtonTemplate")
 		for i = 1, getn(arg), 2 do
 			local att, val = select(i, unpack(arg))
 			if(not att) then break end
