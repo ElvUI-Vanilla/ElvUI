@@ -692,7 +692,7 @@ end
 E.Options.args.actionbar = {
 	type = "group",
 	name = L["ActionBars"],
-	childGroups = "tab",
+	childGroups = "tree",
 	get = function(info) return E.db.actionbar[ info[getn(info)] ] end,
 	set = function(info, value) E.db.actionbar[ info[getn(info)] ] = value AB:UpdateButtonSettings() end,
 	args = {
