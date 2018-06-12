@@ -22,11 +22,11 @@ function mod:UpdateElement_CastBarOnUpdate(elapsed)
 		self:SetValue(self.value)
 
 		if self.castTimeFormat == "CURRENT" then
-			self.Time:SetFormattedText("%.1f", self.value)
+			self.Time:SetText(format("%.1f", self.value))
 		elseif self.castTimeFormat == "CURRENT_MAX" then
-			self.Time:SetFormattedText("%.1f / %.1f", self.value, self.maxValue)
+			self.Time:SetText(format("%.1f / %.1f", self.value, self.maxValue))
 		else --REMAINING
-			self.Time:SetFormattedText("%.1f", (self.maxValue - self.value))
+			self.Time:SetText(format("%.1f", (self.maxValue - self.value)))
 		end
 
 		if self.Spark then
@@ -42,11 +42,11 @@ function mod:UpdateElement_CastBarOnUpdate(elapsed)
 		self:SetValue(self.value)
 
 		if self.channelTimeFormat == "CURRENT" then
-			self.Time:SetFormattedText("%.1f", (self.maxValue - self.value))
+			self.Time:SetText(format("%.1f", (self.maxValue - self.value)))
 		elseif self.channelTimeFormat == "CURRENT_MAX" then
-			self.Time:SetFormattedText("%.1f / %.1f", (self.maxValue - self.value), self.maxValue)
+			self.Time:SetText(format("%.1f / %.1f", (self.maxValue - self.value), self.maxValue))
 		else --REMAINING
-			self.Time:SetFormattedText("%.1f", self.value)
+			self.Time:SetText(format("%.1f", self.value))
 		end
 	elseif self.holdTime > 0 then
 		self.holdTime = self.holdTime - elapsed

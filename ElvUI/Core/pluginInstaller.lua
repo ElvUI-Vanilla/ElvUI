@@ -122,7 +122,7 @@ local function SetPage(PageNum, PrevPage)
 	end
 
 	f.Pages[f.CurrentPage]()
-	f.Status.text:SetFormattedText("%d / %d", f.CurrentPage, f.MaxPage)
+	f.Status.text:SetText(format("%d / %d", f.CurrentPage, f.MaxPage))
 	if f.StepTitles then
 		for i = 1, getn(f.side.Lines) do
 			local b = f.side.Lines[i]

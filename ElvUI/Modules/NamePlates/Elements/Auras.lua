@@ -122,7 +122,7 @@ local function UpdateAuraTime(frame, expiration)
 	if timervalue < 4 then
 		timeFormat = E.TimeFormats[4][2]
 	end
-	frame.timeLeft:SetFormattedText(("%s%s|r"):format(TimeColors[formatid], timeFormat), timervalue)
+	frame.timeLeft:SetText(format("%s%s|r", TimeColors[formatid], timeFormat), timervalue)
 end
 
 local function RemoveAuraInstance(guid, spellID, caster)
