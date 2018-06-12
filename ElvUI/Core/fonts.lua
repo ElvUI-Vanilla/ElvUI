@@ -58,7 +58,7 @@ function E:UpdateBlizzardFonts()
 		SetFont(GameFontNormalSmall,				NORMAL, self.db.general.fontSize);
 		SetFont(GameFontNormalLarge,				NORMAL, self.db.general.fontSize);
 		SetFont(GameFontNormalHuge,					NORMAL, 25, MONOCHROME .. "OUTLINE");
-		SetFont(BossEmoteNormalHuge,				NORMAL, 25, MONOCHROME .. "OUTLINE");
+		-- SetFont(BossEmoteNormalHuge,				NORMAL, 25, MONOCHROME .. "OUTLINE");
 		SetFont(GameFontBlack,						NORMAL, self.db.general.fontSize);
 		SetFont(NumberFontNormal,					NUMBER, self.db.general.fontSize, MONOCHROME .. "OUTLINE");
 		SetFont(NumberFontNormalSmall,				NUMBER, self.db.general.fontSize);

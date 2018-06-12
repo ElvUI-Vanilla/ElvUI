@@ -226,8 +226,6 @@ local function GetMaxPlayersByType(instanceType, zoneName)
 		return 40
 	elseif instanceType == "party" then
 		return 5
-	elseif instanceType == "arena" then
-		return 5
 	elseif zoneName ~= "" and zoneInfo[zoneName] then
 		if instanceType == "pvp" then
 			return zoneInfo[zoneName].maxPlayers

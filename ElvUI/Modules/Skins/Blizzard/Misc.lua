@@ -265,32 +265,6 @@ local function LoadSkin()
 	E:Point(StackSplitFrame.bg1, "BOTTOMRIGHT", -10, 55)
 	StackSplitFrame.bg1:SetFrameLevel(StackSplitFrame.bg1:GetFrameLevel() - 1)
 
-	-- Declension frame
-	if GetLocale() == "ruRU" then
-		DeclensionFrame:SetTemplate("Transparent")
-
-		S:HandleNextPrevButton(DeclensionFrameSetPrev)
-		S:HandleNextPrevButton(DeclensionFrameSetNext)
-		S:HandleButton(DeclensionFrameOkayButton)
-		S:HandleButton(DeclensionFrameCancelButton)
-
-		for i = 1, RUSSIAN_DECLENSION_PATTERNS do
-			local editBox = _G["DeclensionFrameDeclension"..i.."Edit"]
-			if editBox then
-				E:StripTextures(editBox)
-				S:HandleEditBox(editBox)
-			end
-		end
-	end
-
-	if GetLocale() == "koKR" then
-		S:HandleButton(GameMenuButtonRatings)
-
-		RatingMenuFrame:SetTemplate("Transparent")
-		RatingMenuFrameHeader:Kill()
-		S:HandleButton(RatingMenuButtonOkay)
-	end
-
 	E:StripTextures(OpacityFrame)
 	E:SetTemplate(OpacityFrame, "Transparent")
 

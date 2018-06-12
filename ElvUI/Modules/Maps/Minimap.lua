@@ -10,7 +10,6 @@ local strsub = strsub
 local CreateFrame = CreateFrame
 local ToggleCharacter = ToggleCharacter
 local ToggleFrame = ToggleFrame
-local ToggleAchievementFrame = ToggleAchievementFrame
 local ToggleFriendsFrame = ToggleFriendsFrame
 local IsAddOnLoaded = IsAddOnLoaded
 local ToggleHelpFrame = ToggleHelpFrame
@@ -48,11 +47,7 @@ end
 
 function M:GetLocTextColor()
 	local pvpType = GetZonePVPInfo()
-	if pvpType == "sanctuary" then
-		return 0.035, 0.58, 0.84
-	elseif pvpType == "arena" then
-		return 0.84, 0.03, 0.03
-	elseif pvpType == "friendly" then
+	if pvpType == "friendly" then
 		return 0.05, 0.85, 0.03
 	elseif pvpType == "hostile" then
 		return 0.84, 0.03, 0.03

@@ -245,7 +245,7 @@ function CC:PLAYER_ENTERING_WORLD()
 	local inInstance, instanceType = IsInInstance()
 	self.inInstance = inInstance
 
-	if instanceType == "arena" or instanceType == "pvp" then
+	if instanceType == "pvp" then
 		self.inBattleground = true
 	else
 		self.inBattleground = false

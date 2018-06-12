@@ -46,7 +46,7 @@ function UF:Update_PartyHeader(header)
 		header:ClearAllPoints()
 		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
-		E:CreateMover(header, header:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY,ARENA")
+		E:CreateMover(header, header:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY")
 		header.positioned = true
 	end
 end

@@ -3,20 +3,14 @@ local UF = E:GetModule("UnitFrames");
 
 local ns = oUF
 local ElvUF = ns.oUF
-
+--Cache global variables
+--Lua functions
 local _G = _G
-local next = next
-local select = select
-local pairs = pairs
-local ipairs = ipairs
-local format = string.format
-local tremove = table.remove
-local tconcat = table.concat
-local tinsert = table.insert
-local twipe = table.wipe
-local strsplit = strsplit
-local match = string.match
-local gsub = string.gsub
+local ipairs, next, pairs, select = ipairs, next, pairs, select
+local find, format = string.find, string.format
+local tconcat, tinsert, tremove, twipe = table.concat, table.insert, table.remove, table.wipe
+local gsub, match, split = string.gsub, string.match, string.split
+--WoW API / Variables
 local IsAddOnLoaded = IsAddOnLoaded
 local GetScreenWidth = GetScreenWidth
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
@@ -113,7 +107,7 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 	if not filter then return end
 	local found = filterMatch(filter, filterValue(value))
 	if found and movehere then
-		local tbl, sv, sm = {strsplit(",",filter)}
+		local tbl, sv, sm = {split(",", filter)}
 		for i in ipairs(tbl) do
 			if tbl[i] == value then sv = i elseif tbl[i] == movehere then sm = i end
 			if sv and sm then break end
@@ -136,7 +130,7 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 		if state then
 			local stateFound = filterMatch(filter, filterValue(state))
 			if not stateFound then
-				local tbl, sv, sm = {strsplit(",",filter)}
+				local tbl, sv, sm = {split(",", filter)}
 				for i in ipairs(tbl) do
 					if tbl[i] == value then sv = i;break end
 				end
@@ -369,12 +363,12 @@ local function GetOptionsTable_AuraBars(friendlyOnly, updateFunc, groupName)
 	-- 	values = function()
 	-- 		local str = E.db.unitframe.units[groupName].aurabar.priority
 	-- 		if str == "" then return nil end
-	-- 		return {strsplit(",",str)}
+	-- 		return {split(",", str)}
 	-- 	end,
 	-- 	get = function(info, value)
 	-- 		local str = E.db.unitframe.units[groupName].aurabar.priority
 	-- 		if str == "" then return nil end
-	-- 		local tbl = {strsplit(",",str)}
+	-- 		local tbl = {split(",", str)}
 	-- 		return tbl[value]
 	-- 	end,
 	-- 	set = function(info, value)
@@ -618,12 +612,12 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 	-- 	values = function()
 	-- 		local str = E.db.unitframe.units[groupName][auraType].priority
 	-- 		if str == "" then return nil end
-	-- 		return {strsplit(",",str)}
+	-- 		return {split(",", str)}
 	-- 	end,
 	-- 	get = function(info, value)
 	-- 		local str = E.db.unitframe.units[groupName][auraType].priority
 	-- 		if str == "" then return nil end
-	-- 		local tbl = {strsplit(",",str)}
+	-- 		local tbl = {split(",", str)}
 	-- 		return tbl[value]
 	-- 	end,
 	-- 	set = function(info, value)
@@ -946,12 +940,8 @@ local function CreateCustomTextGroup(unit, objectName)
 		set = function(info, value)
 			E.db.unitframe.units[unit].customTexts[objectName][ info[getn(info)] ] = value;
 
-			if unit == "party" or unit:find("raid") then
+			if unit == "party" or find(unit, "raid") then
 				UF:CreateAndUpdateHeaderGroup(unit)
-			elseif unit == "boss" then
-				UF:CreateAndUpdateUFGroup("boss", MAX_BOSS_FRAMES)
-			elseif unit == "arena" then
-				UF:CreateAndUpdateUFGroup("arena", 5)
 			else
 				UF:CreateAndUpdateUF(unit)
 			end
@@ -970,14 +960,7 @@ local function CreateCustomTextGroup(unit, objectName)
 					E.Options.args.unitframe.args[unit].args.customText.args[objectName] = nil;
 					E.db.unitframe.units[unit].customTexts[objectName] = nil;
 
-					if unit == "boss" or unit == "arena" then
-						for i=1, 5 do
-							if UF[unit..i] then
-								UF[unit..i]:Tag(UF[unit..i]["customTexts"][objectName], "");
-								UF[unit..i]["customTexts"][objectName]:Hide();
-							end
-						end
-					elseif unit == "party" or unit:find("raid") then
+					if unit == "party" or find(unit, "raid") then
 						for i=1, UF[unit]:GetNumChildren() do
 							local child = select(i, UF[unit]:GetChildren())
 							if child.Tag then
@@ -2432,16 +2415,6 @@ E.Options.args.unitframe = {
 							type = "toggle",
 							name = L["Focus Frame"],
 							desc = L["Disables the focus and target of focus unitframes."],
-						},
-						boss = {
-							order = 4,
-							type = "toggle",
-							name = L["Boss Frames"],
-						},
-						arena = {
-							order = 5,
-							type = "toggle",
-							name = L["Arena Frames"],
 						},
 						party = {
 							order = 6,

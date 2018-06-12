@@ -322,9 +322,6 @@ function E:SetupResolution(noDataReset)
 			E.db.unitframe.units.targettarget.power.enable = false
 			E.db.unitframe.units.targettarget.width = 200
 			E.db.unitframe.units.targettarget.height = 26
-
-			E.db.unitframe.units.arena.width = 200
-			E.db.unitframe.units.arena.castbar.width = 200
 		end
 
 		local isPixel = E.private.general.pixelPerfect
@@ -553,9 +550,6 @@ function E:SetupLayout(layout, noDataReset)
 		E.db.unitframe.units.targettarget.power.enable = false
 		E.db.unitframe.units.targettarget.width = 200
 		E.db.unitframe.units.targettarget.height = 26
-
-		E.db.unitframe.units.arena.width = 200
-		E.db.unitframe.units.arena.castbar.width = 200
 	end
 
 	if layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER") then

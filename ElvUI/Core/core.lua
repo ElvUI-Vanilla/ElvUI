@@ -760,7 +760,7 @@ end
 function E:SendMessage()
 	local numParty, numRaid = GetNumPartyMembers(), GetNumRaidMembers()
 	local inInstance, instanceType = IsInInstance()
-	if inInstance and (instanceType == "pvp" or instanceType == "arena") then
+	if inInstance and (instanceType == "pvp") then
 		SendAddonMessage("ELVUI_VERSIONCHK", E.version, "BATTLEGROUND")
 	else
 		if numRaid > 0 then

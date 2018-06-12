@@ -21,7 +21,6 @@ local GetInstanceInfo = GetInstanceInfo
 local UnregisterStateDriver = UnregisterStateDriver
 local RegisterStateDriver = RegisterStateDriver
 local MAX_RAID_MEMBERS = MAX_RAID_MEMBERS
-local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES
 
 local ns = oUF
 ElvUF = ns.oUF
