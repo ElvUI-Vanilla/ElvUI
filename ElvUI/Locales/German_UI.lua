@@ -206,7 +206,6 @@ L["XP:"] = "EP:"
 L["You don't have permission to mark targets."] = "Du hast keine Rechte um ein Ziel zu markieren."
 
 --Movers
-L["Arena Frames"] = "Arena Fenster" --Also used in UnitFrames
 L["Bag Mover (Grow Down)"] = "Taschen Anker (Nach unten wachsen)"
 L["Bag Mover (Grow Up)"] = "Taschen Anker (Nach oben wachsen)"
 L["Bag Mover"] = "Taschen Anker"
@@ -214,8 +213,6 @@ L["Bags"] = "Taschen" --Also in DataTexts
 L["Bank Mover (Grow Down)"] = "Bank Anker (Nach unten wachsen)"
 L["Bank Mover (Grow Up)"] = "Bank Anker (Nach oben wachsen)"
 L["Bar "] = "Leiste " --Also in ActionBars
-L["BNet Frame"] = "BNet-Fenster"
-L["Boss Frames"] = "Boss Fenster" --Also used in UnitFrames
 L["Classbar"] = "Klassenleiste"
 L["Experience Bar"] = "Erfahrungsleiste"
 L["Focus Castbar"] = "Fokus Zauberbalken"

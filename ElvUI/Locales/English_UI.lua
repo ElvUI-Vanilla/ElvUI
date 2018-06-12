@@ -206,7 +206,6 @@ L["XP:"] = true;
 L["You don't have permission to mark targets."] = true;
 
 --Movers
-L["Arena Frames"] = true; --Also used in UnitFrames
 L["Bag Mover (Grow Down)"] = true;
 L["Bag Mover (Grow Up)"] = true;
 L["Bag Mover"] = true;
@@ -214,8 +213,6 @@ L["Bags"] = true; --Also in DataTexts
 L["Bank Mover (Grow Down)"] = true;
 L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = true; --Also in ActionBars
-L["BNet Frame"] = true;
-L["Boss Frames"] = true; --Also used in UnitFrames
 L["Classbar"] = true; --Also used in UnitFrames
 L["Experience Bar"] = true;
 L["Focus Castbar"] = true;

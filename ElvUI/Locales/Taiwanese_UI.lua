@@ -206,7 +206,6 @@ L["XP:"] = "經驗:"
 L["You don't have permission to mark targets."] = "你沒有標記目標的權限."
 
 --Movers
-L["Arena Frames"] = "競技場框架" --Also used in UnitFrames
 L["Bag Mover (Grow Down)"] = "背包錨點 (向下增長)"
 L["Bag Mover (Grow Up)"] = "背包錨點 (向上增長)"
 L["Bag Mover"] = "背包錨點"
@@ -214,8 +213,6 @@ L["Bags"] = "背包" --Also in DataTexts
 L["Bank Mover (Grow Down)"] = "銀行錨點 (向下增長)"
 L["Bank Mover (Grow Up)"] = "銀行錨點 (向上增長)"
 L["Bar "] = "快捷列 " --Also in ActionBars
-L["BNet Frame"] = "戰網提示資訊"
-L["Boss Frames"] = "首領框架" --Also used in UnitFrames
 L["Classbar"] = "職業特有條"
 L["Experience Bar"] = "經驗條"
 L["Focus Castbar"] = "焦點目標施法條"

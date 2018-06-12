@@ -206,7 +206,6 @@ L["XP:"] = "XP:"
 L["You don't have permission to mark targets."] = "Você não tem permissão para marcar alvos."
 
 --Movers
-L["Arena Frames"] = "Quadros de Arenas"
 L["Bag Mover (Grow Down)"] = true;
 L["Bag Mover (Grow Up)"] = true;
 L["Bag Mover"] = true;
@@ -214,8 +213,6 @@ L["Bags"] = "Bolsas"
 L["Bank Mover (Grow Down)"] = true;
 L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "Barra "
-L["BNet Frame"] = "Quadro do Bnet"
-L["Boss Frames"] = "Quadros dos Chefes"
 L["Classbar"] = "Barra da Classe"
 L["Experience Bar"] = "Barra de Experiência"
 L["Focus Castbar"] = "Barra de Lançamento do Foco"

@@ -206,7 +206,6 @@ L["XP:"] = "Опыт:"
 L["You don't have permission to mark targets."] = "У вас нет разрешения на установку меток"
 
 --Movers
-L["Arena Frames"] = "Арена" --Also used in UnitFrames
 L["Bag Mover (Grow Down)"] = "Сумки (Рост вниз)"
 L["Bag Mover (Grow Up)"] = "Сумки (Рост вверх)"
 L["Bag Mover"] = "Фиксатор сумок"
@@ -214,8 +213,6 @@ L["Bags"] = "Сумки" --Also in DataTexts
 L["Bank Mover (Grow Down)"] = "Банк (Рост вниз)"
 L["Bank Mover (Grow Up)"] = "Банк (Рост вверх)"
 L["Bar "] = "Панель " --Also in ActionBars
-L["BNet Frame"] = "Оповещения BNet"
-L["Boss Frames"] = "Боссы" --Also used in UnitFrames
 L["Classbar"] = "Полоса класса"
 L["Experience Bar"] = "Полоса опыта"
 L["Focus Castbar"] = "Полоса заклинаний фокуса"

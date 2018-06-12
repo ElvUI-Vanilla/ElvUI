@@ -41,7 +41,7 @@ local function UpdateFilterGroup()
 			hide = {
 				type = "toggle",
 				order = 2,
-				name = L["Hide"],
+				name = HIDE,
 				desc = L["Prevent any nameplate with this unit name from showing."],
 			},
 			customColor = {
@@ -643,7 +643,7 @@ E.Options.args.nameplate = {
 							name = L["Font Outline"],
 							desc = L["Set the font outline."],
 							values = {
-								["NONE"] = L["None"],
+								["NONE"] = NONE,
 								["OUTLINE"] = "OUTLINE",
 								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 								["THICKOUTLINE"] = "THICKOUTLINE"

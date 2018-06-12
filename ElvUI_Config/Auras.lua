@@ -160,7 +160,7 @@ E.Options.args.auras = {
 					desc = L["Set the font outline."],
 					type = "select",
 					values = {
-						["NONE"] = L["None"],
+						["NONE"] = NONE,
 						["OUTLINE"] = "OUTLINE",
 
 						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",

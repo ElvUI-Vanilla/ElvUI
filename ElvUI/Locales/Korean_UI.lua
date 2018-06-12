@@ -206,7 +206,6 @@ L["XP:"] = "경험치:"
 L["You don't have permission to mark targets."] = "레이드 아이콘을 지정할 권한이 없습니다."
 
 --Movers
-L["Arena Frames"] = "투기장 프레임"
 L["Bag Mover (Grow Down)"] = true;
 L["Bag Mover (Grow Up)"] = true;
 L["Bag Mover"] = true;
@@ -214,8 +213,6 @@ L["Bags"] = "가방"
 L["Bank Mover (Grow Down)"] = true;
 L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "바 "
-L["BNet Frame"] = "배틀넷 알림"
-L["Boss Frames"] = "보스 프레임"
 L["Classbar"] = "직업바"
 L["Experience Bar"] = "경험치 바"
 L["Focus Castbar"] = "주시대상 시전바"
