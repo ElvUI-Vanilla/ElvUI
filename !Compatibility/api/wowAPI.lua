@@ -10,17 +10,19 @@ local unpack = unpack
 local find, format, gsub, lower, match, upper = string.find, string.format, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
+local GetInventoryItemTexture = GetInventoryItemTexture
 local GetItemInfo = GetItemInfo
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
 local IsInInstance = IsInInstance
-local UnitBuff = UnitBuff
-local UnitDebuff = UnitDebuff
+--local UnitBuff = UnitBuff
+--local UnitDebuff = UnitDebuff
 local UnitLevel = UnitLevel
 --WoW Variables
 local DUNGEON_DIFFICULTY1 = DUNGEON_DIFFICULTY1
 local TIMEMANAGER_AM = gsub(TIME_TWELVEHOURAM, "^.-(%w+)$", "%1")
 local TIMEMANAGER_PM = gsub(TIME_TWELVEHOURPM, "^.-(%w+)$", "%1")
+local DURABILITY_TEMPLATE = gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%d+)")
 --Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
@@ -145,11 +147,11 @@ function UnitAura(unit, i, filter)
 	end
 
 	if not filter or match(filter, "(HELPFUL)") then
-		local name, rank, aura, count, duration, maxDuration = UnitBuff(unit, i, filter)
-		return name, rank, aura, count, nil, duration or 0, maxDuration or 0
+		local texture, count = UnitBuff(unit, i, filter)
+		return texture, count
 	else
-		local name, rank, aura, count, dType, duration, maxDuration = UnitDebuff(unit, i, filter)
-		return name, rank, aura, count, dType, duration or 0, maxDuration or 0
+		local texture, count, dType = UnitDebuff(unit, i, filter)
+		return texture, count, dType
 	end
 end
 
@@ -271,7 +273,7 @@ function GetPlayerFacing()
 		local obj = Minimap
 		for i = 1, obj:GetNumChildren() do
 			local child = select(i, obj:GetChildren())
-			if child and child.GetModel and child:GetModel() == "interface\\minimap\\minimaparrow.m2" then
+			if child and child.GetModel and child:GetModel() == "Interface\\Minimap\\MinimapArrow" then
 				arrow = child
 				break
 			end
@@ -472,4 +474,24 @@ function GetItemCount(itemName)
 	end
 
 	return count
+end
+
+local scan
+function GetInventoryItemDurability(slot)
+	if not GetInventoryItemTexture("player", slot) then return nil, nil end
+
+	if not scan then
+		scan = CreateFrame("GameTooltip", "DurabilityScan", nil, "ShoppingTooltipTemplate")
+		scan:SetOwner(UIParent, "ANCHOR_NONE")
+	end
+
+	scan:ClearLines()
+	scan:SetInventoryItem("player", slot)
+
+	for i = 4, scan:NumLines() do
+		local text = _G[scan:GetName().."TextLeft"..i]:GetText()
+		for durability, max in string.gfind(text, DURABILITY_TEMPLATE) do
+			return tonumber(durability), tonumber(max)
+		end
+	end
 end

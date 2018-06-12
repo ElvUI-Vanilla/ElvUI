@@ -5,7 +5,6 @@ local AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0");
 --Cache global variables
 --Lua functions
 local _G = _G
-local GetTime = GetTime
 local floor = math.floor
 --WoW API / Variables
 local CinematicFrame = CinematicFrame
@@ -14,12 +13,12 @@ local GetBattlefieldStatus = GetBattlefieldStatus
 local GetGuildInfo = GetGuildInfo
 local GetScreenHeight = GetScreenHeight
 local GetScreenWidth = GetScreenWidth
+local GetTime = GetTime
 local UnitAffectingCombat = UnitAffectingCombat
 local IsInGuild = IsInGuild
 local IsShiftKeyDown = IsShiftKeyDown
 local Screenshot = Screenshot
 local SetCVar = SetCVar
-local UnitFactionGroup = UnitFactionGroup
 
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local MAX_BATTLEFIELD_QUEUES = MAX_BATTLEFIELD_QUEUES
@@ -185,11 +184,11 @@ function AFK:OnEvent(event, ...)
 
 	if not E.db.general.afk then return end
 	if UnitAffectingCombat("player") or CinematicFrame:IsShown() then return end
-    -- if UnitCastingInfo("player") ~= nil then
-    --     --Don't activate afk if player is crafting stuff, check back in 30 seconds
-    --     self:ScheduleTimer("OnEvent", 30)
-    --     return
-    -- end
+	-- if UnitCastingInfo("player") ~= nil then
+	--     --Don't activate afk if player is crafting stuff, check back in 30 seconds
+	--     self:ScheduleTimer("OnEvent", 30)
+	--     return
+	-- end
 
 	if arg1 == format(MARKED_AFK_MESSAGE, DEFAULT_AFK_MESSAGE) then
 		self:SetAFK(true)
@@ -284,11 +283,9 @@ function AFK:Initialize()
 	E:Size(self.AFKMode.bottom.logo, 320, 150)
 	E:Point(self.AFKMode.bottom.logo, "CENTER", self.AFKMode.bottom, "CENTER", 0, 50)
 	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo")
-
-	local factionGroup = UnitFactionGroup("player")
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY")
 	E:Point(self.AFKMode.bottom.faction, "BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", -20, -16)
-	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..factionGroup.."-Logo")
+	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..E.myfaction.."-Logo")
 	E:Size(self.AFKMode.bottom.faction, 140)
 
 	self.AFKMode.bottom.name = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY")

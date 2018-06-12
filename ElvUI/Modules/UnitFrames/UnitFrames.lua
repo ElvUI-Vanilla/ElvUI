@@ -693,7 +693,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 				E:EnableMover(self[group].mover:GetName())
 			end
 		else
-		--	UnregisterStateDriver(self[group], "visibility")
+			--UnregisterStateDriver(self[group], "visibility")
 			self[group]:Hide()
 			if self[group].mover then
 				E:DisableMover(self[group].mover:GetName())
@@ -707,8 +707,8 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 		UF["headerFunctions"][group]["Update"] = function()
 			local db = UF.db["units"][group]
 			if db.enable ~= true then
-				UnregisterStateDriver(UF[group], "visibility")
-				--UF[group]:Hide()
+				--UnregisterStateDriver(UF[group], "visibility")
+				UF[group]:Hide()
 				if(UF[group].mover) then
 					E:DisableMover(UF[group].mover:GetName())
 				end
@@ -821,7 +821,7 @@ hiddenParent:Hide()
 
 local HandleFrame = function(baseName)
 	local frame
-	if(type(baseName) == "string") then
+	if type(baseName) == "string" then
 		frame = _G[baseName]
 	else
 		frame = baseName
@@ -835,17 +835,17 @@ local HandleFrame = function(baseName)
 		frame:SetParent(hiddenParent)
 
 		local health = frame.healthbar
-		if(health) then
+		if health then
 			health:UnregisterAllEvents()
 		end
 
 		local power = frame.manabar
-		if(power) then
+		if power then
 			power:UnregisterAllEvents()
 		end
 
 		local spell = frame.spellbar
-		if(spell) then
+		if spell then
 			spell:UnregisterAllEvents()
 		end
 	end
@@ -868,7 +868,7 @@ function ElvUF:DisableBlizzard(unit)
 		HandleFrame(TargetofTargetFrame)
 	elseif string.match(unit, "(party)%d?$") == "party" and E.private["unitframe"]["disabledBlizzardFrames"].party then
 		local id = string.match(unit, "party(%d)")
-		if(id) then
+		if id then
 			HandleFrame("PartyMemberFrame"..id)
 		else
 			for i = 1, 4 do

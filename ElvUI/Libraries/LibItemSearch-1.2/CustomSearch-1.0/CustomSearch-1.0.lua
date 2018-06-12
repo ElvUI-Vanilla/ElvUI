@@ -39,7 +39,7 @@ end
 function Lib:MatchAll(search)
 	for phrase in gmatch(self:Clean(search), '[^&]+') do
 		if not self:MatchAny(phrase) then
-      		return
+			return
 		end
 	end
 
@@ -49,7 +49,7 @@ end
 function Lib:MatchAny(search)
 	for phrase in gmatch(search, '[^|]+') do
 		if self:Match(phrase) then
-        	return true
+			return true
 		end
 	end
 end

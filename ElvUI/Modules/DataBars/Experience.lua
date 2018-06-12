@@ -114,8 +114,7 @@ function mod:ExperienceBar_OnClick()
 end
 
 function mod:UpdateExperienceDimensions()
-	self.expBar:SetWidth(self.db.experience.width)
-	self.expBar:SetHeight(self.db.experience.height)
+	E:Size(self.expBar, self.db.experience.width, self.db.experience.height)
 
 	E:FontTemplate(self.expBar.text, LSM:Fetch("font", self.db.experience.font), self.db.experience.textSize, self.db.experience.fontOutline)
 	self.expBar.rested:SetOrientation(self.db.experience.orientation)
@@ -158,6 +157,8 @@ function mod:LoadExperienceBar()
 	self.expBar.rested:SetStatusBarTexture(E.media.normTex)
 	E:RegisterStatusBar(self.expBar.rested)
 	self.expBar.rested:SetStatusBarColor(1, 0, 1, 0.2)
+	E:Kill(ExhaustionTick)
+	E:Kill(MainMenuExpBar)
 
 	self:UpdateExperienceDimensions()
 

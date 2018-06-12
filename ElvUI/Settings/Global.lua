@@ -21,6 +21,11 @@ G["classtimer"] = {}
 
 G["nameplates"] = {}
 
+G["unitframe"] = {
+	["specialFilters"] = {},
+	["aurafilters"] = {}
+}
+
 G["chat"] = {
 	["classColorMentionExcludedNames"] = {}
 }

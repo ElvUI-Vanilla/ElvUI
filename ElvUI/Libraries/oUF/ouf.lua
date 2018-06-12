@@ -59,7 +59,7 @@ local function onAttributeChanged(self, name, value)
 		if(not self.onlyProcessChildren) then
 			updateActiveUnit(self, "OnAttributeChanged")
 		end
---[[
+
 		if(self.unit and self.unit == value) then
 			return
 		else
@@ -67,7 +67,7 @@ local function onAttributeChanged(self, name, value)
 				iterateChildren(self:GetChildren())
 			end
 		end
-]]
+
 	end
 end
 
@@ -273,8 +273,8 @@ local function togglemenu(self, unit)
 	ToggleDropDownMenu(1, nil, secureDropdown, "cursor")
 end
 
-local function onShow()
-	return this:UpdateAllElements("OnShow")
+local function onShow(self)
+	return self:UpdateAllElements("OnShow")
 end
 
 local function initObject(unit, style, styleFunc, header, ...)
@@ -282,7 +282,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 	for i = 1, num do
 		local object = arg[i]
 		local objectUnit = object.guessUnit or unit
-		local suffix = match(objectUnit or unit, "%w+target")
+		local suffix = objectUnit and match(objectUnit or unit, "%w+target")
 
 		object.__elements = {}
 		object.__registeredEvents = {}
@@ -331,8 +331,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 
 		styleFunc(object, objectUnit, not header)
 
-		--object:SetScript("OnAttributeChanged", onAttributeChanged)
-		object:SetScript("OnShow", onShow)
+		object:SetScript("OnShow", function() onShow(this) end)
 
 		activeElements[object] = {}
 		for element in next, elements do
@@ -359,7 +358,6 @@ local function walkObject(object, unit)
 	-- Check if we should leave the main frame blank.
 	if(object.onlyProcessChildren) then
 		object.hasChildren = true
-		--object:SetScript("OnAttributeChanged", onAttributeChanged)
 		return initObject(unit, style, styleFunc, header, object:GetChildren())
 	end
 
@@ -620,7 +618,7 @@ do
 		end
 
 
-		--[[if(visibility) then
+		if(visibility) then
 			local type, list = split(" ", visibility, 2)
 			if(list and type == "custom") then
 				RegisterStateDriver(header, "visibility", list)
@@ -630,7 +628,7 @@ do
 				RegisterStateDriver(header, "visibility", condition)
 				header.visibility = condition
 			end
-		end]]
+		end
 
 		return header
 	end

@@ -558,7 +558,7 @@ function E:SetupLayout(layout, noDataReset)
 		E.db.unitframe.units.arena.castbar.width = 200
 	end
 
-	if(layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER")) then
+	if layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER") then
 		if not E.db.movers then E.db.movers = {} end
 		E.db.unitframe.units.player.castbar.width = E.PixelMode and 406 or 436
 		E.db.unitframe.units.player.castbar.height = 28
@@ -664,18 +664,6 @@ local function SetupAuras(style)
 		UF:Configure_AuraBars(frame)
 	end
 
-	frame = UF["focus"]
-	E:CopyTable(E.db.unitframe.units.focus.buffs, P.unitframe.units.focus.buffs)
-	E:CopyTable(E.db.unitframe.units.focus.debuffs, P.unitframe.units.focus.debuffs)
-	E:CopyTable(E.db.unitframe.units.focus.aurabar, P.unitframe.units.focus.aurabar)
-	E.db.unitframe.units.focus.smartAuraDisplay = P.unitframe.units.focus.smartAuraDisplay
-
-	if frame then
-		UF:Configure_Auras(frame, "Buffs")
-		UF:Configure_Auras(frame, "Debuffs")
-		UF:Configure_AuraBars(frame)
-	end
-
 	if not style then
 		E.db.unitframe.units.player.buffs.enable = true
 		E.db.unitframe.units.player.buffs.attachTo = "FRAME"
@@ -690,7 +678,7 @@ local function SetupAuras(style)
 		E:GetModule("UnitFrames"):CreateAndUpdateUF("target")
 	end
 
-	if(InstallStepComplete) then
+	if InstallStepComplete then
 		InstallStepComplete.message = L["Auras Set"]
 		InstallStepComplete:Show()
 	end

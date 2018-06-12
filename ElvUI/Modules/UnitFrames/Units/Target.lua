@@ -20,8 +20,13 @@ function UF:Construct_TargetFrame(frame)
 
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
+	frame.Buffs = self:Construct_Buffs(frame)
+	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.GPS = self:Construct_GPS(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
+	frame.MouseGlow = self:Construct_MouseGlow(frame)
+	frame.TargetGlow = self:Construct_TargetGlow(frame)
 
 	E:Point(frame, "BOTTOMRIGHT", E.UIParent, "BOTTOM", 413, 68)
 	E:CreateMover(frame, frame:GetName().."Mover", L["Target Frame"], nil, nil, nil, "ALL,SOLO")
@@ -84,6 +89,12 @@ function UF:Update_TargetFrame(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:EnableDisable_Auras(frame)
+	UF:Configure_Auras(frame, "Buffs")
+	UF:Configure_Auras(frame, "Debuffs")
+
+	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidIcon(frame)
 

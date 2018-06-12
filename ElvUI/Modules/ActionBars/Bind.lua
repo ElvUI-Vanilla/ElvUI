@@ -28,7 +28,7 @@ local bind = CreateFrame("Frame", "ElvUI_KeyBinder", E.UIParent)
 
 function AB:ActivateBindMode()
 	bind.active = true
-    E:StaticPopupSpecial_Show(ElvUIBindPopupWindow)
+	E:StaticPopupSpecial_Show(ElvUIBindPopupWindow)
 	AB:RegisterEvent("PLAYER_REGEN_DISABLED", "DeactivateBindMode", false)
 end
 
@@ -265,7 +265,7 @@ function AB:LoadKeyBinder()
 
 	for b, _ in pairs(self["handledButtons"]) do
 		self:RegisterButton(b, true)
-    end
+	end
 
 	if not IsAddOnLoaded("Blizzard_MacroUI") then
 		self:SecureHook("LoadAddOn", "RegisterMacro")
@@ -282,11 +282,11 @@ function AB:LoadKeyBinder()
 	f:SetFrameLevel(99)
 	f:SetClampedToScreen(true)
 	E:Size(f, 360, 130)
-    E:SetTemplate(f, "Transparent")
+	E:SetTemplate(f, "Transparent")
 	f:Hide()
 
-    local header = CreateFrame("Button", nil, f)
-    E:SetTemplate(header, "Default", true)
+	local header = CreateFrame("Button", nil, f)
+	E:SetTemplate(header, "Default", true)
 	E:Size(header, 100, 25)
 	E:Point(header, "CENTER", f, "TOP")
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
@@ -295,8 +295,8 @@ function AB:LoadKeyBinder()
 	header:SetScript("OnMouseDown", function() f:StartMoving() end)
 	header:SetScript("OnMouseUp", function() f:StopMovingOrSizing() end)
 
-    local title = header:CreateFontString("OVERLAY")
-    E:FontTemplate(title)
+	local title = header:CreateFontString("OVERLAY")
+	E:FontTemplate(title)
 	E:Point(title, "CENTER", header, "CENTER")
 	title:SetText("Key Binds")
 
@@ -311,8 +311,8 @@ function AB:LoadKeyBinder()
 	local perCharCheck = CreateFrame("CheckButton", f:GetName().."CheckButton", f, "OptionsCheckButtonTemplate")
 	_G[perCharCheck:GetName() .. "Text"]:SetText(CHARACTER_SPECIFIC_KEYBINDINGS)
 
-    perCharCheck:SetScript("OnShow", function()
-        perCharCheck:SetChecked(GetCurrentBindingSet() == 2)
+	perCharCheck:SetScript("OnShow", function()
+		perCharCheck:SetChecked(GetCurrentBindingSet() == 2)
 	end)
 
 	perCharCheck:SetScript("OnClick", function()

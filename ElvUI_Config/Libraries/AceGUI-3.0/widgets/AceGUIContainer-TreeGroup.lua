@@ -325,7 +325,7 @@ local methods = {
 
 		local button = CreateFrame("Button", strfmt("AceGUI30TreeButton%d", num), self.treeframe)
 		button.obj = self
-		button:SetWidth(175)
+		button:SetWidth(DEFAULT_TREE_WIDTH)
 		button:SetHeight(18)
 
 		local toggle = CreateFrame("Button", "$parentToggle", button)
@@ -419,7 +419,6 @@ local methods = {
 	end,
 
 	["RefreshTree"] = function(self,scrollToSelection)
-		local t = GetTime()
 		local buttons = self.buttons
 		local lines = self.lines
 
@@ -500,6 +499,7 @@ local methods = {
 		end
 
 		local buttonnum = 1
+		local treewidth = treeframe:GetWidth()
 		for i = first, last do
 			local line = lines[i]
 			local button = buttons[buttonnum]
@@ -509,19 +509,20 @@ local methods = {
 				buttons[buttonnum] = button
 				button:SetParent(treeframe)
 				button:SetFrameLevel(treeframe:GetFrameLevel()+1)
-				button:ClearAllPoints()
-				if buttonnum == 1 then
-					if self.showscroll then
-						button:SetPoint("TOPRIGHT", -22, -10)
-						button:SetPoint("TOPLEFT", 0, -10)
-					else
-						button:SetPoint("TOPRIGHT", 0, -10)
-						button:SetPoint("TOPLEFT", 0, -10)
-					end
+			end
+
+			button:ClearAllPoints()
+			if buttonnum == 1 then
+				if self.showscroll then
+					button:SetWidth(treewidth - 22)
+					button:SetPoint("TOPRIGHT", -22, -10)
 				else
-					button:SetPoint("TOPRIGHT", buttons[buttonnum-1], "BOTTOMRIGHT",0,0)
-					button:SetPoint("TOPLEFT", buttons[buttonnum-1], "BOTTOMLEFT",0,0)
+					button:SetWidth(treewidth)
+					button:SetPoint("TOPRIGHT", 0, -10)
 				end
+			else
+				button:SetWidth(self.showscroll and (treewidth - 22) or treewidth)
+				button:SetPoint("TOPRIGHT", buttons[buttonnum-1], "BOTTOMRIGHT",0,0)
 			end
 
 			UpdateButton(button, line, status.selected == line.uniquevalue, line.hasChildren, groupstatus[line.uniquevalue] )
@@ -542,7 +543,7 @@ local methods = {
 		self.filter = false
 		local status = self.status or self.localstatus
 		local groups = status.groups
-		for i = 1, tgetn(arg) do
+		for i = 1, arg.n do
 			groups[tconcat(arg, "\001", 1, i)] = true
 		end
 		status.selected = uniquevalue
@@ -563,11 +564,13 @@ local methods = {
 		if show then
 			self.scrollbar:Show()
 			if self.buttons[1] then
+				self.buttons[1]:SetWidth(self.treeframe:GetWidth() - 22)
 				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",-22,-10)
 			end
 		else
 			self.scrollbar:Hide()
 			if self.buttons[1] then
+				self.buttons[1]:SetWidth(self.treeframe:GetWidth())
 				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",0,-10)
 			end
 		end

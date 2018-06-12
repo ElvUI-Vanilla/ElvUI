@@ -22,9 +22,13 @@ function UF:Construct_PlayerFrame(frame)
 
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
+	frame.Buffs = self:Construct_Buffs(frame)
+	frame.Debuffs = self:Construct_Debuffs(frame)
+	frame.Castbar = self:Construct_Castbar(frame, L["Player Castbar"])
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
+	frame.PvPText = self:Construct_PvPIndicator(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
 	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
@@ -78,10 +82,8 @@ function UF:Update_PlayerFrame(frame, db)
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
 
-	frame:SetWidth(frame.UNIT_WIDTH)
-	frame:SetHeight(frame.UNIT_HEIGHT)
-	_G[frame:GetName().."Mover"]:SetWidth(frame:GetWidth())
-	_G[frame:GetName().."Mover"]:SetHeight(frame:GetHeight())
+	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
+	E:Size(_G[frame:GetName().."Mover"], frame:GetWidth(), frame:GetHeight())
 
 	UF:Configure_InfoPanel(frame)
 
@@ -93,9 +95,17 @@ function UF:Update_PlayerFrame(frame, db)
 
 	UF:UpdateNameSettings(frame)
 
+	UF:Configure_PVPIndicator(frame)
+
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:EnableDisable_Auras(frame)
+	UF:Configure_Auras(frame, "Buffs")
+	UF:Configure_Auras(frame, "Debuffs")
+
+	UF:Configure_Castbar(frame)
 
 	UF:Configure_RaidIcon(frame)
 

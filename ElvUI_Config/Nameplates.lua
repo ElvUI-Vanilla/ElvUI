@@ -507,7 +507,7 @@ end
 E.Options.args.nameplate = {
 	type = "group",
 	name = L["NamePlates"],
-	childGroups = "tab",
+	childGroups = "tree",
 	get = function(info) return E.db.nameplates[ info[getn(info)] ] end,
 	set = function(info, value) E.db.nameplates[ info[getn(info)] ] = value; NP:ConfigureAll(); end,
 	args = {

@@ -15,7 +15,6 @@ local GetActiveTalentGroup = GetActiveTalentGroup
 local GetCVar = GetCVar
 local GetFunctionCPUUsage = GetFunctionCPUUsage
 local GetTalentTabInfo = GetTalentTabInfo
-local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
 local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNumPartyMembers, GetNumRaidMembers
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
@@ -28,6 +27,8 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 _, E.myclass = UnitClass("player") -- Constants
 _, E.myrace = UnitRace("player")
 _, E.myfaction = UnitFactionGroup("player")
+-- The E.myfaction may error when in GM mode
+E.myfaction = E.myfaction or "Others"
 E.myname = UnitName("player")
 E.version = GetAddOnMetadata("ElvUI", "Version")
 E.myrealm = GetRealmName()
@@ -425,9 +426,9 @@ end
 E.UIParent = CreateFrame("Frame", "ElvUIParent", UIParent)
 E.UIParent:SetFrameLevel(UIParent:GetFrameLevel())
 E.UIParent:SetPoint("CENTER", UIParent, "CENTER")
-E.UIParent:SetHeight(UIParent:GetHeight())
-E.UIParent:SetWidth(UIParent:GetWidth())
-E["snapBars"][table.getn(E["snapBars"]) + 1] = E.UIParent
+E.UIParent:SetHeight(GetScreenHeight())
+E.UIParent:SetWidth(GetScreenWidth())
+tinsert(E["snapBars"], E.UIParent)
 
 E.HiddenFrame = CreateFrame("Frame")
 E.HiddenFrame:Hide()

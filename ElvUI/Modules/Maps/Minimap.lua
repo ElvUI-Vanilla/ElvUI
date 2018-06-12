@@ -48,15 +48,15 @@ end
 
 function M:GetLocTextColor()
 	local pvpType = GetZonePVPInfo()
-	if(pvpType == "sanctuary") then
+	if pvpType == "sanctuary" then
 		return 0.035, 0.58, 0.84
-	elseif(pvpType == "arena") then
+	elseif pvpType == "arena" then
 		return 0.84, 0.03, 0.03
-	elseif(pvpType == "friendly") then
+	elseif pvpType == "friendly" then
 		return 0.05, 0.85, 0.03
-	elseif(pvpType == "hostile") then
+	elseif pvpType == "hostile" then
 		return 0.84, 0.03, 0.03
-	elseif(pvpType == "contested") then
+	elseif pvpType == "contested" then
 		return 0.9, 0.85, 0.05
 	else
 		return 0.84, 0.03, 0.03
@@ -104,7 +104,7 @@ local function ResetZoom()
 	isResetting = false
 end
 local function SetupZoomReset()
-	if(E.db.general.minimap.resetZoom.enable and not isResetting) then
+	if E.db.general.minimap.resetZoom.enable and not isResetting then
 		isResetting = true
 		E:Delay(E.db.general.minimap.resetZoom.time, ResetZoom)
 	end
@@ -120,8 +120,8 @@ function M:UpdateSettings()
 		Minimap:SetScale(E.MinimapSize / 140)
 	end
 
-	if(LeftMiniPanel and RightMiniPanel) then
-		if(E.db.datatexts.minimapPanels and E.private.general.minimap.enable) then
+	if LeftMiniPanel and RightMiniPanel then
+		if E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
 			LeftMiniPanel:Show()
 			RightMiniPanel:Show()
 		else
@@ -130,48 +130,48 @@ function M:UpdateSettings()
 		end
 	end
 
-	if(BottomMiniPanel) then
-		if(E.db.datatexts.minimapBottom and E.private.general.minimap.enable) then
+	if BottomMiniPanel then
+		if E.db.datatexts.minimapBottom and E.private.general.minimap.enable then
 			BottomMiniPanel:Show()
 		else
 			BottomMiniPanel:Hide()
 		end
 	end
 
-	if(BottomLeftMiniPanel) then
-		if(E.db.datatexts.minimapBottomLeft and E.private.general.minimap.enable) then
+	if BottomLeftMiniPanel then
+		if E.db.datatexts.minimapBottomLeft and E.private.general.minimap.enable then
 			BottomLeftMiniPanel:Show()
 		else
 			BottomLeftMiniPanel:Hide()
 		end
 	end
 
-	if(BottomRightMiniPanel) then
-		if(E.db.datatexts.minimapBottomRight and E.private.general.minimap.enable) then
+	if BottomRightMiniPanel then
+		if E.db.datatexts.minimapBottomRight and E.private.general.minimap.enable then
 			BottomRightMiniPanel:Show()
 		else
 			BottomRightMiniPanel:Hide()
 		end
 	end
 
-	if(TopMiniPanel) then
-		if(E.db.datatexts.minimapTop and E.private.general.minimap.enable) then
+	if TopMiniPanel then
+		if E.db.datatexts.minimapTop and E.private.general.minimap.enable then
 			TopMiniPanel:Show()
 		else
 			TopMiniPanel:Hide()
 		end
 	end
 
-	if(TopLeftMiniPanel) then
-		if(E.db.datatexts.minimapTopLeft and E.private.general.minimap.enable) then
+	if TopLeftMiniPanel then
+		if E.db.datatexts.minimapTopLeft and E.private.general.minimap.enable then
 			TopLeftMiniPanel:Show()
 		else
 			TopLeftMiniPanel:Hide()
 		end
 	end
 
-	if(TopRightMiniPanel) then
-		if(E.db.datatexts.minimapTopRight and E.private.general.minimap.enable) then
+	if TopRightMiniPanel then
+		if E.db.datatexts.minimapTopRight and E.private.general.minimap.enable then
 			TopRightMiniPanel:Show()
 		else
 			TopRightMiniPanel:Hide()
@@ -179,19 +179,19 @@ function M:UpdateSettings()
 	end
 
 	if MMHolder then
-		MMHolder:SetWidth(E.MinimapWidth + E.Border + E.Spacing*3)
+		E:Width(MMHolder, E.MinimapWidth + E.Border + E.Spacing*3)
 
 		if E.db.datatexts.minimapPanels then
-			MMHolder:SetHeight(E.MinimapHeight + (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) + E.Spacing*3)
+			E:Height(MMHolder, E.MinimapHeight + (LeftMiniPanel and (LeftMiniPanel:GetHeight() + E.Border) or 24) + E.Spacing*3)
 		else
-			MMHolder:SetHeight(E.MinimapHeight + E.Border + E.Spacing*3)
+			E:Height(MMHolder, E.MinimapHeight + E.Border + E.Spacing*3)
 		end
 	end
 
 	if Minimap.location then
-		Minimap.location:SetWidth(E.MinimapSize)
+		E:Width(Minimap.location, E.MinimapSize)
 
-		if(E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable) then
+		if E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable then
 			Minimap.location:Hide()
 		else
 			Minimap.location:Show()
@@ -199,8 +199,7 @@ function M:UpdateSettings()
 	end
 
 	if MinimapMover then
-		MinimapMover:SetWidth(MMHolder:GetWidth())
-		MinimapMover:SetHeight(MMHolder:GetHeight())
+		E:Size(MinimapMover, MMHolder:GetWidth(), MMHolder:GetHeight())
 	end
 
 	if GameTimeFrame then
@@ -210,7 +209,7 @@ function M:UpdateSettings()
 			local pos = E.db.general.minimap.icons.calendar.position or "TOPRIGHT"
 			local scale = E.db.general.minimap.icons.calendar.scale or 1
 			GameTimeFrame:ClearAllPoints()
-			GameTimeFrame:SetPoint(pos, Minimap, pos, E.db.general.minimap.icons.calendar.xOffset or 0, E.db.general.minimap.icons.calendar.yOffset or 0)
+			E:Point(GameTimeFrame, pos, Minimap, pos, E.db.general.minimap.icons.calendar.xOffset or 0, E.db.general.minimap.icons.calendar.yOffset or 0)
 			GameTimeFrame:SetScale(scale)
 			GameTimeFrame:Show()
 		end
@@ -220,7 +219,7 @@ function M:UpdateSettings()
 		local pos = E.db.general.minimap.icons.mail.position or "TOPRIGHT"
 		local scale = E.db.general.minimap.icons.mail.scale or 1
 		MiniMapMailFrame:ClearAllPoints()
-		MiniMapMailFrame:SetPoint(pos, Minimap, pos, E.db.general.minimap.icons.mail.xOffset or 3, E.db.general.minimap.icons.mail.yOffset or 4)
+		E:Point(MiniMapMailFrame, pos, Minimap, pos, E.db.general.minimap.icons.mail.xOffset or 3, E.db.general.minimap.icons.mail.yOffset or 4)
 		MiniMapMailFrame:SetScale(scale)
 	end
 
@@ -228,7 +227,7 @@ function M:UpdateSettings()
 		local pos = E.db.general.minimap.icons.battlefield.position or "BOTTOMRIGHT"
 		local scale = E.db.general.minimap.icons.battlefield.scale or 1
 		MiniMapBattlefieldFrame:ClearAllPoints()
-		MiniMapBattlefieldFrame:SetPoint(pos, Minimap, pos, E.db.general.minimap.icons.battlefield.xOffset or 3, E.db.general.minimap.icons.battlefield.yOffset or 0)
+		E:Point(MiniMapBattlefieldFrame, pos, Minimap, pos, E.db.general.minimap.icons.battlefield.xOffset or 3, E.db.general.minimap.icons.battlefield.yOffset or 0)
 		MiniMapBattlefieldFrame:SetScale(scale)
 	end
 
@@ -238,7 +237,7 @@ function M:UpdateSettings()
 		local x = E.db.general.minimap.icons.difficulty.xOffset or 0
 		local y = E.db.general.minimap.icons.difficulty.yOffset or 0
 		MiniMapInstanceDifficulty:ClearAllPoints()
-		MiniMapInstanceDifficulty:SetPoint(pos, Minimap, pos, x, y)
+		E:Point(MiniMapInstanceDifficulty, pos, Minimap, pos, x, y)
 		MiniMapInstanceDifficulty:SetScale(scale)
 	end
 end
@@ -261,11 +260,10 @@ function M:Initialize()
 	end
 
 	local mmholder = CreateFrame("Frame", "MMHolder", UIParent)
-	mmholder:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
-	mmholder:SetWidth(E.MinimapWidth + 29)
-	mmholder:SetHeight(E.MinimapHeight + 53)
+	E:Point(mmholder, "TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
+	E:Size(mmholder, E.MinimapWidth + 29, E.MinimapHeight + 53)
 	Minimap:ClearAllPoints()
-	Minimap:SetPoint("TOPRIGHT", mmholder, "TOPRIGHT", -E.Border, -E.Border)
+	E:Point(Minimap, "TOPRIGHT", mmholder, "TOPRIGHT", -E.Border, -E.Border)
 
 	Minimap:SetMaskTexture("Interface\\ChatFrame\\ChatFrameBackground")
 	Minimap.backdrop = CreateFrame("Frame", nil, UIParent)
@@ -289,7 +287,7 @@ function M:Initialize()
 
 	Minimap.location = Minimap:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(Minimap.location, nil, nil, "OUTLINE")
-	Minimap.location:SetPoint("TOP", Minimap, "TOP", 0, -2)
+	E:Point(Minimap.location, "TOP", Minimap, "TOP", 0, -2)
 	Minimap.location:SetJustifyH("CENTER")
 	Minimap.location:SetJustifyV("MIDDLE")
 	if E.db.general.minimap.locationText ~= "SHOW" or not E.private.general.minimap.enable then
@@ -323,9 +321,8 @@ function M:Initialize()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update_ZoneText")
 
 	local fm = CreateFrame("Minimap", "FarmModeMap", E.UIParent)
-	fm:SetWidth(E.db.farmSize)
-	fm:SetHeight(E.db.farmSize)
-	fm:SetPoint("TOP", E.UIParent, "TOP", 0, -120)
+	E:Size(fm, E.db.farmSize)
+	E:Point(fm, "TOP", E.UIParent, "TOP", 0, -120)
 	fm:SetClampedToScreen(true)
 	E:CreateBackdrop(fm, "Default")
 	fm:EnableMouseWheel(true)
@@ -338,14 +335,14 @@ function M:Initialize()
 	fm:Hide()
 
 	FarmModeMap:SetScript("OnShow", function()
-		if(BuffsMover and not E:HasMoverBeenMoved("BuffsMover")) then
+		if BuffsMover and not E:HasMoverBeenMoved("BuffsMover") then
 			BuffsMover:ClearAllPoints()
-			BuffsMover:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
+			E:Point(BuffsMover, "TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
 		end
 
-		if(DebuffsMover and not E:HasMoverBeenMoved("DebuffsMover")) then
+		if DebuffsMover and not E:HasMoverBeenMoved("DebuffsMover") then
 			DebuffsMover:ClearAllPoints()
-			DebuffsMover:SetPoint("TOPRIGHT", ElvUIPlayerBuffs, "BOTTOMRIGHT", 0, -3)
+			E:Point(DebuffsMover, "TOPRIGHT", ElvUIPlayerBuffs, "BOTTOMRIGHT", 0, -3)
 		end
 
 		MinimapCluster:ClearAllPoints()
@@ -353,11 +350,11 @@ function M:Initialize()
 	end)
 
 	FarmModeMap:SetScript("OnHide", function()
-		if(BuffsMover and not E:HasMoverBeenMoved("BuffsMover")) then
+		if BuffsMover and not E:HasMoverBeenMoved("BuffsMover") then
 			E:ResetMovers(L["Player Buffs"])
 		end
 
-		if(DebuffsMover and not E:HasMoverBeenMoved("DebuffsMover")) then
+		if DebuffsMover and not E:HasMoverBeenMoved("DebuffsMover") then
 			E:ResetMovers(L["Player Debuffs"])
 		end
 

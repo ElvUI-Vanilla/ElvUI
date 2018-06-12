@@ -615,8 +615,8 @@ local function Tag(self, fs, tagstr)
 		tinsert(self.__mousetags, fs)
 		fs:SetAlpha(0)
 		if not self.__HookFunc then
-			self:HookScript('OnEnter', OnEnter)
-			self:HookScript('OnLeave', OnLeave)
+			HookScript(self, 'OnEnter', function() OnEnter(this) end)
+			HookScript(self, 'OnLeave', function() OnLeave(this) end)
 			self.__HookFunc = true;
 		end
 		tagstr = string.gsub(tagstr, '%[mouseover%]', '')

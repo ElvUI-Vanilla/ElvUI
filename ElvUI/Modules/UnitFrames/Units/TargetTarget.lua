@@ -15,6 +15,8 @@ function UF:Construct_TargetTargetFrame(frame)
 	frame.Name = self:Construct_NameText(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
+	frame.Buffs = self:Construct_Buffs(frame)
+	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 
@@ -69,6 +71,10 @@ function UF:Update_TargetTargetFrame(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
+
+	UF:EnableDisable_Auras(frame)
+	UF:Configure_Auras(frame, "Buffs")
+	UF:Configure_Auras(frame, "Debuffs")
 
 	UF:Configure_RaidIcon(frame)
 

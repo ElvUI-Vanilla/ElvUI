@@ -232,8 +232,8 @@ function L_UIDropDownMenu_CreateFrames(level, index)
 		newList:SetWidth(180)
 		newList:SetHeight(10)
 
-    	--Allow closing with escape
-    	tinsert(UIMenus, "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS)
+		--Allow closing with escape
+		tinsert(UIMenus, "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS)
 
 		for i=L_UIDROPDOWNMENU_MINBUTTONS+1, L_UIDROPDOWNMENU_MAXBUTTONS do
 			local newButton = CreateFrame("Button", "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS.."Button"..i, newList, "L_UIDropDownMenuButtonTemplate");
@@ -292,9 +292,9 @@ function L_UIDropDownMenu_AddButton(info, level)
 	local index = listFrame and (listFrame.numButtons + 1) or 1;
 	local width;
 
-	--UIDropDownMenuDelegate:SetAttribute("createframes-level", level);
-	--UIDropDownMenuDelegate:SetAttribute("createframes-index", index);
-	--UIDropDownMenuDelegate:SetAttribute("createframes", true);
+	UIDropDownMenuDelegate:SetAttribute("createframes-level", level);
+	UIDropDownMenuDelegate:SetAttribute("createframes-index", index);
+	UIDropDownMenuDelegate:SetAttribute("createframes", true);
 
 	listFrame = listFrame or _G["L_DropDownList"..level];
 	local listFrameName = listFrame:GetName();
@@ -789,9 +789,9 @@ function L_ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, 
 		level = 1;
 	end
 
-	--UIDropDownMenuDelegate:SetAttribute("createframes-level", level);
-	--UIDropDownMenuDelegate:SetAttribute("createframes-index", 0);
-	--UIDropDownMenuDelegate:SetAttribute("createframes", true);
+	UIDropDownMenuDelegate:SetAttribute("createframes-level", level);
+	UIDropDownMenuDelegate:SetAttribute("createframes-index", 0);
+	UIDropDownMenuDelegate:SetAttribute("createframes", true);
 	L_UIDROPDOWNMENU_MENU_LEVEL = level;
 	L_UIDROPDOWNMENU_MENU_VALUE = value;
 	local listFrame = _G["L_DropDownList"..level];
