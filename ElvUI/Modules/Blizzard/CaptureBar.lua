@@ -11,56 +11,43 @@ local pvpHolder = CreateFrame("Frame", "PvPHolder", E.UIParent)
 function B:WorldStateAlwaysUpFrame_Update()
 	local captureBar
 	for i = 1, NUM_EXTENDED_UI_FRAMES do
-		captureBar = _G["WorldStateCaptureBar" .. i]
+		captureBar = _G["WorldStateCaptureBar"..i]
+
 		if captureBar and captureBar:IsShown() then
 			captureBar:ClearAllPoints()
-			captureBar:SetPoint("TOP", WorldStateAlwaysUpFrame, "BOTTOM", 0, -80)
+			E:Point(captureBar, "TOP", pvpHolder, "BOTTOM", 0, -75)
 		end
 	end
 
-	WorldStateAlwaysUpFrame:ClearAllPoints()
-	WorldStateAlwaysUpFrame:SetPoint("CENTER", pvpHolder, "CENTER", 0, 10)
-
-	if AlwaysUpFrame1 then
-		AlwaysUpFrame1:ClearAllPoints()
-		AlwaysUpFrame1:SetPoint("CENTER", WorldStateAlwaysUpFrame, "CENTER", 0, 0)
-	end
-
-	if AlwaysUpFrame2 then
-		AlwaysUpFrame2:SetPoint("TOP", AlwaysUpFrame1, "BOTTOM", 0, -5)
-	end
-
-	local offset = 0
-
 	for i = 1, NUM_ALWAYS_UP_UI_FRAMES do
-		local frameText = _G["AlwaysUpFrame"..i.."Text"]
-		local frameIcon = _G["AlwaysUpFrame"..i.."Icon"]
-		local frameIcon2 = _G["AlwaysUpFrame"..i.."DynamicIconButton"]
+		local frame = _G["AlwaysUpFrame"..i]
+		local text = _G["AlwaysUpFrame"..i.."Text"]
+		local icon = _G["AlwaysUpFrame"..i.."Icon"]
+		local dynamic = _G["AlwaysUpFrame"..i.."DynamicIconButton"]
 
-		frameText:ClearAllPoints()
-		frameText:SetPoint("CENTER", WorldStateAlwaysUpFrame, "CENTER", 0, offset)
-		frameText:SetJustifyH("CENTER")
+		if frame then
+			if i == 1 then
+				frame:ClearAllPoints()
+				E:Point(frame, "CENTER", pvpHolder, "CENTER", 0, 5)
+			end
 
-		frameIcon:ClearAllPoints()
-		frameIcon:SetPoint("CENTER", frameText, "LEFT", -7, -9)
-		frameIcon:SetWidth(38)
-		frameIcon:SetHeight(38)
+			text:ClearAllPoints()
+			E:Point(text, "CENTER", frame, "CENTER", 0, 0)
 
-		frameIcon2:ClearAllPoints()
-		frameIcon2:SetPoint("LEFT", frameText, "RIGHT", 5, 0)
-		frameIcon2:SetWidth(38)
-		frameIcon2:SetHeight(38)
+			icon:ClearAllPoints()
+			E:Point(icon, "CENTER", text, "LEFT", -10, -9)
 
-		offset = offset - 25
+			dynamic:ClearAllPoints()
+			E:Point(dynamic, "LEFT", text, "RIGHT", 5, 0)
+		end
 	end
 end
 
 function B:PositionCaptureBar()
 	self:SecureHook("WorldStateAlwaysUpFrame_Update")
 
-	pvpHolder:SetWidth(30)
-	pvpHolder:SetHeight(70)
-	pvpHolder:SetPoint("TOP", E.UIParent, "TOP", 0, -4)
+	E:Size(pvpHolder, 30, 70)
+	E:Point(pvpHolder, "TOP", E.UIParent, "TOP", 0, -4)
 
 	E:CreateMover(pvpHolder, "PvPMover", L["PvP"], nil, nil, nil, "ALL")
 end
