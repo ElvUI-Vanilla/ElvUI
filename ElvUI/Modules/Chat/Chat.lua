@@ -221,6 +221,15 @@ function CH:StyleChat(frame)
 		E:Kill(_G[name..CHAT_FRAME_TEXTURES[i]])
 	end
 
+	E:Kill(_G[name.."ResizeTop"])
+	E:Kill(_G[name.."ResizeTopLeft"])
+	E:Kill(_G[name.."ResizeTopRight"])
+	E:Kill(_G[name.."ResizeBottom"])
+	E:Kill(_G[name.."ResizeBottomLeft"])
+	E:Kill(_G[name.."ResizeBottomRight"])
+	E:Kill(_G[name.."ResizeLeft"])
+	E:Kill(_G[name.."ResizeRight"])
+
 	E:Kill(_G[name.."UpButton"])
 	E:Kill(_G[name.."DownButton"])
 	E:Kill(_G[name.."BottomButton"])
