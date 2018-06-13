@@ -74,6 +74,24 @@ function S:HandleButton(f, strip)
 	HookScript(f, "OnLeave", S.SetOriginalBackdrop)
 end
 
+function S:HandleButtonHighlight(frame)
+	if frame.SetHighlightTexture then
+		frame:SetHighlightTexture("")
+	end
+
+	local leftGrad = frame:CreateTexture(nil, "HIGHLIGHT")
+	E:Size(leftGrad, frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
+	E:Point(leftGrad, "LEFT", frame, "CENTER")
+	leftGrad:SetTexture(E.media.blankTex)
+	leftGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0.35, 0.9, 0.9, 0.9, 0)
+
+	local rightGrad = frame:CreateTexture(nil, "HIGHLIGHT")
+	E:Size(rightGrad, frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
+	E:Point(rightGrad, "RIGHT", frame, "CENTER")
+	rightGrad:SetTexture(E.media.blankTex)
+	rightGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0, 0.9, 0.9, 0.9, 0.35)
+end
+
 function S:HandleScrollBar(frame, thumbTrim)
 	local name = frame:GetName()
 	if _G[name.."BG"] then _G[name.."BG"]:SetTexture(nil) end

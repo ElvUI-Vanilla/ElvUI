@@ -41,29 +41,8 @@ function LoadSkin()
 		tab:SetScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
-
-	local r, g, b = 0.8, 0.8, 0.8
-	local function StyleButton(f, scale)
-		f:SetHighlightTexture(nil)
-		local width, height = (f:GetWidth() * (scale or 0.5)), f:GetHeight()
-
-		local leftGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		E:Width(leftGrad, width)
-		leftGrad:SetHeight(height)
-		E:Point(leftGrad, "LEFT", f, "CENTER")
-		leftGrad:SetTexture(E.media.blankTex)
-		leftGrad:SetGradientAlpha("Horizontal", r, g, b, 0.35, r, g, b, 0)
-
-		local rightGrad = f:CreateTexture(nil, "HIGHLIGHT")
-		E:Width(rightGrad, width)
-		rightGrad:SetHeight(height)
-		E:Point(rightGrad, "RIGHT", f, "CENTER")
-		rightGrad:SetTexture(E.media.blankTex)
-		rightGrad:SetGradientAlpha("Horizontal", r, g, b, 0, r, g, b, 0.35)
-	end
-
 	for i = 1, 10 do
-		StyleButton(_G["FriendsFrameFriendButton"..i], 0.6)
+		S:HandleButtonHighlight(_G["FriendsFrameFriendButton"..i], 0.6)
 	end
 
 	E:StripTextures(FriendsFrameFriendsScrollFrame)
@@ -97,7 +76,7 @@ function LoadSkin()
 	S:HandleButton(FriendsFrameStopIgnoreButton)
 
 	for i = 1, 20 do
-		StyleButton(_G["FriendsFrameIgnoreButton"..i])
+		S:HandleButtonHighlight(_G["FriendsFrameIgnoreButton"..i])
 	end
 
 	-- Who Frame
@@ -134,7 +113,7 @@ function LoadSkin()
 
 		E:CreateBackdrop(button, "Default", true)
 		button.backdrop:SetAllPoints(button.icon)
-		StyleButton(button)
+		S:HandleButtonHighlight(button)
 
 		level:ClearAllPoints()
 		E:Point(level, "TOPLEFT", 12, -2)
@@ -232,8 +211,8 @@ function LoadSkin()
 	for i = 1, GUILDMEMBERS_TO_DISPLAY do
 		local button = _G["GuildFrameButton"..i]
 
-		StyleButton(button)
-		StyleButton(_G["GuildFrameGuildStatusButton"..i])
+		S:HandleButtonHighlight(button)
+		S:HandleButtonHighlight(_G["GuildFrameGuildStatusButton"..i])
 
 		button.icon = button:CreateTexture("$parentIcon", "ARTWORK")
 		E:Point(button.icon, "LEFT", 48, -3)

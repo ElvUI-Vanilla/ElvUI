@@ -57,27 +57,11 @@ local function LoadSkin()
 		end
 	end
 
-	local function StyleButton(f)
-		local width, height = (f:GetWidth() * .54), f:GetHeight()
-
-		local left = f:CreateTexture(nil, "HIGHLIGHT")
-		E:Size(left, width, height)
-		E:Point(left, "LEFT", f, "CENTER")
-		left:SetTexture(1, 1, 1, 0.3)
-		E:Height(left, 16)
-
-		local right = f:CreateTexture(nil, "HIGHLIGHT")
-		E:Size(right, width, height)
-		E:Point(right, "RIGHT", f, "CENTER")
-		right:SetTexture(1, 1, 1, 0.3)
-		E:Height(right, 16)
-	end
-
 	for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
-		StyleButton(_G["ChatMenuButton"..i])
-		StyleButton(_G["EmoteMenuButton"..i])
-		StyleButton(_G["LanguageMenuButton"..i])
-		StyleButton(_G["VoiceMacroMenuButton"..i])
+		E:StyleButton(_G["ChatMenuButton"..i])
+		E:StyleButton(_G["EmoteMenuButton"..i])
+		E:StyleButton(_G["LanguageMenuButton"..i])
+		E:StyleButton(_G["VoiceMacroMenuButton"..i])
 	end
 
 	-- UIDropDownMenu
