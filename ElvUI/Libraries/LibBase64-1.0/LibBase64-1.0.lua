@@ -6,35 +6,32 @@ Description: A library to encode and decode Base64 strings
 License: MIT
 ]]
 
-local modf = math.modf
-local sub = string.sub
-local format = string.format
-local getn = table.getn
-local strlen = string.len
-local byte = string.byte
-
 local LibBase64 = LibStub:NewLibrary("LibBase64-1.0", 1)
 
 if not LibBase64 then
 	return
 end
 
-local _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+local error, tonumber, type = error, tonumber, type
+local concat, insert = table.concat, table.insert
+local byte, char, format, gsub, mod, sub = string.byte, string.char, string.format, string.gsub, string.fmod, string.sub
+
+local _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 local charTable = {}
 local byteToNum = {}
 local numToChar = {}
 
-for i = 1, strlen(_chars) do
-	charTable[i] = sub(_chars, i, i)
+local function convert(string)
+    local t = {}
+    gsub(string, "%-?%d+", function(n) t[getn(t)+1] = tonumber(n) end)
+    return t
 end
 
-for i = 1, getn(charTable) do
+for i = 1, getn(convert(_chars)) do
 	numToChar[i - 1] = sub(_chars, i, i)
 	byteToNum[byte(_chars, i)] = i - 1
 end
-
 _chars = nil
-
 local A_byte = byte("A")
 local Z_byte = byte("Z")
 local a_byte = byte("a")
@@ -68,7 +65,7 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 		-- do nothing
 	elseif type(maxLineLength) ~= "number" then
 		error(format("Bad argument #2 to `Encode'. Expected %q or %q, got %q", "number", "nil", type(maxLineLength)), 2)
-	elseif modf(maxLineLength, 4) ~= 0 then
+	elseif mod(maxLineLength, 4) ~= 0 then
 		error(format("Bad argument #2 to `Encode'. Expected a multiple of 4, got %s", maxLineLength), 2)
 	elseif maxLineLength <= 0 then
 		error(format("Bad argument #2 to `Encode'. Expected a number > 0, got %s", maxLineLength), 2)
@@ -95,16 +92,16 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 		end
 		local num = a * 2^16 + b * 2^8 + c
 
-		local d = modf(num, 2^6)
+		local d = mod(num, 2^6)
 		num = (num - d) / 2^6
 
-		local c = modf(num, 2^6)
+		local c = mod(num, 2^6)
 		num = (num - c) / 2^6
 
-		local b = modf(num, 2^6)
+		local b = mod(num, 2^6)
 		num = (num - b) / 2^6
 
-		local a = modf(num, 2^6)
+		local a = mod(num, 2^6)
 
 		t[getn(t)+1] = numToChar[a]
 
@@ -115,12 +112,12 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 		t[getn(t)+1] = (nilNum >= 1) and "=" or numToChar[d]
 
 		currentLength = currentLength + 4
-		if maxLineLength and modf(currentLength, maxLineLength) == 0 then
+		if maxLineLength and mod(currentLength, maxLineLength) == 0 then
 			t[getn(t)+1] = lineEnding
 		end
 	end
 
-	local s = table.concat(t)
+	local s = concat(t)
 	for i = 1, getn(t) do
 		t[i] = nil
 	end
@@ -172,20 +169,20 @@ function LibBase64:Decode(text)
 
 		local num = a * 2^18 + b * 2^12 + c * 2^6 + d
 
-		local c = modf(num, 2^8)
+		local c = mod(num, 2^8)
 		num = (num - c) / 2^8
 
-		local b = modf(num, 2^8)
+		local b = mod(num, 2^8)
 		num = (num - b) / 2^8
 
-		local a = modf(num, 2^8)
+		local a = mod(num, 2^8)
 
-		t[getn(t)+1] = string.char(a)
+		t[getn(t)+1] = char(a)
 		if nilNum < 2 then
-			t[getn(t)+1] = string.char(b)
+			t[getn(t)+1] = char(b)
 		end
 		if nilNum < 1 then
-			t[getn(t)+1] = string.char(c)
+			t[getn(t)+1] = char(c)
 		end
 	end
 
@@ -193,7 +190,7 @@ function LibBase64:Decode(text)
 		t2[i] = nil
 	end
 
-	local s = table.concat(t)
+	local s = concat(t)
 
 	for i = 1, getn(t) do
 		t[i] = nil
@@ -207,7 +204,7 @@ function LibBase64:IsBase64(text)
 		error(format("Bad argument #1 to `IsBase64'. Expected %q, got %q", "string", type(text)), 2)
 	end
 
-	if modf(strlen(text), 4) ~= 0 then
+	if mod(getn(text), 4) ~= 0 then
 		return false
 	end
 

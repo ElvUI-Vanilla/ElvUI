@@ -10,25 +10,23 @@
 -- make into AceSerializer.
 -- @class file
 -- @name AceSerializer-3.0
--- @release $Id: AceSerializer-3.0.lua 1135 2015-09-19 20:39:16Z nevcairiel $
-local MAJOR,MINOR = "AceSerializer-3.0", 5
+-- @release $Id: AceSerializer-3.0.lua 910 2010-02-11 21:54:24Z mikk $
+local MAJOR,MINOR = "AceSerializer-3.0", 3
 local AceSerializer, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceSerializer then return end
 
 -- Lua APIs
-local strbyte, strchar, gsub, gfind, format = string.byte, string.char, string.gsub, string.gfind, string.format
+local strbyte, strchar, gsub, gmatch, format = string.byte, string.char, string.gsub, string.gmatch, string.format
 local assert, error, pcall = assert, error, pcall
 local type, tostring, tonumber = type, tostring, tonumber
 local pairs, select, frexp = pairs, select, math.frexp
-local tconcat, tgetn = table.concat, table.getn
+local tconcat = table.concat
 
 -- quick copies of string representations of wonky numbers
-local inf = 1/0
-
-local serNaN  -- can't do this in 4.3, see ace3 ticket 268
-local serInf, serInfMac = "1.#INF", "inf"
-local serNegInf, serNegInfMac = "-1.#INF", "-inf"
+local serNaN = tostring(0/0)
+local serInf = tostring(1/0)
+local serNegInf = tostring(-1/0)
 
 
 -- Serialization functions
@@ -62,14 +60,10 @@ local function SerializeValue(v, res, nres)
 
 	elseif t=="number" then	-- ^N = number (just tostring()ed) or ^F (float components)
 		local str = tostring(v)
-		if tonumber(str)==v  --[[not in 4.3 or str==serNaN]] then
+		if tonumber(str)==v  or str==serNaN or str==serInf or str==serNegInf then
 			-- translates just fine, transmit as-is
 			res[nres+1] = "^N"
 			res[nres+2] = str
-			nres=nres+2
-		elseif v == inf or v == -inf then
-			res[nres+1] = "^N"
-			res[nres+2] = v == inf and serInf or serNegInf
 			nres=nres+2
 		else
 			local m,e = frexp(v)
@@ -121,8 +115,9 @@ local serializeTbl = { "^1" }	-- "^1" = Hi, I'm data serialized by AceSerializer
 -- @return The data in its serialized form (string)
 function AceSerializer:Serialize(...)
 	local nres = 1
-	for i = 1,tgetn(arg) do
-		local v = arg[i]
+
+	for i = 1, arg.n do
+		local v = select(i, unpack(arg))
 		nres = SerializeValue(v, serializeTbl, nres)
 	end
 
@@ -148,12 +143,12 @@ local function DeserializeStringHelper(escape)
 end
 
 local function DeserializeNumberHelper(number)
-	--[[ not in 4.3 if number == serNaN then
+	if number == serNaN then
 		return 0/0
-	else]]if number == serNegInf or number == serNegInfMac then
-		return -inf
-	elseif number == serInf or number == serInfMac then
-		return inf
+	elseif number == serNegInf then
+		return -1/0
+	elseif number == serInf then
+		return 1/0
 	else
 		return tonumber(number)
 	end
@@ -245,7 +240,7 @@ end
 function AceSerializer:Deserialize(str)
 	str = gsub(str, "[%c ]", "")	-- ignore all control characters; nice for embedding in email and stuff
 
-	local iter = gfind(str, "(^.)([^^]*)")	-- Any ^x followed by string of non-^
+	local iter = gmatch(str, "(^.)([^^]*)")	-- Any ^x followed by string of non-^
 	local ctl,data = iter()
 	if not ctl or ctl~="^1" then
 		-- we purposefully ignore the data portion of the start code, it can be used as an extension mechanism
