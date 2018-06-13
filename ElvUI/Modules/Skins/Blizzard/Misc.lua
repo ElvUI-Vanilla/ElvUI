@@ -5,7 +5,7 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local find, getn = string.find, table.getn
+local find = string.find
 --WoW API / Variables
 local IsAddOnLoaded = IsAddOnLoaded
 local UnitIsUnit = UnitIsUnit
