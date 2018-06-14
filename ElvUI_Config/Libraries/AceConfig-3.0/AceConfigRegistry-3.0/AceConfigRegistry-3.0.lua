@@ -91,6 +91,8 @@ local basekeys={
 	func=optmethodfalse,
 	arg={["*"]=true},
 	width=optstring,
+	-- below here were created by ElvUI --
+	buttonElvUI=optmethodbool,
 }
 
 local typedkeys={
