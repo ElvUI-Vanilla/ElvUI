@@ -1,4 +1,5 @@
 local modulo = math.modulo
+local getn = table.getn
 
 EVENT_TRACE_EVENT_HEIGHT = 16
 EVENT_TRACE_MAX_ENTRIES = 1000
