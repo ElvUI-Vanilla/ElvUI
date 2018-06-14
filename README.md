@@ -1,7 +1,9 @@
-### NOTE: STILL UNDER DEVELOPMENT
-### IF YOU WANT TO TEST AND HELP SUBMIT FEEDBACK OR PULL REQUESTS, PLEASE DO SO IN OUR "DEV" BRANCH: https://github.com/ElvUI-Vanilla/ElvUI/commits/dev
+# NOTE: STILL UNDER DEVELOPMENT
+### IF YOU WANT TO TEST AND HELP SUBMIT FEEDBACK OR PULL REQUESTS, PLEASE DO SO IN OUR "DEV" BRANCH: 
+https://github.com/ElvUI-Vanilla/ElvUI/commits/dev
 
 # ElvUI Vanilla (1.12.1)
+
 This is the backported version of ElvUI for World of Warcraft 1.12.1
 <br />
 ElvUI is a full UI replacement.
@@ -9,51 +11,33 @@ It completely replaces the default Blizzard UI at every level with a new and bet
 As such, you'll only ever have to update ElvUI and not worry too much about its individual components.
 This UI will arrange your interface to be more flexible and practical.
 
-## Screenshots
+## Screenshots:
+
 <img src="https://cloud.githubusercontent.com/assets/590348/22867052/f8d570ba-f190-11e6-9e4c-aee3adc16154.jpg" align="right" width="48.5%">
 <img src="https://cloud.githubusercontent.com/assets/590348/22867049/f8d43506-f190-11e6-9a1c-019a9a190fd7.jpg" width="48.5%">
 <img src="https://cloud.githubusercontent.com/assets/590348/22867050/f8d4f662-f190-11e6-9acd-fc83d7827bc0.jpg" align="right" width="48.5%">
 <img src="https://cloud.githubusercontent.com/assets/590348/22944322/5d95a2b0-f301-11e6-81e3-52d1d619c850.jpg" width="48.5%">
+<img src="https://user-images.githubusercontent.com/19589902/30231616-62e40f32-94f4-11e7-9712-a32f19719cd8.jpg" align="right" width="48.5%">
+<img src="https://user-images.githubusercontent.com/19589902/30231617-62e74594-94f4-11e7-96e5-65d81991dcf1.jpg" width="48.5%">
 
-<!---
 ## Plugins:
-[ElvUI_AddOnSkins](https://github.com/ElvUI-TBC/ElvUI_AddOnSkins)
+
+[ElvUI_AddOnSkins](https://github.com/ElvUI-Vanilla/ElvUI_AddOnSkins)
 <br />
-[ElvUI_AuraBarsMovers](https://github.com/ElvUI-TBC/ElvUI_AuraBarsMovers)
+[ElvUI_DataTextColors](https://github.com/ElvUI-Vanilla/ElvUI_DataTextColors)
 <br />
-[ElvUI_BagControl](https://github.com/ElvUI-TBC/ElvUI_BagControl)
+[ElvUI_Enhanced](https://github.com/ElvUI-Vanilla/ElvUI_Enhanced)
 <br />
-[ElvUI_CastBarOverlay](https://github.com/ElvUI-TBC/ElvUI_CastBarOverlay)
+[ElvUI_EnhancedFriendsList](https://github.com/ElvUI-Vanilla/ElvUI_EnhancedFriendsList)
 <br />
-[ElvUI_CustomTweaks](https://github.com/ElvUI-TBC/ElvUI_CustomTweaks)
+[ElvUI_LocPlus](https://github.com/ElvUI-Vanilla/ElvUI_LocPlus)
 <br />
-[ElvUI_DataTextColors](https://github.com/ElvUI-TBC/ElvUI_DataTextColors)
-<br />
-[ElvUI_DTBars](https://github.com/ElvUI-TBC/ElvUI_DTBars)
-<br />
-[ElvUI_Enhanced](https://github.com/ElvUI-TBC/ElvUI_Enhanced)
-<br />
-[ElvUI_EnhancedFriendsList](https://github.com/ElvUI-TBC/ElvUI_EnhancedFriendsList)
-<br />
-[ElvUI_EverySecondCounts](https://github.com/ElvUI-TBC/ElvUI_EverySecondCounts)
-<br />
-[ElvUI_ExtraActionBars](https://github.com/ElvUI-TBC/ElvUI_ExtraActionBars)
-<br />
-[ElvUI_LocPlus](https://github.com/ElvUI-TBC/ElvUI_LocPlus)
-<br />
-[ElvUI_Microbar](https://github.com/ElvUI-TBC/ElvUI_Microbar)
-<br />
-[ElvUI_MinimapButtons](https://github.com/ElvUI-TBC/ElvUI_MinimapButtons)
-<br />
-[ElvUI_RaidMarkers](https://github.com/ElvUI-TBC/ElvUI_RaidMarkers)
-<br />
-[ElvUI_RightClick](https://github.com/ElvUI-TBC/ElvUI_RightClick)
-<br />
-[ElvUI_SwingBar](https://github.com/ElvUI-TBC/ElvUI_SwingBar)
+[ElvUI_RaidMarkers](https://github.com/ElvUI-Vanilla/ElvUI_RaidMarkers)
 
 -- Please Note: These plugins will not function without ElvUI installed.
 
-## Commands
+## Commands:
+
     /ec or /elvui     Toggle the configuration GUI.
     /rl or /reloadui  Reload the whole UI.
     /moveui           Open the movable frames options.
@@ -90,8 +74,9 @@ This UI will arrange your interface to be more flexible and practical.
                       If an argument is provided it will reset only that frame. 
                           example: /resetui uf (resets all unitframes)
                   
--->
-## Languages
+
+## Languages:
+
 ElvUI supports and contains language specific code for the following gameclients:
 * English (enUS)
 * Korean (koKR)
@@ -100,7 +85,7 @@ ElvUI supports and contains language specific code for the following gameclients
 * Chinese (zhCN)
 * Spanish (esES)
 * Russian (ruRU)
-<!---
+
 ## FAQ:
 
 ### I would like to report a bug. What i need to do?
