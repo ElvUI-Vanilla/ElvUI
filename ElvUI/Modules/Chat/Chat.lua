@@ -29,9 +29,9 @@ local GetGuildRosterMOTD = GetGuildRosterMOTD
 local GetMouseFocus = GetMouseFocus
 local GetNumRaidMembers = GetNumRaidMembers
 local GetTime = GetTime
+local IsAltKeyDown = IsAltKeyDown
 local IsInInstance = IsInInstance
 local IsMouseButtonDown = IsMouseButtonDown
-local IsAltKeyDown = IsAltKeyDown
 local IsShiftKeyDown = IsShiftKeyDown
 local PlaySound = PlaySound
 local PlaySoundFile = PlaySoundFile
@@ -263,13 +263,13 @@ function CH:StyleChat(frame)
 	end)
 
 	if id ~= 2 then
-		tab.text:SetPoint("LEFT", _G[name.."TabLeft"], "RIGHT", 0, -4)
+		E:Point(tab.text, "LEFT", _G[name.."TabLeft"], "RIGHT", 0, -4)
 	end
 
 	tab.flash = _G[name.."TabFlash"]
 	tab.flash:ClearAllPoints()
-	tab.flash:SetPoint("TOPLEFT", _G[name.."TabLeft"], "TOPLEFT", -3, id == 2 and -3 or -2)
-	tab.flash:SetPoint("BOTTOMRIGHT", _G[name.."TabRight"], "BOTTOMRIGHT", 3, id == 2 and -7 or -6)
+	E:Point(tab.flash, "TOPLEFT", _G[name.."TabLeft"], "TOPLEFT", -3, id == 2 and -3 or -2)
+	E:Point(tab.flash, "BOTTOMRIGHT", _G[name.."TabRight"], "BOTTOMRIGHT", 3, id == 2 and -7 or -6)
 
 	--frame:SetClampRectInsets(0, 0, 0, 0)
 	frame:SetClampedToScreen(false)
@@ -278,9 +278,8 @@ function CH:StyleChat(frame)
 	frame.button = CreateFrame("Button", format("CopyChatButton%d", id), frame)
 	frame.button:EnableMouse(true)
 	frame.button:SetAlpha(0.35)
-	frame.button:SetWidth(20)
-	frame.button:SetHeight(22)
-	frame.button:SetPoint("TOPRIGHT", 0, 0)
+	E:Size(frame.button, 20, 22)
+	E:Point(frame.button, "TOPRIGHT", 0, 0)
 	frame.button:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 	frame.button.tex = frame.button:CreateTexture(nil, "OVERLAY")
@@ -392,11 +391,11 @@ function CH:UpdateAnchors()
 	if not E.db.datatexts.leftChatPanel and self.db.panelBackdrop == "HIDEBOTH" or self.db.panelBackdrop == "RIGHT" then
 		frame:ClearAllPoints()
 		if E.db.chat.editBoxPosition == "BELOW_CHAT" then
-			frame:SetPoint("TOPLEFT", ChatFrame1, "BOTTOMLEFT")
-			frame:SetPoint("BOTTOMRIGHT", ChatFrame1, "BOTTOMRIGHT", 0, -LeftChatTab:GetHeight())
+			E:Point(frame, "TOPLEFT", ChatFrame1, "BOTTOMLEFT")
+			E:Point(frame, "BOTTOMRIGHT", ChatFrame1, "BOTTOMRIGHT", 0, -LeftChatTab:GetHeight())
 		else
-			frame:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT")
-			frame:SetPoint("TOPRIGHT", ChatFrame1, "TOPRIGHT", 0, LeftChatTab:GetHeight())
+			E:Point(frame, "BOTTOMLEFT", ChatFrame1, "TOPLEFT")
+			E:Point(frame, "TOPRIGHT", ChatFrame1, "TOPRIGHT", 0, LeftChatTab:GetHeight())
 		end
 	else
 		if E.db.datatexts.leftChatPanel and E.db.chat.editBoxPosition == "BELOW_CHAT" then
@@ -456,10 +455,8 @@ end
 function CH:PositionChat(override)
 	if ((not override and self.initialMove) or (not override)) then return end
 	if not RightChatPanel or not LeftChatPanel then return end
-	RightChatPanel:SetWidth(E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth)
-	RightChatPanel:SetHeight(E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
-	LeftChatPanel:SetWidth(E.db.chat.panelWidth)
-	LeftChatPanel:SetHeight(E.db.chat.panelHeight)
+	E:Size(RightChatPanel, E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth, E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
+	E:Size(LeftChatPanel, E.db.chat.panelWidth, E.db.chat.panelHeight)
 
 	self.RightChatWindowID = FindRightChatID()
 
@@ -483,17 +480,15 @@ function CH:PositionChat(override)
 			chat:ClearAllPoints()
 
 			if E.db.datatexts.rightChatPanel then
-				chat:SetPoint("BOTTOMLEFT", RightChatDataPanel, "TOPLEFT", 1, 3)
+				E:Point(chat, "BOTTOMLEFT", RightChatDataPanel, "TOPLEFT", 1, 3)
 			else
 				BASE_OFFSET = BASE_OFFSET - 24
-				chat:SetPoint("BOTTOMLEFT", RightChatDataPanel, "BOTTOMLEFT", 1, 1)
+				E:Point(chat, "BOTTOMLEFT", RightChatDataPanel, "BOTTOMLEFT", 1, 1)
 			end
 			if id ~= 2 then
-				chat:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11)
-				chat:SetHeight((E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
+				E:Size(chat, (E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11, (E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
 			else
-				chat:SetWidth(E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET))
-				chat:SetHeight(E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET))
+				E:Size(chat, E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET))
 			end
 
 			tab:SetParent(RightChatPanel)
@@ -515,14 +510,13 @@ function CH:PositionChat(override)
 			if id ~= 2 then
 				chat:ClearAllPoints()
 				if E.db.datatexts.leftChatPanel then
-					chat:SetPoint("BOTTOMLEFT", LeftChatToggleButton, "TOPLEFT", 1, 3)
+					E:Point(chat, "BOTTOMLEFT", LeftChatToggleButton, "TOPLEFT", 1, 3)
 				else
 					BASE_OFFSET = BASE_OFFSET - 24
-					chat:SetPoint("BOTTOMLEFT", LeftChatToggleButton, "BOTTOMLEFT", 1, 1)
+					E:Point(chat, "BOTTOMLEFT", LeftChatToggleButton, "BOTTOMLEFT", 1, 1)
 				end
 
-				chat:SetWidth(E.db.chat.panelWidth - 11)
-				chat:SetHeight((E.db.chat.panelHeight - BASE_OFFSET))
+				E:Size(chat, E.db.chat.panelWidth - 11, E.db.chat.panelHeight - BASE_OFFSET)
 			end
 			chat:SetParent(LeftChatPanel)
 			if i > 2 then
@@ -1644,9 +1638,8 @@ function CH:Initialize()
 	local frame = CreateFrame("Frame", "CopyChatFrame", E.UIParent)
 	tinsert(UISpecialFrames, "CopyChatFrame")
 	E:SetTemplate(frame, "Transparent")
-	frame:SetWidth(700)
-	frame:SetHeight(200)
-	frame:SetPoint("BOTTOM", E.UIParent, "BOTTOM", 0, 3)
+	E:Size(frame, 700, 200)
+	E:Point(frame, "BOTTOM", E.UIParent, "BOTTOM", 0, 3)
 	frame:Hide()
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
@@ -1680,9 +1673,8 @@ function CH:Initialize()
 	frame:SetFrameStrata("DIALOG")
 
 	local scrollArea = CreateFrame("ScrollFrame", "CopyChatScrollFrame", frame, "UIPanelScrollFrameTemplate")
-	scrollArea:SetWidth(662)
-	scrollArea:SetHeight(162)
-	scrollArea:SetPoint("TOPLEFT", frame, "TOPLEFT", 8, -30)
+	E:Size(scrollArea, 662, 162)
+	E:Point(scrollArea, "TOPLEFT", frame, "TOPLEFT", 8, -30)
 	S:HandleScrollBar(CopyChatScrollFrameScrollBar)
 
 	HookScript(scrollArea, "OnVerticalScroll", function()
@@ -1695,28 +1687,27 @@ function CH:Initialize()
 	editBox:EnableMouse(true)
 	editBox:SetAutoFocus(false)
 	editBox:SetFontObject(GameFontNormal)
-	editBox:SetWidth(scrollArea:GetWidth())
-	editBox:SetHeight(200)
+	E:Size(editBox, scrollArea:GetWidth(), 200)
 	editBox:SetScript("OnEscapePressed", function() CopyChatFrame:Hide() end)
 	scrollArea:SetScrollChild(editBox)
-	--[[CopyChatFrameEditBox:SetScript("OnTextChanged", function()
+	CopyChatFrameEditBox:SetScript("OnTextChanged", function()
 		local scrollBar = CopyChatScrollFrameScrollBar
 		local _, max = scrollBar:GetMinMaxValues()
 		for i = 1, max do
 			scrollBar:SetValue(scrollBar:GetValue() + (scrollBar:GetHeight() / 2))
 		end
-	end)]]
+		scrollArea:UpdateScrollChildRect()
+	end)
 
 	frame:SetScript("OnSizeChanged", function()
 		local width, height = this:GetWidth() - 38, this:GetHeight() - 38
-		scrollArea:SetWidth(width)
-		scrollArea:SetHeight(height)
-		CopyChatFrameEditBox:SetWidth(width)
-		CopyChatFrameEditBox:SetHeight(height)
+		E:Size(scrollArea, width, height)
+		E:Size(CopyChatFrameEditBox, width, height)
+		scrollArea:UpdateScrollChildRect()
 	end)
 
 	local close = CreateFrame("Button", "CopyChatFrameCloseButton", frame, "UIPanelCloseButton")
-	close:SetPoint("TOPRIGHT", 0, 0)
+	E:Point(close, "TOPRIGHT", 0, 0)
 	close:SetFrameLevel(close:GetFrameLevel() + 1)
 	S:HandleCloseButton(close)
 end
