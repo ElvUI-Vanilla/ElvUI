@@ -5,20 +5,19 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local getn = table.getn
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.debug ~= true then return end
 
-	-- ScriptErrorsFrame:SetParent(E.UIParent)
 	ScriptErrorsFrame:SetScale(UIParent:GetScale())
 	E:SetTemplate(ScriptErrorsFrame, "Transparent")
 	S:HandleScrollBar(ScriptErrorsFrameScrollFrameScrollBar)
 	S:HandleCloseButton(ScriptErrorsFrameClose)
 	E:FontTemplate(ScriptErrorsFrameScrollFrameText, nil, 13)
 	E:CreateBackdrop(ScriptErrorsFrameScrollFrame, "Default")
+	E:Point(ScriptErrorsFrameScrollFrame.backdrop, "BOTTOMRIGHT", 0, -3)
 	ScriptErrorsFrameScrollFrame:SetFrameLevel(ScriptErrorsFrameScrollFrame:GetFrameLevel() + 2)
 
 	E:SetTemplate(EventTraceFrame, "Transparent")
