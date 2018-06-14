@@ -54,7 +54,8 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 	f:RegisterForDrag("LeftButton", "RightButton")
 	f:EnableMouseWheel(true)
 	f:SetMovable(true)
-	E:Size(f, width)
+	E:Width(f, width)
+	E:Height(f, height)
 	E:SetTemplate(f, "Transparent", nil, nil, true)
 	f:Hide()
 	f.parent = parent
