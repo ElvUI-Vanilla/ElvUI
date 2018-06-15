@@ -131,4 +131,3 @@ Create an issue at the bug tracker of [ElvUI](https://github.com/ElvUI-Vanilla)_
 
 ### У меня проблема с ElvUI_"ИмяПлагина". Где написать?
 Создайте запрос в репозитории баг-трекере [ElvUI](https://github.com/ElvUI-Vanilla)_"ИмяПлагина".
--->
