@@ -4,7 +4,7 @@ https://github.com/ElvUI-Vanilla/ElvUI/commits/dev
 
 # ElvUI - Vanilla (1.12.1)
 
-This is the backported version of ElvUI for World of Warcraft - Vanilla (5.4.8) 
+This is the backported version of ElvUI for World of Warcraft - Vanilla (1.12.1) 
 <br />
 ElvUI is a full UI replacement.
 It completely replaces the default Blizzard UI at every level with a new and better interface.
