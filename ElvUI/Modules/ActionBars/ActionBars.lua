@@ -478,8 +478,8 @@ local function IsInShapeshiftForm()
 	return false
 end
 
-function AB:UNIT_PORTRAIT_UPDATE()
-	if arg1 == "player" and E.myclass == "DRUID" then
+function AB:UPDATE_BONUS_ACTIONBAR()
+	if E.myclass == "ROGUE" or E.myclass == "DRUID" then
 		local inForm = IsInShapeshiftForm()
 		if inForm then
 			BonusActionBarFrame:Show()
@@ -511,7 +511,7 @@ function AB:Initialize()
 	self:SecureHook("ActionButton_Update")
 	self:RawHook("ActionButton_GetPagedID")
 	self:SecureHook("PetActionBar_Update", "UpdatePet")
-	self:RegisterEvent("UNIT_PORTRAIT_UPDATE")
+	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 
 	if E.myclass == "WARRIOR" or (E.myclass == "DRUID" and IsInShapeshiftForm()) then
 		BonusActionBarFrame:Show()
