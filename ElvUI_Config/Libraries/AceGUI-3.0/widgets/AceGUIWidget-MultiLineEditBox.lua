@@ -10,7 +10,7 @@ local strfmt = string.format
 local pairs = pairs
 
 -- WoW APIs
-local GetCursorInfo, GetSpellInfo, ClearCursor = GetCursorInfo, GetSpellInfo, ClearCursor
+local CursorHasItem, ClearCursor = CursorHasItem, ClearCursor
 local CreateFrame, UIParent = CreateFrame, UIParent
 local _G = AceCore._G
 
@@ -196,15 +196,7 @@ local function OnMouseUp()	-- ScrollFrame
 end
 
 local function OnReceiveDrag()	-- EditBox / ScrollFrame
-	if not GetCursorInfo then return end
-	local type, id, info = GetCursorInfo()
-	if type == "spell" then
-		local spell, rank = GetSpellName(id, info)
-		if rank ~= "" then spell = spell.."("..rank..")" end
-		info = spell
-	elseif type ~= "item" then
-		return
-	end
+	if not CursorHasItem() then return end
 	ClearCursor()
 	local self = this.obj
 	local editBox = self.editBox
@@ -219,10 +211,14 @@ local function OnReceiveDrag()	-- EditBox / ScrollFrame
 end
 
 local function OnSizeChanged()	-- ScrollFrame
+	this:UpdateScrollChildRect()
+	this:SetVerticalScroll(this:GetHeight())
 	this.obj.editBox:SetWidth(arg1)
 end
 
 local function OnTextChanged()	-- EditBox
+	this:UpdateScrollChildRect()
+	this:SetVerticalScroll(this:GetHeight())
 	local self = this.obj
 	local value = this:GetText()
 	if tostring(value) ~= tostring(self.lasttext) then
@@ -435,7 +431,6 @@ local function Constructor()
 	editBox:SetMultiLine(true)
 	editBox:EnableMouse(true)
 	editBox:SetAutoFocus(false)
-	--editBox:SetCountInvisibleLetters(false)
 	editBox:SetScript("OnCursorChanged", OnCursorChanged)
 	editBox:SetScript("OnEditFocusLost", OnEditFocusLost)
 	editBox:SetScript("OnEnter", OnEnter)
