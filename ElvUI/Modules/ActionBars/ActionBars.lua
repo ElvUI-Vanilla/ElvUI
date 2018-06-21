@@ -109,6 +109,9 @@ function AB:PositionAndSizeBar(barName)
 		button:SetParent(bar)
 
 		E:Size(button, size)
+
+		_G[button:GetName().."Cooldown"]:SetModelScale((size / 36) * 0.75)
+
 		ActionButton_ShowGrid(button)
 
 		if i == 1 then
