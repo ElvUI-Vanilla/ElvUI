@@ -110,7 +110,7 @@ function AB:PositionAndSizeBar(barName)
 
 		E:Size(button, size)
 
-		_G[button:GetName().."Cooldown"]:SetModelScale((size / 36) * 0.75)
+		_G[button:GetName().."Cooldown"]:SetModelScale(size / 48)
 
 		ActionButton_ShowGrid(button)
 

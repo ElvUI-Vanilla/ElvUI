@@ -170,6 +170,9 @@ function AB:PositionAndSizeBarPet()
 		button:SetParent(bar)
 		button:ClearAllPoints()
 		E:Size(button, size)
+
+		_G[button:GetName().."Cooldown"]:SetModelScale(size / 48)
+
 		button:Show()
 
 		if i == 1 then
