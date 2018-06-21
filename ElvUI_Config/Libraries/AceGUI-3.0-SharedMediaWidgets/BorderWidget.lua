@@ -24,7 +24,7 @@ do
 
 	local function ContentOnClick(this, button)
 		local self = this.obj
-		self:Fire("OnValueChanged", this.text:GetText())
+		self:Fire("OnValueChanged", 1, this.text:GetText())
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
 		end
