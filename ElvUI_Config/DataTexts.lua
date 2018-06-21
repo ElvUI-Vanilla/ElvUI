@@ -14,6 +14,7 @@ function DT:PanelLayoutOptions()
 	local order;
 	local table = E.Options.args.datatexts.args.panels.args;
 	for pointLoc, tab in pairs(P.datatexts.panels) do
+		local pointLoc = pointLoc -- add this
 		if(not _G[pointLoc]) then table[pointLoc] = nil; return; end
 		if(type(tab) == "table") then
 			if find(pointLoc, "Chat") then
