@@ -455,7 +455,6 @@ L["Color some texts use."] = "Allgemeine Farbe der meisten Texte"
 L["Colors"] = "Farben" --Also used in UnitFrames
 L["CombatText Font"] = "Schriftart vom Kampftext"
 L["Default Font"] = "Allgemeine Schriftart"
-L["Font Size"] = "Schriftgröße" --Also used in UnitFrames
 L["Fonts"] = "Schrift"
 L["Main backdrop color of the UI."] = "Allgemeine Hintergrundfarbe der Benutzeroberfläche."
 L["Main border color of the UI."] = "Allgemeine Randfarbe des UI."

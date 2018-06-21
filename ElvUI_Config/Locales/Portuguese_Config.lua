@@ -455,7 +455,6 @@ L["Color some texts use."] = "Cores que alguns textos usam."
 L["Colors"] = "Cores"
 L["CombatText Font"] = "Fonte do texto de Combate"
 L["Default Font"] = "Fonte Padrão"
-L["Font Size"] = "Tamanho da Fonte"
 L["Fonts"] = "Fontes"
 L["Main backdrop color of the UI."] = "Cor básica para fundo da interface."
 L["Main border color of the UI."] = true;

@@ -503,7 +503,6 @@ L["Color some texts use."] = "일부 문자나 프레임을 강조할 때 이 �
 L["Colors"] = "색상"
 L["CombatText Font"] = "전투 상황 글꼴"
 L["Default Font"] = "기본 글꼴"
-L["Font Size"] = "글꼴 크기"
 L["Fonts"] = "글꼴"
 L["Main backdrop color of the UI."] = "ElvUI에서 생성하는 모든 불투명한 프레임의 배경 색상을 결정합니다."
 L["Main border color of the UI."] = true;

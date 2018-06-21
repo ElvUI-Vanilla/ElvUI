@@ -634,7 +634,7 @@ E.Options.args.nameplate = {
 						fontSize = {
 							order = 5,
 							type = "range",
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							min = 4, max = 34, step = 1,
 						},
 						fontOutline = {

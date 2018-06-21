@@ -455,7 +455,6 @@ L["Color some texts use."] = "Цвет некоторых текстов."
 L["Colors"] = "Цвета" --Also in UnitFrames
 L["CombatText Font"] = "Шрифт текста боя"
 L["Default Font"] = "Шрифт по умолчанию"
-L["Font Size"] = "Размер шрифта" --Also in UnitFrames
 L["Fonts"] = "Шрифты"
 L["Main backdrop color of the UI."] = "Основной цвет фона интерфейса."
 L["Main border color of the UI."] = "Основной цвет окантовок."

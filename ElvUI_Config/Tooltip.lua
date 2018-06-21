@@ -286,7 +286,7 @@ E.Options.args.tooltip = {
 				fontSize = {
 					order = 5,
 					type = "range",
-					name = L["Font Size"],
+					name = FONT_SIZE,
 					min = 6, max = 500, step = 1,
 					set = function(info, value)
 						E.db.tooltip.healthBar.fontSize = value;

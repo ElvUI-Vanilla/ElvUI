@@ -280,7 +280,7 @@ E.Options.args.general = {
 				fontSize = {
 					order = 2,
 					type = "range",
-					name = L["Font Size"],
+					name = FONT_SIZE,
 					desc = L["Set the font size for everything in UI. Note: This doesn't effect somethings that have their own seperate options (UnitFrame Font, Datatext Font, ect..)"],
 					min = 4, max = 33, step = 1,
 					set = function(info, value) E.db.general[ info[getn(info)] ] = value; E:UpdateMedia(); E:UpdateFontTemplates(); end
@@ -629,7 +629,7 @@ E.Options.args.general = {
 				fontSize = {
 					order = 5,
 					type = "range",
-					name = L["Font Size"],
+					name = FONT_SIZE,
 					get = function(info) return E.private.general.chatBubbleFontSize; end,
 					set = function(info, value) E.private.general.chatBubbleFontSize = value; E:StaticPopup_Show("PRIVATE_RL"); end,
 					min = 4, max = 33, step = 1,
@@ -704,7 +704,7 @@ E.Options.args.general = {
 				},
 				threatTextSize = {
 					order = 43,
-					name = L["Font Size"],
+					name = FONT_SIZE,
 					type = "range",
 					min = 6, max = 22, step = 1,
 					get = function(info) return E.db.general.threat.textSize; end,

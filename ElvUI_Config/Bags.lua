@@ -82,7 +82,7 @@ E.Options.args.bags = {
 						countFontSize = {
 							order = 2,
 							type = "range",
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							min = 4, max = 22, step = 1,
 							set = function(info, value) E.db.bags.countFontSize = value; B:UpdateCountDisplay(); end
 						},
@@ -154,7 +154,7 @@ E.Options.args.bags = {
 						itemLevelFontSize = {
 							order = 5,
 							type = "range",
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							min = 6, max = 33, step = 1,
 							disabled = function() return not E.db.bags.itemLevel; end,
 							set = function(info, value) E.db.bags.itemLevelFontSize = value; B:UpdateItemLevelDisplay(); end

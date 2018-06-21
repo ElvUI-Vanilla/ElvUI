@@ -444,7 +444,6 @@ L["Color some texts use."] = true;
 L["Colors"] = true; --Also used in UnitFrames
 L["CombatText Font"] = true;
 L["Default Font"] = true;
-L["Font Size"] = true; --Also used in UnitFrames
 L["Fonts"] = true;
 L["Main backdrop color of the UI."] = true;
 L["Main border color of the UI."] = true;
