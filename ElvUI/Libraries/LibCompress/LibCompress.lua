@@ -37,6 +37,7 @@ local table_concat = table.concat
 local string_char = string.char
 local string_byte = string.byte
 local string_len = string.len
+local string_gsub = string.gsub
 local string_sub = string.sub
 local unpack = unpack
 local pairs = pairs
@@ -739,7 +740,7 @@ function LibCompress:DecompressHuffman(compressed)
 			else
 				test_code_len = test_code_len + 1
 				if test_code_len > maxCodeLen then
-					return nil, "Decompression error at "..tostring(i).."/"..tostring(getn(compressed))
+					return nil, "Decompression error at "..tostring(i).."/"..tostring(string_len(compressed))
 				end
 			end
 		else
