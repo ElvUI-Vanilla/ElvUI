@@ -457,7 +457,6 @@ function D:ExportProfile(profileType, exportFormat)
 end
 
 function D:ImportProfile(dataString)
-	print(self)
 	local profileType, profileKey, profileData = self:Decode(dataString)
 
 	if not profileData or type(profileData) ~= "table" then

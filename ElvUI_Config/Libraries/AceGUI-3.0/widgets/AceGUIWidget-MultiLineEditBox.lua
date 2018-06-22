@@ -218,6 +218,7 @@ end
 
 local function OnTextChanged()	-- EditBox
 	this:UpdateScrollChildRect()
+	this:UpdateScrollState()
 	this:SetVerticalScroll(this:GetHeight())
 	local self = this.obj
 	local value = this:GetText()
