@@ -202,20 +202,22 @@ local shapeshift = ShapeshiftButton1:GetScript("OnClick")
 local pet = PetActionButton1:GetScript("OnClick")
 
 function AB:RegisterButton(b, override)
-	local buttonName = b:GetName()
 	if b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") then
-		if buttonName and find(buttonName, "MultiBarLeftButton")
-		or find(buttonName, "MultiBarRightButton")
-		or find(buttonName, "MultiBarBottomLeftButton")
-		or find(buttonName, "MultiBarBottomRightButton")
-		or find(buttonName, "BonusActionButton")
-		or find(buttonName, "ActionButton") or override then
-			HookScript(b, "OnEnter", function() self:BindUpdate(b) end)
-			script = b:GetScript("OnClick")
-			if script == shapeshift then
-				HookScript(b, "OnEnter", function() self:BindUpdate(b, "SHAPESHIFT") end)
-			elseif script == pet then
-				HookScript(b, "OnEnter", function() self:BindUpdate(b, "PET") end)
+		local buttonName = b:GetName()
+		if buttonName then
+			if find(buttonName, "MultiBarLeftButton")
+			or find(buttonName, "MultiBarRightButton")
+			or find(buttonName, "MultiBarBottomLeftButton")
+			or find(buttonName, "MultiBarBottomRightButton")
+			or find(buttonName, "BonusActionButton")
+			or find(buttonName, "ActionButton") or override then
+				HookScript(b, "OnEnter", function() self:BindUpdate(b) end)
+				script = b:GetScript("OnClick")
+				if script == shapeshift then
+					HookScript(b, "OnEnter", function() self:BindUpdate(b, "SHAPESHIFT") end)
+				elseif script == pet then
+					HookScript(b, "OnEnter", function() self:BindUpdate(b, "PET") end)
+				end
 			end
 		end
 	end
