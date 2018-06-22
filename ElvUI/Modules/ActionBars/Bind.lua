@@ -4,23 +4,23 @@ local AB = E:GetModule("ActionBars");
 --Cache global variables
 --Lua functions
 local _G = _G
-local select, tonumber, pairs, getn = select, tonumber, pairs, getn
-local floor, mod = math.floor, math.mod
 local find, format, upper, sub = string.find, string.format, string.upper, string.sub
+local floor, mod = math.floor, math.mod
+local select, tonumber, pairs, getn = select, tonumber, pairs, getn
 --WoW API / Variables
-local hooksecurefunc = hooksecurefunc
-local EnumerateFrames = EnumerateFrames
 local CreateFrame = CreateFrame
-local IsAddOnLoaded = IsAddOnLoaded
-local LoadBindings, SaveBindings = LoadBindings, SaveBindings
-local GetCurrentBindingSet = GetCurrentBindingSet
-local SetBinding = SetBinding
+local EnumerateFrames = EnumerateFrames
+local GameTooltip_Hide = GameTooltip_Hide
 local GetBindingKey = GetBindingKey
+local GetCurrentBindingSet = GetCurrentBindingSet
+local GetMacroInfo = GetMacroInfo
+local hooksecurefunc = hooksecurefunc
+local IsAddOnLoaded = IsAddOnLoaded
 local IsAltKeyDown = IsAltKeyDown
 local IsControlKeyDown = IsControlKeyDown
 local IsShiftKeyDown = IsShiftKeyDown
-local GetMacroInfo = GetMacroInfo
-local GameTooltip_Hide = GameTooltip_Hide
+local LoadBindings, SaveBindings = LoadBindings, SaveBindings
+local SetBinding = SetBinding
 local CHARACTER_SPECIFIC_KEYBINDING_TOOLTIP = CHARACTER_SPECIFIC_KEYBINDING_TOOLTIP
 local CHARACTER_SPECIFIC_KEYBINDINGS = CHARACTER_SPECIFIC_KEYBINDINGS
 
@@ -202,9 +202,9 @@ local shapeshift = ShapeshiftButton1:GetScript("OnClick")
 local pet = PetActionButton1:GetScript("OnClick")
 
 function AB:RegisterButton(b, override)
+	local buttonName = b:GetName()
 	if b.IsObjectType and b.GetScript and b:IsObjectType("CheckButton") then
-		local buttonName = b:GetName()
-		if find(buttonName, "MultiBarLeftButton")
+		if buttonName and find(buttonName, "MultiBarLeftButton")
 		or find(buttonName, "MultiBarRightButton")
 		or find(buttonName, "MultiBarBottomLeftButton")
 		or find(buttonName, "MultiBarBottomRightButton")
