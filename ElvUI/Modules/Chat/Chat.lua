@@ -1279,17 +1279,17 @@ function CH:AddLines(lines, ...)
 	end
 end
 
-function CH:ChatEdit_UpdateHeader()
-	local type = this.chatType
+function CH:ChatEdit_UpdateHeader(editbox)
+	local type = editbox.chatType
 	if type == "CHANNEL" then
-		local id = GetChannelName(this.channelTarget)
+		local id = GetChannelName(editbox.channelTarget)
 		if id == 0 then
-			this:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			editbox:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		else
-			this:SetBackdropBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
+			editbox:SetBackdropBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
 		end
 	elseif type then
-		this:SetBackdropBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
+		editbox:SetBackdropBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
 	end
 end
 
