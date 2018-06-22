@@ -217,9 +217,6 @@ local function OnSizeChanged()	-- ScrollFrame
 end
 
 local function OnTextChanged()	-- EditBox
-	this:UpdateScrollChildRect()
-	this:UpdateScrollState()
-	this:SetVerticalScroll(this:GetHeight())
 	local self = this.obj
 	local value = this:GetText()
 	if tostring(value) ~= tostring(self.lasttext) then

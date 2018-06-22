@@ -285,9 +285,11 @@ local function ExportImport_Open(mode)
 		box.editBox:SetScript("OnTextChanged", function()
 			if this then
 				box:SetText(exportString)
-				box.editBox:HighlightText()
+				this:HighlightText()
 			end
+
 			box.scrollFrame:UpdateScrollChildRect()
+			box.scrollFrame:SetVerticalScroll(box.scrollFrame:GetVerticalScrollRange())
 		end)
 	elseif mode == "import" then
 		frame:SetTitle(L["Import Profile"])
