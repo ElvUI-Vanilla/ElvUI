@@ -1015,7 +1015,25 @@ end
 
 --DATABASE CONVERSIONS
 function E:DBConversions()
-	-- Add conversions here
+    --Combat & Resting Icon options update
+    if E.db.unitframe.units.player.combatIcon ~= nil then
+        E.db.unitframe.units.player.CombatIcon.enable = E.db.unitframe.units.player.combatIcon
+        E.db.unitframe.units.player.combatIcon = nil
+    end
+    if E.db.unitframe.units.player.restIcon ~= nil then
+        E.db.unitframe.units.player.RestIcon.enable = E.db.unitframe.units.player.restIcon
+        E.db.unitframe.units.player.restIcon = nil
+    end
+
+    --Convert old "Buffs and Debuffs" font size option to individual options
+    if E.db.auras.fontSize then
+        local fontSize = E.db.auras.fontSize
+        E.db.auras.buffs.countFontSize = fontSize
+        E.db.auras.buffs.durationFontSize = fontSize
+        E.db.auras.debuffs.countFontSize = fontSize
+        E.db.auras.debuffs.durationFontSize = fontSize
+        E.db.auras.fontSize = nil
+    end
 end
 
 local CPU_USAGE = {}
