@@ -19,9 +19,9 @@ local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
 local bar = CreateFrame("Frame", "ElvUI_BarPet", E.UIParent)
 bar:SetFrameStrata("LOW")
 
-function AB:UpdatePet(event, unit)
-	if ((event == "UNIT_FLAGS" or event == "UNIT_AURA") and unit ~= "pet") then return end
-	if (event == "UNIT_PET" and unit ~= "player") then return end
+function AB:UpdatePet(event)
+	if ((event == "UNIT_FLAGS" or event == "UNIT_AURA") and arg1 ~= "pet") then return end
+	if (event == "UNIT_PET" and arg1 ~= "player") then return end
 
 	local petActionButton, petActionIcon, petAutoCastableTexture, petAutoCastShine
 	local petActionsUsable = GetPetActionsUsable()

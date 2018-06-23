@@ -113,16 +113,16 @@ function M:DisbandRaidGroup()
 	LeaveParty()
 end
 
-function M:PVPMessageEnhancement(_, msg)
+function M:PVPMessageEnhancement()
 	if not E.db.general.enhancedPvpMessages then return end
 	local _, instanceType = IsInInstance()
 	if instanceType == "pvp" then
-		RaidNotice_AddMessage(RaidBossEmoteFrame, msg, ChatTypeInfo["RAID_BOSS_EMOTE"])
+		RaidNotice_AddMessage(RaidBossEmoteFrame, arg1, ChatTypeInfo["RAID_BOSS_EMOTE"])
 	end
 end
 
 local hideStatic = false
-function M:AutoInvite(event, leaderName)
+function M:AutoInvite(event)
 	if not E.db.general.autoAcceptInvite then return end
 
 	if event == "PARTY_INVITE_REQUEST" then
@@ -137,7 +137,7 @@ function M:AutoInvite(event, leaderName)
 
 		for friendIndex = 1, numFriends do
 			local friendName = gsub(GetFriendInfo(friendIndex), "-.*", "")
-			if friendName == leaderName then
+			if friendName == arg1 then
 				AcceptGroup()
 				inGroup = true
 				break
@@ -147,7 +147,7 @@ function M:AutoInvite(event, leaderName)
 		if not inGroup then
 			for guildIndex = 1, GetNumGuildMembers(true) do
 				local guildMemberName = gsub(GetGuildRosterInfo(guildIndex), "-.*", "")
-				if guildMemberName == leaderName then
+				if guildMemberName == arg1 then
 					AcceptGroup()
 					inGroup = true
 					break

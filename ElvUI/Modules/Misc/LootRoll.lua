@@ -24,7 +24,6 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local pos = "TOP"
 local cancelled_rolls = {}
 local FRAME_WIDTH, FRAME_HEIGHT = 328, 28
-local dummy = CreateFrame("FRAME", nil, E.UIParent)
 M.RollBars = {}
 
 local locale = GetLocale()
@@ -247,20 +246,20 @@ local function GetFrame()
 	return f
 end
 
-function M:START_LOOT_ROLL(_, rollID, time)
+function M:START_LOOT_ROLL()
 	if cancelled_rolls[rollID] then return end
 
 	local f = GetFrame()
-	f.rollID = rollID
-	f.time = time
+	f.rollID = arg1
+	f.time = arg2
 	for i in pairs(f.rolls) do f.rolls[i] = nil end
 	f.need:SetText(0)
 	f.greed:SetText(0)
 	f.pass:SetText(0)
 
-	local texture, name, count, quality, bindOnPickUp = GetLootRollItemInfo(rollID)
+	local texture, name, count, quality, bindOnPickUp = GetLootRollItemInfo(arg1)
 	f.button.icon:SetTexture(texture)
-	f.button.link = GetLootRollItemLink(rollID)
+	f.button.link = GetLootRollItemLink(arg1)
 
 	f.needbutt:Enable()
 	f.greedbutt:Enable()
@@ -284,7 +283,7 @@ function M:START_LOOT_ROLL(_, rollID, time)
 	f:Show()
 
 	if E.db.general.autoRoll and UnitLevel("player") == MAX_PLAYER_LEVEL and quality == 2 and not bindOnPickUp then
-		RollOnLoot(rollID, 2)
+		RollOnLoot(arg1, 2)
 	end
 end
 
@@ -301,8 +300,8 @@ function M:ParseRollChoice(msg)
 	end
 end
 
-function M:CHAT_MSG_LOOT(_, msg)
-	local playername, itemname, rolltype = self:ParseRollChoice(msg)
+function M:CHAT_MSG_LOOT()
+	local playername, itemname, rolltype = self:ParseRollChoice(arg1)
 	if playername and itemname and rolltype then
 		local class = select(2, UnitClass(playername))
 		for _, f in ipairs(M.RollBars) do
@@ -318,18 +317,8 @@ end
 function M:LoadLootRoll()
 	if not E.private.general.lootRoll then return end
 
-	dummy:RegisterEvent("START_LOOT_ROLL")
-	-- dummy:RegisterEvent("CHAT_MSG_LOOT")
-	dummy:SetScript("OnEvent", function()
-		if event == "START_LOOT_ROLL" then
-			M:START_LOOT_ROLL("START_LOOT_ROLL", arg1, arg2)
-		elseif event == "CHAT_MSG_LOOT" then
-			M:CHAT_MSG_LOOT("CHAT_MSG_LOOT", arg1)
-		end
-	end)
-
-	-- self:RegisterEvent("CHAT_MSG_LOOT")
-	-- self:RegisterEvent("START_LOOT_ROLL")
+	self:RegisterEvent("START_LOOT_ROLL")
+	self:RegisterEvent("CHAT_MSG_LOOT")
 	UIParent:UnregisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("CANCEL_LOOT_ROLL")
 end

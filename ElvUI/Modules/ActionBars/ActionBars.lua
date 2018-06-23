@@ -380,10 +380,6 @@ function AB:DisableBlizzard()
 	for _, element in pairs(elements) do
 		if element:GetObjectType() == "Frame" then
 			element:UnregisterAllEvents()
-
-			if element == MainMenuBarArtFrame then
-				element:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
-			end
 		end
 
 		if element ~= MainMenuBar then

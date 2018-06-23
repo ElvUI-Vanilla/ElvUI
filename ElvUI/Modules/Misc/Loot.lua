@@ -167,11 +167,11 @@ function M:UPDATE_MASTER_LOOT_LIST()
 	UIDropDownMenu_Refresh(GroupLootDropDown)
 end
 
-function M:LOOT_OPENED(_, autoLoot)
+function M:LOOT_OPENED()
 	lootFrame:Show()
 
 	if not lootFrame:IsShown() then
-		CloseLoot(autoLoot == 0)
+		CloseLoot(arg2 == 0)
 	end
 
 	local items = GetNumLootItems()

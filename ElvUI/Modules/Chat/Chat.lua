@@ -1128,9 +1128,7 @@ local function PrepareMessage(author, message)
 	return format("%s%s", strupper(author), message)
 end
 
-function CH:ChatThrottleHandler(_, ...)
-	local arg1, arg2 = unpack(arg)
-
+function CH:ChatThrottleHandler()
 	if arg2 and arg2 ~= "" then
 		local message = PrepareMessage(arg2, arg1)
 		if msgList[message] == nil then
@@ -1440,14 +1438,14 @@ function CH:DelayGuildMOTD()
 	end)
 end
 
-function CH:SaveChatHistory(event, ...)
+function CH:SaveChatHistory(event)
 	if not self.db.chatHistory then return end
 	local data = ElvCharacterDB.ChatHistoryLog
 
 	if self.db.throttleInterval ~= 0 and (event == "CHAT_MESSAGE_SAY" or event == "CHAT_MESSAGE_YELL" or event == "CHAT_MSG_CHANNEL") then
-		self:ChatThrottleHandler(event, unpack(arg))
+		self:ChatThrottleHandler(event)
 
-		local message, author = unpack(arg)
+		local message, author = arg1, arg2
 		local msg = PrepareMessage(author, message)
 		if author and author ~= PLAYER_NAME and msgList[msg] then
 			if difftime(time(), msgTime[msg]) <= CH.db.throttleInterval then
@@ -1457,8 +1455,8 @@ function CH:SaveChatHistory(event, ...)
 	end
 
 	local temp = {}
-	for i = 1, getn(arg) do
-		temp[i] = select(i, unpack(arg)) or false
+	for i = 1, 10 do
+		temp[i] = _G["arg"..i] or false
 	end
 
 	if getn(temp) > 0 then

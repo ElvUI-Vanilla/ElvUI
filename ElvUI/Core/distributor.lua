@@ -84,17 +84,17 @@ function D:Distribute(target, otherServer, isGlobal)
 	E:StaticPopup_Show("DISTRIBUTOR_WAITING")
 end
 
-function D:CHAT_MSG_ADDON(_, _, message, _, sender)
-	if not Downloads[sender] then return end
-	local cur = len(message)
-	local max = Downloads[sender].length
-	Downloads[sender].current = Downloads[sender].current + cur
+function D:CHAT_MSG_ADDON()
+	if not Downloads[arg4] then return end
+	local cur = len(arg2)
+	local max = Downloads[arg4].length
+	Downloads[arg4].current = Downloads[arg4].current + cur
 
-	if Downloads[sender].current > max then
-		Downloads[sender].current = max
+	if Downloads[arg4].current > max then
+		Downloads[arg4].current = max
 	end
 
-	self.statusBar:SetValue(Downloads[sender].current)
+	self.statusBar:SetValue(Downloads[arg4].current)
 end
 
 function D:OnCommReceived(prefix, msg, dist, sender)

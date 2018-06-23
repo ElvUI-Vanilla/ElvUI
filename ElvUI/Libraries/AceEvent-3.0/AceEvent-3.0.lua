@@ -120,7 +120,7 @@ end
 --        the user have always access to them, so we save the table cost here
 local events = AceEvent.events
 AceEvent.frame:SetScript("OnEvent", function()
-	events:Fire(event, arg1, arg2, arg3, arg4, arg5)
+	events:Fire(event)
 end)
 
 --- Finally: upgrade our old embeds

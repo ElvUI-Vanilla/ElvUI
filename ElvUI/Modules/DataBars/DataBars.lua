@@ -41,10 +41,10 @@ function mod:UpdateDataBarDimensions()
 	self:UpdateReputationDimensions()
 end
 
-function mod:PLAYER_LEVEL_UP(level, level2)
+function mod:PLAYER_LEVEL_UP()
 	local maxLevel = 60
-	if (level ~= maxLevel or not self.db.experience.hideAtMaxLevel) and self.db.experience.enable then
-		self:UpdateExperience("PLAYER_LEVEL_UP", level)
+	if (arg1 ~= maxLevel or not self.db.experience.hideAtMaxLevel) and self.db.experience.enable then
+		self:UpdateExperience("PLAYER_LEVEL_UP", arg1)
 	else
 		self.expBar:Hide()
 	end

@@ -153,7 +153,7 @@ function AFK:SetAFK(status)
 	end
 end
 
-function AFK:OnEvent(event, ...)
+function AFK:OnEvent(event)
 	if event == "PLAYER_REGEN_DISABLED" or event == "UPDATE_BATTLEFIELD_STATUS" then
 		if event == "UPDATE_BATTLEFIELD_STATUS" then
 			local status, _, instanceID
@@ -163,7 +163,6 @@ function AFK:OnEvent(event, ...)
 					status = status
 				end
 			end
-			local status = status
 			if status == "confirm" then
 				self:SetAFK(false)
 			end
