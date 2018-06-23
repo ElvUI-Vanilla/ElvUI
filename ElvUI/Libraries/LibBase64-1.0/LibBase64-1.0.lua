@@ -75,7 +75,9 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 	local currentLength = 0
 
 	for i = 1, len(text), 3 do
-		local a, b, c = byte(text, i, i+2)
+		local a = byte(text, i)
+		local b = byte(text, i + 1)
+		local c = byte(text, i + 2)
 		local nilNum = 0
 		if not b then
 			nilNum = 2

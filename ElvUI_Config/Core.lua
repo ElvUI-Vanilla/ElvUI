@@ -259,7 +259,7 @@ local function ExportImport_Open(mode)
 		local exportButton = AceGUI:Create("Button")
 		exportButton:SetText(L["Export Now"])
 		exportButton:SetAutoWidth(true)
-		local function OnClick(self)
+		local function OnClick()
 			label1:SetText(" ")
 			label2:SetText(" ")
 
