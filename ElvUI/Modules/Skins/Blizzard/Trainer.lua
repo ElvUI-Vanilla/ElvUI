@@ -31,8 +31,10 @@ local function LoadSkin()
 
 	E:StripTextures(ClassTrainerSkillIcon)
 
+	E:Kill(ClassTrainerCancelButton)
+
 	S:HandleButton(ClassTrainerTrainButton)
-	S:HandleButton(ClassTrainerCancelButton)
+	E:Point(ClassTrainerTrainButton, "BOTTOMRIGHT", -38, 80)
 
 	S:HandleCloseButton(ClassTrainerFrameCloseButton)
 
