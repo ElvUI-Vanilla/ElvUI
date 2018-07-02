@@ -3,17 +3,19 @@
 		An item text search engine of some sort
 --]]
 
-local Search = LibStub("CustomSearch-1.0");
-local Unfit = LibStub("Unfit-1.0");
-local Lib = LibStub:NewLibrary("LibItemSearch-1.2", 11);
+local Search = LibStub("CustomSearch-1.0")
+local Unfit = LibStub("Unfit-1.0")
+local Lib = LibStub:NewLibrary("LibItemSearch-1.2", 11)
 if Lib then
 	Lib.Filters = {}
 else
 	return
 end
 
-local tonumber = tonumber
-local find, strmatch, lower = string.find, string.match, string.lower
+local pairs, select, tonumber = pairs, select, tonumber
+local find, gsub, match, lower = string.find, string.gsub, string.match, string.lower
+
+local GetItemInfo = GetItemInfo
 
 --[[ User API ]]--
 
@@ -22,11 +24,11 @@ function Lib:Matches(link, search)
 end
 
 function Lib:Tooltip(link, search)
-	return link and strmatch(self.Filters.tip, link, nil, search)
+	return link and match(self.Filters.tip, link, nil, search)
 end
 
 function Lib:TooltipPhrase(link, search)
-	return link and strmatch(self.Filters.tipPhrases, link, nil, search)
+	return link and match(self.Filters.tipPhrases, link, nil, search)
 end
 
 --[[ Basics ]]--
@@ -39,7 +41,7 @@ Lib.Filters.name = {
 	end,
 
 	match = function(self, item, _, search)
-		local name = strmatch(item, "%[(.-)%]")
+		local name = match(item, "%[(.-)%]")
 		return Search:Find(search, name)
 	end
 }
@@ -52,7 +54,7 @@ Lib.Filters.type = {
 	end,
 
 	match = function(self, item, _, search)
-		local type, subType, _, equipSlot = select(6, GetItemInfo(item))
+		local type, subType, _, equipSlot = select(6, GetItemInfo(match(item, "item:(%d+)")))
 		return Search:Find(search, type, subType, _G[equipSlot])
 	end
 }
@@ -65,7 +67,7 @@ Lib.Filters.level = {
 	end,
 
 	match = function(self, link, operator, num)
-		local _, _, _, lvl = GetItemInfo(link)
+		local _, _, _, lvl = GetItemInfo(match(link, "item:(%d+)"))
 		if lvl then
 			return Search:Compare(operator, lvl, num)
 		end
@@ -80,7 +82,7 @@ Lib.Filters.requiredlevel = {
 	end,
 
 	match = function(self, link, operator, num)
-		local _, _, _, _, lvl = GetItemInfo(link)
+		local _, _, _, _, lvl = GetItemInfo(match(link, "item:(%d+)"))
 		if lvl then
 			return Search:Compare(operator, lvl, num)
 		end
@@ -106,7 +108,7 @@ Lib.Filters.quality = {
 	end,
 
 	match = function(self, link, operator, num)
-		local _, _, quality = GetItemInfo(link)
+		local _, _, quality = GetItemInfo(match(link, "item:(%d+)"))
 		return Search:Compare(operator, quality, num)
 	end
 }
@@ -122,7 +124,7 @@ Lib.Filters.usable = {
 
 	match = function(self, link)
 		if(not Unfit:IsItemUnusable(link)) then
-			local _, _, _, _, lvl = GetItemInfo(link)
+			local _, _, _, _, lvl = GetItemInfo(match(link, "item:(%d+)"))
 			return lvl and (lvl ~= 0 and lvl <= UnitLevel("player"))
 		end
 	end
@@ -162,7 +164,7 @@ local escapes = {
 
 local function CleanString(str)
 	for k, v in pairs(escapes) do
-		str = string.gsub(str, k, v)
+		str = gsub(str, k, v)
 	end
 	return str
 end
@@ -173,7 +175,7 @@ Lib.Filters.tipPhrases = {
 	end,
 
 	match = function(self, link, _, search)
-		local id = strmatch(link, "item:(%d+)")
+		local id = match(link, "item:(%d+)")
 		if not id then
 			return
 		end

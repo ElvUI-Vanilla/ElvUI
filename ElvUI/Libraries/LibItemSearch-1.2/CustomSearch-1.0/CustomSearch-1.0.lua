@@ -132,7 +132,7 @@ end
 --[[ Utilities ]]--
 
 function Lib:Find(search, ...)
-	for i = 1, getn(arg) do
+	for i = 1, arg.n do
 		local text = arg[i]
 		if text and find(self:Clean(text), search) then
 			return true

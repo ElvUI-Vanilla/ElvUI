@@ -4,7 +4,7 @@ local Search = LibStub("LibItemSearch-1.2");
 
 --Cache global variables
 --Lua functions
-local ipairs, pairs, tonumber, select, unpack = ipairs, pairs, tonumber, select, unpack
+local ipairs, pairs, pcall, tonumber, select, unpack = ipairs, pairs, pcall, tonumber, select, unpack
 local tinsert, tremove, tsort, twipe = table.insert, table.remove, table.sort, table.wipe
 local floor, mod = math.floor, math.mod
 local band = bit.band
@@ -361,26 +361,10 @@ function B:ScanBags()
 	end
 end
 
-local bagType = {
-  ["Bag"] = 0,
-  ["Quiver"] = 1,
-  ["Ammo Pouch"] = 2,
-  ["Soul Bag"] = 4,
-}
-
-function B:GetItemFamily(bagID)
-	if bagID == KEYRING_CONTAINER then return KEYRING_CONTAINER end
-	if bagID == 0 then return 0 end
-
-	local _, _, id = strfind(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)) or "", "item:(%d+)")
-	if id then
-		local _, _, _, _, itemType, subType = GetItemInfo(id)
-		local bagSubType = bagType[subType]
-
-		if bagSubType == 0 then return 0 end -- based off https://wow.gamepedia.com/ItemFamily
-		if bagSubType == 1 then return 1 end
-		if bagSubType == 2 then return 2 end
-		if bagSubType == 4 then return 4 end
+local function GetItemFamily(bag)
+	local itemType = select(6, GetItemInfo(match(bag, "item:(%d+)")))
+	if itemType then
+		return itemType
 	end
 
 	return nil
@@ -395,16 +379,16 @@ function B:IsSpecialtyBag(bagID)
 	local bag = GetInventoryItemLink("player", inventorySlot)
 	if not bag then return false end
 
-	local family = B:GetItemFamily(bagID)
-	if family == 0 or family == nil then return false else return false end
+	local family = GetItemFamily(bag)
+	if family == "Bag" or family == nil then return false else return false end
 
 	return family
 end
 
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
-	local itemFamily = B:GetItemFamily(item)
-	if itemFamily and itemFamily > 0 then
+	local itemFamily = GetItemFamily(item)
+	if itemFamily and (not itemFamily == "Bag") then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1

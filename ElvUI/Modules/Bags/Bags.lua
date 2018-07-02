@@ -6,13 +6,13 @@ local LIP = LibStub("ItemPrice-1.1", true);
 --Cache global variables
 --Lua functions
 local _G = _G
-local type, ipairs, pairs, unpack, select, assert = type, ipairs, pairs, unpack, select, assert
+local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
 local floor, ceil = math.floor, math.ceil
 local len, gsub, sub, find, match = string.len, string.gsub, string.sub, string.find, string.match
 --WoW API / Variables
-local BankFrameItemButton_Update = BankFrameItemButton_Update
-local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
+local BankFrameItemButton_OnUpdate = BankFrameItemButton_OnUpdate
+local BankFrameItemButton_UpdateLock = BankFrameItemButton_UpdateLock
 local CloseBag, CloseBackpack, CloseBankFrame = CloseBag, CloseBackpack, CloseBankFrame
 local CooldownFrame_SetTimer = CooldownFrame_SetTimer
 local CreateFrame = CreateFrame
@@ -169,7 +169,7 @@ function B:SetSearch(query)
 					button:SetAlpha(1)
 				else
 					SetItemButtonDesaturated(button, 1)
-					button:SetAlpha(0.4)
+					button:SetAlpha(0.5)
 				end
 			end
 		end
@@ -233,7 +233,7 @@ end
 function B:UpdateSlot(bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return end
 
-	local slot, _ = self.Bags[bagID][slotID], nil
+	local slot = self.Bags[bagID][slotID]
 	local bagType = self.Bags[bagID].type
 	local texture, count, locked = GetContainerItemInfo(bagID, slotID)
 	local clink = GetContainerItemLink(bagID, slotID)
@@ -293,7 +293,7 @@ function B:UpdateSlot(bagID, slotID)
 
 	SetItemButtonTexture(slot, texture)
 	SetItemButtonCount(slot, count)
-	SetItemButtonDesaturated(slot, locked, 0.5, 0.5, 0.5)
+	SetItemButtonDesaturated(slot, locked)
 
 	if GameTooltip:IsOwned(slot) and not slot.hasItem then
 		B:Tooltip_Hide()
@@ -426,7 +426,8 @@ function B:Layout(isBank)
 			E:Size(f.ContainerHolder, ((buttonSize + buttonSpacing) * (isBank and i - 1 or i)) + buttonSpacing, buttonSize + (buttonSpacing * 2))
 
 			if isBank then
-				BankFrameItemButton_OnUpdate()
+				-- BankFrameItemButton_OnUpdate()
+				-- BankFrameItemButton_UpdateLock()
 			end
 
 			E:Size(f.ContainerHolder[i], buttonSize)
@@ -447,11 +448,13 @@ function B:Layout(isBank)
 				f.Bags[bagID] = CreateFrame("Frame", f:GetName().."Bag"..bagID, f)
 				f.Bags[bagID]:SetID(bagID)
 				f.Bags[bagID].UpdateBagSlots = B.UpdateBagSlots
-				-- f.Bags[bagID].UpdateSlot = B.UpdateSlot
+				-- f.Bags[bagID].UpdateSlot = UpdateSlot
 			end
 
 			f.Bags[bagID].numSlots = numSlots
-			-- f.Bags[bagID].type = select(2, GetContainerNumFreeSlots(bagID))
+
+			local _, _, id = strfind(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)) or "", "item:(%d+)")
+			f.Bags[bagID].type = select(6, GetItemInfo(id))
 
 			--Hide unused slots
 			for i = 1, MAX_CONTAINER_ITEMS do
@@ -530,8 +533,8 @@ function B:Layout(isBank)
 
 			if self.isBank then
 				if self.ContainerHolder[i] then
-					BankFrameItemButton_Update(self.ContainerHolder[i])
-					BankFrameItemButton_UpdateLocked(self.ContainerHolder[i])
+					BankFrameItemButton_OnUpdate()
+					BankFrameItemButton_UpdateLock()
 				end
 			end
 		end
@@ -602,7 +605,7 @@ function B:UpdateKeySlot(slotID)
 
 	if clink then
 		local _
-		slot.name, _, slot.rarity = GetItemInfo(clink)
+		slot.name, _, slot.rarity = GetItemInfo(match(clink, "item:(%d+)"))
 
 		local r, g, b
 
@@ -697,7 +700,7 @@ function B:GetGraysValue()
 			local l = GetContainerItemLink(b, s)
 			if l and find(l,"ff9d9d9d") then
 				local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
-				if select(3, GetItemInfo(l)) == 0 and p > 0 then
+				if select(3, GetItemInfo(match(l, "item:(%d+)"))) == 0 and p > 0 then
 					c = c + p
 				end
 			end
@@ -749,7 +752,6 @@ end
 
 function B:VendorGrayCheck()
 	local value = B:GetGraysValue()
-
 	if value == 0 then
 		E:Print(L["No gray items to delete."])
 	elseif not MerchantFrame or not MerchantFrame:IsShown() then
@@ -1185,7 +1187,7 @@ function B:Initialize()
 		E:Point(BagFrameHolder, "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border*2), 22 + E.Border*4 - E.Spacing*2)
 		E:CreateMover(BagFrameHolder, "ElvUIBagMover", L["Bag Mover"], nil, nil, B.PostBagMove)
 
-		-- self:SecureHook("UpdateContainerFrameAnchors")
+		self:SecureHook("UpdateContainerFrameAnchors")
 		return
 	end
 
