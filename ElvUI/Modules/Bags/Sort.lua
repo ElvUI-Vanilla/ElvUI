@@ -238,7 +238,7 @@ local function IterateForwards(bagList, i)
 	i = i + 1
 	local step = 1
 	for _, bag in ipairs(bagList) do
-		local slots = B:GetNumSlots(bag, bagRole)
+		local slots = B:GetNumSlots(bag)
 		if i > slots + step then
 			step = step + slots
 		else
@@ -258,7 +258,7 @@ local function IterateBackwards(bagList, i)
 	local step = 1
 	for ii = getn(bagList), 1, -1 do
 		local bag = bagList[ii]
-		local slots = B:GetNumSlots(bag, bagRole)
+		local slots = B:GetNumSlots(bag)
 		if i > slots + step then
 			step = step + slots
 		else
@@ -299,10 +299,11 @@ function B:SplitItem(bag, slot, amount)
 	return SplitContainerItem(bag, slot, amount)
 end
 
-function B:GetNumSlots(bag, role)
+function B:GetNumSlots(bag)
 	if bag then
-		return GetContainerNumSlots(bag);
+		return GetContainerNumSlots(bag)
 	end
+
 	return 0
 end
 
@@ -319,11 +320,11 @@ local function DefaultCanMove()
 end
 
 function B:Encode_BagSlot(bag, slot)
-	return (bag*100) + slot
+	return (bag * 100) + slot
 end
 
 function B:Decode_BagSlot(int)
-	return floor(int/100), mod(int, 100)
+	return floor(int / 100), mod(int, 100)
 end
 
 function B:IsPartial(bag, slot)
@@ -336,10 +337,10 @@ function B:EncodeMove(source, target)
 end
 
 function B:DecodeMove(move)
-	local s = floor(move/10000)
-	local t = mod(move,10000)
-	s = (t>9000) and (s+1) or s
-	t = (t>9000) and (t-10000) or t
+	local s = floor(move / 10000)
+	local t = mod(move, 10000)
+	s = (t > 9000) and (s + 1) or s
+	t = (t > 9000) and (t - 10000) or t
 	return s, t
 end
 
@@ -361,10 +362,26 @@ function B:ScanBags()
 	end
 end
 
+local bagTypes = {
+	["Bag"] = 0,
+	["Quiver"] = 1,
+	["Ammo Pouch"] = 2,
+	["Soul Bag"] = 4,
+	["Leatherworking Bag"] = 8,
+	["Herb Bag"] = 16,
+	["Enchanting Bag"] = 32,
+	["Engineering Bag"] = 64,
+	["Mining Bag"] = 128
+}
+
 local function GetItemFamily(bag)
-	local itemType = select(6, GetItemInfo(match(bag, "item:(%d+)")))
-	if itemType then
-		return itemType
+	local bagID = match(bag, "item:(%d+)")
+	local itemType
+	if bagID then
+		itemType = select(6, GetItemInfo(bagID))
+		if itemType then
+			return tonumber(bagTypes[itemType])
+		end
 	end
 
 	return nil
@@ -380,7 +397,7 @@ function B:IsSpecialtyBag(bagID)
 	if not bag then return false end
 
 	local family = GetItemFamily(bag)
-	if family == "Bag" or family == nil then return false else return false end
+	if family == 0 or family == nil then return false end
 
 	return family
 end
@@ -388,13 +405,13 @@ end
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
 	local itemFamily = GetItemFamily(item)
-	if itemFamily and (not itemFamily == "Bag") then
+	if itemFamily then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
 		end
 	end
-	local bagFamily = select(2, GetContainerNumFreeSlots(targetBag))
+	local bagFamily = GetItemFamily(targetBag)
 	if itemFamily then
 		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
 	else
@@ -403,7 +420,7 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 end
 
 function B.Compress(...)
-	for i = 1, getn(arg) do
+	for i = 1, arg.n do
 		local bags = arg[i]
 		B.Stack(bags, bags, B.IsPartial)
 	end
@@ -425,6 +442,7 @@ function B.Stack(sourceBags, targetBags, canMove)
 	for _, bag, slot in B.IterateBags(sourceBags, true, "withdraw") do
 		local sourceSlot = B:Encode_BagSlot(bag, slot)
 		local itemID = bagIDs[sourceSlot]
+
 		if itemID and targetItems[itemID] and canMove(itemID, bag, slot) then
 			for i = getn(targetSlots), 1, -1 do
 				local targetedSlot = targetSlots[i]
@@ -454,7 +472,7 @@ local blackListedSlots = {}
 local blackList = {}
 local blackListQueries = {}
 
-local function buildBlacklist(...)
+local function buildBlacklist(arg)
 	for entry in pairs(arg) do
 		local itemName = GetItemInfo(entry)
 		if itemName then
@@ -463,7 +481,7 @@ local function buildBlacklist(...)
 			if find(entry, "%[") and find(entry, "%]") then
 				entry = match(entry, "%[(.*)%]")
 			end
-			blackListQueries[getn(blackListQueries)+1] = entry
+			blackListQueries[getn(blackListQueries) + 1] = entry
 		end
 	end
 end
@@ -543,6 +561,7 @@ function B.FillBags(from, to)
 			tinsert(specialtyBags, bag)
 		end
 	end
+
 	if getn(specialtyBags) > 0 then
 		B:Fill(from, specialtyBags)
 	end
@@ -585,7 +604,7 @@ function B.Fill(sourceBags, targetBags, reverse, canMove)
 end
 
 function B.SortBags(...)
-	for i = 1, getn(arg) do
+	for i = 1, arg.n do
 		local bags = arg[i]
 		for i, slotNum in ipairs(bags) do
 			local bagType = B:IsSpecialtyBag(slotNum)
