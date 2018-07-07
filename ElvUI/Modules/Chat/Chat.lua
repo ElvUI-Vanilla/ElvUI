@@ -8,17 +8,14 @@ local LSM = LibStub("LibSharedMedia-3.0");
 local _G = _G
 local time, difftime = time, difftime
 local pairs, unpack, select, tostring, next, tonumber, type, assert = pairs, unpack, select, tostring, next, tonumber, type, assert
-local tinsert, tremove, tsort, twipe, tconcat = table.insert, table.remove, table.sort, table.wipe, table.concat
-local strmatch = strmatch
+local tinsert, tremove, twipe, tconcat = table.insert, table.remove, table.wipe, table.concat
 local gsub, find, match, gmatch, format, split = string.gsub, string.find, string.match, string.gmatch, string.format, string.split
 local strlower, strsub, strlen, strupper = strlower, strsub, strlen, strupper
 --WoW API / Variables
 local BetterDate = BetterDate
 local ChatEdit_SetLastTellTarget = ChatEdit_SetLastTellTarget
 local ChatFrameEditBox = ChatFrameEditBox
-local ChatFrame_ConfigEventHandler = ChatFrame_ConfigEventHandler
 local ChatFrame_SendTell = ChatFrame_SendTell
-local ChatFrame_SystemEventHandler = ChatFrame_SystemEventHandler
 local CreateFrame = CreateFrame
 local FCF_GetCurrentChatFrame = FCF_GetCurrentChatFrame
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
@@ -31,7 +28,6 @@ local GetNumRaidMembers = GetNumRaidMembers
 local GetTime = GetTime
 local IsAltKeyDown = IsAltKeyDown
 local IsInInstance = IsInInstance
-local IsMouseButtonDown = IsMouseButtonDown
 local IsShiftKeyDown = IsShiftKeyDown
 local PlaySound = PlaySound
 local PlaySoundFile = PlaySoundFile
@@ -59,12 +55,6 @@ local CreatedFrames = 0
 local lines = {}
 local msgList, msgCount, msgTime = {}, {}, {}
 local chatFilters = {}
-
-local PLAYER_REALM = gsub(E.myrealm,"[%s%-]","")
-local PLAYER_NAME = E.myname.."-"..PLAYER_REALM
-
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 
 local DEFAULT_STRINGS = {
 	BATTLEGROUND = L["BG"],
@@ -151,45 +141,6 @@ local function ChatFrame_OnMouseScroll()
 	end
 end
 
-local function ChatFrame_AddMessageEventFilter(event, filter)
-	assert(event and filter)
-
-	if chatFilters[event] then
-		-- Only allow a filter to be added once
-		for index, filterFunc in next, chatFilters[event] do
-			if filterFunc == filter then
-				return
-			end
-		end
-	else
-		chatFilters[event] = {}
-	end
-
-	tinsert(chatFilters[event], filter)
-end
-
-local function ChatFrame_RemoveMessageEventFilter(event, filter)
-	assert(event and filter)
-
-	if chatFilters[event] then
-		for index, filterFunc in next, chatFilters[event] do
-			if filterFunc == filter then
-				tremove(chatFilters[event], index)
-			end
-		end
-
-		if getn(chatFilters[event]) == 0 then
-			chatFilters[event] = nil
-		end
-	end
-end
-
-local function ChatFrame_GetMessageEventFilters(event)
-	assert(event)
-
-	return chatFilters[event]
-end
-
 function CH:GetGroupDistribution()
 	local inInstance, kind = IsInInstance()
 	if inInstance and kind == "pvp" then
@@ -217,8 +168,8 @@ function CH:StyleChat(frame)
 	local tab = _G[name.."Tab"]
 	tab.isDocked = frame.isDocked
 
-	for i = 1, getn(CHAT_FRAME_TEXTURES) do
-		E:Kill(_G[name..CHAT_FRAME_TEXTURES[i]])
+	for _, value in CHAT_FRAME_TEXTURES do
+		E:Kill(_G[name..value])
 	end
 
 	E:Kill(_G[name.."ResizeTop"])
@@ -279,7 +230,7 @@ function CH:StyleChat(frame)
 	frame.button:EnableMouse(true)
 	frame.button:SetAlpha(0.35)
 	E:Size(frame.button, 20, 22)
-	E:Point(frame.button, "TOPRIGHT", 0, 0)
+	frame.button:SetPoint("TOPRIGHT", 0, 0)
 	frame.button:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 	frame.button.tex = frame.button:CreateTexture(nil, "OVERLAY")
@@ -324,7 +275,7 @@ end
 function CH:GetLines(...)
 	local index = 1
 	wipe(lines)
-	for i = getn(arg), 1, -1 do
+	for i = arg.n, 1, -1 do
 		local region = arg[i]
 		if region:GetObjectType() == "FontString" then
 			local line = tostring(region:GetText())
@@ -388,21 +339,16 @@ end
 
 function CH:UpdateAnchors()
 	local frame = _G["ChatFrameEditBox"]
-	if not E.db.datatexts.leftChatPanel and self.db.panelBackdrop == "HIDEBOTH" or self.db.panelBackdrop == "RIGHT" then
-		frame:ClearAllPoints()
-		if E.db.chat.editBoxPosition == "BELOW_CHAT" then
-			E:Point(frame, "TOPLEFT", ChatFrame1, "BOTTOMLEFT")
-			E:Point(frame, "BOTTOMRIGHT", ChatFrame1, "BOTTOMRIGHT", 0, -LeftChatTab:GetHeight())
-		else
-			E:Point(frame, "BOTTOMLEFT", ChatFrame1, "TOPLEFT")
-			E:Point(frame, "TOPRIGHT", ChatFrame1, "TOPRIGHT", 0, LeftChatTab:GetHeight())
-		end
+	local noBackdrop = (self.db.panelBackdrop == "HIDEBOTH" or self.db.panelBackdrop == "RIGHT")
+	frame:ClearAllPoints()
+	if not E.db.datatexts.leftChatPanel and E.db.chat.editBoxPosition == "BELOW_CHAT" then
+		E:Point(frame, "TOPLEFT", ChatFrame1, "BOTTOMLEFT", noBackdrop and -1 or -4, noBackdrop and -1 or -4)
+		E:Point(frame, "BOTTOMRIGHT", ChatFrame1, "BOTTOMRIGHT", noBackdrop and 10 or 7, -LeftChatTab:GetHeight() - (noBackdrop and 1 or 4))
+	elseif E.db.chat.editBoxPosition == "BELOW_CHAT" then
+		frame:SetAllPoints(LeftChatDataPanel)
 	else
-		if E.db.datatexts.leftChatPanel and E.db.chat.editBoxPosition == "BELOW_CHAT" then
-			frame:SetAllPoints(LeftChatDataPanel)
-		else
-			frame:SetAllPoints(LeftChatTab)
-		end
+		E:Point(frame, "BOTTOMLEFT", ChatFrame1, "TOPLEFT", noBackdrop and -1 or -1, noBackdrop and 1 or 4)
+		E:Point(frame, "TOPRIGHT", ChatFrame1, "TOPRIGHT", noBackdrop and 10 or 4, LeftChatTab:GetHeight() + (noBackdrop and 1 or 4))
 	end
 
 	CH:PositionChat(true)
@@ -556,9 +502,7 @@ function CH:PrintURL(url)
 	return "|cFFFFFFFF[|Hurl:"..url.."|h"..url.."|h]|r "
 end
 
-function CH.FindURL(msg, ...)
-	if not msg then return end
-
+function CH:FindURL(event, msg, ...)
 	if event and event == "CHAT_MSG_WHISPER" and CH.db.whisperSound ~= "None" and not CH.SoundPlayed then
 		PlaySoundFile(LSM:Fetch("sound", CH.db.whisperSound), "Master")
 		CH.SoundPlayed = true
@@ -673,8 +617,8 @@ function CH:DisableChatThrottle()
 	twipe(msgList) twipe(msgCount) twipe(msgTime)
 end
 
-function CH.ShortChannel()
-	return format("|Hchannel:%s|h[%s]|h", arg8, DEFAULT_STRINGS[strupper(arg8)] or gsub(arg8, "channel:", ""))
+function CH:ShortChannel()
+	return format("|Hchannel:%s|h[%s]|h", self, DEFAULT_STRINGS[strupper(self)] or gsub(self, "channel:", ""))
 end
 
 function CH:ConcatenateTimeStamp(msg)
@@ -696,7 +640,7 @@ function CH:ConcatenateTimeStamp(msg)
 	return msg
 end
 
-function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+function CH:GetColoredName(event, _, arg2)
 	if not E.private.general.classCache then return arg2 end
 
 	if arg2 and arg2 ~= "" then
@@ -716,9 +660,9 @@ function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, a
 	return arg2
 end
 
-function CH:ChatFrame_MessageEventHandler(event, ...)
+function CH:ChatFrame_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
 	if event == "UPDATE_CHAT_WINDOWS" then
-		local name, fontSize, r, g, b, a, shown, locked = GetChatWindowInfo(self:GetID())
+		local _, fontSize, _, _, _, _, shown = GetChatWindowInfo(self:GetID())
 		if fontSize > 0 then
 			local fontFile, unused, fontFlags = self:GetFont()
 			self:SetFont(fontFile, fontSize, fontFlags)
@@ -783,7 +727,7 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 	if event == "CHARACTER_POINTS_CHANGED" then
 		local info = ChatTypeInfo["SYSTEM"]
 		if arg2 > 0 then
-			local cp1, cp2 = UnitCharacterPoints("player")
+			local _, cp2 = UnitCharacterPoints("player")
 			if cp2 then
 				local string = format(GetText("LEVEL_UP_SKILL_POINTS", nil, cp2), cp2)
 				self:AddMessage(string, info.r, info.g, info.b, info.id)
@@ -828,12 +772,11 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 	if strsub(event, 1, 8) == "CHAT_MSG" then
 		local type = strsub(event, 10)
 		local info = ChatTypeInfo[type]
-		local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10 = unpack(arg)
 
 		local filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10 = false
 		if chatFilters[event] then
 			for _, filterFunc in next, chatFilters[event] do
-				filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10 = filterFunc(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, event)
+				filter, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10 = filterFunc(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
 				arg1 = newarg1 or arg1
 				if filter then
 					return true
@@ -843,7 +786,7 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 			end
 		end
 
-		local coloredName = GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+		local coloredName = CH:GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
 
 		local channelLength = arg4 and strlen(arg4)
 		if (strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER")) then
@@ -938,13 +881,6 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 			pflag = pflag or ""
 
 			local showLink = 1
-			if strsub(type, 1, 7) == "MONSTER" or strsub(type, 1, 9) == "RAID_BOSS" then
-				showLink = nil
-			else
-				arg1 = gsub(arg1, "%%", "%%%%")
-			end
-
-			local showLink = 1
 			if strsub(type, 1, 7) == "MONSTER" or type == "RAID_BOSS_EMOTE" then
 				showLink = nil
 			else
@@ -1007,15 +943,9 @@ function CH:ChatFrame_MessageEventHandler(event, ...)
 	end
 end
 
-function CH:ChatFrame_OnEvent(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-	if CH.ChatFrame_MessageEventHandler(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) then
-		return
-	end
-end
-
 function CH:FloatingChatFrame_OnEvent()
-	CH.ChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-	FloatingChatFrame_OnEvent(this, event, 1)
+	if CH:ChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) then return end
+	FloatingChatFrame_OnEvent(event)
 end
 
 local function OnTextChanged(self)
@@ -1128,29 +1058,25 @@ local function PrepareMessage(author, message)
 	return format("%s%s", strupper(author), message)
 end
 
-function CH:ChatThrottleHandler()
-	if arg2 and arg2 ~= "" then
-		local message = PrepareMessage(arg2, arg1)
-		if msgList[message] == nil then
-			msgList[message] = true
-			msgCount[message] = 1
-			msgTime[message] = time()
+function CH:ChatThrottleHandler(author, message)
+	if author and author ~= "" then
+		local msg = PrepareMessage(author, message)
+		if msgList[msg] == nil then
+			msgList[msg] = true
+			msgCount[msg] = 1
+			msgTime[msg] = time()
 		else
-			msgCount[message] = msgCount[message] + 1
+			msgCount[msg] = msgCount[msg] + 1
 		end
 	end
 end
 
-function CH.CHAT_MSG_CHANNEL(message, author, ...)
-	if not (message and author) then return end
-
+function CH:CHAT_MSG_CHANNEL(event, message, author, ...)
 	local blockFlag = false
 	local msg = PrepareMessage(author, message)
 
-	if msg == nil then return CH.FindURL(message, author, unpack(arg)) end
-
 	-- ignore player messages
-	if author and author == UnitName("player") then return CH.FindURL(message, author, unpack(arg)) end
+	if author == E.myname then return CH.FindURL(self, event, message, author, unpack(arg)) end
 	if msgList[msg] and CH.db.throttleInterval ~= 0 then
 		if difftime(time(), msgTime[msg]) <= CH.db.throttleInterval then
 			blockFlag = true
@@ -1158,26 +1084,24 @@ function CH.CHAT_MSG_CHANNEL(message, author, ...)
 	end
 
 	if blockFlag then
-		return true
+		return true;
 	else
 		if CH.db.throttleInterval ~= 0 then
 			msgTime[msg] = time()
 		end
 
-		return CH.FindURL(message, author, unpack(arg))
+		return CH.FindURL(self, event, message, author, unpack(arg))
 	end
 end
 
-function CH.CHAT_MSG_YELL(message, author, ...)
-	if not (message and author) then return end
-
+function CH.CHAT_MSG_YELL(event, message, author, ...)
 	local blockFlag = false
 	local msg = PrepareMessage(author, message)
 
-	if msg == nil then return CH.FindURL(message, author, unpack(arg)) end
+	if msg == nil then return CH.FindURL(self, event, message, author, unpack(arg)) end
 
 	-- ignore player messages
-	if author and author == UnitName("player") then return CH.FindURL(message, author, unpack(arg)) end
+	if author == E.myname then return CH.FindURL(self, event, message, author, unpack(arg)) end
 	if msgList[msg] and msgCount[msg] > 1 and CH.db.throttleInterval ~= 0 then
 		if difftime(time(), msgTime[msg]) <= CH.db.throttleInterval then
 			blockFlag = true
@@ -1185,20 +1109,18 @@ function CH.CHAT_MSG_YELL(message, author, ...)
 	end
 
 	if blockFlag then
-		return true
+		return true;
 	else
 		if CH.db.throttleInterval ~= 0 then
 			msgTime[msg] = time()
 		end
 
-		return CH.FindURL(message, author, unpack(arg))
+		return CH.FindURL(self, event, message, author, unpack(arg))
 	end
 end
 
-function CH.CHAT_MSG_SAY(message, author, ...)
-	if not (message and author) then return end
-
-	return CH.FindURL(message, author, unpack(arg))
+function CH:CHAT_MSG_SAY(event, message, author, ...)
+	return CH.FindURL(self, event, message, author, unpack(arg))
 end
 
 function CH:ThrottleSound()
@@ -1269,7 +1191,7 @@ function CH:CheckKeyword(message)
 end
 
 function CH:AddLines(lines, ...)
-	for i = getn(arg), 1, -1 do
+	for i = arg.n, 1, -1 do
 		local x = select(i, unpack(arg))
 		if	x:GetObjectType() == "FontString" and not x:GetName() then
 			tinsert(lines, x:GetText())
@@ -1400,7 +1322,7 @@ function CH:DisplayChatHistory()
 				CH.timeOverride = d[51]
 				for _, messageType in pairs(chat.messageTypeList) do
 					if gsub(strsub(d[50],10),"_INFORM","") == messageType then
-						CH.ChatFrame_MessageEventHandler(chat,d[50],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8],d[9],d[10],d[11])
+						CH:ChatFrame_OnEvent(chat,d[50],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8],d[9],d[10])
 					end
 				end
 			end
@@ -1420,7 +1342,7 @@ function CH:DelayGuildMOTD()
 		for i = 1, NUM_CHAT_WINDOWS do
 			local channel
 			chat = _G["ChatFrame"..i]
-			for k, v in pairs(chat.messageTypeList) do
+			for _, v in pairs(chat.messageTypeList) do
 				if v == "GUILD" then
 					channel = v
 				end
@@ -1443,11 +1365,11 @@ function CH:SaveChatHistory(event)
 	local data = ElvCharacterDB.ChatHistoryLog
 
 	if self.db.throttleInterval ~= 0 and (event == "CHAT_MESSAGE_SAY" or event == "CHAT_MESSAGE_YELL" or event == "CHAT_MSG_CHANNEL") then
-		self:ChatThrottleHandler(event)
-
 		local message, author = arg1, arg2
+		self:ChatThrottleHandler(message, author)
+
 		local msg = PrepareMessage(author, message)
-		if author and author ~= PLAYER_NAME and msgList[msg] then
+		if author and author ~= UnitName("player") and msgList[msg] then
 			if difftime(time(), msgTime[msg]) <= CH.db.throttleInterval then
 				return
 			end
@@ -1456,7 +1378,7 @@ function CH:SaveChatHistory(event)
 
 	local temp = {}
 	for i = 1, 10 do
-		temp[i] = _G["arg"..i] or false
+		temp[i] = _G["arg"..i]
 	end
 
 	if getn(temp) > 0 then
@@ -1578,7 +1500,7 @@ function CH:Initialize()
 	--First get all pre-existing filters and copy them to our version of chatFilters using ChatFrame_GetMessageEventFilters
 	for name, _ in pairs(ChatTypeGroup) do
 		for i = 1, getn(ChatTypeGroup[name]) do
-			local filterFuncTable = ChatFrame_GetMessageEventFilters(ChatTypeGroup[name][i])
+			local filterFuncTable = chatFilters[ChatTypeGroup[name][i]]
 			if filterFuncTable then
 				chatFilters[ChatTypeGroup[name][i]] = {}
 
@@ -1591,7 +1513,7 @@ function CH:Initialize()
 	end
 
 	--CHAT_MSG_CHANNEL isn't located inside ChatTypeGroup
-	local filterFuncTable = ChatFrame_GetMessageEventFilters("CHAT_MSG_CHANNEL")
+	local filterFuncTable = chatFilters["CHAT_MSG_CHANNEL"]
 	if filterFuncTable then
 		chatFilters["CHAT_MSG_CHANNEL"] = {}
 
@@ -1600,10 +1522,6 @@ function CH:Initialize()
 			tinsert(chatFilters["CHAT_MSG_CHANNEL"], filterFunc)
 		end
 	end
-
-	--Now hook onto Blizzards functions for other addons
-	hooksecurefunc(self, "ChatFrame_AddMessageEventFilter", ChatFrame_AddMessageEventFilter)
-	hooksecurefunc(self, "ChatFrame_RemoveMessageEventFilter", ChatFrame_RemoveMessageEventFilter)
 
 	self:SecureHook("FCF_SetWindowAlpha")
 
@@ -1624,7 +1542,7 @@ function CH:Initialize()
 	end
 
 	for _, event in pairs(FindURL_Events) do
-		ChatFrame_AddMessageEventFilter(event, CH[event] or CH.FindURL)
+		CH:ChatFrame_AddMessageEventFilter(event, CH[event] or CH.FindURL)
 		local nType = strsub(event, 10)
 		if nType ~= "AFK" and nType ~= "DND" then
 			self:RegisterEvent(event, "SaveChatHistory")
@@ -1705,7 +1623,7 @@ function CH:Initialize()
 	end)
 
 	local close = CreateFrame("Button", "CopyChatFrameCloseButton", frame, "UIPanelCloseButton")
-	E:Point(close, "TOPRIGHT", 0, 0)
+	close:SetPoint("TOPRIGHT", 0, 0)
 	close:SetFrameLevel(close:GetFrameLevel() + 1)
 	S:HandleCloseButton(close)
 end
