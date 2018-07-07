@@ -1,4 +1,4 @@
-local MAJOR_VERSION = "LibBabble-BagFamily-3.0"
+local MAJOR_VERSION = "LibBabble-ItemFamily-3.0"
 local MINOR_VERSION = 90000 + tonumber(string.match("$Revision: 50 $", "%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end

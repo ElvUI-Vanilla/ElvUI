@@ -26,7 +26,7 @@ local DURABILITY_TEMPLATE = gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%
 --Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
-local LBBF = LibStub("LibBabble-BagFamily-3.0"):GetLookupTable()
+local LBIF = LibStub("LibBabble-ItemFamily-3.0"):GetLookupTable()
 
 CLASS_SORT_ORDER = {
 	"WARRIOR",
@@ -267,15 +267,15 @@ function GetMapNameByID(id)
 end
 
 local bagTypes = {
-	[LBBF["Bag"]] = 0,
-	[LBBF["Quiver"]] = 1,
-	[LBBF["Ammo Pouch"]] = 2,
-	[LBBF["Soul Bag"]] = 4,
-	[LBBF["Leatherworking Bag"]] = 8,
-	[LBBF["Herb Bag"]] = 16,
-	[LBBF["Enchanting Bag"]] = 32,
-	[LBBF["Engineering Bag"]] = 64,
-	[LBBF["Mining Bag"]] = 128
+	[LBIF["Bag"]] = 0,
+	[LBIF["Quiver"]] = 1,
+	[LBIF["Ammo Pouch"]] = 2,
+	[LBIF["Soul Bag"]] = 4,
+	[LBIF["Leatherworking Bag"]] = 8,
+	[LBIF["Herb Bag"]] = 16,
+	[LBIF["Enchanting Bag"]] = 32,
+	[LBIF["Engineering Bag"]] = 64,
+	[LBIF["Mining Bag"]] = 128
 }
 
 function GetItemFamily(id)
