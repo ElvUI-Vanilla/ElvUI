@@ -453,8 +453,11 @@ function B:Layout(isBank)
 
 			f.Bags[bagID].numSlots = numSlots
 
-			local _, _, id = strfind(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)) or "", "item:(%d+)")
-			f.Bags[bagID].type = select(6, GetItemInfo(id))
+			local link = GetInventoryItemLink("player", ContainerIDToInventoryID(bagID))
+			if link then
+				local _, _, id = strfind(link, "item:(%d+)")
+				f.Bags[bagID].type = select(6, GetItemInfo(id))
+			end
 
 			--Hide unused slots
 			for i = 1, MAX_CONTAINER_ITEMS do
