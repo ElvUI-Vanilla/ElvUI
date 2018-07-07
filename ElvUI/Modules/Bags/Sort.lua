@@ -362,31 +362,6 @@ function B:ScanBags()
 	end
 end
 
-local bagTypes = {
-	["Bag"] = 0,
-	["Quiver"] = 1,
-	["Ammo Pouch"] = 2,
-	["Soul Bag"] = 4,
-	["Leatherworking Bag"] = 8,
-	["Herb Bag"] = 16,
-	["Enchanting Bag"] = 32,
-	["Engineering Bag"] = 64,
-	["Mining Bag"] = 128
-}
-
-local function GetItemFamily(bag)
-	local bagID = match(bag, "item:(%d+)")
-	local itemType
-	if bagID then
-		itemType = select(6, GetItemInfo(bagID))
-		if itemType then
-			return tonumber(bagTypes[itemType])
-		end
-	end
-
-	return nil
-end
-
 function B:IsSpecialtyBag(bagID)
 	if safe[bagID] then return false end
 
@@ -396,7 +371,7 @@ function B:IsSpecialtyBag(bagID)
 	local bag = GetInventoryItemLink("player", inventorySlot)
 	if not bag then return false end
 
-	local family = GetItemFamily(bag)
+	local family = GetItemFamily(match(bag, "item:(%d+)"))
 	if family == 0 or family == nil then return false end
 
 	return family
@@ -404,14 +379,14 @@ end
 
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
-	local itemFamily = GetItemFamily(item)
+	local itemFamily = GetItemFamily(match(item, "item:(%d+)"))
 	if itemFamily then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
 		end
 	end
-	local bagFamily = GetItemFamily(targetBag)
+	local bagFamily = GetItemFamily(match(targetBag, "item:(%d+)"))
 	if itemFamily then
 		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
 	else

@@ -20,7 +20,6 @@ local DeleteCursorItem = DeleteCursorItem
 local GetContainerItemCooldown = GetContainerItemCooldown
 local GetContainerItemInfo = GetContainerItemInfo
 local GetContainerItemLink = GetContainerItemLink
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local GetContainerNumSlots = GetContainerNumSlots
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
@@ -49,13 +48,11 @@ local SEARCH = SEARCH
 local SEARCH_STRING = ""
 
 B.ProfessionColors = {
-	["0x0008"] = {224/255, 187/255, 74/255}, -- Leatherworking
-	["0x0010"] = {74/255, 77/255, 224/255}, -- Inscription
-	["0x0020"] = {18/255, 181/255, 32/255}, -- Herbs
-	["0x0040"] = {160/255, 3/255, 168/255}, -- Enchanting
-	["0x0080"] = {232/255, 118/255, 46/255}, -- Engineering
-	["0x0400"] = {105/255, 79/255, 7/255}, -- Mining
-	["0x010000"] = {222/255, 13/255, 65/255} -- Cooking
+	["8"] = {224/255, 187/255, 74/255}, -- Leatherworking
+	["16"] = {18/255, 181/255, 32/255}, -- Herbs
+	["32"] = {160/255, 3/255, 168/255}, -- Enchanting
+	["64"] = {232/255, 118/255, 46/255}, -- Engineering
+	["128"] = {105/255, 79/255, 7/255}, -- Mining
 }
 
 function B:GetContainerFrame(arg)
@@ -234,7 +231,7 @@ function B:UpdateSlot(bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return end
 
 	local slot = self.Bags[bagID][slotID]
-	local bagType = self.Bags[bagID].type
+	local bagType = tostring(self.Bags[bagID].type)
 	local texture, count, locked = GetContainerItemInfo(bagID, slotID)
 	local clink = GetContainerItemLink(bagID, slotID)
 
@@ -452,11 +449,10 @@ function B:Layout(isBank)
 			end
 
 			f.Bags[bagID].numSlots = numSlots
-
 			local link = GetInventoryItemLink("player", ContainerIDToInventoryID(bagID))
 			if link then
 				local _, _, id = strfind(link, "item:(%d+)")
-				f.Bags[bagID].type = select(6, GetItemInfo(id))
+				f.Bags[bagID].type = GetItemFamily(id)
 			end
 
 			--Hide unused slots
