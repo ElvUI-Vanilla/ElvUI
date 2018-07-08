@@ -103,7 +103,7 @@ function E:UIScale(event)
 		end
 
 		self.UIParent:ClearAllPoints()
-		E:Point(self.UIParent, "CENTER", UIParent)
+		self.UIParent:SetPoint("CENTER", UIParent)
 
 		self.diffGetLeft = E:Round(abs(UIParent:GetLeft() - self.UIParent:GetLeft()))
 		self.diffGetRight = E:Round(abs(UIParent:GetRight() - self.UIParent:GetRight()))

@@ -1035,13 +1035,13 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 
 		backdropTex:ClearAllPoints()
 		if statusBarOrientation == "VERTICAL" then
-			E:Point(backdropTex, "TOPLEFT", statusBar, "TOPLEFT")
-			E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "TOPLEFT")
-			E:Point(backdropTex, "BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
+			backdropTex:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
+			backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "TOPLEFT")
+			backdropTex:SetPoint("BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
 		else
-			E:Point(backdropTex, "TOPLEFT", statusBarTex, "TOPRIGHT")
-			E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
-			E:Point(backdropTex, "BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
+			backdropTex:SetPoint("TOPLEFT", statusBarTex, "TOPRIGHT")
+			backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
+			backdropTex:SetPoint("BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
 		end
 
 		if invertBackdropTex then
@@ -1070,13 +1070,13 @@ function UF:ToggleTransparentStatusBar(isTransparent, statusBar, backdropTex, ad
 		if adjustBackdropPoints then
 			backdropTex:ClearAllPoints()
 			if statusBarOrientation == "VERTICAL" then
-				E:Point(backdropTex, "TOPLEFT", statusBar, "TOPLEFT")
-				E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "TOPLEFT")
-				E:Point(backdropTex, "BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
+				backdropTex:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
+				backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "TOPLEFT")
+				backdropTex:SetPoint("BOTTOMRIGHT", statusBarTex, "TOPRIGHT")
 			else
-				E:Point(backdropTex, "TOPLEFT", statusBarTex, "TOPRIGHT")
-				E:Point(backdropTex, "BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
-				E:Point(backdropTex, "BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
+				backdropTex:SetPoint("TOPLEFT", statusBarTex, "TOPRIGHT")
+				backdropTex:SetPoint("BOTTOMLEFT", statusBarTex, "BOTTOMRIGHT")
+				backdropTex:SetPoint("BOTTOMRIGHT", statusBar, "BOTTOMRIGHT")
 			end
 		end
 

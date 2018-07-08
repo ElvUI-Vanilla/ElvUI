@@ -106,7 +106,7 @@ local function createSlot(id)
 
 	local iconFrame = CreateFrame("Frame", nil, frame)
 	E:Size(iconFrame, iconSize - 2)
-	E:Point(iconFrame, "RIGHT", frame)
+	iconFrame:SetPoint("RIGHT", frame)
 	E:SetTemplate(iconFrame, "Default")
 	frame.iconFrame = iconFrame
 	E["frames"][iconFrame] = nil
@@ -279,7 +279,7 @@ function M:LoadLoot()
 
 	lootFrame = CreateFrame("Button", "ElvLootFrame", lootFrameHolder)
 	lootFrame:SetClampedToScreen(true)
-	E:Point(lootFrame, "TOPLEFT", 0, 0)
+	lootFrame:SetPoint("TOPLEFT", 0, 0)
 	E:Size(lootFrame, 256, 64)
 	E:SetTemplate(lootFrame, "Transparent")
 	lootFrame:SetFrameStrata("FULLSCREEN")

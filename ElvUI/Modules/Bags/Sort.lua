@@ -393,7 +393,7 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 	end
 	local bagFamily = GetItemFamily(targetBag)
 	if itemFamily then
-		return (bagFamily == 0) or itemFamily == bagFamily
+		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
 	else
 		return false
 	end

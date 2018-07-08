@@ -480,7 +480,7 @@ function mod:OnCreated(frame)
 
 	frame.UnitFrame = CreateFrame("Button", nil, frame)
 	E:Size(frame.UnitFrame, 100, 20)
-	E:Point(frame.UnitFrame, "CENTER", 0, 0)
+	frame.UnitFrame:SetPoint("CENTER", 0, 0)
 	frame.UnitFrame:SetScript("OnEvent", self.OnEvent)
 	frame.UnitFrame:SetScript("OnClick", function()
 		frame:Click()

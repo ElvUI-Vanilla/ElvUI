@@ -79,7 +79,7 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 	local fs = f:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(fs)
 	fs:SetJustifyH("CENTER")
-	E:Point(fs, "CENTER", f)
+	fs:SetPoint("CENTER", f)
 	fs:SetText(text or name)
 	fs:SetTextColor(unpack(E["media"].rgbvaluecolor))
 	f:SetFontString(fs)
@@ -214,7 +214,7 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, sh
 	parent.mover = f
 
 	parent:ClearAllPoints()
-	E:Point(parent, point, f, 0, 0)
+	parent:SetPoint(point, f)
 
 	if postdrag ~= nil and type(postdrag) == "function" then
 		f:RegisterEvent("PLAYER_ENTERING_WORLD")

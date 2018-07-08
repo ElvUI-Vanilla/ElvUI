@@ -21,7 +21,7 @@ local function LoadSkin()
 
 	local QuestTimerFrameHolder = CreateFrame("Frame", "QuestTimerFrameHolder", E.UIParent)
 	E:Size(QuestTimerFrameHolder, 150, 22)
-	E:Point(QuestTimerFrameHolder, "TOP", QuestTimerFrameMover, "TOP")
+	QuestTimerFrameHolder:SetPoint("TOP", QuestTimerFrameMover, "TOP")
 
 	hooksecurefunc(QuestTimerFrame, "SetPoint", function(_, _, parent)
 		if parent ~= QuestTimerFrameHolder then

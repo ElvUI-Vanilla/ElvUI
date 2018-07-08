@@ -81,13 +81,13 @@ function S:HandleButtonHighlight(frame)
 
 	local leftGrad = frame:CreateTexture(nil, "HIGHLIGHT")
 	E:Size(leftGrad, frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
-	E:Point(leftGrad, "LEFT", frame, "CENTER")
+	leftGrad:SetPoint("LEFT", frame, "CENTER")
 	leftGrad:SetTexture(E.media.blankTex)
 	leftGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0.35, 0.9, 0.9, 0.9, 0)
 
 	local rightGrad = frame:CreateTexture(nil, "HIGHLIGHT")
 	E:Size(rightGrad, frame:GetWidth() * 0.5, frame:GetHeight() * 0.95)
-	E:Point(rightGrad, "RIGHT", frame, "CENTER")
+	rightGrad:SetPoint("RIGHT", frame, "CENTER")
 	rightGrad:SetTexture(E.media.blankTex)
 	rightGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0, 0.9, 0.9, 0.9, 0.35)
 end
@@ -183,7 +183,7 @@ function S:HandleNextPrevButton(btn, buttonOverride)
 	if not btn.icon then
 		btn.icon = btn:CreateTexture(nil, "ARTWORK")
 		E:Size(btn.icon, 13)
-		E:Point(btn.icon, "CENTER", 0, 0)
+		btn.icon:SetPoint("CENTER", 0, 0)
 		btn.icon:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\SquareButtonTextures.blp")
 		btn.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
