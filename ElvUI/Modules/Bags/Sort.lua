@@ -296,6 +296,7 @@ function B:GetItemLink(bag, slot)
 end
 
 function B:PickupItem(bag, slot)
+	currentItemID = self:GetItemID(bag, slot)
 	return PickupContainerItem(bag, slot)
 end
 
