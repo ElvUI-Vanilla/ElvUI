@@ -152,8 +152,12 @@ local function UpdateLocation(from, to)
 end
 
 local function PrimarySort(a, b)
-	local aName = GetItemInfo(bagIDs[a])
-	local bName = GetItemInfo(bagIDs[b])
+	local aName, _, _, aLvl = GetItemInfo(bagIDs[a])
+	local bName, _, _, bLvl = GetItemInfo(bagIDs[b])
+
+	if aLvl ~= bLvl and aLvl and bLvl then
+		return aLvl > bLvl
+	end
 
 	if aName and bName then
 		return aName < bName
@@ -237,7 +241,7 @@ end
 local function IterateForwards(bagList, i)
 	i = i + 1
 	local step = 1
-	for _, bag in ipairs(bagList) do
+	for _, bag in bagList do
 		local slots = B:GetNumSlots(bag)
 		if i > slots + step then
 			step = step + slots
