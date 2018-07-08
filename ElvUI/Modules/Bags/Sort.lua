@@ -38,10 +38,10 @@ for i = 0, NUM_BAG_SLOTS do
 end
 
 local allBags = {}
-for _, i in ipairs(playerBags) do
+for _, i in playerBags do
 	tinsert(allBags, i)
 end
-for _, i in ipairs(bankBags) do
+for _, i in bankBags do
 	tinsert(allBags, i)
 end
 
@@ -121,10 +121,10 @@ B.SortUpdateTimer = frame
 local function BuildSortOrder()
 	itemTypes = {}
 	itemSubTypes = {}
-	for i, iType in ipairs({GetAuctionItemClasses()}) do
+	for i, iType in {GetAuctionItemClasses()} do
 		itemTypes[iType] = i
 		itemSubTypes[iType] = {}
-		for ii, isType in ipairs({GetAuctionItemSubClasses(i)}) do
+		for ii, isType in {GetAuctionItemSubClasses(i)} do
 			itemSubTypes[iType][isType] = ii
 		end
 	end
@@ -220,7 +220,7 @@ local function ReverseSort(a, b)
 end
 
 local function UpdateSorted(source, destination)
-	for i, bs in pairs(bagSorted) do
+	for i, bs in bagSorted do
 		if bs == source then
 			bagSorted[i] = destination
 		elseif bs == destination then
@@ -452,7 +452,7 @@ local blackList = {}
 local blackListQueries = {}
 
 local function buildBlacklist(arg)
-	for entry in pairs(arg) do
+	for entry in arg do
 		local itemName = GetItemInfo(entry)
 		if itemName then
 			blackList[itemName] = true
@@ -486,7 +486,7 @@ function B.Sort(bags, sorter, invertDirection)
 			end
 
 			if not blackListedSlots[bagSlot] then
-				for _, itemsearchquery in pairs(blackListQueries) do
+				for _, itemsearchquery in blackListQueries do
 					local success, result = pcall(Search.Matches, Search, link, itemsearchquery)
 					if success and result then
 						blackListedSlots[bagSlot] = blackListedSlots[bagSlot] or result
@@ -535,7 +535,7 @@ end
 
 function B.FillBags(from, to)
 	B.Stack(from, to)
-	for _, bag in ipairs(to) do
+	for _, bag in to do
 		if B:IsSpecialtyBag(bag) then
 			tinsert(specialtyBags, bag)
 		end
@@ -585,13 +585,13 @@ end
 function B.SortBags(...)
 	for i = 1, arg.n do
 		local bags = arg[i]
-		for i, slotNum in ipairs(bags) do
+		for i, slotNum in bags do
 			local bagType = B:IsSpecialtyBag(slotNum)
 			if bagType == false then bagType = "Normal" end
 			if not bagCache[bagType] then bagCache[bagType] = {} end
 			bagCache[bagType][i] = slotNum
 		end
-		for bagType, sortedBags in pairs(bagCache) do
+		for bagType, sortedBags in bagCache do
 			if bagType ~= "Normal" then
 				B.Stack(sortedBags, sortedBags, B.IsPartial)
 				B.Stack(bagCache["Normal"], sortedBags)
@@ -697,7 +697,7 @@ function B:DoMoves()
 	end
 
 	if lockStop then
-		for slot, itemID in pairs(moveTracker) do
+		for slot, itemID in moveTracker do
 			local actualItemID = self:GetItemID(self:Decode_BagSlot(slot))
 			if actualItemID ~= itemID then
 				WAIT_TIME = 0.1
