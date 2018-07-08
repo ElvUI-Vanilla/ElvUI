@@ -1336,10 +1336,10 @@ function CH:DisplayChatHistory()
 	CH.SoundPlayed = nil
 end
 
-tremove(ChatTypeGroup["GUILD"], 2)
+tremove(ChatTypeGroup["GUILD"], 3)
 function CH:DelayGuildMOTD()
 	local delay, delayFrame, chat = 0, CreateFrame("Frame")
-	tinsert(ChatTypeGroup["GUILD"], 2, "GUILD_MOTD")
+	tinsert(ChatTypeGroup["GUILD"], 3, "GUILD_MOTD")
 	delayFrame:SetScript("OnUpdate", function()
 		delay = delay + arg1
 		if delay < 7 then return end
