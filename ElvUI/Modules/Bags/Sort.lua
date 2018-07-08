@@ -371,7 +371,7 @@ function B:IsSpecialtyBag(bagID)
 	local bag = GetInventoryItemLink("player", inventorySlot)
 	if not bag then return false end
 
-	local family = GetItemFamily(match(bag, "item:(%d+)"))
+	local family = GetItemFamily(bag)
 	if family == 0 or family == nil then return false end
 
 	return family
@@ -379,14 +379,14 @@ end
 
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
-	local itemFamily = GetItemFamily(match(item, "item:(%d+)"))
+	local itemFamily = GetItemFamily(item)
 	if itemFamily then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
 		end
 	end
-	local bagFamily = GetItemFamily(match(targetBag, "item:(%d+)"))
+	local bagFamily = GetItemFamily(targetBag)
 	if itemFamily then
 		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
 	else

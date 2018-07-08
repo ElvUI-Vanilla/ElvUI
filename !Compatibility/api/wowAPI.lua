@@ -279,6 +279,13 @@ local bagTypes = {
 }
 
 function GetItemFamily(id)
+	if not id then return end
+	if type(id) == "table" or type(id) == "function" then return end
+
+	if type(id) == "string" then
+		id = match(id, "item:(%d+)")
+	end
+
 	local _, _, _, _, _, itemType = GetItemInfo(id)
 	return bagTypes[itemType]
 end
