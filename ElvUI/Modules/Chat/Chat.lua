@@ -401,8 +401,15 @@ end
 function CH:PositionChat(override)
 	if ((not override and self.initialMove) or (not override)) then return end
 	if not RightChatPanel or not LeftChatPanel then return end
-	E:Size(RightChatPanel, E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth, E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
-	E:Size(LeftChatPanel, E.db.chat.panelWidth, E.db.chat.panelHeight)
+	RightChatPanel:SetWidth(E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth)
+	RightChatPanel:SetHeight(E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
+	LeftChatPanel:SetWidth(E.db.chat.panelWidth)
+	LeftChatPanel:SetHeight(E.db.chat.panelHeight)
+
+	LeftChatTab:SetWidth(E.db.chat.panelWidth -((E.Border*3 - E.Spacing)*2))
+	LeftChatDataPanel:SetWidth(E.db.chat.panelWidth -(((E.Border*3 - E.Spacing)*2) + 16))
+	RightChatTab:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) -((E.Border*3 - E.Spacing)*2))
+	RightChatDataPanel:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) -(((E.Border*3 - E.Spacing)*2) + 16))
 
 	self.RightChatWindowID = FindRightChatID()
 
@@ -431,11 +438,9 @@ function CH:PositionChat(override)
 				BASE_OFFSET = BASE_OFFSET - 24
 				E:Point(chat, "BOTTOMLEFT", RightChatDataPanel, "BOTTOMLEFT", 1, 1)
 			end
-			if id ~= 2 then
-				E:Size(chat, (E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11, (E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
-			else
-				E:Size(chat, E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET))
-			end
+
+			chat:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11)
+			chat:SetHeight((E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
 
 			tab:SetParent(RightChatPanel)
 			chat:SetParent(RightChatPanel)
@@ -461,8 +466,8 @@ function CH:PositionChat(override)
 					BASE_OFFSET = BASE_OFFSET - 24
 					E:Point(chat, "BOTTOMLEFT", LeftChatToggleButton, "BOTTOMLEFT", 1, 1)
 				end
-
-				E:Size(chat, E.db.chat.panelWidth - 11, E.db.chat.panelHeight - BASE_OFFSET)
+				chat:SetWidth(E.db.chat.panelWidth - 11)
+				chat:SetHeight((E.db.chat.panelHeight - BASE_OFFSET))
 			end
 			chat:SetParent(LeftChatPanel)
 			if i > 2 then

@@ -259,8 +259,9 @@ function LO:CreateChatPanels()
 
 	--Left Chat Tab
 	local lchattab = CreateFrame("Frame", "LeftChatTab", LeftChatPanel)
+	lchattab:SetWidth(E.db.chat.panelWidth -(SPACING*2))
+	lchattab:SetHeight(PANEL_HEIGHT)
 	lchattab:SetPoint("TOPLEFT", lchat, "TOPLEFT", SPACING, -SPACING)
-	lchattab:SetPoint("BOTTOMRIGHT", lchat, "TOPRIGHT", -SPACING, -(SPACING + PANEL_HEIGHT))
 	E:SetTemplate(lchattab, E.db.chat.panelTabTransparency == true and "Transparent" or "Default", true)
 
 	--Left Chat Data Panel
@@ -306,8 +307,9 @@ function LO:CreateChatPanels()
 
 	--Right Chat Tab
 	local rchattab = CreateFrame("Frame", "RightChatTab", RightChatPanel)
+	rchattab:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) -(SPACING*2))
+	rchattab:SetHeight(PANEL_HEIGHT)
 	rchattab:SetPoint("TOPRIGHT", rchat, "TOPRIGHT", -SPACING, -SPACING)
-	rchattab:SetPoint("BOTTOMLEFT", rchat, "TOPLEFT", SPACING, -(SPACING + PANEL_HEIGHT))
 	E:SetTemplate(rchattab, E.db.chat.panelTabTransparency == true and "Transparent" or "Default", true)
 
 	--Right Chat Data Panel
