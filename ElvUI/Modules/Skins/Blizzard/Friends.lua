@@ -10,9 +10,16 @@ local upper = string.upper
 local GetWhoInfo = GetWhoInfo
 local GetGuildRosterInfo = GetGuildRosterInfo
 local GUILDMEMBERS_TO_DISPLAY = GUILDMEMBERS_TO_DISPLAY
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local hooksecurefunc = hooksecurefunc
+
+local localizedTable = {}
+for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+	localizedTable[v] = k
+end
+
+for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+	localizedTable[v] = k
+end
 
 function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.friends ~= true then return end
@@ -153,22 +160,17 @@ function LoadSkin()
 			local button = _G["WhoFrameButton"..i]
 			local nameText = _G["WhoFrameButton"..i.."Name"]
 			local levelText = _G["WhoFrameButton"..i.."Level"]
-			local classText = _G["WhoFrameButton"..i.."Class"]
 			local variableText = _G["WhoFrameButton"..i.."Variable"]
 
-			local _, guild, level, race, class, zone = GetWhoInfo(index)
-			if class == UNKNOWN then return end
+			local _, guild, _, race, class, zone = GetWhoInfo(index)
 
-			if class then
-				class = strupper(class)
-			end
+			local classFileName = localizedTable[class]
+			if classFileName then
+				local classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName]
+				local levelTextColor = GetQuestDifficultyColor(level)
 
-			local classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-			local levelTextColor = GetQuestDifficultyColor(level)
-
-			if class then
 				button.icon:Show()
-				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+				button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 
 				nameText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 				levelText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
@@ -233,42 +235,37 @@ function LoadSkin()
 	end
 
 	hooksecurefunc("GuildStatus_Update", function()
+		local _, level, class, online, classFileName
+		local levelTextColor, classTextColor
+		local button, buttonText
+
 		if FriendsFrame.playerStatusFrame then
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
-				local button = _G["GuildFrameButton"..i]
-				local _, _, _, level, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
-				if class == UNKNOWN then return end
-
-				if class then
-					class = upper(class)
-				end
-
-				if class then
+				button = _G["GuildFrameButton"..i]
+				_, _, _, level, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
+				
+				classFileName = localizedTable[class]
+				if classFileName then
 					if online then
-						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName]
 						levelTextColor = GetQuestDifficultyColor(level)
 						buttonText = _G["GuildFrameButton"..i.."Name"]
 						buttonText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 						buttonText = _G["GuildFrameButton"..i.."Level"]
 						buttonText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 					end
-					button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[class]))
+					button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 				end
 			end
 		else
-			local classFileName
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
 				button = _G["GuildFrameGuildStatusButton"..i]
 				_, _, _, _, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
-				if class == UNKNOWN then return end
 
-				if class then
-					class = upper(class)
-				end
-
-				if class then
+				classFileName = localizedTable[class]
+				if classFileName then
 					if online then
-						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+						classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName]
 						_G["GuildFrameGuildStatusButton"..i.."Name"]:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 						_G["GuildFrameGuildStatusButton"..i.."Online"]:SetTextColor(1.0, 1.0, 1.0)
 					end
