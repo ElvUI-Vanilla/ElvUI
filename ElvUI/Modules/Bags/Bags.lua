@@ -48,8 +48,11 @@ local SEARCH = SEARCH
 local SEARCH_STRING = ""
 
 B.ProfessionColors = {
-	["8"] = {18/255, 181/255, 32/255}, -- Herbs
-	["16"] = {160/255, 3/255, 168/255}, -- Enchanting
+	[1] = {225/255, 175/255, 105/255}, -- Quiver
+	[2] = {225/255, 175/255, 105/255}, -- Ammo Pouch
+	[4] = {225/255, 175/255, 105/255}, -- Soul Bag
+	[8] = {18/255, 181/255, 32/255}, -- Herbs
+	[16] = {160/255, 3/255, 168/255}, -- Enchanting
 }
 
 function B:GetContainerFrame(arg)
@@ -228,7 +231,7 @@ function B:UpdateSlot(bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return end
 
 	local slot = self.Bags[bagID][slotID]
-	local bagType = tostring(self.Bags[bagID].type)
+	local bagType = self.Bags[bagID].type
 	local texture, count, locked = GetContainerItemInfo(bagID, slotID)
 	local clink = GetContainerItemLink(bagID, slotID)
 
