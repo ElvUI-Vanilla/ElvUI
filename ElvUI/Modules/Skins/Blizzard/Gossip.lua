@@ -56,7 +56,7 @@ local function LoadSkin()
 
 	for i = 1, NUMGOSSIPBUTTONS do
 		local button = _G["GossipTitleButton"..i]
-		button:SetTextColor(1, 1, 1)
+		button:SetTextColor(1, 1, 0)
 	end
 end
 
