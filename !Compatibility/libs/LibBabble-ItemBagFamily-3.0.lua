@@ -21,25 +21,25 @@ elseif GAME_LOCALE == "deDE" then
 	lib:SetCurrentTranslations {
 		["Quiver"] = "Quiver",
 		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
+		["Soul Bag"] = "Seelentaschen",
+		["Herb Bag"] = "Kräutertaschen",
+		["Enchanting Bag"] = "Verzauberertaschen",
 	}
 elseif GAME_LOCALE == "frFR" then
 	lib:SetCurrentTranslations {
 		["Quiver"] = "Quiver",
 		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
+		["Soul Bag"] = "Sacs d'âmes",
+		["Herb Bag"] = "Sacs d'herbes",
+		["Enchanting Bag"] = "Sacs d'enchanteur",
 	}
 elseif GAME_LOCALE == "zhCN" then
 	lib:SetCurrentTranslations {
 		["Quiver"] = "Quiver",
 		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
+		["Soul Bag"] = "灵魂袋",
+		["Herb Bag"] = "草药包",
+		["Enchanting Bag"] = "附魔材料包",
 	}
 elseif GAME_LOCALE == "zhTW" then
 	lib:SetCurrentTranslations {
@@ -53,9 +53,9 @@ elseif GAME_LOCALE == "koKR" then
 	lib:SetCurrentTranslations {
 		["Quiver"] = "Quiver",
 		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
+		["Soul Bag"] = "영혼의 주머니",
+		["Herb Bag"] = "약초 가방",
+		["Enchanting Bag"] = "마법부여 가방",
 	}
 elseif GAME_LOCALE == "esES" then
 	lib:SetCurrentTranslations {
