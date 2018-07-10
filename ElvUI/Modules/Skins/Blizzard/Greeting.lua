@@ -16,10 +16,15 @@ local function LoadSkin()
 	S:HandleScrollBar(QuestGreetingScrollFrameScrollBar)
 
 	S:HandleButton(QuestFrameGreetingGoodbyeButton, true)
+	QuestFrameGreetingGoodbyeButton:SetPoint("BOTTOMRIGHT", -37, 4)
 
-	GreetingText:SetTextColor(1, 1, 1)
-	CurrentQuestsText:SetTextColor(1, 1, 0)
-	AvailableQuestsText:SetTextColor(1, 1, 0)
+	E:Height(QuestGreetingScrollFrame, 403)
+
+	HookScript(QuestFrameGreetingPanel, "OnShow", function()
+		GreetingText:SetTextColor(1, 0.80, 0.10)
+		CurrentQuestsText:SetTextColor(1, 1, 1)
+		AvailableQuestsText:SetTextColor(1, 0.80, 0.10)
+	end)
 
 	for i = 1, MAX_NUM_QUESTS do
 		local button = _G["QuestTitleButton"..i]

@@ -41,7 +41,6 @@ local function LoadSkin()
 		"QuestFrameGoodbyeButton",
 		"QuestFrameCompleteQuestButton",
 		"QuestFrameCancelButton",
-		"QuestFrameGreetingGoodbyeButton",
 		"QuestFrameAcceptButton",
 		"QuestFrameDeclineButton"
 	}
@@ -58,7 +57,7 @@ local function LoadSkin()
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
-		E:StyleButton(item)
+		E:StyleButton(item, nil, true)
 		E:Width(item, item:GetWidth() - 4)
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
@@ -78,7 +77,7 @@ local function LoadSkin()
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
-		E:StyleButton(item)
+		E:StyleButton(item, nil, true)
 		E:Width(item, item:GetWidth() - 4)
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
@@ -98,7 +97,7 @@ local function LoadSkin()
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
-		E:StyleButton(item)
+		E:StyleButton(item, nil, true)
 		E:Width(item, item:GetWidth() - 4)
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
@@ -139,8 +138,8 @@ local function LoadSkin()
 
 	hooksecurefunc("QuestRewardItem_OnClick", function()
 		QuestRewardItemHighlight:ClearAllPoints();
-		E:SetOutside(QuestRewardItemHighlight, this:GetName() .. "IconTexture")
-		_G[this:GetName() .. "Name"]:SetTextColor(1, 1, 0)
+		E:SetOutside(QuestRewardItemHighlight, this:GetName().."IconTexture")
+		_G[this:GetName().."Name"]:SetTextColor(1, 1, 0)
 
 		for i = 1, MAX_NUM_ITEMS do
 			local questItem = _G["QuestRewardItem"..i]
@@ -156,7 +155,7 @@ local function LoadSkin()
 	local function QuestObjectiveTextColor()
 		local numObjectives = GetNumQuestLeaderBoards()
 		local objective
-		local _, type, finished;
+		local _, type, finished
 		local numVisibleObjectives = 0
 		for i = 1, numObjectives do
 			_, type, finished = GetQuestLogLeaderBoard(i)
@@ -184,38 +183,47 @@ local function LoadSkin()
 	end)
 
 	hooksecurefunc("QuestFrameItems_Update", function(questState)
-		local titleTextColor = {1, 0.80, 0.10}
 		local textColor = {1, 1, 1}
+		local titleTextColor = {1, 0.80, 0.10}
 
-		QuestDetailObjectiveTitleText:SetTextColor(unpack(titleTextColor))
-		QuestDetailRewardTitleText:SetTextColor(unpack(titleTextColor))
-		QuestLogDescriptionTitle:SetTextColor(unpack(titleTextColor))
-		QuestLogQuestTitle:SetTextColor(unpack(titleTextColor))
-		QuestLogTitleText:SetTextColor(unpack(titleTextColor))
-		QuestLogRewardTitleText:SetTextColor(unpack(titleTextColor))
-		QuestRewardRewardTitleText:SetTextColor(unpack(titleTextColor))
-		QuestRewardTitleText:SetTextColor(unpack(titleTextColor))
+		QuestFont:SetTextColor(unpack(textColor))
+		QuestFontNormalSmall:SetTextColor(unpack(textColor))
+		QuestDescription:SetTextColor(unpack(textColor))
+		QuestObjectiveText:SetTextColor(unpack(textColor))
+
 		QuestTitleText:SetTextColor(unpack(titleTextColor))
 		QuestTitleFont:SetTextColor(unpack(titleTextColor))
-		QuestTitleFont:SetFont("Fonts\\MORPHEUS.TTF", E.db.general.fontSize + 6)
-		QuestTitleFont.SetFont = E.noop
 
-		QuestDescription:SetTextColor(unpack(textColor))
+		QuestDetailRewardTitleText:SetTextColor(unpack(titleTextColor))
+		QuestDetailObjectiveTitleText:SetTextColor(unpack(titleTextColor))
 		QuestDetailItemReceiveText:SetTextColor(unpack(textColor))
 		QuestDetailSpellLearnText:SetTextColor(unpack(textColor))
 		QuestDetailItemChooseText:SetTextColor(unpack(textColor))
-		QuestFont:SetTextColor(unpack(textColor))
-		QuestFontNormalSmall:SetTextColor(unpack(textColor))
+
+		QuestLogRewardTitleText:SetTextColor(unpack(titleTextColor))
+		QuestLogTitleText:SetTextColor(unpack(titleTextColor))
+		QuestLogQuestTitle:SetTextColor(unpack(titleTextColor))
+		QuestLogDescriptionTitle:SetTextColor(unpack(titleTextColor))
 		QuestLogObjectivesText:SetTextColor(unpack(textColor))
 		QuestLogQuestDescription:SetTextColor(unpack(textColor))
 		QuestLogItemChooseText:SetTextColor(unpack(textColor))
 		QuestLogItemReceiveText:SetTextColor(unpack(textColor))
 		QuestLogSpellLearnText:SetTextColor(unpack(textColor))
-		QuestObjectiveText:SetTextColor(unpack(textColor))
+
+		QuestRewardRewardTitleText:SetTextColor(unpack(titleTextColor))
+		QuestRewardTitleText:SetTextColor(unpack(titleTextColor))
 		QuestRewardItemChooseText:SetTextColor(unpack(textColor))
 		QuestRewardItemReceiveText:SetTextColor(unpack(textColor))
 		QuestRewardSpellLearnText:SetTextColor(unpack(textColor))
 		QuestRewardText:SetTextColor(unpack(textColor))
+
+		if GetQuestLogRequiredMoney() > 0 then
+			if GetQuestLogRequiredMoney() > GetMoney() then
+				QuestInfoRequiredMoneyText:SetTextColor(0.6, 0.6, 0.6)
+			else
+				QuestInfoRequiredMoneyText:SetTextColor(1, 0.80, 0.10)
+			end
+		end
 
 		QuestObjectiveTextColor()
 
@@ -243,62 +251,78 @@ local function LoadSkin()
 
 	QuestLogTimerText:SetTextColor(1, 1, 1)
 
-	HookScript(QuestFrameGreetingPanel, "OnShow", function()
-		GreetingText:SetTextColor(1, 0.80, 0.10)
-		CurrentQuestsText:SetTextColor(1, 1, 1)
-		AvailableQuestsText:SetTextColor(1, 1, 1)
-	end)
-
 	E:CreateBackdrop(QuestFrame, "Transparent")
-	E:Point(QuestFrame.backdrop, "TOPLEFT", 15, -19)
-	E:Point(QuestFrame.backdrop, "BOTTOMRIGHT", -30, 67)
+	QuestFrame.backdrop:SetPoint("TOPLEFT", 15, -11)
+	QuestFrame.backdrop:SetPoint("BOTTOMRIGHT", -20, 0)
+	E:Width(QuestFrame, 374)
+
+	E:Height(QuestDetailScrollFrame, 403)
+	E:Height(QuestRewardScrollFrame, 403)
+	E:Height(QuestProgressScrollFrame, 403)
+
+	QuestFrameAcceptButton:SetPoint("BOTTOMLEFT", 20, 4)
+	QuestFrameDeclineButton:SetPoint("BOTTOMRIGHT", -37, 4)
+	QuestFrameCompleteButton:SetPoint("BOTTOMLEFT", 20, 4)
+	QuestFrameGoodbyeButton:SetPoint("BOTTOMRIGHT", -37, 4)
+	QuestFrameCompleteQuestButton:SetPoint("BOTTOMLEFT", 20, 4)
+	QuestFrameCancelButton:SetPoint("BOTTOMRIGHT", -37, 4)
+
+	QuestNpcNameFrame:SetPoint("TOP", QuestFrame, "TOP", 0, -19)
 
 	E:CreateBackdrop(QuestLogFrame, "Transparent")
-	E:Point(QuestLogFrame.backdrop, "TOPLEFT", 10, -12)
-	E:Point(QuestLogFrame.backdrop, "BOTTOMRIGHT", -1, 8)
+	QuestLogFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
+	QuestLogFrame.backdrop:SetPoint("BOTTOMRIGHT", -1, 8)
+	E:Size(QuestLogFrame, 685, 490)
 
 	E:StripTextures(QuestLogListScrollFrame)
 	E:CreateBackdrop(QuestLogListScrollFrame, "Default", true)
-	E:Width(QuestLogListScrollFrame, 334)
+	QuestLogListScrollFrame.backdrop:SetPoint("TOPLEFT", 0, 2)
+	E:Size(QuestLogListScrollFrame, 685, 490)
+	QuestLogListScrollFrame:ClearAllPoints()
+	QuestLogListScrollFrame:SetPoint("TOPLEFT", QuestLogFrame, "TOPLEFT",  19, -75)
+	QuestLogListScrollFrame:SetPoint("BOTTOMRIGHT", QuestLogFrame, "BOTTOMRIGHT",  -355, 40)
 
 	E:StripTextures(QuestLogDetailScrollFrame)
 	E:CreateBackdrop(QuestLogDetailScrollFrame, "Default", true)
-	E:Size(QuestLogDetailScrollFrame, 334, 296)
+	QuestLogDetailScrollFrame.backdrop:SetPoint("TOPLEFT", 0, 2)
+	E:Size(QuestLogDetailScrollFrame, 300, 375)
 	QuestLogDetailScrollFrame:ClearAllPoints()
-	E:Point(QuestLogDetailScrollFrame, "TOPRIGHT", QuestLogListScrollFrame, "BOTTOMRIGHT", 0, -6)
+	QuestLogDetailScrollFrame:SetPoint("TOPLEFT", QuestLogListScrollFrame, "TOPRIGHT", 25, 0)
 
 	QuestLogNoQuestsText:ClearAllPoints()
-	E:Point(QuestLogNoQuestsText, "CENTER", EmptyQuestLogFrame, "CENTER", -45, 65)
+	QuestLogNoQuestsText:SetPoint("CENTER", EmptyQuestLogFrame, "CENTER", -45, 65)
 
-	E:Point(QuestLogFrameAbandonButton, "BOTTOMLEFT", 18, 15)
-	E:Width(QuestLogFrameAbandonButton, 126)
+	QuestLogFrameAbandonButton:SetPoint("BOTTOMLEFT", 18, 15)
+	E:Width(QuestLogFrameAbandonButton, 100)
+	QuestLogFrameAbandonButton:SetText("Abandon")
 
 	QuestFramePushQuestButton:ClearAllPoints()
-	E:Point(QuestFramePushQuestButton, "BOTTOM", QuestFrame, "BOTTOM", 18, 15)
-	E:Width(QuestFramePushQuestButton, 118)
+	QuestFramePushQuestButton:SetPoint("LEFT", QuestLogFrameAbandonButton, "RIGHT", 2, 0)
+	E:Width(QuestFramePushQuestButton, 100)
+	QuestFramePushQuestButton:SetText("Share")
 
-	E:Point(QuestFrameExitButton, "BOTTOMRIGHT", -8, 15)
+	QuestFrameExitButton:SetPoint("BOTTOMRIGHT", -8, 15)
 	E:Width(QuestFrameExitButton, 100)
 
 	S:HandleScrollBar(QuestLogDetailScrollFrameScrollBar)
 	S:HandleScrollBar(QuestDetailScrollFrameScrollBar)
 	S:HandleScrollBar(QuestLogListScrollFrameScrollBar)
+	QuestLogListScrollFrameScrollBar:SetPoint("TOPLEFT", QuestLogListScrollFrame, "TOPRIGHT", 5, -16)
 	S:HandleScrollBar(QuestProgressScrollFrameScrollBar)
 	S:HandleScrollBar(QuestRewardScrollFrameScrollBar)
 
-	S:HandleCloseButton(QuestFrameCloseButton)
+	S:HandleCloseButton(QuestFrameCloseButton, QuestFrame.backdrop)
 
 	S:HandleCloseButton(QuestLogFrameCloseButton)
 	QuestLogFrameCloseButton:ClearAllPoints()
-	E:Point(QuestLogFrameCloseButton, "TOPRIGHT", 2, -9)
+	QuestLogFrameCloseButton:SetPoint("TOPRIGHT", 2, -9)
 
 	QuestLogTrack:Hide()
 
 	local QuestTrack = CreateFrame("Button", "QuestTrack", QuestLogFrame, "UIPanelButtonTemplate")
-
 	S:HandleButton(QuestTrack)
-	QuestTrack:SetText(TRACK_QUEST)
-	E:Point(QuestTrack, "TOP", QuestLogFrame, "TOP", -64, -42)
+	QuestTrack:SetText("Track")
+	QuestTrack:SetPoint("LEFT", QuestFramePushQuestButton, "RIGHT", 2, 0)
 	E:Size(QuestTrack, 110, 21)
 
 	HookScript(QuestTrack, "OnClick", function()
@@ -333,11 +357,7 @@ local function LoadSkin()
 		else
 			QuestTrack:Enable()
 		end
-		if EmptyQuestLogFrame:IsVisible() then
-			QuestLogListScrollFrame:Hide()
-		else
-			QuestLogListScrollFrame:Show()
-		end
+		QuestLogListScrollFrame:Show()
 	end)
 
 	for i = 1, 6 do
@@ -347,7 +367,7 @@ local function LoadSkin()
 
 		E:StripTextures(item)
 		E:SetTemplate(item, "Default")
-		E:StyleButton(item)
+		E:StyleButton(item, nil, true)
 		E:Width(item, item:GetWidth() - 4)
 		item:SetFrameLevel(item:GetFrameLevel() + 2)
 
@@ -363,13 +383,14 @@ local function LoadSkin()
 	hooksecurefunc("QuestFrameProgressItems_Update", function()
 		QuestProgressTitleText:SetTextColor(1, 0.80, 0.10)
 		QuestProgressText:SetTextColor(1, 1, 1)
-
 		QuestProgressRequiredItemsText:SetTextColor(1, 0.80, 0.10)
 
-		if GetQuestMoneyToGet() > GetMoney() then
-			QuestProgressRequiredMoneyText:SetTextColor(0.6, 0.6, 0.6)
-		else
-			QuestProgressRequiredMoneyText:SetTextColor(1, 0.80, 0.10)
+		if GetQuestMoneyToGet() > 0 then
+			if GetQuestMoneyToGet() > GetMoney() then
+				QuestProgressRequiredMoneyText:SetTextColor(0.6, 0.6, 0.6)
+			else
+				QuestProgressRequiredMoneyText:SetTextColor(1, 0.80, 0.10)
+			end
 		end
 
 		for i = 1, MAX_REQUIRED_ITEMS do
@@ -381,51 +402,63 @@ local function LoadSkin()
 		end
 	end)
 
+	QUESTS_DISPLAYED = 25
+
+	for i = 7, 25 do
+		local questLogTitle = CreateFrame("Button", "QuestLogTitle"..i, QuestLogFrame, "QuestLogTitleButtonTemplate")
+
+		questLogTitle:SetID(i)
+		questLogTitle:Hide()
+		questLogTitle:SetPoint("TOPLEFT", _G["QuestLogTitle"..i - 1], "BOTTOMLEFT", 0, 1)
+	end
+
 	for i = 1, QUESTS_DISPLAYED do
 		local questLogTitle = _G["QuestLogTitle"..i]
+		local highlight = _G["QuestLogTitle"..i.."Highlight"]
 
-		questLogTitle:SetNormalTexture("")
+		questLogTitle:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 		questLogTitle.SetNormalTexture = E.noop
+		E:Size(questLogTitle:GetNormalTexture(), 14, 14)
+		questLogTitle:GetNormalTexture():SetPoint("LEFT", 3, 0)
 
-		_G["QuestLogTitle"..i.."Highlight"]:SetTexture("")
-		_G["QuestLogTitle"..i.."Highlight"].SetTexture = E.noop
-
-		questLogTitle.Text = questLogTitle:CreateFontString(nil, "OVERLAY")
-		E:FontTemplate(questLogTitle.Text, nil, 22)
-		E:Point(questLogTitle.Text, "LEFT", 3, 0)
-		questLogTitle.Text:SetText("+")
+		highlight:SetTexture("")
+		highlight.SetTexture = E.noop
 
 		hooksecurefunc(questLogTitle, "SetNormalTexture", function(self, texture)
 			if find(texture, "MinusButton") then
-				self.Text:SetText("-")
+				self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 			elseif find(texture, "PlusButton") then
-				self.Text:SetText("+")
+				self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 			else
-				self.Text:SetText("")
-			end
+				self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
+ 			end
 		end)
 	end
 
 	E:StripTextures(QuestLogCollapseAllButton)
-	QuestLogCollapseAllButton:SetNormalTexture("")
-	QuestLogCollapseAllButton.SetNormalTexture = E.noop
-	QuestLogCollapseAllButton:SetHighlightTexture("")
-	QuestLogCollapseAllButton.SetHighlightTexture = E.noop
-	QuestLogCollapseAllButton:SetDisabledTexture("")
-	QuestLogCollapseAllButton.SetDisabledTexture = E.noop
 	E:Point(QuestLogCollapseAllButton, "TOPLEFT", -45, 7)
 
-	QuestLogCollapseAllButton.Text = QuestLogCollapseAllButton:CreateFontString(nil, "OVERLAY")
-	E:FontTemplate(QuestLogCollapseAllButton.Text, nil, 22)
-	E:Point(QuestLogCollapseAllButton.Text, "LEFT", 3, 0)
-	QuestLogCollapseAllButton.Text:SetText("+")
+	QuestLogCollapseAllButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	QuestLogCollapseAllButton.SetNormalTexture = E.noop
+	E:Size(QuestLogCollapseAllButton:GetNormalTexture(), 15, 15)
+
+	QuestLogCollapseAllButton:SetHighlightTexture("")
+	QuestLogCollapseAllButton.SetHighlightTexture = E.noop
+
+	QuestLogCollapseAllButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	QuestLogCollapseAllButton.SetDisabledTexture = E.noop
+	E:Size(QuestLogCollapseAllButton:GetDisabledTexture(), 15, 15)
+	QuestLogCollapseAllButton:GetDisabledTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+	QuestLogCollapseAllButton:GetDisabledTexture():SetDesaturated(true)
 
 	hooksecurefunc(QuestLogCollapseAllButton, "SetNormalTexture", function(self, texture)
 		if find(texture, "MinusButton") then
-			self.Text:SetText("-")
+			self:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+		elseif find(texture, "PlusButton") then
+			self:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 		else
-			self.Text:SetText("+")
-		end
+			self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
+ 		end
 	end)
 end
 
