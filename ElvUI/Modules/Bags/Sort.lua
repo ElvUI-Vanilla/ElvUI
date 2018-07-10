@@ -385,7 +385,7 @@ end
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
 	local itemFamily = GetItemFamily(item)
-	if itemFamily then
+	if itemFamily and itemFamily > 0 then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
@@ -480,9 +480,10 @@ function B.Sort(bags, sorter, invertDirection)
 	for i, bag, slot in B.IterateBags(bags, nil, "both") do
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		local link = B:GetItemLink(bag, slot)
+		local id = B:GetItemID(bag, slot)
 
-		if link then
-			if blackList[GetItemInfo(link)] then
+		if id then
+			if blackList[GetItemInfo(id)] then
 				blackListedSlots[bagSlot] = true
 			end
 
@@ -570,9 +571,9 @@ function B.Fill(sourceBags, targetBags, reverse, canMove)
 		if getn(emptySlots) == 0 then break end
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		local targetBag = B:Decode_BagSlot(emptySlots[1])
-		local link = B:GetItemLink(bag, slot)
+		local id = B:GetItemID(bag, slot)
 
-		if link and blackList[GetItemInfo(link)] then
+		if id and blackList[GetItemInfo(id)] then
 			blackListedSlots[bagSlot] = true
 		end
 
