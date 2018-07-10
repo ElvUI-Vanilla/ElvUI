@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local AFK = E:NewModule("AFK", "AceEvent-3.0", "AceTimer-3.0");
--- local CH = E:GetModule("Chat")
+local CH = E:GetModule("Chat")
 
 --Cache global variables
 --Lua functions
