@@ -676,7 +676,7 @@ function B:DoMove(move)
 		if moveTracker[source] then
 			return false, "move incomplete"
 		else
-			return B:StopStacking(L["Confused.. Try Again!"])
+			return --[[B:StopStacking(L["Confused.. Try Again!"])]] -- TODO
 		end
 	end
 
