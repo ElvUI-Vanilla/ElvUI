@@ -4,7 +4,7 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 --Lua functions
 local _G = _G
 local tonumber, type = tonumber, type
-local format, lower, match = string.format, string.lower, string.match
+local format, len, lower, match = string.format, string.len, string.lower, string.match
 --WoW API / Variables
 local UIFrameFadeOut, UIFrameFadeIn = UIFrameFadeOut, UIFrameFadeIn
 local EnableAddOn, DisableAddOn, DisableAllAddOns = EnableAddOn, DisableAddOn, DisableAllAddOns
@@ -96,14 +96,13 @@ function E:BGStats()
 end
 
 -- Set up a private editbox to handle macro execution
-local commando
 local editbox = CreateFrame("Editbox", "MacroEditBox")
+local line
 editbox:RegisterEvent("EXECUTE_CHAT_LINE")
-editbox:SetScript("OnEvent",
-	function(self, event)
+editbox:SetScript("OnEvent", function(self, event)
 		if event == "EXECUTE_CHAT_LINE" then
 			local defaulteditbox = pcall(ChatFrameEditBox)
-			self:SetText(commando)
+			self:SetText(line)
 			ChatEdit_SendText(self)
 		end
 	end
@@ -115,10 +114,10 @@ local function OnCallback()
 end
 
 function E:DelayScriptCall(msg)
-	local secs, command = match(msg, "^([^%s]+)%s+(.*)$")
+	local secs, command = match(msg, "^(%S+)%s+(.*)$")
+	line = command
 	secs = tonumber(secs)
-	commando = command
-	if not secs or not command then
+	if (not secs) or (len(command) == 0) then
 		self:Print("usage: /in <seconds> <command>")
 		self:Print("example: /in 1.5 /say hi")
 	else
