@@ -19,7 +19,7 @@ if GAME_LOCALE == "enUS" then
 	lib:SetCurrentTranslations(true)
 elseif GAME_LOCALE == "deDE" then
 	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
+		["Quiver"] = "Köcher",
 		["Ammo Pouch"] = "Ammo Pouch",
 		["Soul Bag"] = "Seelentaschen",
 		["Herb Bag"] = "Kräutertaschen",
@@ -27,7 +27,7 @@ elseif GAME_LOCALE == "deDE" then
 	}
 elseif GAME_LOCALE == "frFR" then
 	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
+		["Quiver"] = "Carquois",
 		["Ammo Pouch"] = "Ammo Pouch",
 		["Soul Bag"] = "Sacs d'âmes",
 		["Herb Bag"] = "Sacs d'herbes",
@@ -35,23 +35,15 @@ elseif GAME_LOCALE == "frFR" then
 	}
 elseif GAME_LOCALE == "zhCN" then
 	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
+		["Quiver"] = "箭袋",
 		["Ammo Pouch"] = "Ammo Pouch",
 		["Soul Bag"] = "灵魂袋",
 		["Herb Bag"] = "草药包",
 		["Enchanting Bag"] = "附魔材料包",
 	}
-elseif GAME_LOCALE == "zhTW" then
-	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
-		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
-	}
 elseif GAME_LOCALE == "koKR" then
 	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
+		["Quiver"] = "화살통",
 		["Ammo Pouch"] = "Ammo Pouch",
 		["Soul Bag"] = "영혼의 주머니",
 		["Herb Bag"] = "약초 가방",
@@ -59,19 +51,11 @@ elseif GAME_LOCALE == "koKR" then
 	}
 elseif GAME_LOCALE == "esES" then
 	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
+		["Quiver"] = "Carcaj",
 		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
-	}
-elseif GAME_LOCALE == "esMX" then
-	lib:SetCurrentTranslations {
-		["Quiver"] = "Quiver",
-		["Ammo Pouch"] = "Ammo Pouch",
-		["Soul Bag"] = "Soul Bag",
-		["Herb Bag"] = "Herb Bag",
-		["Enchanting Bag"] = "Enchanting Bag",
+		["Soul Bag"] = "Bolsas de almas",
+		["Herb Bag"] = "Bolsas de hierbas",
+		["Enchanting Bag"] = "Bolsas de encantamiento",
 	}
 elseif GAME_LOCALE == "ruRU" then
 	lib:SetCurrentTranslations {
