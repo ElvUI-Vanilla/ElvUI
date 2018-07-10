@@ -48,11 +48,8 @@ local SEARCH = SEARCH
 local SEARCH_STRING = ""
 
 B.ProfessionColors = {
-	["8"] = {224/255, 187/255, 74/255}, -- Leatherworking
-	["16"] = {18/255, 181/255, 32/255}, -- Herbs
-	["32"] = {160/255, 3/255, 168/255}, -- Enchanting
-	["64"] = {232/255, 118/255, 46/255}, -- Engineering
-	["128"] = {105/255, 79/255, 7/255}, -- Mining
+	["8"] = {18/255, 181/255, 32/255}, -- Herbs
+	["16"] = {160/255, 3/255, 168/255}, -- Enchanting
 }
 
 function B:GetContainerFrame(arg)
@@ -449,7 +446,7 @@ function B:Layout(isBank)
 			end
 
 			f.Bags[bagID].numSlots = numSlots
-			f.Bags[bagID].type = GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)))
+			f.Bags[bagID].type = GetBagFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)))
 
 			--Hide unused slots
 			for i = 1, MAX_CONTAINER_ITEMS do

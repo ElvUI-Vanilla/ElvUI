@@ -258,7 +258,7 @@ local function IterateForwards(bagList, i)
 end
 
 local function IterateBackwards(bagList, i)
-	i = i + 1
+	--[[i = i + 1
 	local step = 1
 	for ii = getn(bagList), 1, -1 do
 		local bag = bagList[ii]
@@ -267,6 +267,21 @@ local function IterateBackwards(bagList, i)
 			step = step + slots
 		else
 			for slot = slots, 1, -1 do
+				if step == i then
+					return i, bag, slot
+				end
+				step = step + 1
+			end
+		end
+	end]]
+	i = i + 1
+	local step = 1
+	for _, bag in bagList do
+		local slots = B:GetNumSlots(bag)
+		if i > slots + step then
+			step = step + slots
+		else
+			for slot = 1, slots do
 				if step == i then
 					return i, bag, slot
 				end
@@ -376,7 +391,7 @@ function B:IsSpecialtyBag(bagID)
 	local bag = GetInventoryItemLink("player", inventorySlot)
 	if not bag then return false end
 
-	local family = GetItemFamily(bag)
+	local family = GetBagFamily(bag)
 	if family == 0 or family == nil then return false end
 
 	return family
@@ -385,13 +400,13 @@ end
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
 	local itemFamily = GetItemFamily(item)
-	if itemFamily and itemFamily > 0 then
+	if itemFamily then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
 		end
 	end
-	local bagFamily = GetItemFamily(targetBag)
+	local bagFamily = GetBagFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(targetBag)))
 	if itemFamily then
 		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
 	else
@@ -482,7 +497,7 @@ function B.Sort(bags, sorter, invertDirection)
 		local link = B:GetItemLink(bag, slot)
 		local id = B:GetItemID(bag, slot)
 
-		if id then
+		if link then
 			if blackList[GetItemInfo(id)] then
 				blackListedSlots[bagSlot] = true
 			end
