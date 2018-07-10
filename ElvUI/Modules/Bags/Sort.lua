@@ -400,7 +400,7 @@ end
 function B:CanItemGoInBag(bag, slot, targetBag)
 	local item = bagIDs[B:Encode_BagSlot(bag, slot)]
 	local itemFamily = GetItemFamily(item)
-	if itemFamily then
+	if itemFamily and itemFamily > 0 then
 		local equipSlot = select(8, GetItemInfo(item))
 		if equipSlot == "INVTYPE_BAG" then
 			itemFamily = 1
