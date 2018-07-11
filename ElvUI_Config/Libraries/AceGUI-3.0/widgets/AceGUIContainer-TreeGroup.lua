@@ -168,7 +168,7 @@ local function FirstFrameUpdate()
 end
 
 local function BuildUniqueValue(...)
-	local n = arg.n
+	local n = tgetn(arg)
 	if n == 1 then
 		return arg[1]
 	else

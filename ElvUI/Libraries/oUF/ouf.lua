@@ -41,29 +41,29 @@ local function updateActiveUnit(self, event, unit)
 end
 
 local function iterateChildren(...)
-	for i = 1, arg.n do
+	for i = 1, getn(arg) do
 		local obj = arg[i]
 
-		if type(obj) == "table" and obj.isChild then
+		if(type(obj) == "table" and obj.isChild) then
 			updateActiveUnit(obj, "iterateChildren")
 		end
 	end
 end
 
 local function onAttributeChanged(self, name, value)
-	if name == "unit" and value then
-		if self.hasChildren then
+	if(name == "unit" and value) then
+		if(self.hasChildren) then
 			iterateChildren(self:GetChildren())
 		end
 
-		if not self.onlyProcessChildren then
+		if(not self.onlyProcessChildren) then
 			updateActiveUnit(self, "OnAttributeChanged")
 		end
 
-		if self.unit and self.unit == value then
+		if(self.unit and self.unit == value) then
 			return
 		else
-			if self.hasChildren then
+			if(self.hasChildren) then
 				iterateChildren(self:GetChildren())
 			end
 		end
@@ -79,22 +79,22 @@ Private.frame_metatable = frame_metatable
 for k, v in next, {
 	UpdateElement = function(self, name)
 		local unit = self.unit
-		if not unit or not UnitExists(unit) then return end
+		if(not unit or not UnitExists(unit)) then return end
 
 		local element = elements[name]
-		if not element or not self:IsElementEnabled(name) or not activeElements[self] then return end
-		if element.update then
+		if(not element or not self:IsElementEnabled(name) or not activeElements[self]) then return end
+		if(element.update) then
 			element.update(self, "OnShow", unit)
 		end
 	end,
 
 	UpdateElement = function(self, name)
 		local unit = self.unit
-		if not unit or not UnitExists(unit) then return end
+		if(not unit or not UnitExists(unit)) then return end
 
 		local element = elements[name]
-		if not element or not self:IsElementEnabled(name) or not activeElements[self] then return end
-		if element.update then
+		if(not element or not self:IsElementEnabled(name) or not activeElements[self]) then return end
+		if(element.update) then
 			element.update(self, "OnShow", unit)
 		end
 	end,
@@ -114,12 +114,12 @@ for k, v in next, {
 		argcheck(unit or self.unit, 3, "string", "nil")
 
 		local element = elements[name]
-		if not element or self:IsElementEnabled(name) or not activeElements[self] then return end
+		if(not element or self:IsElementEnabled(name) or not activeElements[self]) then return end
 
-		if element.enable(self, unit or self.unit) then
+		if(element.enable(self, unit or self.unit)) then
 			activeElements[self][name] = true
 
-			if element.update then
+			if(element.update) then
 				insert(self.__elements, element.update)
 			end
 		end
@@ -135,11 +135,11 @@ for k, v in next, {
 		argcheck(name, 2, "string")
 
 		local enabled = self:IsElementEnabled(name)
-		if not enabled then return end
+		if(not enabled) then return end
 
 		local update = elements[name].update
 		for k, func in next, self.__elements do
-			if func == update then
+			if(func == update) then
 				remove(self.__elements, k)
 				break
 			end
@@ -166,7 +166,7 @@ for k, v in next, {
 		argcheck(name, 2, "string")
 
 		local element = elements[name]
-		if not element then return end
+		if(not element) then return end
 
 		local active = activeElements[self]
 		return active and active[name]
@@ -199,11 +199,11 @@ for k, v in next, {
 	--]]
 	UpdateAllElements = function(self, event)
 		local unit = self.unit
-		if not UnitExists(unit) then return end
+		if(not UnitExists(unit)) then return end
 
 		assert(type(event) == "string", "Invalid argument 'event' in UpdateAllElements.")
 
-		if self.PreUpdate then
+		if(self.PreUpdate) then
 			self:PreUpdate(event)
 		end
 
@@ -211,7 +211,7 @@ for k, v in next, {
 			func(self, event, unit)
 		end
 
-		if self.PostUpdate then
+		if(self.PostUpdate) then
 			self:PostUpdate(event)
 		end
 	end,
@@ -228,34 +228,34 @@ end
 local secureDropdown
 local function InitializeSecureMenu()
 	local unit = SecureTemplatesDropdown.unit
-	if not unit then return end
+	if(not unit) then return end
 
 	local unitType = match(unit, "^([a-z]+)[0-9]+$") or unit
 
 	local menu
-	if unitType == "party" then
+	if(unitType == "party") then
 		menu = "PARTY"
-	elseif UnitIsUnit(unit, "player") then
+	elseif(UnitIsUnit(unit, "player")) then
 		menu = "SELF"
-	elseif UnitIsUnit(unit, "pet") then
+	elseif(UnitIsUnit(unit, "pet")) then
 		menu = "PET"
-	elseif UnitIsPlayer(unit) then
-		if UnitInRaid(unit) or UnitInParty(unit) then
+	elseif(UnitIsPlayer(unit)) then
+		if(UnitInRaid(unit) or UnitInParty(unit)) then
 			menu = "PARTY"
 		else
 			menu = "PLAYER"
 		end
-	elseif UnitIsUnit(unit, "target") then
+	elseif(UnitIsUnit(unit, "target")) then
 		menu = "RAID_TARGET_ICON"
 	end
 
-	if menu then
+	if(menu) then
 		UnitPopup_ShowMenu(SecureTemplatesDropdown, menu, unit)
 	end
 end
 
 local function togglemenu(self, unit)
-	if not secureDropdown then
+	if(not secureDropdown) then
 		secureDropdown = CreateFrame("Frame", "SecureTemplatesDropdown", nil, "UIDropDownMenuTemplate")
 		secureDropdown:SetID(1)
 
@@ -263,7 +263,7 @@ local function togglemenu(self, unit)
 		UIDropDownMenu_Initialize(secureDropdown, InitializeSecureMenu, "MENU")
 	end
 
-	if secureDropdown.openedFor and secureDropdown.openedFor ~= self then
+	if(secureDropdown.openedFor and secureDropdown.openedFor ~= self) then
 		CloseDropDownMenus()
 	end
 
@@ -278,7 +278,8 @@ local function onShow(self)
 end
 
 local function initObject(unit, style, styleFunc, header, ...)
-	for i = 1, arg.n do
+	local num = getn(arg)
+	for i = 1, num do
 		local object = arg[i]
 		local objectUnit = object.guessUnit or unit
 		local suffix = objectUnit and match(objectUnit or unit, "%w+target")
@@ -302,9 +303,9 @@ local function initObject(unit, style, styleFunc, header, ...)
 			end
 		end)
 
-		if not header then
+		if(not header) then
 			-- Other target units are handled by :HandleUnit().
-			if suffix == "target" then
+			if(suffix == "target") then
 				enableTargetUpdate(object)
 			else
 				oUF:HandleUnit(object, unit)
@@ -313,7 +314,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 			-- Used to update frames when they change position in a group.
 			object:RegisterEvent("RAID_ROSTER_UPDATE", object.UpdateAllElements)
 
-			if arg.n > 1 then
+			if(num > 1) then
 				if(object:GetParent() == header) then
 					object.hasChildren = true
 				else
@@ -321,7 +322,7 @@ local function initObject(unit, style, styleFunc, header, ...)
 				end
 			end
 
-			if suffix == "target" then
+			if(suffix == "target") then
 				enableTargetUpdate(object)
 			end
 		end
@@ -355,7 +356,7 @@ local function walkObject(object, unit)
 	local header = parent.headerType and parent
 
 	-- Check if we should leave the main frame blank.
-	if object.onlyProcessChildren then
+	if(object.onlyProcessChildren) then
 		object.hasChildren = true
 		return initObject(unit, style, styleFunc, header, object:GetChildren())
 	end
@@ -384,7 +385,7 @@ function oUF:RegisterMetaFunction(name, func)
 	argcheck(name, 2, "string")
 	argcheck(func, 3, "function", "table")
 
-	if frame_metatable.__index[name] then
+	if(frame_metatable.__index[name]) then
 		return
 	end
 
@@ -402,8 +403,8 @@ function oUF:RegisterStyle(name, func)
 	argcheck(name, 2, "string")
 	argcheck(func, 3, "function", "table")
 
-	if styles[name] then return error("Style [%s] already registered.", name) end
-	if not style then style = name end
+	if(styles[name]) then return error("Style [%s] already registered.", name) end
+	if(not style) then style = name end
 
 	styles[name] = func
 end
@@ -416,7 +417,7 @@ Used to set the active style.
 --]]
 function oUF:SetActiveStyle(name)
 	argcheck(name, 2, "string")
-	if not styles[name] then return error("Style [%s] does not exist.", name) end
+	if(not styles[name]) then return error("Style [%s] does not exist.", name) end
 
 	style = name
 end
@@ -451,11 +452,11 @@ do
 	function getCondition(...)
 		local cond = ""
 
-		for i = 1, arg.n do
+		for i = 1, getn(arg) do
 			local short = select(i, unpack(arg))
 
 			local condition = conditions[short]
-			if condition then
+			if(condition) then
 				cond = cond .. condition
 			end
 		end
@@ -468,29 +469,29 @@ local function generateName(unit, ...)
 	local name = "oUF_" .. gsub(style, gsub("^oUF_?", ""), gsub("[^%a%d_]+", ""))
 
 	local raid, party, groupFilter
-	for i = 1, arg.n, 2 do
+	for i = 1, getn(arg), 2 do
 		local att, val = select(i, unpack(arg))
-		if att == "showRaid" then
+		if(att == "showRaid") then
 			raid = true
-		elseif att == "showParty" then
+		elseif(att == "showParty") then
 			party = true
-		elseif att == "groupFilter" then
+		elseif(att == "groupFilter") then
 			groupFilter = val
 		end
 	end
 
 	local append
-	if raid then
-		if groupFilter then
-			if type(groupFilter) == "number" and groupFilter > 0 then
+	if(raid) then
+		if(groupFilter) then
+			if(type(groupFilter) == "number" and groupFilter > 0) then
 				append = groupFilter
-			elseif match(groupFilter, "TANK") then
+			elseif(match(groupFilter, "TANK")) then
 				append = "MainTank"
-			elseif match(groupFilter, "ASSIST") then
+			elseif(match(groupFilter, "ASSIST")) then
 				append = "MainAssist"
 			else
 				local _, count = gsub(groupFilter, ",", "")
-				if count == 0 then
+				if(count == 0) then
 					append = "Raid" .. groupFilter
 				else
 					append = "Raid"
@@ -499,19 +500,19 @@ local function generateName(unit, ...)
 		else
 			append = "Raid"
 		end
-	elseif party then
+	elseif(party) then
 		append = "Party"
-	elseif unit then
+	elseif(unit) then
 		append = gsub(unit, "^%l", upper)
 	end
 
-	if append then
+	if(append) then
 		name = name .. append
 	end
 
 	local base = name
 	local i = 2
-	while _G[name] do
+	while(_G[name]) do
 		name = base .. i
 		i = i + 1
 	end
@@ -529,12 +530,12 @@ do
 		local header = self:GetParent()
 
 		local unit
-		if not self.onlyProcessChildren then
+		if(not self.onlyProcessChildren) then
 			local groupFilter = header:GetAttribute("groupFilter")
 
-			if header:GetAttribute("showRaid") then
+			if(header:GetAttribute("showRaid")) then
 				unit = "raid"
-			elseif header:GetAttribute("showParty") then
+			elseif(header:GetAttribute("showParty")) then
 				unit = "party"
 			end
 
@@ -581,7 +582,7 @@ do
 	* oUF-onlyProcessChildren   - can be used to force headers to only process children (boolean?)
 	--]]
 	function oUF:SpawnHeader(overrideName, template, visibility, ...)
-		if not style then return error("Unable to create frame. No styles have been registered.") end
+		if(not style) then return error("Unable to create frame. No styles have been registered.") end
 
 		template = (template or "oUF_GroupHeaderTemplate")
 
@@ -595,9 +596,9 @@ do
 		header.GetAttribute = getAttribute
 
 		--header:SetAttribute("template", "SecureUnitButtonTemplate")
-		for i = 1, arg.n, 2 do
+		for i = 1, getn(arg), 2 do
 			local att, val = select(i, unpack(arg))
-			if not att then break end
+			if(not att) then break end
 
 			header:SetAttribute(att, val)
 		end
@@ -612,14 +613,14 @@ do
 		header.initialConfigFunction = initialConfigFunction
 		header.headerType = isPetHeader and "pet" or "group"
 
-		if header:GetAttribute("showParty") then
+		if(header:GetAttribute("showParty")) then
 			self:DisableBlizzard("party")
 		end
 
 
-		if visibility then
+		if(visibility) then
 			local type, list = split(" ", visibility, 2)
-			if list and type == "custom" then
+			if(list and type == "custom") then
 				RegisterStateDriver(header, "visibility", list)
 				header.visibility = list
 			else
@@ -643,7 +644,7 @@ Used to create a single unit frame and apply the currently active style to it.
 --]]
 function oUF:Spawn(unit, overrideName)
 	argcheck(unit, 2, "string")
-	if not style then return error("Unable to create frame. No styles have been registered.") end
+	if(not style) then return error("Unable to create frame. No styles have been registered.") end
 
 	unit = lower(unit)
 
@@ -676,7 +677,7 @@ function oUF:AddElement(name, update, enable, disable)
 	argcheck(enable, 4, "function", "nil")
 	argcheck(disable, 5, "function", "nil")
 
-	if elements[name] then return error("Element [%s] is already registered.", name) end
+	if(elements[name]) then return error("Element [%s] is already registered.", name) end
 	elements[name] = {
 		update = update;
 		enable = enable;

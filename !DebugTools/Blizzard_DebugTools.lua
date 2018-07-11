@@ -106,7 +106,7 @@ function EventTraceFrame_OnEvent(self, event, ...)
 			self.framesSinceLast[nextIndex] = 0
 			self.eventids[nextIndex] = GetCurrentEventID()
 
-			local numArgs = arg.n
+			local numArgs = getn(arg)
 			for i = 1, numArgs do
 				if not self.args[i] then
 					self.args[i] = {}
@@ -169,7 +169,7 @@ function EventTraceFrame_OnSizeChanged(self, width, height)
 	end
 end
 
-function EventTraceFrame_Update()
+function EventTraceFrame_Update ()
 	local offset = 0
 
 	local scrollBar = _G["EventTraceFrameScroll"]
