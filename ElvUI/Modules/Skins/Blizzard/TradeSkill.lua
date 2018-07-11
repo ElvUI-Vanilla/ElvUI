@@ -33,23 +33,26 @@ local function LoadSkin()
 
 	E:StripTextures(TradeSkillExpandButtonFrame)
 
-	TradeSkillCollapseAllButton:SetNormalTexture("")
+	TradeSkillCollapseAllButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
 	TradeSkillCollapseAllButton.SetNormalTexture = E.noop
+	TradeSkillCollapseAllButton:GetNormalTexture():SetPoint("LEFT", 3, 2)
+	E:Size(TradeSkillCollapseAllButton:GetNormalTexture(), 15)
+
 	TradeSkillCollapseAllButton:SetHighlightTexture("")
 	TradeSkillCollapseAllButton.SetHighlightTexture = E.noop
-	TradeSkillCollapseAllButton:SetDisabledTexture("")
-	TradeSkillCollapseAllButton.SetDisabledTexture = E.noop
 
-	TradeSkillCollapseAllButton.Text = TradeSkillCollapseAllButton:CreateFontString(nil, "OVERLAY")
-	E:FontTemplate(TradeSkillCollapseAllButton.Text, nil, 22)
-	E:Point(TradeSkillCollapseAllButton.Text, "LEFT", 3, 0)
-	TradeSkillCollapseAllButton.Text:SetText("+")
+	TradeSkillCollapseAllButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	TradeSkillCollapseAllButton.SetDisabledTexture = E.noop
+	TradeSkillCollapseAllButton:GetDisabledTexture():SetPoint("LEFT", 3, 2)
+	E:Size(TradeSkillCollapseAllButton:GetDisabledTexture(), 15)
+	TradeSkillCollapseAllButton:GetDisabledTexture():SetTexCoord(0.045, 0.475, 0.085, 0.925)
+	TradeSkillCollapseAllButton:GetDisabledTexture():SetDesaturated(true)
 
 	hooksecurefunc(TradeSkillCollapseAllButton, "SetNormalTexture", function(self, texture)
 		if find(texture, "MinusButton") then
-			self.Text:SetText("-")
+			self:GetNormalTexture():SetTexCoord(0.545, 0.975, 0.085, 0.925)
 		else
-			self.Text:SetText("+")
+			self:GetNormalTexture():SetTexCoord(0.045, 0.475, 0.085, 0.925)
 		end
 	end)
 
@@ -65,25 +68,24 @@ local function LoadSkin()
 	E:Point(TradeSkillFrameTitleText, "TOP", TradeSkillFrame, "TOP", 0, -18)
 
 	for i = 1, TRADE_SKILLS_DISPLAYED do
-		local skillButton = _G["TradeSkillSkill"..i]
-		skillButton:SetNormalTexture("")
-		skillButton.SetNormalTexture = E.noop
+		local button = _G["TradeSkillSkill"..i]
+		local highlight = _G["TradeSkillSkill"..i.."Highlight"]
 
-		_G["TradeSkillSkill"..i.."Highlight"]:SetTexture("")
-		_G["TradeSkillSkill"..i.."Highlight"].SetTexture = E.noop
+		button:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button.SetNormalTexture = E.noop
+		E:Size(button:GetNormalTexture(), 14)
+		button:GetNormalTexture():SetPoint("LEFT", 2, 1)
 
-		skillButton.Text = skillButton:CreateFontString(nil, "OVERLAY")
-		E:FontTemplate(skillButton.Text, nil, 22)
-		E:Point(skillButton.Text, "LEFT", 3, 0)
-		skillButton.Text:SetText("+")
+		highlight:SetTexture("")
+		highlight.SetTexture = E.noop
 
-		hooksecurefunc(skillButton, "SetNormalTexture", function(self, texture)
+		hooksecurefunc(button, "SetNormalTexture", function(self, texture)
 			if find(texture, "MinusButton") then
-				self.Text:SetText("-")
+				self:GetNormalTexture():SetTexCoord(0.545, 0.975, 0.085, 0.925)
 			elseif find(texture, "PlusButton") then
-				self.Text:SetText("+")
+				self:GetNormalTexture():SetTexCoord(0.045, 0.475, 0.085, 0.925)
 			else
-				self.Text:SetText("")
+				self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
 			end
 		end)
 	end
@@ -131,11 +133,12 @@ local function LoadSkin()
 	S:HandleCloseButton(TradeSkillFrameCloseButton)
 
 	hooksecurefunc("TradeSkillFrame_SetSelection", function(id)
-		E:SetTemplate(TradeSkillSkillIcon, "Default", true)
-		E:StyleButton(TradeSkillSkillIcon, nil, true)
 		if TradeSkillSkillIcon:GetNormalTexture() then
+			TradeSkillSkillIcon:SetAlpha(1)
 			TradeSkillSkillIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 			E:SetInside(TradeSkillSkillIcon:GetNormalTexture())
+		else
+			TradeSkillSkillIcon:SetAlpha(0)
 		end
 
 		E:Size(TradeSkillSkillIcon, 40)
