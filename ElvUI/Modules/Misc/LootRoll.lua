@@ -303,7 +303,15 @@ end
 function M:CHAT_MSG_LOOT()
 	local playername, itemname, rolltype = self:ParseRollChoice(arg1)
 	if playername and itemname and rolltype then
-		local class = select(2, UnitClass(playername))
+		for _, f in ipairs(M.RollBars) do
+			if f.rollID and f.button.link == itemname and not f.rolls[playername] then
+				f.rolls[playername] = { rolltype }
+				f[rolltype]:SetText(tonumber(f[rolltype]:GetText()) + 1)
+				return
+			end
+		end
+--[[
+		local _, class = UnitClass(playername)
 		for _, f in ipairs(M.RollBars) do
 			if f.rollID and f.button.link == itemname and not f.rolls[playername] then
 				f.rolls[playername] = { rolltype, class }
@@ -311,7 +319,9 @@ function M:CHAT_MSG_LOOT()
 				return
 			end
 		end
+]]
 	end
+
 end
 
 function M:LoadLootRoll()

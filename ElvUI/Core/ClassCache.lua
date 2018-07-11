@@ -7,7 +7,6 @@ local LW = LibStub:GetLibrary("LibWho-2.0");
 local split, upper = string.split, string.upper
 local wipe = table.wipe
 local pairs = pairs
-local select = select
 --WoW API / Variables
 local GetBattlefieldScore = GetBattlefieldScore
 local GetFriendInfo = GetFriendInfo

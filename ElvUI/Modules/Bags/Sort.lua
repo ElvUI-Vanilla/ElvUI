@@ -359,10 +359,12 @@ function B:ScanBags()
 		local bagSlot = B:Encode_BagSlot(bag, slot)
 		local itemID = ConvertLinkToID(B:GetItemLink(bag, slot))
 		if itemID then
-			bagMaxStacks[bagSlot] = select(7, GetItemInfo(itemID))
+			local _, _, rarity, _, _, _, stackCount = GetItemInfo(itemID)
+			local _, itemCount = B:GetItemInfo(bag, slot)
+			bagMaxStacks[bagSlot] = stackCount
 			bagIDs[bagSlot] = itemID
-			bagQualities[bagSlot] = select(3, GetItemInfo(itemID))
-			bagStacks[bagSlot] = select(2, B:GetItemInfo(bag, slot))
+			bagQualities[bagSlot] = rarity
+			bagStacks[bagSlot] = itemCount
 		end
 	end
 end
@@ -666,7 +668,7 @@ function B:DoMove(move)
 		end
 	end
 
-	local stackSize = select(7, GetItemInfo(sourceItemID))
+	local _, _, _, _, _, _, stackSize = GetItemInfo(itemID)
 	if (sourceItemID == targetItemID) and (targetCount ~= stackSize) and ((targetCount + sourceCount) > stackSize) then
 		B:SplitItem(sourceBag, sourceSlot, stackSize - targetCount)
 	else

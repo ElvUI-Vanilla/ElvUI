@@ -4,7 +4,7 @@ local Private = ns.oUF.Private
 function Private.argcheck(value, num, ...)
 	assert(type(num) == 'number', "Bad argument #2 to 'argcheck' (number expected, got " .. type(num) .. ')')
 
-	for i = 1, select('#', arg) do
+	for i = 1, arg.n do
 		if(type(value) == select(i, unpack(arg))) then return end
 	end
 

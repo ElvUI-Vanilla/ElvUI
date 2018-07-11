@@ -2,7 +2,7 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 
 --Cache global variables
 --Lua functions
-local select, unpack, assert, tonumber, type, pairs = select, unpack, assert, tonumber, type, pairs
+local unpack, assert, tonumber, type, pairs = unpack, assert, tonumber, type, pairs
 local getn, tinsert, tremove = table.getn, tinsert, tremove
 local abs, ceil, floor, modf, mod = math.abs, math.ceil, math.floor, math.modf, math.mod
 local find, format, byte, len, sub, gsub, upper, split, utf8sub = string.find, string.format, string.byte, string.len, string.sub, string.gsub, string.upper, string.split, string.utf8sub
