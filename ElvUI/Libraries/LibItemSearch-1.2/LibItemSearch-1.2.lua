@@ -24,11 +24,11 @@ function Lib:Matches(link, search)
 end
 
 function Lib:Tooltip(link, search)
-	return link and match(self.Filters.tip, link, nil, search)
+	return link and self.Filters.tip:match(link, nil, search)
 end
 
 function Lib:TooltipPhrase(link, search)
-	return link and match(self.Filters.tipPhrases, link, nil, search)
+	return link and self.Filters.tipPhrases:match(link, nil, search)
 end
 
 --[[ Basics ]]--
