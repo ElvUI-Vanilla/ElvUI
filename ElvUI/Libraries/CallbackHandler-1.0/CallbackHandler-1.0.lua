@@ -49,7 +49,7 @@ local function CreateDispatcher(argCount)
 	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(next, xpcall, errorhandler)
 end
 
-local Dispatchers = setmetatable({}, {__index=function(self, argCount)
+local Dispatchers = setmetatable({}, {__index = function(self, argCount)
 	local dispatcher = CreateDispatcher(argCount)
 	rawset(self, argCount, dispatcher)
 	return dispatcher
@@ -67,7 +67,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 
 	RegisterName = RegisterName or "RegisterCallback"
 	UnregisterName = UnregisterName or "UnregisterCallback"
-	if UnregisterAllName==nil then	-- false is used to indicate "don't want this method"
+	if UnregisterAllName == nil then	-- false is used to indicate "don't want this method"
 		UnregisterAllName = "UnregisterAllCallbacks"
 	end
 
@@ -85,7 +85,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 		local oldrecurse = registry.recurse
 		registry.recurse = oldrecurse + 1
 
-		Dispatchers[getn(arg) + 1](events[eventname], eventname, unpack(arg))
+		Dispatchers[arg.n + 1](events[eventname], eventname, unpack(arg))
 
 		registry.recurse = oldrecurse
 
@@ -130,24 +130,24 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 			-- self["method"] calling style
 			if type(self) ~= "table" then
 				error("Usage: "..RegisterName.."(\"eventname\", \"methodname\"): self was not a table?", 2)
-			elseif self==target then
+			elseif self == target then
 				error("Usage: "..RegisterName.."(\"eventname\", \"methodname\"): do not use Library:"..RegisterName.."(), use your own 'self'", 2)
 			elseif type(self[method]) ~= "function" then
 				error("Usage: "..RegisterName.."(\"eventname\", \"methodname\"): 'methodname' - method '"..tostring(method).."' not found on self.", 2)
 			end
 
-			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
+			if arg.n >= 1 then	-- this is not the same as testing for arg==nil!
 				regfunc = function(...) self[method](self,arg1,unpack(arg)) end
 			else
 				regfunc = function(...) self[method](self,unpack(arg)) end
 			end
 		else
 			-- function ref with self=object or self="addonId" or self=thread
-			if type(self)~="table" and type(self)~="string" and type(self)~="thread" then
+			if type(self) ~= "table" and type(self) ~= "string" and type(self) ~= "thread" then
 				error("Usage: "..RegisterName.."(self or \"addonId\", eventname, method): 'self or addonId': table or string or thread expected.", 2)
 			end
 
-			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
+			if arg.n >= 1 then	-- this is not the same as testing for arg==nil!
 				regfunc = function(...) method(arg1,unpack(arg)) end
 			else
 				regfunc = method
@@ -173,7 +173,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 
 	-- Unregister a callback
 	target[UnregisterName] = function(self, eventname)
-		if not self or self==target then
+		if not self or self == target then
 			error("Usage: "..UnregisterName.."(eventname): bad 'self'", 2)
 		end
 		if type(eventname) ~= "string" then
@@ -194,15 +194,15 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 	-- OPTIONAL: Unregister all callbacks for given selfs/addonIds
 	if UnregisterAllName then
 		target[UnregisterAllName] = function(...)
-			if getn(arg)<1 then
+			if getn(arg) < 1 then
 				error("Usage: "..UnregisterAllName.."([whatFor]): missing 'self' or \"addonId\" to unregister events for.", 2)
 			end
-			if getn(arg)==1 and arg1==target then
+			if getn(arg) == 1 and arg1==target then
 				error("Usage: "..UnregisterAllName.."([whatFor]): supply a meaningful 'self' or \"addonId\"", 2)
 			end
 
 
-			for i=1,getn(arg) do
+			for i = 1, arg.n do
 				local self = arg[i]
 				if registry.insertQueue then
 					for eventname, callbacks in pairs(registry.insertQueue) do

@@ -81,7 +81,7 @@ local function setCleanupTables(...)
 	if not LibCompress.frame:IsShown() then
 		LibCompress.frame:Show()
 	end
-	for i = 1, getn(arg) do
+	for i = 1, arg.n do
 		tables_to_clean[(select(i, unpack(arg)))] = true
 	end
 end
@@ -1011,7 +1011,7 @@ function LibCompress:GetChatEncodeTable(reservedChars, escapeChars, mapChars)
 	-- Also, because drunken status is unknown for the received, strings used with SendChatMessage should be terminated with
 	-- an identifying byte value, after which the server MAY add "...hic!" or as much as it can fit(!).
 	-- Pass the identifying byte as a reserved character to this function to ensure the encoding doesn't contain that value.
-	--  or use this: local message, match = arg1:gsub("^(.*)\029.-$", "%1")
+	--  or use this: local message, match = gsub(arg1, "^(.*)\029.-$", "%1")
 	--  arg1 is message from channel, \029 is the string terminator, but may be used in the encoded datastream as well. :-)
 	-- This encoding will expand data anywhere from:
 	-- 0% (average with pure ascii text)

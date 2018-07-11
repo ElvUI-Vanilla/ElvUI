@@ -1926,7 +1926,7 @@ function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
 	local BlizOptions = AceConfigDialog.BlizOptions
 
 	local key = appName
-	local l = tgetn(arg)
+	local l = arg.n
 	for n = 1, l do
 		key = key .. "\001" .. arg[n]
 	end

@@ -404,16 +404,6 @@ function S:HandleSliderFrame(frame)
 				end
 			end
 		end
-
-		--[[for i = 1, frame:GetNumRegions() do
-			local region = select(i, frame:GetRegions())
-			if region and region:GetObjectType() == "FontString" then
-				local point, anchor, anchorPoint, x, y = region:GetPoint()
-				if anchorPoint:find("BOTTOM") then
-					E:Point(region, point, anchor, anchorPoint, x, y - 4)
-				end
-			end
-		end]]
 	end
 end
 

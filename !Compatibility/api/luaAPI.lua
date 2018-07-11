@@ -32,14 +32,14 @@ function select(n, ...)
 	end
 
 	if n == "#" then
-		return getn(arg)
+		return arg.n
 	elseif n == 1 then
 		return unpack(arg)
 	end
 
 	local args = {}
 
-	for i = n, getn(arg) do
+	for i = n, arg.n do
 		args[i-n+1] = arg[i]
 	end
 
@@ -182,7 +182,7 @@ function string.join(delimiter, ...)
 		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
 	end
 
-	if getn(arg) == 0 then
+	if arg.n == 0 then
 		return ""
 	end
 
@@ -339,27 +339,27 @@ wipe = table.wipe
 
 local LOCAL_ToStringAllTemp = {}
 function tostringall(...)
-	local n = getn(arg)
+	local n = arg.n
 	-- Simple versions for common argument counts
-	if (n == 1) then
+	if n == 1 then
 		return tostring(arg[1])
-	elseif (n == 2) then
+	elseif n == 2 then
 		return tostring(arg[1]), tostring(arg[2])
-	elseif (n == 3) then
+	elseif n == 3 then
 		return tostring(arg[1]), tostring(arg[2]), tostring(arg[3])
-	elseif (n == 0) then
+	elseif n == 0 then
 		return
 	end
 
 	local needfix
 	for i = 1, n do
 		local v = arg[i]
-		if (type(v) ~= "string") then
+		if type(v) ~= "string" then
 			needfix = i
 			break
 		end
 	end
-	if (not needfix) then return unpack(arg) end
+	if not needfix then return unpack(arg) end
 
 	wipe(LOCAL_ToStringAllTemp)
 	for i = 1, needfix - 1 do
@@ -377,7 +377,7 @@ local LOCAL_PrintHandler = function(...)
 end
 
 function setprinthandler(func)
-	if (type(func) ~= "function") then
+	if type(func) ~= "function" then
 		error("Invalid print handler")
 	else
 		LOCAL_PrintHandler = func
@@ -388,7 +388,7 @@ function getprinthandler() return LOCAL_PrintHandler end
 
 local function print_inner(...)
 	local ok, err = pcall(LOCAL_PrintHandler, unpack(arg))
-	if (not ok) then
+	if not ok then
 		local func = geterrorhandler()
 		func(err)
 	end
