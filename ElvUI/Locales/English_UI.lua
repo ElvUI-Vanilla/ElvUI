@@ -283,6 +283,11 @@ L["Your items have been repaired for: "] = true;
 L["Your items have been repaired using guild bank funds for: "] = true;
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = true;
 
+--Skins
+L["Abandon"] = true
+L["Share"] = true
+L["Track"] = true
+
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = true;
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true

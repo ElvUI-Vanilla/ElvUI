@@ -294,12 +294,12 @@ local function LoadSkin()
 
 	QuestLogFrameAbandonButton:SetPoint("BOTTOMLEFT", 18, 15)
 	E:Width(QuestLogFrameAbandonButton, 100)
-	QuestLogFrameAbandonButton:SetText("Abandon")
+	QuestLogFrameAbandonButton:SetText(L["Abandon"])
 
 	QuestFramePushQuestButton:ClearAllPoints()
 	QuestFramePushQuestButton:SetPoint("LEFT", QuestLogFrameAbandonButton, "RIGHT", 2, 0)
 	E:Width(QuestFramePushQuestButton, 100)
-	QuestFramePushQuestButton:SetText("Share")
+	QuestFramePushQuestButton:SetText(L["Share"])
 
 	QuestFrameExitButton:SetPoint("BOTTOMRIGHT", -8, 15)
 	E:Width(QuestFrameExitButton, 100)
@@ -321,7 +321,7 @@ local function LoadSkin()
 
 	local QuestTrack = CreateFrame("Button", "QuestTrack", QuestLogFrame, "UIPanelButtonTemplate")
 	S:HandleButton(QuestTrack)
-	QuestTrack:SetText("Track")
+	QuestTrack:SetText(L["Track"])
 	QuestTrack:SetPoint("LEFT", QuestFramePushQuestButton, "RIGHT", 2, 0)
 	E:Size(QuestTrack, 110, 21)
 

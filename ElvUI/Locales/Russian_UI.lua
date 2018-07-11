@@ -283,6 +283,11 @@ L["Your items have been repaired for: "] = "Ремонт обошелся в "
 L["Your items have been repaired using guild bank funds for: "] = "Ремонт обошелся гильдии в "
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Обнаружена ошибка lua. Вы получите отчет о ней после завершения боя."
 
+--Skins
+L["Abandon"] = "Отменить"
+L["Share"] = "Предложить"
+L["Track"] = "Отслеживать"
+
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "Настройка, которую Вы только что изменили, будет влиять только на этого персонажа. Она не будет изменяться при смене профиля. Также это изменение требует перезагрузки интерфейса для вступления в силу."
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = "Приняв это вы сбросите ваши списки приоритетов для всех аур на индикаторах здоровья. Вы уверены?"

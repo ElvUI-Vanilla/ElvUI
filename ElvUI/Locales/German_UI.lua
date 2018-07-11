@@ -283,6 +283,11 @@ L["Your items have been repaired for: "] = "Deine Gegenstände wurden repariert 
 L["Your items have been repaired using guild bank funds for: "] = "Deine Gegenstände wurden repariert. Die Gildenbank kostete das: "
 L["|cFFE30000Lua error recieved. You can view the error message when you exit combat."] = "|cFFE30000Lua Fehler erhalten. Du kannst die Fehlermeldung ansehen, wenn du den Kampf verlässt."
 
+--Skins
+L["Abandon"] = "Abbrechen"
+L["Share"] = "Teilen"
+L["Track"] = "Verfolgen"
+
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "Eine Einstellung, die du geändert hast, betrifft nur einen Charakter. Diese Einstellung, die du verändert hast, wird die Benutzerprofile unbeeinflusst lassen. Eine Änderung dieser Einstellung erfordert, dass du dein Interface neu laden musst."
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
