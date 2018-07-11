@@ -1099,7 +1099,7 @@ function CH:CHAT_MSG_CHANNEL(event, message, author, ...)
 	end
 end
 
-function CH.CHAT_MSG_YELL(event, message, author, ...)
+function CH:CHAT_MSG_YELL(event, message, author, ...)
 	local blockFlag = false
 	local msg = PrepareMessage(author, message)
 
