@@ -124,7 +124,7 @@ end
 function Lib:UseFilter(filter, operator, search)
 	local data = {filter:canSearch(operator, search, self.object)}
 	if data[1] then
-		return match(filter, self.object, operator, unpack(data))
+		return filter:match(self.object, operator, unpack(data))
 	end
 end
 
