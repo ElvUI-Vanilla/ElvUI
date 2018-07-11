@@ -108,8 +108,8 @@ local safe = {
 
 local frame = CreateFrame("Frame")
 local t, WAIT_TIME = 0, 0.05
-frame:SetScript("OnUpdate", function(_, elapsed)
-	t = t + (elapsed or 0.01)
+frame:SetScript("OnUpdate", function()
+	t = t + (arg1 or 0.01)
 	if t > WAIT_TIME then
 		t = 0
 		B:DoMoves()
@@ -258,7 +258,7 @@ local function IterateForwards(bagList, i)
 end
 
 local function IterateBackwards(bagList, i)
-	--[[i = i + 1
+	i = i + 1
 	local step = 1
 	for ii = getn(bagList), 1, -1 do
 		local bag = bagList[ii]
@@ -267,21 +267,6 @@ local function IterateBackwards(bagList, i)
 			step = step + slots
 		else
 			for slot = slots, 1, -1 do
-				if step == i then
-					return i, bag, slot
-				end
-				step = step + 1
-			end
-		end
-	end]]
-	i = i + 1
-	local step = 1
-	for _, bag in bagList do
-		local slots = B:GetNumSlots(bag)
-		if i > slots + step then
-			step = step + slots
-		else
-			for slot = 1, slots do
 				if step == i then
 					return i, bag, slot
 				end
@@ -476,7 +461,7 @@ local function buildBlacklist(arg)
 			if find(entry, "%[") and find(entry, "%]") then
 				entry = match(entry, "%[(.*)%]")
 			end
-			blackListQueries[getn(blackListQueries) + 1] = entry
+			tinsert(blackListQueries, entry)
 		end
 	end
 end
@@ -606,7 +591,8 @@ function B.SortBags(...)
 			local bagType = B:IsSpecialtyBag(slotNum)
 			if bagType == false then bagType = "Normal" end
 			if not bagCache[bagType] then bagCache[bagType] = {} end
-			bagCache[bagType][i] = slotNum
+			--bagCache[bagType][i] = slotNum
+			tinsert(bagCache[bagType], slotNum)
 		end
 		for bagType, sortedBags in pairs(bagCache) do
 			if bagType ~= "Normal" then
@@ -676,7 +662,7 @@ function B:DoMove(move)
 		if moveTracker[source] then
 			return false, "move incomplete"
 		else
-			return --[[B:StopStacking(L["Confused.. Try Again!"])]] -- TODO
+			return B:StopStacking(L["Confused.. Try Again!"])
 		end
 	end
 
