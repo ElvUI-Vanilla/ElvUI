@@ -31,7 +31,7 @@ local function enableTargetUpdate(object)
 			total = 0
 		end
 
-		total = total + GetTime()
+		total = total + arg1
 	end)
 end
 Private.enableTargetUpdate = enableTargetUpdate
