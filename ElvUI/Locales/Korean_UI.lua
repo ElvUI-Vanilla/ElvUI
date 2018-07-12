@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = "대상의대상 프레임"
 L["TargetTargetTarget Frame"] = "대상의대상의대상 프레임"
 L["Time Manager Frame"] = true;
 L["Tooltip"] = "툴팁"
-L["Vehicle Seat Frame"] = "차량 좌석 프레임"
 L["Watch Frame"] = true;
 L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."

@@ -435,7 +435,7 @@ function UF:AuraFilter(unit, button, texture, count, dispelType, duration, expir
 	if not name then return nil end
 	local filterCheck, isUnit, isFriend, isPlayer, canDispell, allowDuration, noDuration, spellPriority
 
-	isPlayer = (caster == "player" or caster == "vehicle")
+	isPlayer = (caster == "player")
 	isFriend = unit and UnitIsFriend("player", unit) and not UnitCanAttack("player", unit)
 
 	button.isPlayer = isPlayer

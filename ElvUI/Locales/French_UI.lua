@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = "Cadre de la cible de votre cible" --Also used in Unit
 L["TargetTargetTarget Frame"] = "Cadre de la cible de la cible de la cible"
 L["Time Manager Frame"] = true;
 L["Tooltip"] = "Infobulle"
-L["Vehicle Seat Frame"] = "Cadre de siège du véhicule"
 L["Watch Frame"] = true;
 L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."

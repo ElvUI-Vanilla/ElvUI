@@ -9,7 +9,7 @@ local mod = math.mod
 --WoW API / Variables
 local CreateFrame = CreateFrame
 
-local microBar = CreateFrame("Frame", "microBar", E.UIParent)
+local microBar = CreateFrame("Frame", "ElvUI_MicroBar", E.UIParent)
 microBar:SetFrameStrata("BACKGROUND")
 
 local MICRO_BUTTONS = {

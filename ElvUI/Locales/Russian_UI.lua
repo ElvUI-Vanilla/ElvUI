@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = "Цель цели" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "Цель цели цели"
 L["Time Manager Frame"] = true;
 L["Tooltip"] = "Подсказка"
-L["Vehicle Seat Frame"] = "Техника"
 L["Watch Frame"] = "Задания"
 L["Weapons"] = "Оружие"
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."

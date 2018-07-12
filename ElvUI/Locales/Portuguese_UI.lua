@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = "Quadro do Alvo do Alvo"
 L["TargetTargetTarget Frame"] = true;
 L["Time Manager Frame"] = true;
 L["Tooltip"] = "Tooltip"
-L["Vehicle Seat Frame"] = "Quadro de Assento de Veículo"
 L["Watch Frame"] = true;
 L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."

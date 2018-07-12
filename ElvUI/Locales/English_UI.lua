@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = true; --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = true; --Also used in UnitFrames
 L["Time Manager Frame"] = true;
 L["Tooltip"] = true;
-L["Vehicle Seat Frame"] = true;
 L["Watch Frame"] = true;
 L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done.\nOptions:\nShift + RightClick - Hides mover temporarily.\nCtrl + RightClick - Resets mover position to default."

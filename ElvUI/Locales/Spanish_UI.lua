@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = "Marco de Objetivo de Objetivo"
 L["TargetTargetTarget Frame"] = "Marco del Objetivo del Objetivo del Objetivo"
 L["Time Manager Frame"] = true;
 L["Tooltip"] = "Descripción Emergente"
-L["Vehicle Seat Frame"] = "Marco del Asiento del Vehículo"
 L["Watch Frame"] = true;
 L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."

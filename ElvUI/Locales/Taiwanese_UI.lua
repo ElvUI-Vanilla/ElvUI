@@ -251,7 +251,6 @@ L["TargetTarget Frame"] = "目標的目標框架" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "目標的目標的目標框架"
 L["Time Manager Frame"] = true;
 L["Tooltip"] = "浮動提示"
-L["Vehicle Seat Frame"] = "載具座位框"
 L["Watch Frame"] = true;
 L["Weapons"] = true;
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."

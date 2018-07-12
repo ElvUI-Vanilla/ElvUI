@@ -71,16 +71,9 @@ P["general"] = {
 				["position"] = "TOPLEFT",
 				["xOffset"] = 0,
 				["yOffset"] = 0,
-			},
-			["vehicleLeave"] = {
-				["scale"] = 1,
-				["position"] = "BOTTOMLEFT",
-				["xOffset"] = 2,
-				["yOffset"] = 2,
-				["hide"] = false,
-			},
+			}
 		}
-	},
+	}
 }
 
 -- Data Bars
