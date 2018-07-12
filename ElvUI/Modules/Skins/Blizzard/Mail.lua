@@ -4,7 +4,7 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local iapirs, unpack = ipairs, unpack
+local ipairs, unpack = ipairs, unpack
 --WoW API / Variables
 local GetInboxHeaderInfo = GetInboxHeaderInfo
 local GetInboxItem = GetInboxItem
