@@ -4,13 +4,17 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local unpack = unpack
+local iapirs, unpack = ipairs, unpack
 --WoW API / Variables
+local GetInboxHeaderInfo = GetInboxHeaderInfo
 local GetInboxItem = GetInboxItem
+local GetInboxNumItems = GetInboxNumItems
 local GetItemInfo = GetItemInfo
+local GetItemInfoByName = GetItemInfoByName
 local GetItemQualityColor = GetItemQualityColor
 local GetSendMailItem = GetSendMailItem
 local hooksecurefunc = hooksecurefunc
+
 local INBOXITEMS_TO_DISPLAY = INBOXITEMS_TO_DISPLAY
 
 local function LoadSkin()

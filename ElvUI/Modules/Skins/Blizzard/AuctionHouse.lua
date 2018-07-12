@@ -4,9 +4,11 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local unpack = unpack
-local pairs = pairs
+local pairs, unpack = pairs, unpack
 --WoW API / Variables
+local CreateFrame = CreateFrame
+local GetAuctionSellItemInfo = GetAuctionSellItemInfo
+local GetItemInfoByName = GetItemInfoByName
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -94,18 +96,19 @@ local function LoadSkin()
 		if event == "NEW_AUCTION_UPDATE" and this:GetNormalTexture() then
 			this:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 			E:SetInside(this:GetNormalTexture())
-		end
 
-		local itemName = GetAuctionSellItemInfo()
-		if itemName then
-			local _, itemString = GetItemInfoByName(itemName)
-			local _, _, quality = GetItemInfo(itemString, "item:(%d+)")
-			if quality then
-				AuctionsItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
-				AuctionsItemButtonName:SetTextColor(GetItemQualityColor(quality))
-			else
-				AuctionsItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			local itemName = GetAuctionSellItemInfo()
+			if itemName then
+				local _, _, quality = GetItemInfoByName(itemName)
+
+				if quality then
+					this:SetBackdropBorderColor(GetItemQualityColor(quality))
+				else
+					this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				end
 			end
+		else
+			this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 		end
 	end)
 
@@ -215,17 +218,15 @@ local function LoadSkin()
 			E:SetTemplate(icon, "Default")
 
 			hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-				if r and g and b then
-					icon:SetBackdropBorderColor(r, g, b)
-				end
+				icon:SetBackdropBorderColor(r, g, b)
 			end)
-			hooksecurefunc(name, "Hide", function(_, r, g, b)
+			hooksecurefunc(name, "Hide", function()
 				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			end)
 		end
 
 		E:StripTextures(button)
-		E:StyleButton(button, false, true)
+		E:StyleButton(button, nil, true)
 		_G["BrowseButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
 		E:Point(button:GetHighlightTexture(), "TOPLEFT", icon, "TOPRIGHT", 2, 0)
@@ -250,9 +251,7 @@ local function LoadSkin()
 			E:SetTemplate(icon, "Default")
 
 			hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-				if r and g and b then
-					icon:SetBackdropBorderColor(r, g, b)
-				end
+				icon:SetBackdropBorderColor(r, g, b)
 			end)
 			hooksecurefunc(name, "Hide", function(_, r, g, b)
 				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -260,7 +259,7 @@ local function LoadSkin()
 		end
 
 		E:StripTextures(button)
-		E:StyleButton(button, false, true)
+		E:StyleButton(button, nil, true)
 		_G["AuctionsButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
 		E:Point(button:GetHighlightTexture(), "TOPLEFT", icon, "TOPRIGHT", 2, 0)
@@ -285,9 +284,7 @@ local function LoadSkin()
 			E:SetTemplate(icon, "Default")
 
 			hooksecurefunc(name, "SetVertexColor", function(_, r, g, b)
-				if r and g and b then
-					icon:SetBackdropBorderColor(r, g, b)
-				end
+				icon:SetBackdropBorderColor(r, g, b)
 			end)
 			hooksecurefunc(name, "Hide", function(_, r, g, b)
 				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
@@ -295,7 +292,7 @@ local function LoadSkin()
 		end
 
 		E:StripTextures(button)
-		E:StyleButton(button, false, true)
+		E:StyleButton(button, nil, true)
 		_G["BidButton"..i.."Highlight"] = button:GetHighlightTexture()
 		button:GetHighlightTexture():ClearAllPoints()
 		E:Point(button:GetHighlightTexture(), "TOPLEFT", icon, "TOPRIGHT", 2, 0)
