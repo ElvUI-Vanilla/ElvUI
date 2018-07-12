@@ -5,20 +5,21 @@ local CH = E:GetModule("Chat")
 --Cache global variables
 --Lua functions
 local _G = _G
+local format = string.format
 local floor = math.floor
 --WoW API / Variables
 local CinematicFrame = CinematicFrame
 local CreateFrame = CreateFrame
 local GetBattlefieldStatus = GetBattlefieldStatus
+local GetCVar, SetCVar = GetCVar, SetCVar
 local GetGuildInfo = GetGuildInfo
 local GetScreenHeight = GetScreenHeight
 local GetScreenWidth = GetScreenWidth
 local GetTime = GetTime
-local UnitAffectingCombat = UnitAffectingCombat
 local IsInGuild = IsInGuild
 local IsShiftKeyDown = IsShiftKeyDown
 local Screenshot = Screenshot
-local SetCVar = SetCVar
+local UnitAffectingCombat = UnitAffectingCombat
 
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local MAX_BATTLEFIELD_QUEUES = MAX_BATTLEFIELD_QUEUES
@@ -51,7 +52,7 @@ local function StopAnimation(self)
 	self:SetScript("OnAnimFinished", nil)
 end
 
-local function UpdateAnimation(...)
+local function UpdateAnimation()
 	this.animTime = this.animTime + (arg1 * 1000)
 	this:SetSequenceTime(67, this.animTime)
 
@@ -153,7 +154,7 @@ function AFK:SetAFK(status)
 	end
 end
 
-function AFK:OnEvent(event)
+function AFK:OnEvent()
 	if event == "PLAYER_REGEN_DISABLED" or event == "UPDATE_BATTLEFIELD_STATUS" then
 		if event == "UPDATE_BATTLEFIELD_STATUS" then
 			local status, _, instanceID
@@ -214,9 +215,9 @@ function AFK:Toggle()
 	end
 end
 
-local function OnKeyDown(_, key)
-	if ignoreKeys[key] then return end
-	if printKeys[key] then
+local function OnKeyDown()
+	if ignoreKeys[arg1] then return end
+	if printKeys[arg1] then
 		Screenshot()
 	else
 		AFK:SetAFK(false)
@@ -224,15 +225,15 @@ local function OnKeyDown(_, key)
 	end
 end
 
-local function Chat_OnMouseWheel(self, delta)
-	if delta == 1 and IsShiftKeyDown() then
-		self:ScrollToTop()
-	elseif delta == -1 and IsShiftKeyDown() then
-		self:ScrollToBottom()
-	elseif delta == -1 then
-		self:ScrollDown()
+local function Chat_OnMouseWheel()
+	if arg1 == 1 and IsShiftKeyDown() then
+		this:ScrollToTop()
+	elseif arg1 == -1 and IsShiftKeyDown() then
+		this:ScrollToBottom()
+	elseif arg1 == -1 then
+		this:ScrollDown()
 	else
-		self:ScrollUp()
+		this:ScrollUp()
 	end
 end
 
@@ -265,7 +266,6 @@ function AFK:Initialize()
 	self.AFKMode.chat:SetMovable(true)
 	self.AFKMode.chat:EnableMouse(true)
 	self.AFKMode.chat:SetClampedToScreen(true)
-	-- self.AFKMode.chat:SetClampRectInsets(-4, 3, 3, -4)
 	self.AFKMode.chat:RegisterForDrag("LeftButton")
 	self.AFKMode.chat:SetScript("OnDragStart", self.AFKMode.chat.StartMoving)
 	self.AFKMode.chat:SetScript("OnDragStop", self.AFKMode.chat.StopMovingOrSizing)
