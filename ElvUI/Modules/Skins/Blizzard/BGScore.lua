@@ -42,7 +42,7 @@ local function LoadSkin()
 		E:StyleButton(_G["WorldStateScoreColumn"..i])
 	end
 
-	hooksecurefunc("WorldStateScoreFrame_Update", function()
+	--[[hooksecurefunc("WorldStateScoreFrame_Update", function()
 		local offset = FauxScrollFrame_GetOffset(WorldStateScoreScrollFrame)
 
 		for i = 1, MAX_WORLDSTATE_SCORE_BUTTONS do
@@ -74,7 +74,7 @@ local function LoadSkin()
 				_G["WorldStateScoreButton"..i.."NameText"]:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 			end
 		end
-	end)
+	end)]]
 end
 
 S:AddCallback("WorldStateScore", LoadSkin)

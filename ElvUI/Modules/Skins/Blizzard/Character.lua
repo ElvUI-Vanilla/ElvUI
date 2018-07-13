@@ -300,12 +300,11 @@ local function LoadSkin()
 	SkillDetailStatusBarUnlearnButton:SetHitRectInsets(0, 0, 0, 0)
 
 	-- Honor Frame
-	hooksecurefunc("HonorFrame_Update", function()
-		E:StripTextures(HonorFrame)
+	E:StripTextures(HonorFrame)
 
-		HonorFrameProgressBar:SetStatusBarTexture(E.media.normTex)
-		E:RegisterStatusBar(HonorFrameProgressBar)
-	end)
+	E:CreateBackdrop(HonorFrameProgressButton)
+	HonorFrameProgressBar:SetStatusBarTexture(E.media.normTex)
+	E:RegisterStatusBar(HonorFrameProgressBar)
 end
 
 S:AddCallback("Character", LoadSkin)

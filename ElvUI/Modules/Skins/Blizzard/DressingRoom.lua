@@ -37,7 +37,8 @@ local function LoadSkin()
 	E:Point(DressUpFrameResetButton, "RIGHT", DressUpFrameCancelButton, "LEFT", -3, 0)
 
 	E:CreateBackdrop(DressUpModel, "Default")
-	E:SetOutside(DressUpModel.backdrop, DressUpBackgroundTopLeft, nil, nil, DressUpModel)
+	DressUpModel.backdrop:SetPoint("TOPLEFT", -2, 1)
+	DressUpModel.backdrop:SetPoint("BOTTOMRIGHT", 0, 19)
 end
 
 S:AddCallback("DressingRoom", LoadSkin)

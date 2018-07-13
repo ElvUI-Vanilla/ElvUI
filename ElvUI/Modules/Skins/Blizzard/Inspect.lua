@@ -90,8 +90,10 @@ local function LoadSkin()
 	S:HandleRotateButton(InspectModelRotateRightButton)
 	E:Point(InspectModelRotateRightButton, "TOPLEFT", InspectModelRotateLeftButton, "TOPRIGHT", 3, 0)
 
+	-- Honor Frame
 	E:StripTextures(InspectHonorFrame)
 
+	E:CreateBackdrop(InspectHonorFrameProgressButton)
 	InspectHonorFrameProgressBar:SetStatusBarTexture(E.media.normTex)
 	E:RegisterStatusBar(InspectHonorFrameProgressBar)
 end

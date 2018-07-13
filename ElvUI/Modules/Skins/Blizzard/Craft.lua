@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local S = E:GetModule("Skins");
+local E, L, V, P, G = unpack(ElvUI) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local S = E:GetModule("Skins")
 
 --Cache global variables
 --Lua functions
@@ -16,70 +16,178 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or not E.private.skins.blizzard.craft ~= true then return end
 
+	CRAFTS_DISPLAYED = 25
+
+	UIPanelWindows["CraftFrame"] = {area = "doublewide", pushable = 0, whileDead = 1}
+
 	E:StripTextures(CraftFrame, true)
 	E:CreateBackdrop(CraftFrame, "Transparent")
-	E:Point(CraftFrame.backdrop, "TOPLEFT", 10, -11)
-	E:Point(CraftFrame.backdrop, "BOTTOMRIGHT", -32, 74)
+	CraftFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
+	CraftFrame.backdrop:SetPoint("BOTTOMRIGHT", -34, 0)
+	E:Size(CraftFrame, 720, 508)
+
+	CraftFrame.bg1 = CreateFrame("Frame", nil, CraftFrame)
+	E:SetTemplate(CraftFrame.bg1, "Transparent")
+	CraftFrame.bg1:SetPoint("TOPLEFT", 14, -92)
+	CraftFrame.bg1:SetPoint("BOTTOMRIGHT", -367, 4)
+	CraftFrame.bg1:SetFrameLevel(CraftFrame.bg1:GetFrameLevel() - 1)
+
+	CraftFrame.bg2 = CreateFrame("Frame", nil, CraftFrame)
+	E:SetTemplate(CraftFrame.bg2, "Transparent")
+	CraftFrame.bg2:SetPoint("TOPLEFT", CraftFrame.bg1, "TOPRIGHT", 3, 0)
+	CraftFrame.bg2:SetPoint("BOTTOMRIGHT", CraftFrame, "BOTTOMRIGHT", -38, 4)
+	CraftFrame.bg2:SetFrameLevel(CraftFrame.bg2:GetFrameLevel() - 1)
 
 	E:StripTextures(CraftRankFrameBorder)
-	E:Size(CraftRankFrame, 322, 16)
-	CraftRankFrame:ClearAllPoints()
-	E:Point(CraftRankFrame, "TOP", -10, -45)
+
+	E:StripTextures(CraftRankFrame)
 	E:CreateBackdrop(CraftRankFrame)
+	E:Size(CraftRankFrame, 420, 18)
+	CraftRankFrame:ClearAllPoints()
+	CraftRankFrame:SetPoint("TOP", -10, -38)
 	CraftRankFrame:SetStatusBarTexture(E["media"].normTex)
-	CraftRankFrame:SetStatusBarColor(0.13, 0.35, 0.80)
 	E:RegisterStatusBar(CraftRankFrame)
 
-	E:StripTextures(CraftExpandButtonFrame)
-	E:StripTextures(CraftDetailScrollChildFrame)
+	CraftRankFrameSkillName:Hide()
+	CraftRankFrameSkillRank:ClearAllPoints()
+	CraftRankFrameSkillRank:SetPoint("CENTER", CraftRankFrame, "CENTER", 58, 0)
 
 	E:StripTextures(CraftListScrollFrame)
-	S:HandleScrollBar(CraftListScrollFrameScrollBar)
+	E:Size(CraftListScrollFrame, 310, 405)
+	CraftListScrollFrame:ClearAllPoints()
+	CraftListScrollFrame:SetPoint("TOPLEFT", 17, -95)
 
 	E:StripTextures(CraftDetailScrollFrame)
+	E:Size(CraftDetailScrollFrame, 300, 381)
+	CraftDetailScrollFrame:ClearAllPoints()
+	CraftDetailScrollFrame:SetPoint("TOPRIGHT", CraftFrame, -60, -95)
+	CraftDetailScrollFrame.scrollBarHideable = nil
+
+	E:StripTextures(CraftDetailScrollChildFrame)
+	E:Size(CraftDetailScrollChildFrame, 300, 150)
+
+	S:HandleScrollBar(CraftListScrollFrameScrollBar)
 	S:HandleScrollBar(CraftDetailScrollFrameScrollBar)
 
-	E:StripTextures(CraftIcon)
-
-	S:HandleButton(CraftCreateButton)
+	CraftCancelButton:ClearAllPoints()
+	CraftCancelButton:SetPoint("TOPRIGHT", CraftDetailScrollFrame, "BOTTOMRIGHT", 19, -3)
 	S:HandleButton(CraftCancelButton)
 
+	CraftCreateButton:ClearAllPoints()
+	CraftCreateButton:SetPoint("TOPRIGHT", CraftCancelButton, "TOPLEFT", -3, 0)
+	S:HandleButton(CraftCreateButton)
+
+	E:StripTextures(CraftIcon)
+	E:SetTemplate(CraftIcon, "Default")
+	E:StyleButton(CraftIcon, nil, true)
+	E:Size(CraftIcon, 47)
+	CraftIcon:SetPoint("TOPLEFT", 2, -1)
+
+	CraftName:SetPoint("TOPLEFT", 55, 0)
+
+	CraftRequirements:SetTextColor(1, 0.80, 0.10)
+
 	S:HandleCloseButton(CraftFrameCloseButton)
+
+	E:StripTextures(CraftExpandButtonFrame)
+
+	CraftCollapseAllButton:SetPoint("LEFT", CraftExpandTabLeft, "RIGHT", -8, 5)
+	CraftCollapseAllButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	CraftCollapseAllButton.SetNormalTexture = E.noop
+	CraftCollapseAllButton:GetNormalTexture():SetPoint("LEFT", 3, 2)
+	E:Size(CraftCollapseAllButton:GetNormalTexture(), 15)
+
+	CraftCollapseAllButton:SetHighlightTexture("")
+	CraftCollapseAllButton.SetHighlightTexture = E.noop
+
+	CraftCollapseAllButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+	CraftCollapseAllButton.SetDisabledTexture = E.noop
+	CraftCollapseAllButton:GetDisabledTexture():SetPoint("LEFT", 3, 2)
+	E:Size(CraftCollapseAllButton:GetDisabledTexture(), 15)
+	CraftCollapseAllButton:GetDisabledTexture():SetTexCoord(0.045, 0.475, 0.085, 0.925)
+	CraftCollapseAllButton:GetDisabledTexture():SetDesaturated(true)
+
+	hooksecurefunc(CraftCollapseAllButton, "SetNormalTexture", function(self, texture)
+		if find(texture, "MinusButton") then
+			self:GetNormalTexture():SetTexCoord(0.545, 0.975, 0.085, 0.925)
+		else
+			self:GetNormalTexture():SetTexCoord(0.045, 0.475, 0.085, 0.925)
+		end
+	end)
+
+	for i = 9, 25 do
+		CreateFrame("Button", "Craft"..i, CraftFrame, "CraftButtonTemplate"):SetPoint("TOPLEFT", _G["Craft"..i - 1], "BOTTOMLEFT")
+	end
+
+	for i = 1, CRAFTS_DISPLAYED do
+		local button = _G["Craft"..i]
+		local highlight = _G["Craft"..i.."Highlight"]
+
+		button:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button.SetNormalTexture = E.noop
+		E:Size(button:GetNormalTexture(), 14)
+		button:GetNormalTexture():SetPoint("LEFT", 4, 1)
+
+		highlight:SetTexture("")
+		highlight.SetTexture = E.noop
+
+		hooksecurefunc(button, "SetNormalTexture", function(self, texture)
+			if find(texture, "MinusButton") then
+				self:GetNormalTexture():SetTexCoord(0.545, 0.975, 0.085, 0.925)
+			elseif find(texture, "PlusButton") then
+				self:GetNormalTexture():SetTexCoord(0.045, 0.475, 0.085, 0.925)
+			else
+				self:GetNormalTexture():SetTexCoord(0, 0, 0, 0)
+			end
+		end)
+	end
 
 	for i = 1, MAX_CRAFT_REAGENTS do
 		local reagent = _G["CraftReagent"..i]
 		local icon = _G["CraftReagent"..i.."IconTexture"]
 		local count = _G["CraftReagent"..i.."Count"]
+		local name = _G["CraftReagent"..i.."Name"]
 		local nameFrame = _G["CraftReagent"..i.."NameFrame"]
+
+		E:SetTemplate(reagent, "Default")
+		E:StyleButton(reagent, nil, true)
+		E:Size(reagent, 143, 40)
+
+		icon.backdrop = CreateFrame("Frame", nil, reagent)
+		E:SetTemplate(icon.backdrop, "Default")
+		icon.backdrop:SetPoint("TOPLEFT", icon, -1, 1)
+		icon.backdrop:SetPoint("BOTTOMRIGHT", icon, 1, -1)
 
 		icon:SetTexCoord(unpack(E.TexCoords))
 		icon:SetDrawLayer("OVERLAY")
-
-		icon.backdrop = CreateFrame("Frame", nil, reagent)
-		icon.backdrop:SetFrameLevel(reagent:GetFrameLevel() - 1)
-		E:SetTemplate(icon.backdrop, "Default")
-		E:SetOutside(icon.backdrop, icon)
-
+		E:Size(icon, E.PixelMode and 38 or 32)
+		icon:SetPoint("TOPLEFT", E.PixelMode and 1 or 4, -(E.PixelMode and 1 or 4))
 		icon:SetParent(icon.backdrop)
+
 		count:SetParent(icon.backdrop)
 		count:SetDrawLayer("OVERLAY")
+
+		name:SetPoint("LEFT", nameFrame, "LEFT", 20, 0)
 
 		E:Kill(nameFrame)
 	end
 
+	CraftReagent1:SetPoint("TOPLEFT", CraftReagentLabel, "BOTTOMLEFT", -3, -3)
+	CraftReagent2:SetPoint("LEFT", CraftReagent1, "RIGHT", 3, 0)
+	CraftReagent4:SetPoint("LEFT", CraftReagent3, "RIGHT", 3, 0)
+	CraftReagent6:SetPoint("LEFT", CraftReagent5, "RIGHT", 3, 0)
+	CraftReagent8:SetPoint("LEFT", CraftReagent7, "RIGHT", 3, 0)
+
 	hooksecurefunc("CraftFrame_SetSelection", function(id)
-		E:SetTemplate(CraftIcon, "Default", true)
-		E:StyleButton(CraftIcon, nil, true)
 		if CraftIcon:GetNormalTexture() then
+			CraftReagentLabel:SetAlpha(1)
+			CraftIcon:SetAlpha(1)
 			CraftIcon:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 			E:SetInside(CraftIcon:GetNormalTexture())
+		else
+			CraftReagentLabel:SetAlpha(0)
+			CraftIcon:SetAlpha(0)
 		end
-
-		CraftIcon:SetWidth(40)
-		CraftIcon:SetHeight(40)
-		CraftIcon:SetPoint("TOPLEFT", 4, -3)
-
-		CraftRequirements:SetTextColor(1, 0.80, 0.10)
 
 		local skillLink = GetCraftItemLink(id)
 		if skillLink then
@@ -95,68 +203,27 @@ local function LoadSkin()
 
 		local numReagents = GetCraftNumReagents(id)
 		for i = 1, numReagents, 1 do
+			local _, _, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
+			local reagentLink = GetCraftReagentItemLink(id, i)
+			local reagent = _G["CraftReagent"..i]
 			local icon = _G["CraftReagent"..i.."IconTexture"]
 			local name = _G["CraftReagent"..i.."Name"]
 
-			local _, _, reagentCount, playerReagentCount = GetCraftReagentInfo(id, i)
-			local reagentLink = GetCraftReagentItemLink(id, i)
 			if reagentLink then
 				local _, _, quality = GetItemInfo(match(reagentLink, "item:(%d+)"))
 				if quality then
 					icon.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
+					reagent:SetBackdropBorderColor(GetItemQualityColor(quality))
 					if playerReagentCount < reagentCount then
 						name:SetTextColor(0.5, 0.5, 0.5)
 					else
 						name:SetTextColor(GetItemQualityColor(quality))
 					end
 				else
+					reagent:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 					icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 				end
 			end
-		end
-	end)
-
-	for i = 1, CRAFTS_DISPLAYED do
-		local craftButton = _G["Craft"..i]
-		craftButton:SetNormalTexture("")
-		craftButton.SetNormalTexture = E.noop
-
-		_G["Craft"..i.."Highlight"]:SetTexture("")
-		_G["Craft"..i.."Highlight"].SetTexture = E.noop
-
-		craftButton.Text = craftButton:CreateFontString(nil, "OVERLAY")
-		E:FontTemplate(craftButton.Text, nil, 22)
-		craftButton.Text:SetPoint("LEFT", 3, 0)
-		craftButton.Text:SetText("+")
-
-		hooksecurefunc(craftButton, "SetNormalTexture", function(self, texture)
-			if find(texture, "MinusButton") then
-				self.Text:SetText("-")
-			elseif find(texture, "PlusButton") then
-				self.Text:SetText("+")
-			else
-				self.Text:SetText("")
-			end
-		end)
-	end
-
-	CraftCollapseAllButton:SetNormalTexture("")
-	CraftCollapseAllButton.SetNormalTexture = E.noop
-	CraftCollapseAllButton:SetHighlightTexture("")
-	CraftCollapseAllButton.SetHighlightTexture = E.noop
-	CraftCollapseAllButton:SetDisabledTexture("")
-	CraftCollapseAllButton.SetDisabledTexture = E.noop
-
-	CraftCollapseAllButton.Text = CraftCollapseAllButton:CreateFontString(nil, "OVERLAY")
-	E:FontTemplate(CraftCollapseAllButton.Text, nil, 22)
-	CraftCollapseAllButton.Text:SetPoint("LEFT", 3, 0)
-	CraftCollapseAllButton.Text:SetText("+")
-
-	hooksecurefunc(CraftCollapseAllButton, "SetNormalTexture", function(self, texture)
-		if find(texture, "MinusButton") then
-			self.Text:SetText("-")
-		else
-			self.Text:SetText("+")
 		end
 	end)
 end

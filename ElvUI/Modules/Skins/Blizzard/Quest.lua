@@ -251,6 +251,8 @@ local function LoadSkin()
 
 	QuestLogTimerText:SetTextColor(1, 1, 1)
 
+	UIPanelWindows["QuestLogFrame"] = {area = "doublewide", pushable = 0, whileDead = 1}
+
 	E:CreateBackdrop(QuestFrame, "Transparent")
 	QuestFrame.backdrop:SetPoint("TOPLEFT", 15, -11)
 	QuestFrame.backdrop:SetPoint("BOTTOMRIGHT", -20, 0)
