@@ -469,8 +469,8 @@ local function generateName(unit, ...)
 	local name = "oUF_" .. gsub(style, gsub("^oUF_?", ""), gsub("[^%a%d_]+", ""))
 
 	local raid, party, groupFilter
-	for i = 1, getn(arg), 2 do
-		local att, val = select(i, unpack(arg))
+	for i = 1, arg.n, 2 do
+		local att, val = arg[i], arg[i+1]
 		if(att == "showRaid") then
 			raid = true
 		elseif(att == "showParty") then
@@ -596,8 +596,8 @@ do
 		header.GetAttribute = getAttribute
 
 		--header:SetAttribute("template", "SecureUnitButtonTemplate")
-		for i = 1, getn(arg), 2 do
-			local att, val = select(i, unpack(arg))
+		for i = 1, arg.n, 2 do
+			local att, val = arg[i], arg[i+1]
 			if(not att) then break end
 
 			header:SetAttribute(att, val)
