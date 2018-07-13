@@ -5,8 +5,7 @@ function Private.argcheck(value, num, ...)
 	assert(type(num) == 'number', "Bad argument #2 to 'argcheck' (number expected, got " .. type(num) .. ')')
 
 	for i = 1, arg.n do
-		-- if(type(value) == arg[i]) then return end
-		if(type(value) == select(i, unpack(arg))) then return end
+		if(type(value) == arg[i]) then return end
 	end
 
 	local types = strjoin(', ', unpack(arg))

@@ -36,41 +36,6 @@ local function enableTargetUpdate(object)
 end
 Private.enableTargetUpdate = enableTargetUpdate
 
-local function updateActiveUnit(self, event, unit)
-	return true
-end
-
-local function iterateChildren(...)
-	for i = 1, getn(arg) do
-		local obj = arg[i]
-
-		if(type(obj) == "table" and obj.isChild) then
-			updateActiveUnit(obj, "iterateChildren")
-		end
-	end
-end
-
-local function onAttributeChanged(self, name, value)
-	if(name == "unit" and value) then
-		if(self.hasChildren) then
-			iterateChildren(self:GetChildren())
-		end
-
-		if(not self.onlyProcessChildren) then
-			updateActiveUnit(self, "OnAttributeChanged")
-		end
-
-		if(self.unit and self.unit == value) then
-			return
-		else
-			if(self.hasChildren) then
-				iterateChildren(self:GetChildren())
-			end
-		end
-
-	end
-end
-
 local frame_metatable = {
 	__index = CreateFrame("Button")
 }
@@ -278,7 +243,7 @@ local function onShow(self)
 end
 
 local function initObject(unit, style, styleFunc, header, ...)
-	local num = getn(arg)
+	local num = arg.n
 	for i = 1, num do
 		local object = arg[i]
 		local objectUnit = object.guessUnit or unit
@@ -452,8 +417,8 @@ do
 	function getCondition(...)
 		local cond = ""
 
-		for i = 1, getn(arg) do
-			local short = select(i, unpack(arg))
+		for i = 1, arg.n do
+			local short = arg[i]
 
 			local condition = conditions[short]
 			if(condition) then

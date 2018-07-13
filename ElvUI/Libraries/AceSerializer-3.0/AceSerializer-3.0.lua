@@ -117,8 +117,7 @@ function AceSerializer:Serialize(...)
 	local nres = 1
 
 	for i = 1, arg.n do
-		local v = select(i, unpack(arg))
-		nres = SerializeValue(v, serializeTbl, nres)
+		nres = SerializeValue(arg[i], serializeTbl, nres)
 	end
 
 	serializeTbl[nres+1] = "^^"	-- "^^" = End of serialized data

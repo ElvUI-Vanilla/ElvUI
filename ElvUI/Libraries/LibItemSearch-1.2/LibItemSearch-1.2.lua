@@ -14,6 +14,7 @@ end
 
 local pairs, select, tonumber = pairs, select, tonumber
 local find, gsub, match, lower = string.find, string.gsub, string.match, string.lower
+local getn = table.getn
 
 local GetItemInfo = GetItemInfo
 

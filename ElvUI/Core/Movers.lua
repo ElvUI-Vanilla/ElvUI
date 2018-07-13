@@ -338,9 +338,7 @@ function E:CreateMover(parent, name, text, overlay, snapoffset, postdrag, moverT
 		E.CreatedMovers[name]["shouldDisable"] = shouldDisable
 
 		E.CreatedMovers[name]["type"] = {}
-		local types = {split(",", moverTypes)}
-		for i = 1, getn(types) do
-			local moverType = types[i]
+		for _, moverType in {split(",", moverTypes)} do
 			E.CreatedMovers[name]["type"][moverType] = true
 		end
 	end

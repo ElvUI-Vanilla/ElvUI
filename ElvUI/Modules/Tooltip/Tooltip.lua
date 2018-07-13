@@ -5,7 +5,7 @@ local TT = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local twipe, tinsert, tconcat = table.wipe, table.insert, table.concat
+local getn, twipe, tinsert, tconcat = table.getn, table.wipe, table.insert, table.concat
 local floor = math.floor
 local find, format, match = string.find, string.format, string.match
 --WoW API / Variables

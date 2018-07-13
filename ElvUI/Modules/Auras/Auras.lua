@@ -9,7 +9,7 @@ local _G = _G
 local unpack, select, pairs, ipairs = unpack, select, pairs, ipairs
 local floor, min, max, huge = math.floor, math.min, math.max, math.huge
 local format = string.format
-local wipe, tinsert, tsort, tremove = table.wipe, table.insert, table.sort, table.remove
+local getn, wipe, tinsert, tsort, tremove = table.getn, table.wipe, table.insert, table.sort, table.remove
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local GetInventoryItemQuality = GetInventoryItemQuality

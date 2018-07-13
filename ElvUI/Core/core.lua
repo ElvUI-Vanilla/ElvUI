@@ -931,7 +931,7 @@ function E:RegisterModule(name, loadFunc)
 
 			--Add module name to registry
 			self.ModuleCallbacks[name] = true
-			self.ModuleCallbacks["CallPriority"][getn(self.ModuleCallbacks["CallPriority"]) + 1] = name
+			tinsert(self.ModuleCallbacks["CallPriority"], name)
 
 			--Register loadFunc to be called when event is fired
 			E:RegisterCallback(name, loadFunc, E:GetModule(name))
@@ -941,7 +941,7 @@ function E:RegisterModule(name, loadFunc)
 		if self.initialized then
 			self:GetModule(name):Initialize()
 		else
-			self["RegisteredModules"][getn(self["RegisteredModules"]) + 1] = name
+			tinsert(self["RegisteredModules"], name)
 		end
 	end
 end
@@ -957,13 +957,13 @@ function E:RegisterInitialModule(name, loadFunc)
 
 		--Add module name to registry
 		self.InitialModuleCallbacks[name] = true
-		self.InitialModuleCallbacks["CallPriority"][getn(self.InitialModuleCallbacks["CallPriority"]) + 1] = name
+		tinsert(self.InitialModuleCallbacks["CallPriority"], name)
 
 		--Register loadFunc to be called when event is fired
 		E:RegisterCallback(name, loadFunc, E:GetModule(name))
 	--Old deprecated initialize method
 	else
-		self["RegisteredInitialModules"][getn(self["RegisteredInitialModules"]) + 1] = name
+		tinsert(self["RegisteredInitialModules"], name)
 	end
 end
 

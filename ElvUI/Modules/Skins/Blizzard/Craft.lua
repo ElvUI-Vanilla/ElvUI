@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(ElvUI) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local S = E:GetModule("Skins")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions

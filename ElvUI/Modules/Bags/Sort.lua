@@ -5,7 +5,7 @@ local Search = LibStub("LibItemSearch-1.2");
 --Cache global variables
 --Lua functions
 local ipairs, pairs, pcall, tonumber, select, unpack = ipairs, pairs, pcall, tonumber, select, unpack
-local tinsert, tremove, tsort, twipe = table.insert, table.remove, table.sort, table.wipe
+local getn, tinsert, tremove, tsort, twipe = table.getn, table.insert, table.remove, table.sort, table.wipe
 local floor, mod = math.floor, math.mod
 local band = bit.band
 local match, gmatch, find = string.match, string.gmatch, string.find

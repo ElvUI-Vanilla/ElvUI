@@ -535,7 +535,7 @@ function S:AddCallbackForAddon(addonName, eventName, loadFunc, forceLoad, bypass
 	else
 		--Insert eventName in this addons' registry
 		self.addonCallbacks[addonName][eventName] = true
-		self.addonCallbacks[addonName]["CallPriority"][getn(self.addonCallbacks[addonName]["CallPriority"]) + 1] = eventName
+		tinsert(self.addonCallbacks[addonName]["CallPriority"], eventName)
 	end
 end
 
@@ -558,7 +558,7 @@ function S:AddCallback(eventName, loadFunc)
 
 	--Add event name to registry
 	self.nonAddonCallbacks[eventName] = true
-	self.nonAddonCallbacks["CallPriority"][getn(self.nonAddonCallbacks["CallPriority"]) + 1] = eventName
+	tinsert(self.nonAddonCallbacks["CallPriority"], eventName)
 
 	--Register loadFunc to be called when event is fired
 	E.RegisterCallback(E, eventName, loadFunc)
