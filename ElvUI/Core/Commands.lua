@@ -95,33 +95,26 @@ function E:BGStats()
 	E:Print(L["Battleground datatexts will now show again if you are inside a battleground."])
 end
 
--- Set up a private editbox to handle macro execution
 local editbox = CreateFrame("Editbox", "MacroEditBox")
-local line
-editbox:RegisterEvent("EXECUTE_CHAT_LINE")
-editbox:SetScript("OnEvent", function(self, event)
-		if event == "EXECUTE_CHAT_LINE" then
-			local defaulteditbox = pcall(ChatFrameEditBox)
-			self:SetText(line)
-			ChatEdit_SendText(self)
-		end
-	end
-)
 editbox:Hide()
 
-local function OnCallback()
-	MacroEditBox:GetScript("OnEvent")(MacroEditBox, "EXECUTE_CHAT_LINE")
+local function OnCallback(command)
+	local defaulteditbox = ChatFrameEditBox
+	MacroEditBox.chatType = defaulteditbox.chatType
+	MacroEditBox.tellTarget = defaulteditbox.tellTarget
+	MacroEditBox.channelTarget = defaulteditbox.channelTarget
+	MacroEditBox:SetText(command)
+	ChatEdit_SendText(MacroEditBox)
 end
 
 function E:DelayScriptCall(msg)
 	local secs, command = match(msg, "^(%S+)%s+(.*)$")
-	line = command
 	secs = tonumber(secs)
 	if (not secs) or (len(command) == 0) then
 		self:Print("usage: /in <seconds> <command>")
 		self:Print("example: /in 1.5 /say hi")
 	else
-		E:ScheduleTimer(OnCallback, secs)
+		E:ScheduleTimer(OnCallback, secs, 1, command)
 	end
 end
 
