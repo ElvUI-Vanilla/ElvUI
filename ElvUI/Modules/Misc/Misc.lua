@@ -118,6 +118,7 @@ function M:PVPMessageEnhancement()
 	local _, instanceType = IsInInstance()
 	if instanceType == "pvp" then
 		RaidNotice_AddMessage(RaidBossEmoteFrame, arg1, ChatTypeInfo["RAID_BOSS_EMOTE"])
+	--	RaidNotice_AddMessage(RaidBossEmoteFrame, arg1, ChatTypeInfo["RAID_BOSS_EMOTE"])
 	end
 end
 
