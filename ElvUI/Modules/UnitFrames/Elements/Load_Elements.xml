@@ -12,6 +12,7 @@
 	<Script file="PvPIndicator.lua"/>
 	<Script file="RaidIcon.lua"/>
 	<Script file="RaidRoleIcons.lua"/>
+	<Script file="Range.lua"/>
 	<Script file="RestingIndicator.lua"/>
 	<Script file="FrameGlow.lua"/>
 </Ui>

@@ -31,6 +31,7 @@ function UF:Construct_PartyFrames()
 	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 
 	self.GPS = UF:Construct_GPS(self)
+	self.Range = UF:Construct_Range(self)
 	self.unitframeType = "party"
 
 	UF:Update_StatusBars()
@@ -115,6 +116,8 @@ function UF:Update_PartyFrames(frame, db)
 	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidRoleIcons(frame)
+
+	UF:Configure_Range(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

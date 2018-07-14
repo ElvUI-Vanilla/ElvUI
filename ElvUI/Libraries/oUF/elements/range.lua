@@ -31,7 +31,8 @@ local oUF = ns.oUF
 local _FRAMES = {}
 local OnRangeFrame
 
-local UnitInRange, UnitIsConnected = UnitInRange, UnitIsConnected
+local getn, tinsert, tremove = table.getn, table.insert, table.remove
+local CheckInteractDistance, UnitIsConnected = CheckInteractDistance, UnitIsConnected
 
 local function Update(self, event)
 	local element = self.Range
@@ -49,7 +50,7 @@ local function Update(self, event)
 	local inRange
 	local connected = UnitIsConnected(unit)
 	if(connected) then
-		inRange = UnitInRange(unit)
+		inRange = CheckInteractDistance(unit, 4)
 		if(not inRange) then
 			self:SetAlpha(element.outsideAlpha)
 		else
@@ -79,13 +80,13 @@ local function Path(self, ...)
 	* self  - the parent object
 	* event - the event triggering the update (string)
 	--]]
-	return (self.Range.Override or Update) (self, ...)
+	return (self.Range.Override or Update) (self, unpack(arg))
 end
 
 -- Internal updating method
 local timer = 0
-local function OnRangeUpdate(_, elapsed)
-	timer = timer + elapsed
+local function OnRangeUpdate()
+	timer = timer + arg1
 
 	if(timer >= .20) then
 		for _, object in next, _FRAMES do
@@ -110,7 +111,7 @@ local function Enable(self)
 			OnRangeFrame:SetScript('OnUpdate', OnRangeUpdate)
 		end
 
-		table.insert(_FRAMES, self)
+		tinsert(_FRAMES, self)
 		OnRangeFrame:Show()
 
 		return true
@@ -122,13 +123,13 @@ local function Disable(self)
 	if(element) then
 		for index, frame in next, _FRAMES do
 			if(frame == self) then
-				table.remove(_FRAMES, index)
+				tremove(_FRAMES, index)
 				break
 			end
 		end
 		self:SetAlpha(element.insideAlpha)
 
-		if(#_FRAMES == 0) then
+		if(getn(_FRAMES) == 0) then
 			OnRangeFrame:Hide()
 		end
 	end
