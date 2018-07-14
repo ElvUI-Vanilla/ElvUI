@@ -97,11 +97,13 @@ if locale == "koKR" then
 elseif locale == "zhCN" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhCN
 --
-	SML_MT_font["伤害数字"]		= [[Fonts\FZLBJW.ttf]]
-	SML_MT_font["默认"]			= [[Fonts\FZXHJW.ttf]]
-	SML_MT_font["聊天"]			= [[Fonts\FZXHLJW.ttf]]
+	SML_MT_font["BeiWeiKaiShu"]	= [[Fonts\FZBWJW.ttf]]
+	SML_MT_font["JianZhi"]		= [[Fonts\FZJZJW.ttf]]
+	SML_MT_font["LiBian"]		= [[Fonts\FZLBJW.ttf]]
+	SML_MT_font["XiHeil"]		= [[Fonts\FZXHJW.ttf]]
+	SML_MT_font["XiHeil2"]		= [[Fonts\FZXHLJW.ttf]]
 --
-	lib.DefaultMedia["font"] = "默认" -- someone from zhCN please adjust if needed
+	lib.DefaultMedia["font"] = "XiHeil" -- someone from zhCN please adjust if needed
 --
 elseif locale == "zhTW" then
 	LOCALE_MASK = lib.LOCALE_BIT_zhTW
