@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local TT = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0");
-local LIP = LibStub:GetLibrary("ItemPrice-1.1")
+local LIP = LibStub:GetLibrary("ItemPrice-1.1");
 
 --Cache global variables
 --Lua functions
@@ -287,8 +287,6 @@ function TT:SetPrice(tt, id, count)
 	if price and price > 0 then
 		tt:AddDoubleLine(SALE_PRICE_COLON, E:FormatMoney(count and price * count or price, "BLIZZARD", false), nil, nil, nil, 1, 1, 1)
 	end
-
-	if tt:IsShown() then tt:Show() end
 end
 
 function TT:SetAction(tt, id)

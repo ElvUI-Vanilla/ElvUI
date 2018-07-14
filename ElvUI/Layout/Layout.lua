@@ -352,16 +352,16 @@ end
 
 function LO:CreateMinimapPanels()
 	local lminipanel = CreateFrame("Frame", "LeftMiniPanel", Minimap.backdrop)
-	lminipanel:SetWidth(E.db.general.minimap.size/2 + (E.PixelMode and 1 or 3))
+	lminipanel:SetWidth(E.db.general.minimap.size/2 + 1.5)
 	lminipanel:SetHeight(PANEL_HEIGHT)
-	lminipanel:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", -E.Border, (E.PixelMode and 0 or -3))
+	lminipanel:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", -E.Border - 1, (E.PixelMode and 0 or -3) + 1)
 	E:SetTemplate(lminipanel, E.db.datatexts.panelTransparency and "Transparent" or "Default", true)
 	E:GetModule("DataTexts"):RegisterPanel(lminipanel, 1, "ANCHOR_BOTTOMLEFT", lminipanel:GetWidth() * 2, -(E.PixelMode and 1 or 3))
 
 	local rminipanel = CreateFrame("Frame", "RightMiniPanel", Minimap.backdrop)
-	rminipanel:SetWidth(E.db.general.minimap.size/2 + (E.PixelMode and 1 or 3))
+	rminipanel:SetWidth(E.db.general.minimap.size/2 + 1.5)
 	rminipanel:SetHeight(PANEL_HEIGHT)
-	rminipanel:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", E.Border, (E.PixelMode and 0 or -3))
+	rminipanel:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", E.Border - 1, (E.PixelMode and 0 or -3) + 1)
 	E:SetTemplate(rminipanel, E.db.datatexts.panelTransparency and "Transparent" or "Default", true)
 	E:GetModule("DataTexts"):RegisterPanel(rminipanel, 1, "ANCHOR_BOTTOM", 0, -(E.PixelMode and 1 or 3))
 

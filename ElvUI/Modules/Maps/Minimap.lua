@@ -118,7 +118,9 @@ function M:UpdateSettings()
 	if LeftMiniPanel and RightMiniPanel then
 		if E.db.datatexts.minimapPanels and E.private.general.minimap.enable then
 			LeftMiniPanel:Show()
+			LeftMiniPanel:SetWidth(E.db.general.minimap.size/2 + 1.5)
 			RightMiniPanel:Show()
+			RightMiniPanel:SetWidth(E.db.general.minimap.size/2 + 1.5)
 		else
 			LeftMiniPanel:Hide()
 			RightMiniPanel:Hide()
@@ -262,7 +264,8 @@ function M:Initialize()
 
 	Minimap:SetMaskTexture("Interface\\ChatFrame\\ChatFrameBackground")
 	Minimap.backdrop = CreateFrame("Frame", nil, UIParent)
-	E:SetOutside(Minimap.backdrop, Minimap)
+	Minimap.backdrop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -E.Border - 1, E.Border + 1)
+	Minimap.backdrop:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", E.Border - 1, -E.Border + 1)
 	Minimap.backdrop:SetFrameStrata(Minimap:GetFrameStrata())
 	Minimap.backdrop:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 	E:SetTemplate(Minimap.backdrop, "Default")
