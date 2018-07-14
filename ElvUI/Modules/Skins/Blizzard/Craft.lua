@@ -7,10 +7,12 @@ local _G = _G
 local unpack = unpack
 local find, match, split = string.find, string.match, string.split
 --WoW API / Variables
+local CreateFrame = CreateFrame
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
-local GetCraftReagentInfo = GetCraftReagentInfo
 local GetCraftItemLink = GetCraftItemLink
+local GetCraftReagentInfo = GetCraftReagentInfo
+local GetCraftReagentItemLink = GetCraftReagentItemLink
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -50,6 +52,7 @@ local function LoadSkin()
 
 	CraftRankFrameSkillName:Hide()
 	CraftRankFrameSkillRank:ClearAllPoints()
+	CraftRankFrameSkillRank:SetParent(CraftRankFrame)
 	CraftRankFrameSkillRank:SetPoint("CENTER", CraftRankFrame, "CENTER", 58, 0)
 
 	E:StripTextures(CraftListScrollFrame)
@@ -61,7 +64,6 @@ local function LoadSkin()
 	E:Size(CraftDetailScrollFrame, 300, 381)
 	CraftDetailScrollFrame:ClearAllPoints()
 	CraftDetailScrollFrame:SetPoint("TOPRIGHT", CraftFrame, -60, -95)
-	CraftDetailScrollFrame.scrollBarHideable = nil
 
 	E:StripTextures(CraftDetailScrollChildFrame)
 	E:Size(CraftDetailScrollChildFrame, 300, 150)
@@ -81,9 +83,9 @@ local function LoadSkin()
 	E:SetTemplate(CraftIcon, "Default")
 	E:StyleButton(CraftIcon, nil, true)
 	E:Size(CraftIcon, 47)
-	CraftIcon:SetPoint("TOPLEFT", 2, -1)
+	CraftIcon:SetPoint("TOPLEFT", 1, -3)
 
-	CraftName:SetPoint("TOPLEFT", 55, 0)
+	CraftName:SetPoint("TOPLEFT", 55, -3)
 
 	CraftRequirements:SetTextColor(1, 0.80, 0.10)
 
@@ -178,7 +180,13 @@ local function LoadSkin()
 	CraftReagent6:SetPoint("LEFT", CraftReagent5, "RIGHT", 3, 0)
 	CraftReagent8:SetPoint("LEFT", CraftReagent7, "RIGHT", 3, 0)
 
+	hooksecurefunc("CraftFrame_Update", function()
+		CraftRankFrame:SetStatusBarColor(0.13, 0.28, 0.85)
+	end)
+
 	hooksecurefunc("CraftFrame_SetSelection", function(id)
+		CraftReagentLabel:SetPoint("TOPLEFT", CraftDescription, "BOTTOMLEFT", 0, -10)
+
 		if CraftIcon:GetNormalTexture() then
 			CraftReagentLabel:SetAlpha(1)
 			CraftIcon:SetAlpha(1)

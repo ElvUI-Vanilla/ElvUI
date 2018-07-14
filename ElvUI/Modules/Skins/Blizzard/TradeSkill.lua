@@ -7,6 +7,7 @@ local _G = _G
 local unpack = unpack
 local find, match, split = string.find, string.match, string.split
 --WoW API / Variables
+local CreateFrame = CreateFrame
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local GetTradeSkillItemLink = GetTradeSkillItemLink
@@ -51,6 +52,7 @@ local function LoadSkin()
 
 	TradeSkillRankFrameSkillName:Hide()
 	TradeSkillRankFrameSkillRank:ClearAllPoints()
+	TradeSkillRankFrameSkillRank:SetParent(TradeSkillRankFrame)
 	TradeSkillRankFrameSkillRank:SetPoint("CENTER", TradeSkillRankFrame, "CENTER", 58, 0)
 
 	E:StripTextures(TradeSkillListScrollFrame)
@@ -102,9 +104,9 @@ local function LoadSkin()
 	E:SetTemplate(TradeSkillSkillIcon, "Default")
 	E:StyleButton(TradeSkillSkillIcon, nil, true)
 	E:Size(TradeSkillSkillIcon, 47)
-	TradeSkillSkillIcon:SetPoint("TOPLEFT", 2, -1)
+	TradeSkillSkillIcon:SetPoint("TOPLEFT", 1, -3)
 
-	TradeSkillSkillName:SetPoint("TOPLEFT", 55, 0)
+	TradeSkillSkillName:SetPoint("TOPLEFT", 55, -3)
 
 	TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
 
@@ -192,6 +194,9 @@ local function LoadSkin()
 
 		E:Kill(nameFrame)
 	end
+
+	TradeSkillReagentLabel:ClearAllPoints()
+	TradeSkillReagentLabel:SetPoint("TOPLEFT", TradeSkillSkillIcon, "BOTTOMLEFT", 5, -10)
 
 	TradeSkillReagent1:SetPoint("TOPLEFT", TradeSkillReagentLabel, "BOTTOMLEFT", -3, -3)
 	TradeSkillReagent2:SetPoint("LEFT", TradeSkillReagent1, "RIGHT", 3, 0)
