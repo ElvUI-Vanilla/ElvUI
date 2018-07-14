@@ -47,6 +47,7 @@ local KEYRING_CONTAINER = KEYRING_CONTAINER
 local MAX_CONTAINER_ITEMS = MAX_CONTAINER_ITEMS
 local NUM_BAG_FRAMES = NUM_BAG_FRAMES
 local NUM_CONTAINER_FRAMES = NUM_CONTAINER_FRAMES
+local BINDING_NAME_TOGGLEKEYRING = BINDING_NAME_TOGGLEKEYRING
 local SEARCH = SEARCH
 
 local SEARCH_STRING = ""
@@ -973,7 +974,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.keyButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.keyButton:GetPushedTexture())
 		E:StyleButton(f.keyButton, nil, true)
-		f.keyButton.ttText = L["Toggle Key"]
+		f.keyButton.ttText = BINDING_NAME_TOGGLEKEYRING
 		f.keyButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.keyButton:SetScript("OnLeave", self.Tooltip_Hide)
 		f.keyButton:SetScript("OnClick", function() ToggleFrame(f.keyFrame) end)
