@@ -245,21 +245,6 @@ function TT:SetItemRef(link)
 	end
 end
 
-function TT:CheckBackdropColor()
-	if not GameTooltip:IsShown() then return end
-
-	local r, g, b = GameTooltip:GetBackdropColor()
-	if r and g and b then
-		r = E:Round(r, 1)
-		g = E:Round(g, 1)
-		b = E:Round(b, 1)
-		local red, green, blue = unpack(E.media.backdropfadecolor)
-		if r ~= red or g ~= green or b ~= blue then
-			GameTooltip:SetBackdropColor(red, green, blue, self.db.colorAlpha)
-		end
-	end
-end
-
 function TT:SetTooltipFonts()
 	local font = E.LSM:Fetch("font", E.db.tooltip.font)
 	local fontOutline = E.db.tooltip.fontOutline

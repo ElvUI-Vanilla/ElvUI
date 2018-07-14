@@ -42,10 +42,6 @@ local function LoadSkin()
 	GameTooltipStatusBar:ClearAllPoints()
 	E:Point(GameTooltipStatusBar, "TOPLEFT", GameTooltip, "BOTTOMLEFT", E.Border, -(E.Spacing * 3))
 	E:Point(GameTooltipStatusBar, "TOPRIGHT", GameTooltip, "BOTTOMRIGHT", -E.Border, -(E.Spacing * 3))
-
-	TT:SecureHookScript(GameTooltip, "OnSizeChanged", "CheckBackdropColor")
-	TT:SecureHookScript(GameTooltip, "OnUpdate", "CheckBackdropColor")
-	TT:RegisterEvent("CURSOR_UPDATE", "CheckBackdropColor")
 end
 
 S:AddCallback("SkinTooltip", LoadSkin)
