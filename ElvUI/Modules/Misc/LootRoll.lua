@@ -3,7 +3,7 @@ local M = E:GetModule("Misc");
 
 --Cache global variables
 --Lua functions
-local find = string.find
+local find, match = string.find, string.match
 local pairs, unpack, ipairs, next, tonumber = pairs, unpack, ipairs, next, tonumber
 local tinsert = table.insert
 --WoW API / Variables
@@ -12,7 +12,7 @@ local DressUpItemLink = DressUpItemLink
 local GetLootRollItemInfo = GetLootRollItemInfo
 local GetLootRollItemLink = GetLootRollItemLink
 local GetLootRollTimeLeft = GetLootRollTimeLeft
-local IsModifiedClick = IsModifiedClick
+local IsControlKeyDown = IsControlKeyDown
 local IsShiftKeyDown = IsShiftKeyDown
 local ResetCursor = ResetCursor
 local RollOnLoot = RollOnLoot
@@ -87,12 +87,13 @@ end
 
 local function SetItemTip(frame)
 	if not frame.link then return end
+
 	GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT")
-	GameTooltip:SetHyperlink(frame.link)
+	GameTooltip:SetHyperlink(match(frame.link, "item[%-?%d:]+"))
 	-- if IsShiftKeyDown() then
 	-- 	GameTooltip_ShowCompareItem()
 	-- end
-	if IsModifiedClick("DRESSUP") then
+	if IsControlKeyDown() then
 		ShowInspectCursor()
 	else
 		ResetCursor()
@@ -276,8 +277,8 @@ function M:START_LOOT_ROLL()
 	f.status:SetStatusBarColor(color.r, color.g, color.b, .7)
 	f.status.bg:SetTexture(color.r, color.g, color.b)
 
-	f.status:SetMinMaxValues(0, time)
-	f.status:SetValue(time)
+	f.status:SetMinMaxValues(0, arg2)
+	f.status:SetValue(arg2)
 
 	E:Point(f, "CENTER", WorldFrame, "CENTER")
 	f:Show()
