@@ -8,11 +8,10 @@ local pairs = pairs
 local format, join, upper = string.format, string.join, string.upper
 --WoW API / Variables
 local GetInventoryItemDurability = GetInventoryItemDurability
-local GetInventoryItemTexture = GetInventoryItemTexture
 local GetInventorySlotInfo = GetInventorySlotInfo
 local ToggleCharacter = ToggleCharacter
 
-local DURABILITY = "Durability"
+local DURABILITY = "Durability" -- Need add in locales
 
 local displayString = ""
 local tooltipString = "%d%%"
@@ -33,7 +32,7 @@ local slots = {
 	"HeadSlot"
 }
 
-local function OnEvent(self, t)
+local function OnEvent(self)
 	lastPanel = self
 	totalDurability = 100
 
@@ -42,8 +41,6 @@ local function OnEvent(self, t)
 		current, max = GetInventoryItemDurability(slot)
 
 		if current then
-			current, max = GetInventoryItemDurability(slot)
-
 			invDurability[value] = (current / max) * 100
 
 			if ((current / max) * 100) < totalDurability then
