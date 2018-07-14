@@ -10,7 +10,7 @@ local format, find, join, gsub = string.format, string.find, string.join, string
 local UnitIsAFK = UnitIsAFK
 local UnitIsDND = UnitIsDND
 local SendChatMessage = SendChatMessage
-local InviteUnit = InviteUnit
+local InviteByName = InviteByName
 local SetItemRef = SetItemRef
 local GetFriendInfo = GetFriendInfo
 local GetNumFriends = GetNumFriends
@@ -19,8 +19,11 @@ local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
 local ToggleFriendsFrame = ToggleFriendsFrame
 local L_EasyMenu = L_EasyMenu
-local AFK = AFK
-local DND = DND
+
+local AVAILABLE, CHAT_MSG_AFK, CHAT_MSG_DND, CHAT_MSG_WHISPER_INFORM = AVAILABLE, CHAT_MSG_AFK, CHAT_MSG_DND, CHAT_MSG_WHISPER_INFORM
+local ERR_FRIEND_ONLINE_SS, ERR_FRIEND_OFFLINE_S, FRIENDS, FRIENDS_LIST = ERR_FRIEND_ONLINE_SS, ERR_FRIEND_OFFLINE_S, FRIENDS, FRIENDS_LIST
+local GUILD_ONLINE_LABEL, OPTIONS_MENU, PARTY_INVITE, PLAYER_STATUS = GUILD_ONLINE_LABEL, OPTIONS_MENU, PARTY_INVITE, PLAYER_STATUS
+
 local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
 local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
@@ -45,35 +48,30 @@ end
 local menuFrame = CreateFrame("Frame", "FriendDatatextRightClickMenu", E.UIParent, "L_UIDropDownMenuTemplate")
 local menuList = {
 	{text = OPTIONS_MENU, isTitle = true, notCheckable = true},
-	{text = INVITE, hasArrow = true, notCheckable = true},
+	{text = PARTY_INVITE, hasArrow = true, notCheckable = true},
 	{text = CHAT_MSG_WHISPER_INFORM, hasArrow = true, notCheckable = true},
 	{text = PLAYER_STATUS, hasArrow = true, notCheckable = true,
 		menuList = {
-			{text = "|cff2BC226" .. AVAILABLE .. "|r", notCheckable = true, func = function() end},
-			{text = "|cffE7E716" .. CHAT_MSG_AFK .. "|r", notCheckable = true, func = function() end},
-			{text = "|cffFF0000" .. CHAT_MSG_DND .. "|r", notCheckable = true, func = function() end}
+			-- {text = "|cff2BC226" .. AVAILABLE .. "|r", notCheckable = true, func = function() end}, -- TODO
+			{text = "|cffE7E716" .. CHAT_MSG_AFK .. "|r", notCheckable = true, func = function() SendChatMessage("", "AFK") end},
+			{text = "|cffFF0000" .. CHAT_MSG_DND .. "|r", notCheckable = true, func = function() SendChatMessage("", "DND") end}
 		}
 	}
 }
 
-local function inviteClick(name)
+local function inviteClick(playerName)
 	menuFrame:Hide()
-
-	if(type(name) ~= "number") then
-		InviteUnit(name)
-	end
+	InviteByName(playerName)
 end
 
-local function whisperClick(name)
+local function whisperClick(playerName)
 	menuFrame:Hide()
-
-	SetItemRef("player:" .. name, format("|Hplayer:%1$s|h[%1$s]|h", name), "LeftButton")
+	SetItemRef("player:" .. playerName, format("|Hplayer:%1$s|h[%1$s]|h", playerName), "LeftButton")
 end
 
 local lastPanel
 local levelNameString = "|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r"
 local levelNameClassString = "|cff%02x%02x%02x%d|r %s%s"
-local worldOfWarcraftString = WORLD_OF_WARCRAFT
 local totalOnlineString = join("", GUILD_ONLINE_LABEL, ": %s/%s")
 local tthead = {r = 0.4, g = 0.78, b = 1}
 local activezone, inactivezone = {r = 0.3, g = 1.0, b = 0.3}, {r = 0.65, g = 0.65, b = 0.65}
@@ -91,43 +89,44 @@ end
 
 local function BuildFriendTable(total)
 	wipe(friendTable)
-	local name, level, class, area, connected, status, note
+	local name, level, class, area, online, status, note
 	for i = 1, total do
-		name, level, class, area, connected, status, note = GetFriendInfo(i)
+		name, level, class, area, online, status, note = GetFriendInfo(i)
 
 		if status == CHAT_FLAG_AFK then
-			status = "|cffFFFFFF[|r|cffFF0000" .. L["AFK"] .. "|r|cffFFFFFF]|r"
+			status = "|cffFFFFFF[|r|cfffaff00" .. CHAT_MSG_AFK .. "|r|cffFFFFFF]|r"
 		elseif status == CHAT_FLAG_DND then
-			status = "|cffFFFFFF[|r|cffFF0000" .. L["DND"] .. "|r|cffFFFFFF]|r"
+			status = "|cffFFFFFF[|r|cffff0000" .. CHAT_MSG_DND .. "|r|cffFFFFFF]|r"
 		end
 
-		if(connected) then
-			for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if(class == v) then class = k end end
-			for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if(class == v) then class = k end end
-			friendTable[i] = {name, level, class, area, connected, status, note}
+		if online then
+			for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
+			for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
+			friendTable[i] = {name, level, class, area, online, status, note}
 		end
 	end
 	sort(friendTable, SortAlphabeticName)
 end
 
-local function OnEvent(self, event, ...)
+local function OnEvent(self, event)
 	local _, onlineFriends = GetNumberFriends()
 
 	if event == "CHAT_MSG_SYSTEM" then
 		local message = arg1
 		if not (find(message, friendOnline) or find(message, friendOffline)) then return end
 	end
+
 	dataValid = false
 
-	self.text:SetText(format(displayString, L["Friends"], onlineFriends))
+	self.text:SetText(format(displayString, FRIENDS, onlineFriends))
 
 	lastPanel = self
 end
 
-local function OnClick(_, btn)
+local function OnClick()
 	DT.tooltip:Hide()
 
-	if btn == "RightButton" then
+	if arg1 == "RightButton" then
 		local menuCountWhispers = 0
 		local menuCountInvites = 0
 		local classc, levelc, info
@@ -138,7 +137,7 @@ local function OnClick(_, btn)
 		if getn(friendTable) > 0 then
 			for i = 1, getn(friendTable) do
 				info = friendTable[i]
-				if (info[5]) then
+				if info[5] then
 					menuCountInvites = menuCountInvites + 1
 					menuCountWhispers = menuCountWhispers + 1
 
@@ -168,16 +167,14 @@ local function OnEnter(self)
 	end
 
 	local zonec, classc, levelc, info
-	DT.tooltip:AddDoubleLine(L["Friends List"], format(totalOnlineString, onlineFriends, numberOfFriends), tthead.r, tthead.g, tthead.b, tthead.r, tthead.g, tthead.b)
+	DT.tooltip:AddDoubleLine(FRIENDS_LIST, format(totalOnlineString, onlineFriends, numberOfFriends), tthead.r, tthead.g, tthead.b, tthead.r, tthead.g, tthead.b)
 	if onlineFriends > 0 then
-		DT.tooltip:AddLine(" ")
-		DT.tooltip:AddLine(worldOfWarcraftString)
 		for i = 1, getn(friendTable) do
 			info = friendTable[i]
 			if info[5] then
-				if(GetRealZoneText() == info[4]) then zonec = activezone else zonec = inactivezone end
-				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
+				if GetRealZoneText() == info[4] then zonec = activezone else zonec = inactivezone end
 
+				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
 				classc = classc or GetQuestDifficultyColor(info[2])
 
 				DT.tooltip:AddDoubleLine(format(levelNameClassString, levelc.r*255,levelc.g*255,levelc.b*255, info[2], info[1], " " .. info[6]), info[4], classc.r,classc.g,classc.b, zonec.r,zonec.g,zonec.b)
@@ -197,4 +194,4 @@ local function ValueColorUpdate(hex)
 end
 E["valueColorUpdateFuncs"][ValueColorUpdate] = true
 
-DT:RegisterDatatext("Friends", {"PLAYER_LOGIN", "FRIENDLIST_UPDATE", "CHAT_MSG_SYSTEM"}, OnEvent, nil, OnClick, OnEnter, nil, L["Friends"])
+DT:RegisterDatatext("Friends", {"PLAYER_LOGIN", "FRIENDLIST_UPDATE", "CHAT_MSG_SYSTEM"}, OnEvent, nil, OnClick, OnEnter, nil, FRIENDS)
