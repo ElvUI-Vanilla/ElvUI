@@ -4,7 +4,7 @@ local DT = E:GetModule("DataTexts");
 --Cache global variables
 --Lua functions
 local _G = _G
-local pairs = pairs
+local pairs, ipairs = pairs, ipairs
 local format, join, upper = string.format, string.join, string.upper
 --WoW API / Variables
 local GetInventoryItemDurability = GetInventoryItemDurability
@@ -36,7 +36,7 @@ local function OnEvent(self)
 	lastPanel = self
 	totalDurability = 100
 
-	for _, value in pairs(slots) do
+	for _, value in ipairs(slots) do
 		local slot = GetInventorySlotInfo(value)
 		current, max = GetInventoryItemDurability(slot)
 
