@@ -26,7 +26,6 @@ local DURABILITY_TEMPLATE = gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%
 --Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
-local LBIBF = LibStub("LibBabble-ItemBagFamily-3.0"):GetLookupTable()
 
 CLASS_SORT_ORDER = {
 	"WARRIOR",
