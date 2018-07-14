@@ -266,24 +266,16 @@ function GetMapNameByID(id)
 	return mapByID[tonumber(id)]
 end
 
-local bagTypes = {
-	[LBIBF["Quiver"]] = 1,
-	[LBIBF["Ammo Pouch"]] = 2,
-	[LBIBF["Soul Bag"]] = 4,
-	[LBIBF["Herb Bag"]] = 8,
-	[LBIBF["Enchanting Bag"]] = 16,
-}
-
-local LBIBF2 = LibStub("LibBabble-ItemBagFamily-3.0").ItemFamily
+local LBIBF = LibStub("LibBabble-ItemBagFamily-3.0")
 function GetItemFamily(id)
 	if not id then return end
 	if type(id) == "table" or type(id) == "function" then return end
 
 	if type(id) == "string" then
-		id = match(id, "item:(%d+)")
+		id = tonumber(match(id, "item:(%d+)"))
 	end
 
-	return LBIBF2[id] or 0
+	return LBIBF.ItemFamily[id] or 0
 end
 
 function GetBagFamily(id)
@@ -291,11 +283,10 @@ function GetBagFamily(id)
 	if type(id) == "table" or type(id) == "function" then return end
 
 	if type(id) == "string" then
-		id = match(id, "item:(%d+)")
+		id = tonumber(match(id, "item:(%d+)"))
 	end
 
-	local _, _, _, _, _, itemType = GetItemInfo(id)
-	return bagTypes[itemType] or 0
+	return LBIBF.ItemBagFamily[id] or 0
 end
 
 local arrow
