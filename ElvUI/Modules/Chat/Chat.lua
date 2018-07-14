@@ -39,7 +39,6 @@ local hooksecurefunc = hooksecurefunc
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME
-local SELECTED_DOCK_FRAME = SELECTED_DOCK_FRAME
 
 local GlobalStrings = {
 	["AFK"] = CHAT_MSG_AFK,
@@ -80,7 +79,6 @@ CH.Keywords = {}
 
 local numScrollMessages
 local function ChatFrame_OnMouseScroll()
-	SELECTED_DOCK_FRAME = this
 	numScrollMessages = CH.db.numScrollMessages or 3
 	if CH.db.scrollDirection == "TOP" then
 		if arg1 < 0 then
@@ -109,7 +107,7 @@ local function ChatFrame_OnMouseScroll()
 					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, 1, this)
 			end
 		end
 	else
@@ -135,7 +133,7 @@ local function ChatFrame_OnMouseScroll()
 					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, 1, this)
 			end
 		end
 	end
@@ -497,10 +495,10 @@ local function UpdateChatTabColor(_, r, g, b)
 end
 E["valueColorUpdateFuncs"][UpdateChatTabColor] = true
 
-function CH:ScrollToBottom()
-	SELECTED_DOCK_FRAME:ScrollToBottom()
+function CH:ScrollToBottom(frame)
+	frame:ScrollToBottom()
 
-	self:CancelTimer(SELECTED_DOCK_FRAME.ScrollTimer, true)
+	self:CancelTimer(frame.ScrollTimer, true)
 end
 
 function CH:PrintURL(url)
