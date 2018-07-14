@@ -5,7 +5,7 @@ local DT = E:GetModule("DataTexts")
 --Lua functions
 local select, unpack = select, unpack
 local format, find, join, upper = string.format, string.find, string.join, string.upper
-local getn, sort, wipe = table.getn, table.sort, table.wipe
+local getn, tinsert, sort, wipe = table.getn, table.insert, table.sort, table.wipe
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local GetGuildInfo = GetGuildInfo
@@ -22,7 +22,8 @@ local IsShiftKeyDown = IsShiftKeyDown
 local L_EasyMenu = L_EasyMenu
 local SetItemRef = SetItemRef
 local ToggleFriendsFrame = ToggleFriendsFrame
-
+local LOCALIZED_CLASS_NAMES_MALE = LOCALIZED_CLASS_NAMES_MALE
+local LOCALIZED_CLASS_NAMES_FEMALE = LOCALIZED_CLASS_NAMES_FEMALE
 local CHAT_MSG_WHISPER_INFORM, GUILD, GUILD_MOTD, GUILD_ONLINE_LABEL, GUILD_RANK1_DESC = CHAT_MSG_WHISPER_INFORM, GUILD, GUILD_MOTD, GUILD_ONLINE_LABEL, GUILD_RANK1_DESC
 local LABEL_NOTE, OPTIONS_MENU, PARTY_INVITE = LABEL_NOTE, OPTIONS_MENU, PARTY_INVITE
 
@@ -75,7 +76,9 @@ local function BuildGuildTable()
 		if not name then break end
 
 		if online then
-			guildTable[getn(guildTable) + 1] = {name, rank, level, zone, note, officernote, online, upper(class), rankIndex}
+			for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do if class == v then class = k end end
+			for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do if class == v then class = k end end
+			tinsert(guildTable, {name, rank, level, zone, note, officernote, online, class, rankIndex})
 		end
 	end
 end
@@ -148,7 +151,7 @@ local function OnClick()
 		for i = 1, getn(guildTable) do
 			info = guildTable[i]
 			if info[7] and info[1] ~= E.myname then
-				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[8]], GetQuestDifficultyColor(info[3])
+				classc, levelc = (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[8]], GetQuestDifficultyColor(info[3])
 
 				menuCountInvites = menuCountInvites + 1
 				menuList[2].menuList[menuCountInvites] = {text = format(levelNameString, levelc.r*255,levelc.g*255,levelc.b*255, info[3], classc.r*255,classc.g*255,classc.b*255, info[1], ""), arg1 = info[1],notCheckable=true, func = inviteClick}

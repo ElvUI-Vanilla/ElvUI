@@ -129,24 +129,21 @@ local function OnClick()
 	if arg1 == "RightButton" then
 		local menuCountWhispers = 0
 		local menuCountInvites = 0
-		local classc, levelc, info
+		local classc, levelc
 
 		menuList[2].menuList = {}
 		menuList[3].menuList = {}
 
-		if getn(friendTable) > 0 then
-			for i = 1, getn(friendTable) do
-				info = friendTable[i]
-				if info[5] then
-					menuCountInvites = menuCountInvites + 1
-					menuCountWhispers = menuCountWhispers + 1
+		for _, info in friendTable do
+			if info[5] then
+				menuCountInvites = menuCountInvites + 1
+				menuCountWhispers = menuCountWhispers + 1
 
-					classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
-					classc = classc or GetQuestDifficultyColor(info[2])
+				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[info[3]], GetQuestDifficultyColor(info[2])
+				classc = classc or GetQuestDifficultyColor(info[2])
 
-					menuList[2].menuList[menuCountInvites] = {text = format(levelNameString, levelc.r*255,levelc.g*255,levelc.b*255, info[2],classc.r*255,classc.g*255,classc.b*255, info[1]), arg1 = info[1], notCheckable = true, func = inviteClick}
-					menuList[3].menuList[menuCountWhispers] = {text = format(levelNameString, levelc.r*255,levelc.g*255,levelc.b*255, info[2],classc.r*255,classc.g*255,classc.b*255, info[1]), arg1 = info[1], notCheckable = true, func = whisperClick}
-				end
+				menuList[2].menuList[menuCountInvites] = {text = format(levelNameString, levelc.r*255,levelc.g*255,levelc.b*255, info[2],classc.r*255,classc.g*255,classc.b*255, info[1]), arg1 = info[1], notCheckable = true, func = inviteClick}
+				menuList[3].menuList[menuCountWhispers] = {text = format(levelNameString, levelc.r*255,levelc.g*255,levelc.b*255, info[2],classc.r*255,classc.g*255,classc.b*255, info[1]), arg1 = info[1], notCheckable = true, func = whisperClick}
 			end
 		end
 		L_EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 2)
@@ -166,11 +163,10 @@ local function OnEnter(self)
 		dataValid = true
 	end
 
-	local zonec, classc, levelc, info
+	local zonec, classc, levelc
 	DT.tooltip:AddDoubleLine(FRIENDS_LIST, format(totalOnlineString, onlineFriends, numberOfFriends), tthead.r, tthead.g, tthead.b, tthead.r, tthead.g, tthead.b)
 	if onlineFriends > 0 then
-		for i = 1, getn(friendTable) do
-			info = friendTable[i]
+		for _, info in friendTable do
 			if info[5] then
 				if GetRealZoneText() == info[4] then zonec = activezone else zonec = inactivezone end
 
