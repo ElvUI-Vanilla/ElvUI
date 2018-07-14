@@ -23,7 +23,9 @@ local L_EasyMenu = L_EasyMenu
 local SetItemRef = SetItemRef
 local ToggleFriendsFrame = ToggleFriendsFrame
 
-local CHAT_MSG_WHISPER_INFORM, GUILD, GUILD_MOTD, GUILD_ONLINE_LABEL, GUILD_RANK1_DESC, LABEL_NOTE, OPTIONS_MENU, PARTY_INVITE = CHAT_MSG_WHISPER_INFORM, GUILD, GUILD_MOTD, GUILD_ONLINE_LABEL, GUILD_RANK1_DESC, LABEL_NOTE, OPTIONS_MENU, PARTY_INVITE
+local CHAT_MSG_WHISPER_INFORM, GUILD, GUILD_MOTD, GUILD_ONLINE_LABEL, GUILD_RANK1_DESC = CHAT_MSG_WHISPER_INFORM, GUILD, GUILD_MOTD, GUILD_ONLINE_LABEL, GUILD_RANK1_DESC
+local LABEL_NOTE, OPTIONS_MENU, PARTY_INVITE = LABEL_NOTE, OPTIONS_MENU, PARTY_INVITE
+
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local tthead, ttsubh, ttoff = {r=0.4, g=0.78, b=1}, {r=0.75, g=0.9, b=1}, {r=.3,g=1,b=.3}
@@ -205,7 +207,7 @@ local function OnEnter(self, _, noUpdate)
 			if info[5] ~= "" then DT.tooltip:AddLine(format(noteString, info[5]), ttsubh.r, ttsubh.g, ttsubh.b, 1) end
 			if info[6] ~= "" then DT.tooltip:AddLine(format(officerNoteString, info[6]), ttoff.r, ttoff.g, ttoff.b, 1) end
 		else
-			DT.tooltip:AddDoubleLine(format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, info[3], info[1], info[2], info[8]), info[4], classc.r,classc.g,classc.b, zonec.r,zonec.g,zonec.b)
+			DT.tooltip:AddDoubleLine(format(levelNameStatusString, levelc.r*255, levelc.g*255, levelc.b*255, info[3], info[1], " " .. info[8]), info[4], classc.r,classc.g,classc.b, zonec.r,zonec.g,zonec.b)
 		end
 		shown = shown + 1
 	end

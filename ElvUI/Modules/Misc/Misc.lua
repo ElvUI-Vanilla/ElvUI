@@ -20,7 +20,7 @@ local IsInGuild = IsInGuild
 local IsInInstance = IsInInstance
 local IsShiftKeyDown = IsShiftKeyDown
 local RepairAllItems = RepairAllItems
-local UninviteUnit = UninviteUnit
+local UninviteByName = UninviteByName
 local UnitInRaid = UnitInRaid
 local UnitName = UnitName
 local UIErrorsFrame = UIErrorsFrame
@@ -100,13 +100,13 @@ function M:DisbandRaidGroup()
 		for i = 1, GetNumRaidMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
 			if online and name ~= E.myname then
-				UninviteUnit(name)
+				UninviteByName(name)
 			end
 		end
 	else
 		for i = MAX_PARTY_MEMBERS, 1, -1 do
 			if GetPartyMember(i) then
-				UninviteUnit(UnitName("party"..i))
+				UninviteByName(UnitName("party"..i))
 			end
 		end
 	end
