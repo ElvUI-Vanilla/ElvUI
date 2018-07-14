@@ -10,7 +10,7 @@ local type = type
 local unpack = unpack
 local abs, ceil, exp, floor = math.abs, math.ceil, math.exp, math.floor
 local find, format, gfind, gsub, len, sub = string.find, string.format, string.gfind, string.gsub, string.len, string.sub
-local concat, getn, setn = table.concat, table.getn, table.setn
+local concat, tinsert, getn, setn = table.concat, table.insert, table.getn, table.setn
 
 math.fmod = math.mod
 math.huge = 1/0
@@ -32,14 +32,14 @@ function select(n, ...)
 	end
 
 	if n == "#" then
-		return getn(arg)
+		return arg.n
 	elseif n == 1 then
 		return unpack(arg)
 	end
 
 	local args = {}
 
-	for i = n, getn(arg) do
+	for i = n, arg.n do
 		args[i-n+1] = arg[i]
 	end
 
@@ -182,7 +182,7 @@ function string.join(delimiter, ...)
 		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
 	end
 
-	if getn(arg) == 0 then
+	if arg.n == 0 then
 		return ""
 	end
 
@@ -240,7 +240,7 @@ function string.split(delimiter, str)
 	end
 
 	local fields = {}
-	gsub(str, format("([^%s]+)", delimiter), function(c) fields[getn(fields) + 1] = c end)
+	gsub(str, format("([^%s]+)", delimiter), function(c) tinsert(fields, c) end)
 
 	return unpack(fields)
 end
@@ -339,7 +339,7 @@ wipe = table.wipe
 
 local LOCAL_ToStringAllTemp = {}
 function tostringall(...)
-	local n = getn(arg)
+	local n = arg.n
 	-- Simple versions for common argument counts
 	if (n == 1) then
 		return tostring(arg[1])

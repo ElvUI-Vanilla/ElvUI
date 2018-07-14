@@ -1182,7 +1182,7 @@ function B:Initialize()
 		E:Point(BagFrameHolder, "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border*2), 22 + E.Border*4 - E.Spacing*2)
 		E:CreateMover(BagFrameHolder, "ElvUIBagMover", L["Bag Mover"], nil, nil, B.PostBagMove)
 
-		self:SecureHook("UpdateContainerFrameAnchors")
+		--self:SecureHook("UpdateContainerFrameAnchors")
 		return
 	end
 

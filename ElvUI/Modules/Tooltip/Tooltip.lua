@@ -93,9 +93,9 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 end
 
 function TT:SetStyle(tt)
-	E:SetTemplate(this, "Transparent", nil, true)
-	local r, g, b = this:GetBackdropColor()
-	this:SetBackdropColor(r, g, b, self.db.colorAlpha)
+	E:SetTemplate(tt, "Transparent", nil, true)
+	local r, g, b = tt:GetBackdropColor()
+	tt:SetBackdropColor(r, g, b, self.db.colorAlpha)
 end
 
 function TT:RemoveTrashLines(tt)
@@ -242,6 +242,22 @@ function TT:SetItemRef(link)
 		local id = tonumber(match(link, "(%d+)"))
 		ItemRefTooltip:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
 		ItemRefTooltip:Show()
+	end
+end
+
+function TT:CheckBackdropColor()
+	if not this:IsShown() then return end
+
+	local r, g, b = this:GetBackdropColor()
+	if r and g and b then
+		r = E:Round(r, 1)
+		g = E:Round(g, 1)
+		b = E:Round(b, 1)
+		local red, green, blue = unpack(E.media.backdropfadecolor)
+		if r ~= red or g ~= green or b ~= blue then
+			this:SetBackdropColor(red, green, blue, self.db.colorAlpha)
+			this:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		end
 	end
 end
 
