@@ -94,21 +94,21 @@ function HookScript(frame, scriptType, handler)
 	end
 end
 
-function hooksecurefunc(arg1, arg2, arg3)
-	local isMethod = type(arg1) == "table" and type(arg2) == "string" and type(arg1[arg2]) == "function" and type(arg3) == "function"
-	if not (isMethod or (type(arg1) == "string" and type(_G[arg1]) == "function" and type(arg2) == "function")) then
+function hooksecurefunc(a1, a2, a3)
+	local isMethod = type(a1) == "table" and type(a2) == "string" and type(a1[a2]) == "function" and type(a3) == "function"
+	if not (isMethod or (type(a1) == "string" and type(_G[a1]) == "function" and type(a2) == "function")) then
 		error("Usage: hooksecurefunc([table,] \"functionName\", hookfunc)", 2)
 	end
 
 	if not isMethod then
-		arg1, arg2, arg3 = _G, arg1, arg2
+		a1, a2, a3 = _G, a1, a2
 	end
 
-	local original_func = arg1[arg2]
+	local original_func = a1[a2]
 
-	arg1[arg2] = function(...)
+	a1[a2] = function(...)
 		local original_return = {original_func(unpack(arg))}
-		arg3(unpack(arg))
+		a3(unpack(arg))
 
 		return unpack(original_return)
 	end
