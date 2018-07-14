@@ -32,7 +32,7 @@ local slots = {
 	"HeadSlot"
 }
 
-local function OnEvent(self, t)
+local function OnEvent(self)
 	lastPanel = self
 	totalDurability = 100
 
