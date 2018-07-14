@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local TT = E:NewModule("Tooltip", "AceHook-3.0", "AceEvent-3.0");
+local LIP = LibStub:GetLibrary("ItemPrice-1.1")
 
 --Cache global variables
 --Lua functions
@@ -9,26 +10,58 @@ local getn, twipe, tinsert, tconcat = table.getn, table.wipe, table.insert, tabl
 local floor = math.floor
 local find, format, match = string.find, string.format, string.match
 --WoW API / Variables
-local IsShiftKeyDown = IsShiftKeyDown
-local UnitExists = UnitExists
-local UnitLevel = UnitLevel
-local UnitIsPlayer = UnitIsPlayer
-local UnitClass = UnitClass
-local UnitName = UnitName
+local GetActionCount = GetActionCount
+local GetAuctionItemInfo = GetAuctionItemInfo
+local GetAuctionItemLink = GetAuctionItemLink
+local GetAuctionSellItemInfo = GetAuctionSellItemInfo
+local GetContainerItemInfo = GetContainerItemInfo
+local GetContainerItemLink = GetContainerItemLink
+local GetCraftItemLink = GetCraftItemLink
+local GetCraftReagentInfo = GetCraftReagentInfo
+local GetCraftReagentItemLink = GetCraftReagentItemLink
+local GetCraftSelectionIndex = GetCraftSelectionIndex
 local GetGuildInfo = GetGuildInfo
-local UnitPVPName = UnitPVPName
-local GetQuestDifficultyColor = GetQuestDifficultyColor
-local UnitRace = UnitRace
-local UnitIsTapped = UnitIsTapped
-local UnitIsTappedByPlayer = UnitIsTappedByPlayer
-local UnitReaction = UnitReaction
-local UnitClassification = UnitClassification
-local UnitCreatureType = UnitCreatureType
-local UnitIsPVP = UnitIsPVP
+local GetInboxItem = GetInboxItem
+local GetInventoryItemCount = GetInventoryItemCount
+local GetInventoryItemLink = GetInventoryItemLink
+local GetItemCount = GetItemCount
+local GetItemInfoByName = GetItemInfoByName
+local GetLootRollItemInfo = GetLootRollItemInfo
+local GetLootRollItemLink = GetLootRollItemLink
+local GetLootSlotInfo = GetLootSlotInfo
+local GetLootSlotLink = GetLootSlotLink
+local GetMerchantItemInfo = GetMerchantItemInfo
+local GetMerchantItemLink = GetMerchantItemLink
 local GetNumPartyMembers = GetNumPartyMembers
 local GetNumRaidMembers = GetNumRaidMembers
+local GetQuestItemInfo = GetQuestItemInfo
+local GetQuestItemLink = GetQuestItemLink
+local GetQuestLogItemLink = GetQuestLogItemLink
+local GetQuestLogRewardInfo = GetQuestLogRewardInfo
+local GetSendMailItem = GetSendMailItem
+local GetTradePlayerItemInfo = GetTradePlayerItemInfo
+local GetTradePlayerItemLink = GetTradePlayerItemLink
+local GetTradeSkillItemLink = GetTradeSkillItemLink
+local GetTradeSkillReagentInfo = GetTradeSkillReagentInfo
+local GetTradeSkillReagentItemLink = GetTradeSkillReagentItemLink
+local GetTradeTargetItemInfo = GetTradeTargetItemInfo
+local GetTradeTargetItemLink = GetTradeTargetItemLink
+local IsConsumableAction = IsConsumableAction
+local IsShiftKeyDown = IsShiftKeyDown
+local UnitClass = UnitClass
+local UnitClassification = UnitClassification
+local UnitCreatureType = UnitCreatureType
+local UnitExists = UnitExists
+local UnitIsPVP = UnitIsPVP
+local UnitIsPlayer = UnitIsPlayer
+local UnitIsTapped = UnitIsTapped
+local UnitIsTappedByPlayer = UnitIsTappedByPlayer
 local UnitIsUnit = UnitIsUnit
-local SetTooltipMoney = SetTooltipMoney
+local UnitLevel = UnitLevel
+local UnitName = UnitName
+local UnitPVPName = UnitPVPName
+local UnitRace = UnitRace
+local UnitReaction = UnitReaction
 
 local targetList = {}
 local TAPPED_COLOR = {r = 0.6, g = 0.6, b = 0.6}
@@ -245,6 +278,306 @@ function TT:SetItemRef(link)
 	end
 end
 
+function TT:SetPrice(tt, id, count)
+	if MerchantFrame:IsShown() then return end
+	if not count then return end
+
+	local price = LIP:GetSellValue(id)
+
+	if price and price > 0 then
+		tt:AddDoubleLine(SALE_PRICE_COLON, E:FormatMoney(count and price * count or price, "BLIZZARD", false), nil, nil, nil, 1, 1, 1)
+	end
+
+	if tt:IsShown() then tt:Show() end
+end
+
+function TT:SetAction(tt, id)
+	local itemName = GameTooltipTextLeft1:GetText()
+	if not itemName then return end
+
+	local item, link = GetItemInfoByName(itemName)
+	if not link then return end
+	
+	local id = tonumber(match(link, "item:(%d+)"))
+	
+	if E.db.tooltip.itemPrice then
+		local count = 1
+		if IsConsumableAction(id) then
+			local actionCount = GetActionCount(id)
+			if actionCount and actionCount == GetItemCount(item) then
+				count = actionCount
+			end
+		end
+
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetAuctionItem(tt, type, index)
+	local link = GetAuctionItemLink(type, index)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetAuctionItemInfo(type, index)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetAuctionSellItem(tt)
+	local name, _, count = GetAuctionSellItemInfo()
+	local _, link = GetItemInfoByName(name)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetBagItem(tt, bag, slot)
+	local link = GetContainerItemLink(bag, slot)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+	
+	if E.db.tooltip.itemPrice then
+		local _, count = GetContainerItemInfo(bag, slot)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetCraftItem(tt, skill, slot)
+	local link = slot and GetCraftReagentItemLink(skill, slot) or GetCraftItemLink(GetCraftSelectionIndex())
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local id = tonumber(match(link, "item:(%d+)"))
+		local count = 1
+		if slot then
+			count = select(3, GetCraftReagentInfo(skill, slot))
+		end
+
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetHyperlink(tt, link, count)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		count = tonumber(count)
+		if not count or count < 1 then
+			local owner = tt:GetParent()
+			count = owner and tonumber(owner.count)
+			if not count or count < 1 then
+				count = 1
+			end
+		end
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetInboxItem(tt, index, attachmentIndex)
+	local name, _, count = GetInboxItem(index, attachmentIndex)
+	local _, link = GetItemInfoByName(name)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetInventoryItem(tt, unit, slot)
+	if type(slot) ~= "number" or slot < 0 then return end
+
+	local link = GetInventoryItemLink(unit, slot)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local count = 1
+		if slot < 20 or slot > 39 and slot < 68 then
+			count = GetInventoryItemCount(unit, slot)
+		end
+
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetLootItem(tt, slot)
+	local link = GetLootSlotLink(slot)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetLootSlotInfo(slot)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetLootRollItem(tt, rollID)
+	local link = GetLootRollItemLink(rollID)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetLootRollItemInfo(rollID)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetMerchantItem(tt, slot)
+	local link = GetMerchantItemLink(slot)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local _, _, _, count = GetMerchantItemInfo(slot)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetQuestItem(tt, type, slot)
+	local link = GetQuestItemLink(type, slot)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetQuestItemInfo(type, slot)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetQuestLogItem(tt, type, index)
+	local link = GetQuestLogItemLink(type, index)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetQuestLogRewardInfo(index)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetSendMailItem(tt, index)
+	local name, _, count = GetSendMailItem(index)
+	local _, link = GetItemInfoByName(name)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetTradePlayerItem(tt, index)
+	local link = GetTradePlayerItemLink(index)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+	
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetTradePlayerItemInfo(index)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetTradeSkillItem(tt, skill, slot)
+	local link = slot and GetTradeSkillReagentItemLink(skill, slot) or GetTradeSkillItemLink(skill)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+
+	if E.db.tooltip.itemPrice then
+		local id = tonumber(match(link, "item:(%d+)"))
+		local count = 1
+		if slot then
+			count = select(3, GetTradeSkillReagentInfo(skill, slot))
+		end
+
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
+function TT:SetTradeTargetItem(tt, index)
+	local link = GetTradeTargetItemLink(index)
+	if not link then return end
+
+	local id = tonumber(match(link, "item:(%d+)"))
+	
+	if E.db.tooltip.itemPrice then
+		local _, _, count = GetTradeTargetItemInfo(index)
+		self:SetPrice(tt, id, count)
+	end
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
 function TT:CheckBackdropColor()
 	if not this:IsShown() then return end
 
@@ -321,6 +654,25 @@ function TT:Initialize()
 	self:SecureHook("GameTooltip_SetDefaultAnchor")
 	self:SecureHook("SetItemRef")
 	self:SecureHook(GameTooltip, "SetUnit")
+
+	self:SecureHook(GameTooltip, "SetAction", "SetAction")
+	self:SecureHook(GameTooltip, "SetAuctionItem", "SetAuctionItem")
+	self:SecureHook(GameTooltip, "SetAuctionSellItem", "SetAuctionSellItem")
+	self:SecureHook(GameTooltip, "SetBagItem", "SetBagItem")
+	self:SecureHook(GameTooltip, "SetCraftItem", "SetCraftItem")
+	self:SecureHook(GameTooltip, "SetHyperlink", "SetHyperlink")
+	self:SecureHook(GameTooltip, "SetInboxItem", "SetInboxItem")
+	self:SecureHook(GameTooltip, "SetInventoryItem", "SetInventoryItem")
+	self:SecureHook(GameTooltip, "SetLootItem", "SetLootItem")
+	self:SecureHook(GameTooltip, "SetLootRollItem", "SetLootRollItem")
+	self:SecureHook(GameTooltip, "SetMerchantItem", "SetMerchantItem")
+	self:SecureHook(GameTooltip, "SetQuestItem", "SetQuestItem")
+	self:SecureHook(GameTooltip, "SetQuestLogItem", "SetQuestLogItem")
+	self:SecureHook(GameTooltip, "SetSendMailItem", "SetSendMailItem")
+	self:SecureHook(GameTooltip, "SetTradePlayerItem", "SetTradePlayerItem")
+	self:SecureHook(GameTooltip, "SetTradeSkillItem", "SetTradeSkillItem")
+	self:SecureHook(GameTooltip, "SetTradeTargetItem", "SetTradeTargetItem")
+
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
 	self:HookScript(GameTooltipStatusBar, "OnValueChanged", "GameTooltipStatusBar_OnValueChanged")
