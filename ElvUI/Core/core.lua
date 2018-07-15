@@ -441,12 +441,11 @@ function E:IsDispellableByMe(debuffType)
 	end
 end
 
-function E:GetTalentSpecInfo(isInspect)
-	local talantGroup = GetActiveTalentGroup(isInspect)
+function E:GetTalentSpecInfo()
 	local maxPoints, specIdx, specName, specIcon = 0, 0
 
-	for i = 1, MAX_TALENT_TABS do
-		local name, icon, pointsSpent = GetTalentTabInfo(i, isInspect, nil, talantGroup)
+	for i = 1, 3 do
+		local name, icon, pointsSpent = GetTalentTabInfo(i)
 		if maxPoints < pointsSpent then
 			maxPoints = pointsSpent
 			specIdx = i
