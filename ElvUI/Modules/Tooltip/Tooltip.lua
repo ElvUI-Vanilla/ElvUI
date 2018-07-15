@@ -366,7 +366,6 @@ function TT:SetCraftItem(tt, skill, slot)
 	local id = tonumber(match(link, "item:(%d+)"))
 
 	if E.db.tooltip.itemPrice then
-		local id = tonumber(match(link, "item:(%d+)"))
 		local count = 1
 		if slot then
 			count = select(3, GetCraftReagentInfo(skill, slot))
@@ -379,10 +378,23 @@ function TT:SetCraftItem(tt, skill, slot)
 	tt:Show()
 end
 
+function TT:SetCraftSpell(tt, id)
+	local link = GetCraftItemLink(id)
+	if not link then return end
+
+	local id = tonumber(match(link, "enchant:(%d+)"))
+
+	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	tt:Show()
+end
+
 function TT:SetHyperlink(tt, link, count)
 	if not link then return end
 
-	local id = tonumber(match(link, "item:(%d+)"))
+	local id = tonumber(match(link, "(%d+):"))
+	if not id then
+		id = tonumber(match(link, "enchant:(%d+)"))
+	end
 
 	if E.db.tooltip.itemPrice then
 		count = tonumber(count)
@@ -658,6 +670,7 @@ function TT:Initialize()
 	self:SecureHook(GameTooltip, "SetAuctionSellItem", "SetAuctionSellItem")
 	self:SecureHook(GameTooltip, "SetBagItem", "SetBagItem")
 	self:SecureHook(GameTooltip, "SetCraftItem", "SetCraftItem")
+	self:SecureHook(GameTooltip, "SetCraftSpell", "SetCraftSpell")
 	self:SecureHook(GameTooltip, "SetHyperlink", "SetHyperlink")
 	self:SecureHook(GameTooltip, "SetInboxItem", "SetInboxItem")
 	self:SecureHook(GameTooltip, "SetInventoryItem", "SetInventoryItem")
