@@ -292,7 +292,7 @@ function AB:StyleButton(button, noBackdrop)
 
 	if count then
 		count:ClearAllPoints()
-		E:Point(count, "BOTTOMRIGHT", 0, 2)
+		count:SetPoint("BOTTOMRIGHT", 0, 2)
 		E:FontTemplate(count, LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 		count:SetTextColor(color.r, color.g, color.b)
 	end
@@ -302,7 +302,7 @@ function AB:StyleButton(button, noBackdrop)
 			macroName:Show()
 			E:FontTemplate(macroName, LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 			macroName:ClearAllPoints()
-			E:Point(macroName, "BOTTOM", 2, 2)
+			macroName:SetPoint("BOTTOM", 2, 2)
 			macroName:SetJustifyH("CENTER")
 		else
 			macroName:Hide()
@@ -325,6 +325,7 @@ function AB:StyleButton(button, noBackdrop)
 	if self.db.hotkeytext then
 		E:FontTemplate(hotkey, LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
 		hotkey:SetTextColor(color.r, color.g, color.b)
+		hotkey.SetVertexColor = E.noop
 	end
 
 	self:FixKeybindText(button)
@@ -442,7 +443,20 @@ function AB:FixKeybindText(button)
 	end
 
 	hotkey:ClearAllPoints()
-	E:Point(hotkey, "TOPRIGHT", 0, -3)
+	hotkey:SetPoint("TOPRIGHT", 0, -3)
+end
+
+function _G.ActionButton_OnUpdate(elapsed)
+	if not this.updateTooltip then return end
+
+	this.updateTooltip = this.updateTooltip - elapsed
+	if this.updateTooltip > 0 then return end
+
+	if GameTooltip:IsOwned(this) then
+		ActionButton_SetTooltip()
+	else
+		this.updateTooltip = nil
+	end
 end
 
 function _G.ActionButton_GetPagedID(button)
