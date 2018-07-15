@@ -15,6 +15,26 @@ local function LoadSkin()
 	E:Point(SpellBookFrame.backdrop, "TOPLEFT", 10, -12)
 	E:Point(SpellBookFrame.backdrop, "BOTTOMRIGHT", -31, 75)
 
+	SpellBookFrame:EnableMouseWheel(true)
+	SpellBookFrame:SetScript("OnMouseWheel", function()
+		--do nothing if not on an appropriate book type
+		if SpellBookFrame.bookType ~= BOOKTYPE_SPELL then
+			return
+		end
+
+		local currentPage, maxPages = SpellBook_GetCurrentPage()
+
+		if arg1 > 0 then
+			if currentPage > 1 then
+				PrevPageButton_OnClick()
+			end
+		else 
+			if currentPage < maxPages then
+				NextPageButton_OnClick()
+			end
+		end
+	end)
+
 	for i = 1, 3 do
 		local tab = _G["SpellBookFrameTabButton"..i]
 

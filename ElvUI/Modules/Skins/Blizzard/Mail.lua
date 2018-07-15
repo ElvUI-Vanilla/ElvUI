@@ -26,6 +26,19 @@ local function LoadSkin()
 	E:Point(MailFrame.backdrop, "TOPLEFT", 10, -12)
 	E:Point(MailFrame.backdrop, "BOTTOMRIGHT", -30, 74)
 
+	MailFrame:EnableMouseWheel(true)
+	MailFrame:SetScript("OnMouseWheel", function()
+		if arg1 > 0 then
+			if InboxPrevPageButton:IsEnabled() == 1 then
+				InboxPrevPage()
+			end
+		else
+			if InboxNextPageButton:IsEnabled() == 1 then
+				InboxNextPage()
+			end	
+		end
+	end)
+
 	for i = 1, INBOXITEMS_TO_DISPLAY do
 		local mail = _G["MailItem"..i]
 		local button = _G["MailItem"..i.."Button"]
