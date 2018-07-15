@@ -357,8 +357,9 @@ function S:HandleCloseButton(f, point, text)
 
 	if not f.backdrop then
 		E:CreateBackdrop(f, "Default", true)
-		E:Point(f.backdrop, "TOPLEFT", 7, -8)
-		E:Point(f.backdrop, "BOTTOMRIGHT", -8, 8)
+		f.backdrop:SetPoint("TOPLEFT", 7, -8)
+		f.backdrop:SetPoint("BOTTOMRIGHT", -8, 8)
+		f:SetHitRectInsets(6, 6, 7, 7)
 
 		HookScript(f, "OnEnter", function() S:SetModifiedBackdrop(this) end)
 		HookScript(f, "OnLeave", function() S:SetOriginalBackdrop(this) end)
@@ -369,11 +370,11 @@ function S:HandleCloseButton(f, point, text)
 		f.text:SetFont([[Interface\AddOns\ElvUI\Media\Fonts\PT_Sans_Narrow.ttf]], 16, "OUTLINE")
 		f.text:SetText(text)
 		f.text:SetJustifyH("CENTER")
-		E:Point(f.text, "CENTER", f, "CENTER", -1, 1)
+		f.text:SetPoint("CENTER", f, "CENTER", 0, 1)
 	end
 
 	if point then
-		E:Point(f, "TOPRIGHT", point, "TOPRIGHT", 2, 2)
+		f:SetPoint("TOPRIGHT", point, "TOPRIGHT", 2, 2)
 	end
 end
 
