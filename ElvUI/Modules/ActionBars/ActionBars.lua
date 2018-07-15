@@ -160,6 +160,8 @@ function AB:PositionAndSizeBar(barName)
 		else
 			button:SetAlpha(self.db[barName].alpha)
 		end
+
+		self:StyleButton(button)
 	end
 
 	if self.db[barName].enabled or not bar.initialized then
@@ -278,12 +280,10 @@ function AB:StyleButton(button, noBackdrop)
 	local hotkey = _G[name.."HotKey"]
 	local border = _G[name.."Border"]
 	local macroName = _G[name.."Name"]
-	local normal = button:GetNormalTexture()
 	local buttonCooldown = _G[name.."Cooldown"]
 	local color = self.db.fontColor
 
 	if flash then flash:SetTexture(nil) end
-	if normal then normal:SetTexture(nil) normal:Hide() normal:SetAlpha(0) end
 	if border then E:Kill(border) end
 
 	if not button.noBackdrop then
@@ -310,6 +310,9 @@ function AB:StyleButton(button, noBackdrop)
 	end
 
 	if not button.noBackdrop and not button.backdrop then
+		button:SetNormalTexture("")
+		button.SetNormalTexture = E.noop
+
 		E:CreateBackdrop(button, "Default", true)
 		button.backdrop:SetAllPoints()
 	end
@@ -442,11 +445,7 @@ function AB:FixKeybindText(button)
 	E:Point(hotkey, "TOPRIGHT", 0, -3)
 end
 
-function AB:ActionButton_Update()
-	self:StyleButton(this)
-end
-
-function AB:ActionButton_GetPagedID(button)
+function _G.ActionButton_GetPagedID(button)
 	if button.isBonus and CURRENT_ACTIONBAR_PAGE == 1 then
 		local offset = GetBonusBarOffset()
 		if offset == 0 and ElvUI_Bar1 and ElvUI_Bar1.lastBonusBar then
@@ -507,8 +506,6 @@ function AB:Initialize()
 	self:UpdateButtonSettings()
 	self:LoadKeyBinder()
 
-	self:SecureHook("ActionButton_Update")
-	self:RawHook("ActionButton_GetPagedID")
 	self:SecureHook("PetActionBar_Update", "UpdatePet")
 	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 
