@@ -554,14 +554,14 @@ local function unregisterEvents(fontstr)
 	end
 end
 
-local OnEnter = function(self)
-	for _, fs in pairs(self.__mousetags) do
+local OnEnter = function()
+	for _, fs in pairs(this.__mousetags) do
 		fs:SetAlpha(1)
 	end
 end
 
-local OnLeave = function(self)
-	for _, fs in pairs(self.__mousetags) do
+local OnLeave = function()
+	for _, fs in pairs(this.__mousetags) do
 		fs:SetAlpha(0)
 	end
 end
@@ -615,9 +615,9 @@ local function Tag(self, fs, tagstr)
 		tinsert(self.__mousetags, fs)
 		fs:SetAlpha(0)
 		if not self.__HookFunc then
-			HookScript(self, 'OnEnter', function() OnEnter(this) end)
-			HookScript(self, 'OnLeave', function() OnLeave(this) end)
-			self.__HookFunc = true;
+			HookScript(self, 'OnEnter', OnEnter)
+			HookScript(self, 'OnLeave', OnLeave)
+			self.__HookFunc = true
 		end
 		tagstr = string.gsub(tagstr, '%[mouseover%]', '')
 	else

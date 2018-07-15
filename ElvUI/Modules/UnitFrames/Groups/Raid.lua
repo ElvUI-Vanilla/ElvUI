@@ -32,6 +32,7 @@ function UF:Construct_RaidFrames()
 
 	self.GPS = UF:Construct_GPS(self)
 	self.InfoPanel = UF:Construct_InfoPanel(self)
+	self.Range = UF:Construct_Range(self)
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 	self.unitframeType = "raid"
@@ -116,6 +117,8 @@ function UF:Update_RaidFrames(frame, db)
 	UF:Configure_RaidIcon(frame)
 
 	UF:Configure_RaidRoleIcons(frame)
+
+	UF:Configure_Range(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end

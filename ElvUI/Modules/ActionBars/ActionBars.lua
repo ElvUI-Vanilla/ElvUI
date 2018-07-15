@@ -331,7 +331,7 @@ function AB:StyleButton(button, noBackdrop)
 	self:FixKeybindText(button)
 	E:StyleButton(button)
 
-	if(not self.handledButtons[button]) then
+	if not self.handledButtons[button] then
 		E:RegisterCooldown(buttonCooldown)
 
 		self.handledButtons[button] = true
@@ -381,7 +381,7 @@ function AB:DisableBlizzard()
 		ShapeshiftBarMiddle,
 		ShapeshiftBarRight,
 	}
-	for _, element in pairs(elements) do
+	for _, element in ipairs(elements) do
 		if element:GetObjectType() == "Frame" then
 			element:UnregisterAllEvents()
 		end
@@ -401,7 +401,7 @@ function AB:DisableBlizzard()
 		"ShapeshiftBarFrame",
 		"PETACTIONBAR_YPOS",
 	}
-	for _, frame in pairs(uiManagedFrames) do
+	for _, frame in ipairs(uiManagedFrames) do
 		UIPARENT_MANAGED_FRAME_POSITIONS[frame] = nil
 	end
 	uiManagedFrames = nil
