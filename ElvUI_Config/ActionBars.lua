@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local AB = E:GetModule("ActionBars");
-local group
+local ACD = LibStub("AceConfigDialog-3.0");
 
 --Cache global variables
 --Lua functions
@@ -9,8 +9,8 @@ local getn = table.getn
 --WoW API / Variables
 local SetCVar = SetCVar
 local GameTooltip = _G["GameTooltip"]
-local NONE, COLOR = NONE, COLOR
-local LOCK_ACTIONBAR_TEXT = LOCK_ACTIONBAR_TEXT
+
+local ACTIONBAR_LABEL, COLOR, GENERAL, LOCK_ACTIONBAR_TEXT, NONE = ACTIONBAR_LABEL, COLOR, GENERAL, LOCK_ACTIONBAR_TEXT, NONE
 
 local points = {
 	["TOPLEFT"] = "TOPLEFT",
@@ -19,8 +19,7 @@ local points = {
 	["BOTTOMRIGHT"] = "BOTTOMRIGHT"
 }
 
-local ACD = LibStub("AceConfigDialog-3.0")
-
+local group
 local function BuildABConfig()
 	group["general"] = {
 		order = 1,
@@ -694,7 +693,7 @@ end
 
 E.Options.args.actionbar = {
 	type = "group",
-	name = L["ActionBars"],
+	name = ACTIONBAR_LABEL,
 	childGroups = "tree",
 	get = function(info) return E.db.actionbar[ info[getn(info)] ] end,
 	set = function(info, value) E.db.actionbar[ info[getn(info)] ] = value AB:UpdateButtonSettings() end,
@@ -724,7 +723,7 @@ E.Options.args.actionbar = {
 		generalShortcut = {
 			order = 5,
 			type = "execute",
-			name = L["General"],
+			name = GENERAL,
 			buttonElvUI = true,
 			func = function() ACD:SelectGroup("ElvUI", "actionbar", "general") end,
 			disabled = function() return not E.ActionBars end,

@@ -1,6 +1,12 @@
-local E, L, V, P, G, _ = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local WM = E:GetModule("WorldMap");
 local MM = E:GetModule("Minimap");
+
+--Cache global variables
+--Lua functions
+local getn = table.getn
+--WoW API / Variables
+local GENERAL, HIDE, MAIL_LABEL, MINIMAP_LABEL, NONE, WORLD_MAP = GENERAL, HIDE, MAIL_LABEL, MINIMAP_LABEL, NONE, WORLD_MAP
 
 E.Options.args.maps = {
 	type = "group",
@@ -20,7 +26,7 @@ E.Options.args.maps = {
 				generalGroup = {
 					order = 1,
 					type = "group",
-					name = L["General"],
+					name = GENERAL,
 					guiInline = true,
 					args = {
 						smallerWorldMap = {
@@ -110,7 +116,7 @@ E.Options.args.maps = {
 				generalGroup = {
 					order = 1,
 					type = "group",
-					name = L["General"],
+					name = GENERAL,
 					guiInline = true,
 					args = {
 						enable = {
@@ -314,50 +320,8 @@ E.Options.args.maps = {
 								}
 							}
 						},
-						lfgEye = {
-							order = 3,
-							type = "group",
-							name = L["LFG Queue"],
-							get = function(info) return E.db.general.minimap.icons.lfgEye[ info[getn(info)] ]; end,
-							set = function(info, value) E.db.general.minimap.icons.lfgEye[ info[getn(info)] ] = value; MM:UpdateSettings(); end,
-							args = {
-								position = {
-									order = 1,
-									type = "select",
-									name = L["Position"],
-									values = {
-										["LEFT"] = L["Left"],
-										["RIGHT"] = L["Right"],
-										["TOP"] = L["Top"],
-										["BOTTOM"] = L["Bottom"],
-										["TOPLEFT"] = L["Top Left"],
-										["TOPRIGHT"] = L["Top Right"],
-										["BOTTOMLEFT"] = L["Bottom Left"],
-										["BOTTOMRIGHT"] = L["Bottom Right"]
-									}
-								},
-								scale = {
-									order = 2,
-									type = "range",
-									name = L["Scale"],
-									min = 0.5, max = 2, step = 0.05
-								},
-								xOffset = {
-									order = 3,
-									type = "range",
-									name = L["xOffset"],
-									min = -50, max = 50, step = 1
-								},
-								yOffset = {
-									order = 4,
-									type = "range",
-									name = L["yOffset"],
-									min = -50, max = 50, step = 1
-								}
-							}
-						},
 						battlefield = {
-							order = 4,
+							order = 3,
 							type = "group",
 							name = L["PvP Queue"],
 							get = function(info) return E.db.general.minimap.icons.battlefield[ info[getn(info)] ]; end,
@@ -399,7 +363,7 @@ E.Options.args.maps = {
 							}
 						},
 						difficulty = {
-							order = 5,
+							order = 4,
 							type = "group",
 							name = L["Instance Difficulty"],
 							get = function(info) return E.db.general.minimap.icons.difficulty[ info[getn(info)] ]; end,
@@ -445,4 +409,4 @@ E.Options.args.maps = {
 			}
 		}
 	}
-};
+}

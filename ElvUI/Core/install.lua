@@ -22,12 +22,14 @@ local FCF_DockFrame, FCF_UnDockFrame = FCF_DockFrame, FCF_UnDockFrame
 local FCF_OpenNewWindow = FCF_OpenNewWindow
 local FCF_SetWindowName = FCF_SetWindowName
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
-local CLASS, CONTINUE, PREV = CLASS, CONTINUE, PREV
-local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
-local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
-local GUILD_EVENT_LOG = GUILD_EVENT_LOG
+
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
+
+local CHAT_LABEL, CLASS, CONTINUE, PREV = CHAT_LABEL, CLASS, CONTINUE, PREV
+local GUILD_EVENT_LOG = GUILD_EVENT_LOG
+local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
+local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 
 local CURRENT_PAGE = 0
 local MAX_PAGE = 8
@@ -748,7 +750,7 @@ local function SetPage(PageNum)
 		InstallOption1Button:SetScript("OnClick", SetupCVars)
 		InstallOption1Button:SetText(L["Setup CVars"])
 	elseif PageNum == 3 then
-		f.SubTitle:SetText(L["Chat"])
+		f.SubTitle:SetText(CHAT_LABEL)
 		f.Desc1:SetText(L["This part of the installation process sets up your chat windows names, positions and colors."])
 		f.Desc2:SetText(L["The chat windows function the same as Blizzard standard chat windows, you can right click the tabs and drag them around, rename, etc. Please click the button below to setup your chat windows."])
 		f.Desc3:SetText(L["Importance: |cffD3CF00Medium|r"])

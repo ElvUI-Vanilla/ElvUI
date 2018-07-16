@@ -1,9 +1,15 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local CC = E:GetModule("ClassCache");
 
+--Cache global variables
+--Lua functions
+local getn = table.getn
+--WoW API / Variables
+local CHAT_MSG_EMOTE, GENERAL, NONE, PLAYER, RAID_CONTROL, SAY = CHAT_MSG_EMOTE, GENERAL, NONE, PLAYER, RAID_CONTROL, SAY
+
 E.Options.args.general = {
 	type = "group",
-	name = L["General"],
+	name = GENERAL,
 	order = 1,
 	childGroups = "tab",
 	get = function(info) return E.db.general[ info[getn(info)] ]; end,
@@ -30,12 +36,12 @@ E.Options.args.general = {
 		general = {
 			order = 4,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				generalHeader = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				pixelPerfect = {
 					order = 2,

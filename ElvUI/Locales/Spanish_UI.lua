@@ -123,7 +123,6 @@ L["Auras Set"] = "Auras Configuradas"
 L["Auras"] = true;
 L["Caster DPS"] = "DPS Hechizos"
 L["Chat Set"] = "Chat Configurado"
-L["Chat"] = "Chat"
 L["Choose a theme layout you wish to use for your initial setup."] = "Elige un tema de distribución para usar en tu configuración inicial."
 L["Classic"] = "Clásico"
 L["Click the button below to resize your chat frames, unitframes, and reposition your actionbars."] = "Haz clic en el botón de abajo para cambiar el tamaño de los marcos de chat y de unidad, y reubicar tus barras de acción."

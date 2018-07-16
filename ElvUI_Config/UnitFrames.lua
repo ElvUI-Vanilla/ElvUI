@@ -3,22 +3,27 @@ local UF = E:GetModule("UnitFrames");
 
 local ns = oUF
 local ElvUF = ns.oUF
+
 --Cache global variables
 --Lua functions
 local _G = _G
-local ipairs, next, pairs, select = ipairs, next, pairs, select
 local find, format = string.find, string.format
-local tconcat, tinsert, tremove, twipe = table.concat, table.insert, table.remove, table.wipe
 local gsub, match, split = string.gsub, string.match, string.split
+local ipairs, next, pairs, select = ipairs, next, pairs, select
+local concat, getn, insert, remove, wipe = table.concat, table.getn, table.insert, table.remove, table.wipe
 --WoW API / Variables
-local IsAddOnLoaded = IsAddOnLoaded
 local GetScreenWidth = GetScreenWidth
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR = HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR
+local IsAddOnLoaded = IsAddOnLoaded
 
-local SHIFT_KEY, ALT_KEY, CTRL_KEY = "SHIFT_KEY", "ALT_KEY", "CTRL_KEY"
-local HEALTH, MANA, NAME, PLAYER, CLASS, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, GROUP
-local RAGE, FOCUS, ENERGY = RAGE, FOCUS, ENERGY
+local COLOR, DELETE, FILTERS, FONT_SIZE = COLOR, DELETE, FILTERS, FONT_SIZE
+local CLASS, GROUP, HEALTH, MANA, NAME, PLAYER = CLASS, GROUP, HEALTH, MANA, NAME, PLAYER
+local ENERGY, FOCUS, RAGE = ENERGY, FOCUS, RAGE
+local FACTION_STANDING_LABEL4 = FACTION_STANDING_LABEL4
+local GENERAL, HIDE, NONE = GENERAL, HIDE, NONE
+
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+
+local ALT_KEY, CTRL_KEY, SHIFT_KEY = "ALT_KEY", "CTRL_KEY", "SHIFT_KEY"
 ------------------------------
 
 local ACD = LibStub("AceConfigDialog-3.0")
@@ -112,8 +117,8 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 			if tbl[i] == value then sv = i elseif tbl[i] == movehere then sm = i end
 			if sv and sm then break end
 		end
-		tremove(tbl, sm);tinsert(tbl, sv, movehere);
-		E.db.unitframe.units[groupName][auraType].priority = tconcat(tbl,",")
+		remove(tbl, sm);insert(tbl, sv, movehere);
+		E.db.unitframe.units[groupName][auraType].priority = concat(tbl,",")
 	elseif found and friendState then
 		local realValue = match(value, "^Friendly:([^,]*)") or match(value, "^Enemy:([^,]*)") or value
 		local friend = filterMatch(filter, filterValue("Friendly:"..realValue))
@@ -134,8 +139,8 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 				for i in ipairs(tbl) do
 					if tbl[i] == value then sv = i;break end
 				end
-				tinsert(tbl, sv, state);tremove(tbl, sv+1)
-				E.db.unitframe.units[groupName][auraType].priority = tconcat(tbl,",")
+				insert(tbl, sv, state);remove(tbl, sv+1)
+				E.db.unitframe.units[groupName][auraType].priority = concat(tbl,",")
 			end
 		end
 	elseif found and remove then
@@ -486,7 +491,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 			values = {
 				["FRAME"] = L["Frame"],
 				["DEBUFFS"] = L["Debuffs"],
-				["HEALTH"] = L["Health"],
+				["HEALTH"] = HEALTH,
 				["POWER"] = L["Power"],
 			},
 		}
@@ -499,7 +504,7 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 			values = {
 				["FRAME"] = L["Frame"],
 				["BUFFS"] = L["Buffs"],
-				["HEALTH"] = L["Health"],
+				["HEALTH"] = HEALTH,
 				["POWER"] = L["Power"],
 			},
 		}
@@ -843,14 +848,14 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 	local config = {
 		order = 100,
 		type = "group",
-		name = L["Health"],
+		name = HEALTH,
 		get = function(info) return E.db.unitframe.units[groupName]["health"][ info[getn(info)] ] end,
 		set = function(info, value) E.db.unitframe.units[groupName]["health"][ info[getn(info)] ] = value; updateFunc(UF, groupName, numUnits) end,
 		args = {
 			header = {
 				order = 1,
 				type = "header",
-				name = L["Health"],
+				name = HEALTH,
 			},
 			position = {
 				type = "select",
@@ -877,7 +882,7 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 				order = 5,
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"],
@@ -928,7 +933,7 @@ local function CreateCustomTextGroup(unit, objectName)
 		return
 	elseif E.Options.args.unitframe.args[unit].args.customText.args[objectName] then
 		E.Options.args.unitframe.args[unit].args.customText.args[objectName].hidden = false -- Re-show existing custom texts which belong to current profile and were previously hidden
-		tinsert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden again on profile change
+		insert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden again on profile change
 		return
 	end
 
@@ -1035,7 +1040,7 @@ local function CreateCustomTextGroup(unit, objectName)
 				order = 9,
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"],
@@ -1051,7 +1056,7 @@ local function CreateCustomTextGroup(unit, objectName)
 		},
 	}
 
-	tinsert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden on profile change
+	insert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden on profile change
 end
 
 local function GetOptionsTable_CustomText(updateFunc, groupName, numUnits, orderOverride)
@@ -1114,14 +1119,14 @@ local function GetOptionsTable_Name(updateFunc, groupName, numUnits)
 	local config = {
 		order = 400,
 		type = "group",
-		name = L["Name"],
+		name = NAME,
 		get = function(info) return E.db.unitframe.units[groupName]["name"][ info[getn(info)] ] end,
 		set = function(info, value) E.db.unitframe.units[groupName]["name"][ info[getn(info)] ] = value; updateFunc(UF, groupName, numUnits) end,
 		args = {
 			header = {
 				order = 1,
 				type = "header",
-				name = L["Name"],
+				name = NAME,
 			},
 			position = {
 				type = "select",
@@ -1148,7 +1153,7 @@ local function GetOptionsTable_Name(updateFunc, groupName, numUnits)
 				order = 5,
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"],
@@ -1330,7 +1335,7 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 				order = 10,
 				name = L["Attach Text To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"],
@@ -1444,7 +1449,7 @@ local function GetOptionsTable_RaidIcon(updateFunc, groupName, numUnits)
 				order = 4,
 				name = L["Attach To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"],
@@ -1693,7 +1698,7 @@ local function GetOptionsTable_ReadyCheckIcon(updateFunc, groupName)
 				type = "select",
 				name = L["Attach To"],
 				values = {
-					["Health"] = L["Health"],
+					["Health"] = HEALTH,
 					["Power"] = L["Power"],
 					["InfoPanel"] = L["Information Panel"],
 					["Frame"] = L["Frame"],
@@ -1833,7 +1838,7 @@ end
 
 E.Options.args.unitframe = {
 	type = "group",
-	name = L["UnitFrames"],
+	name = L["Unitframes"],
 	childGroups = "tree",
 	get = function(info) return E.db.unitframe[ info[getn(info)] ] end,
 	set = function(info, value) E.db.unitframe[ info[getn(info)] ] = value end,
@@ -1863,19 +1868,19 @@ E.Options.args.unitframe = {
 		generalOptionsGroup = {
 			order = 19,
 			type = "group",
-			name = L["General Options"],
+			name = GENERAL,
 			childGroups = "tab",
 			disabled = function() return not E.UnitFrames; end,
 			args = {
 				generalGroup = {
 					order = 1,
 					type = "group",
-					name = L["General"],
+					name = GENERAL,
 					args = {
 						header = {
 							order = 0,
 							type = "header",
-							name = L["General"],
+							name = GENERAL,
 						},
 						thinBorders = {
 							order = 1,
@@ -2104,7 +2109,7 @@ E.Options.args.unitframe = {
 								health = {
 									order = 10,
 									type = "color",
-									name = L["Health"],
+									name = HEALTH,
 								},
 								health_backdrop = {
 									order = 11,
@@ -2204,7 +2209,7 @@ E.Options.args.unitframe = {
 								},
 								NEUTRAL = {
 									order = 2,
-									name = L["Neutral"],
+									name = FACTION_STANDING_LABEL4,
 									type = "color",
 								},
 								GOOD = {
@@ -2492,12 +2497,12 @@ E.Options.args.unitframe.args.player = {
 		generalGroup = {
 			order = 1,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -2876,12 +2881,12 @@ E.Options.args.unitframe.args.target = {
 		generalGroup = {
 			order = 1,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -3137,12 +3142,12 @@ E.Options.args.unitframe.args.targettarget = {
 		generalGroup = {
 			order = 1,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -3272,12 +3277,12 @@ E.Options.args.unitframe.args.targettargettarget = {
 		generalGroup = {
 			order = 1,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -3409,12 +3414,12 @@ E.Options.args.unitframe.args.pet = {
 		generalGroup = {
 			order = 1,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -3584,12 +3589,12 @@ E.Options.args.unitframe.args.pettarget = {
 		generalGroup = {
 			order = 1,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -3753,12 +3758,12 @@ E.Options.args.unitframe.args.party = {
 		generalGroup = {
 			order = 5,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -4063,7 +4068,7 @@ E.Options.args.unitframe.args.party = {
 					order = 4,
 					name = L["Attach To"],
 					values = {
-						["Health"] = L["Health"],
+						["Health"] = HEALTH,
 						["Power"] = L["Power"],
 						["InfoPanel"] = L["Information Panel"],
 						["Frame"] = L["Frame"],
@@ -4181,7 +4186,7 @@ E.Options.args.unitframe.args.party = {
 					guiInline = true,
 					get = function(info) return E.db.unitframe.units["party"]["petsGroup"]["name"][ info[getn(info)] ] end,
 					set = function(info, value) E.db.unitframe.units["party"]["petsGroup"]["name"][ info[getn(info)] ] = value; UF:CreateAndUpdateHeaderGroup("party") end,
-					name = L["Name"],
+					name = NAME,
 					args = {
 						position = {
 							type = "select",
@@ -4270,7 +4275,7 @@ E.Options.args.unitframe.args.party = {
 					guiInline = true,
 					get = function(info) return E.db.unitframe.units["party"]["targetsGroup"]["name"][ info[getn(info)] ] end,
 					set = function(info, value) E.db.unitframe.units["party"]["targetsGroup"]["name"][ info[getn(info)] ] = value; UF:CreateAndUpdateHeaderGroup("party") end,
-					name = L["Name"],
+					name = NAME,
 					args = {
 						position = {
 							type = "select",
@@ -4348,12 +4353,12 @@ E.Options.args.unitframe.args.raid = {
 		generalGroup = {
 			order = 5,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"],
+					name = GENERAL,
 				},
 				enable = {
 					type = "toggle",
@@ -4665,7 +4670,7 @@ E.Options.args.unitframe.args.raid = {
 					order = 4,
 					name = L["Attach To"],
 					values = {
-						["Health"] = L["Health"],
+						["Health"] = HEALTH,
 						["Power"] = L["Power"],
 						["InfoPanel"] = L["Information Panel"],
 						["Frame"] = L["Frame"],
@@ -4785,7 +4790,7 @@ function E:RefreshCustomTextsConfigs()
 	for _, customText in pairs(CUSTOMTEXT_CONFIGS) do
 		customText.hidden = true
 	end
-	twipe(CUSTOMTEXT_CONFIGS)
+	wipe(CUSTOMTEXT_CONFIGS)
 
 	for unit, _ in pairs(E.db.unitframe.units) do
 		if E.db.unitframe.units[unit].customTexts then

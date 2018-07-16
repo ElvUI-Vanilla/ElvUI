@@ -1,22 +1,27 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local DT = E:GetModule("DataTexts");
 
+--Cache global variables
+--Lua functions
 local find, upper = string.find, string.upper
+local getn = table.getn
+--WoW API / Variables
+local GENERAL, NONE = GENERAL, NONE
 
-local datatexts = {};
+local datatexts = {}
 
 function DT:PanelLayoutOptions()
 	for name, data in pairs(DT.RegisteredDataTexts) do
 		datatexts[name] = data.localizedName or L[name]
 	end
-	datatexts[""] = NONE;
+	datatexts[""] = NONE
 
-	local order;
-	local table = E.Options.args.datatexts.args.panels.args;
+	local order
+	local table = E.Options.args.datatexts.args.panels.args
 	for pointLoc, tab in pairs(P.datatexts.panels) do
 		local pointLoc = pointLoc
-		if(not _G[pointLoc]) then table[pointLoc] = nil; return; end
-		if(type(tab) == "table") then
+		if not _G[pointLoc] then table[pointLoc] = nil return end
+		if type(tab) == "table" then
 			if find(pointLoc, "Chat") then
 				order = 15;
 			else
@@ -27,7 +32,7 @@ function DT:PanelLayoutOptions()
 				type = "group",
 				name = L[pointLoc] or pointLoc,
 				args = {}
-			};
+			}
 			for option, value in pairs(tab) do
 				table[pointLoc].args[option] = {
 					type = "select",
@@ -35,16 +40,16 @@ function DT:PanelLayoutOptions()
 					values = datatexts,
 					get = function(info) return E.db.datatexts.panels[pointLoc][ info[getn(info)] ]; end,
 					set = function(info, value) E.db.datatexts.panels[pointLoc][ info[getn(info)] ] = value; DT:LoadDataTexts(); end
-				};
+				}
 			end
-		elseif(type(tab) == "string") then
+		elseif type(tab) == "string" then
 			table.smallPanels.args[pointLoc] = {
 				type = "select",
 				name = L[pointLoc] or pointLoc,
 				values = datatexts,
 				get = function(info) return E.db.datatexts.panels[pointLoc]; end,
 				set = function(info, value) E.db.datatexts.panels[pointLoc] = value; DT:LoadDataTexts(); end
-			};
+			}
 		end
 	end
 end
@@ -69,18 +74,18 @@ E.Options.args.datatexts = {
 		general = {
 			order = 3,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["General"]
+					name = GENERAL
 				},
 				generalGroup = {
 					order = 2,
 					type = "group",
 					guiInline = true,
-					name = L["General"],
+					name = GENERAL,
 					args = {
 						battleground = {
 							order = 1,

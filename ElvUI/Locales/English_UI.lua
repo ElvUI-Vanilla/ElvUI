@@ -123,7 +123,6 @@ L["Auras Set"] = true;
 L["Auras"] = true;
 L["Caster DPS"] = true;
 L["Chat Set"] = true;
-L["Chat"] = true;
 L["Choose a theme layout you wish to use for your initial setup."] = true;
 L["Classic"] = true;
 L["Click the button below to resize your chat frames, unitframes, and reposition your actionbars."] = true;

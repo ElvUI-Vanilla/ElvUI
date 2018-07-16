@@ -1,5 +1,12 @@
-local E, L, V, P, G, _ = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local A = E:GetModule("Auras");
+
+--Cache global variables
+--Lua functions
+local format = string.format
+local getn = string.getn
+--WoW API / Variables
+local FONT_SIZE, GENERAL, NAME, NONE = FONT_SIZE, GENERAL, NAME, NONE
 
 local function GetAuraOptions(headerName)
 	local auraOptions = {
@@ -65,7 +72,7 @@ local function GetAuraOptions(headerName)
 			values = {
 				["INDEX"] = L["Index"],
 				["TIME"] = L["Time"],
-				["NAME"] = L["Name"]
+				["NAME"] = NAME
 			}
 		},
 		sortDir = {
@@ -89,16 +96,16 @@ local function GetAuraOptions(headerName)
 				[1] = L["Your Auras First"]
 			}
 		}
-	};
-	return auraOptions;
+	}
+	return auraOptions
 end
 
 E.Options.args.auras = {
 	type = "group",
 	name = L["Buffs and Debuffs"],
 	childGroups = "tab",
-	get = function(info) return E.db.auras[ info[getn(info)] ]; end,
-	set = function(info, value) E.db.auras[ info[getn(info)] ] = value; A:UpdateHeader(ElvUIPlayerBuffs); A:UpdateHeader(ElvUIPlayerDebuffs); end,
+	get = function(info) return E.db.auras[ info[getn(info)] ] end,
+	set = function(info, value) E.db.auras[ info[getn(info)] ] = value; A:UpdateHeader(ElvUIPlayerBuffs); A:UpdateHeader(ElvUIPlayerDebuffs) end,
 	args = {
 		intro = {
 			order = 1,
@@ -109,10 +116,10 @@ E.Options.args.auras = {
 			order = 2,
 			type = "toggle",
 			name = L["Enable"],
-			get = function(info) return E.private.auras[ info[getn(info)] ]; end,
+			get = function(info) return E.private.auras[ info[getn(info)] ] end,
 			set = function(info, value)
-				E.private.auras[ info[getn(info)] ] = value;
-				E:StaticPopup_Show("PRIVATE_RL");
+				E.private.auras[ info[getn(info)] ] = value
+				E:StaticPopup_Show("PRIVATE_RL")
 			end,
 		},
 		disableBlizzard = {
@@ -121,19 +128,19 @@ E.Options.args.auras = {
 			name = L["Disabled Blizzard"],
 			get = function(info) return E.private.auras[ info[getn(info)] ] end,
 			set = function(info, value)
-				E.private.auras[ info[getn(info)] ] = value;
-				E:StaticPopup_Show("PRIVATE_RL");
+				E.private.auras[ info[getn(info)] ] = value
+				E:StaticPopup_Show("PRIVATE_RL")
 			end
 		},
 		general = {
 			order = 4,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			args = {
 				header = {
 					order = 0,
 					type = "header",
-					name = L["General"]
+					name = GENERAL
 				},
 				fadeThreshold = {
 					order = 1,
@@ -162,7 +169,6 @@ E.Options.args.auras = {
 					values = {
 						["NONE"] = NONE,
 						["OUTLINE"] = "OUTLINE",
-
 						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE"
 					}
@@ -196,9 +202,9 @@ E.Options.args.auras = {
 					type = "group",
 					guiInline = true,
 					name = L["LBF Support"],
-					get = function(info) return E.private.auras.lbf[info[getn(info)]]; end,
-					set = function(info, value) E.private.auras.lbf[info[getn(info)]] = value; E:StaticPopup_Show("PRIVATE_RL"); end,
-					disabled = function() return not E.private.auras.enable; end,
+					get = function(info) return E.private.auras.lbf[info[getn(info)]] end,
+					set = function(info, value) E.private.auras.lbf[info[getn(info)]] = value; E:StaticPopup_Show("PRIVATE_RL") end,
+					disabled = function() return not E.private.auras.enable end,
 					args = {
 						enable = {
 							order = 1,
@@ -214,17 +220,17 @@ E.Options.args.auras = {
 			order = 5,
 			type = "group",
 			name = L["Buffs"],
-			get = function(info) return E.db.auras.buffs[ info[getn(info)] ]; end,
-			set = function(info, value) E.db.auras.buffs[ info[getn(info)] ] = value; A:UpdateHeader(ElvUIPlayerBuffs); end,
+			get = function(info) return E.db.auras.buffs[ info[getn(info)] ] end,
+			set = function(info, value) E.db.auras.buffs[ info[getn(info)] ] = value; A:UpdateHeader(ElvUIPlayerBuffs) end,
 			args = GetAuraOptions(L["Buffs"])
 		},
 		debuffs = {
 			order = 6,
 			type = "group",
 			name = L["Debuffs"],
-			get = function(info) return E.db.auras.debuffs[ info[getn(info)] ]; end,
-			set = function(info, value) E.db.auras.debuffs[ info[getn(info)] ] = value; A:UpdateHeader(ElvUIPlayerDebuffs); end,
+			get = function(info) return E.db.auras.debuffs[ info[getn(info)] ] end,
+			set = function(info, value) E.db.auras.debuffs[ info[getn(info)] ] = value; A:UpdateHeader(ElvUIPlayerDebuffs) end,
 			args = GetAuraOptions(L["Debuffs"])
 		}
 	}
-};
+}

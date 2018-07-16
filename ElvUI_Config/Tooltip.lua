@@ -1,7 +1,12 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local TT = E:GetModule("Tooltip");
 
+--Cache global variables
+--Lua functions
 local tonumber, tostring = tonumber, tostring
+local getn = table.getn
+--WoW API / Variables
+local ACTIONBAR_LABEL, FONT_SIZE, GENERAL, HIDE, NONE, OPACITY = ACTIONBAR_LABEL, FONT_SIZE, GENERAL, HIDE, NONE, OPACITY
 
 E.Options.args.tooltip = {
 	type = "group",
@@ -25,13 +30,13 @@ E.Options.args.tooltip = {
 		general = {
 			order = 3,
 			type = "group",
-			name = L["General"],
+			name = GENERAL,
 			disabled = function() return not E.Tooltip; end,
 			args = {
 				header = {
 					order = 0,
 					type = "header",
-					name = L["General"]
+					name = GENERAL
 				},
 				cursorAnchor = {
 					order = 1,
@@ -199,7 +204,7 @@ E.Options.args.tooltip = {
 				actionbars = {
 					order = 1,
 					type = "select",
-					name = L["ActionBars"],
+					name = ACTIONBAR_LABEL,
 					desc = L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."],
 					values = {
 						["ALL"] = L["Always Hide"],
@@ -225,7 +230,7 @@ E.Options.args.tooltip = {
 				unitFrames = {
 					order = 3,
 					type = "select",
-					name = L["UnitFrames"],
+					name = L["Unitframes"],
 					desc = L["Choose when you want the tooltip to show. If a modifer is chosen, then you need to hold that down to show the tooltip."],
 					values = {
 						["ALL"] = L["Always Hide"],
