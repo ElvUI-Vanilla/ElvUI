@@ -94,7 +94,7 @@ elseif GAME_LOCALE == "zhCN" then
 		["Druid"] = "德鲁伊",
 		["Paladin"] = "圣骑士",
 		["Shaman"] = "萨满祭司",
-		["Rogue"] = "潜行者",
+		["Rogue"] = "盗贼",
 
 		["WARLOCK"] = "术士",
 		["WARRIOR"] = "战士",
@@ -104,7 +104,7 @@ elseif GAME_LOCALE == "zhCN" then
 		["DRUID"] = "德鲁伊",
 		["PALADIN"] = "圣骑士",
 		["SHAMAN"] = "萨满祭司",
-		["ROGUE"] = "潜行者",
+		["ROGUE"] = "盗贼",
 	}
 elseif GAME_LOCALE == "zhTW" then
 	lib:SetCurrentTranslations {
