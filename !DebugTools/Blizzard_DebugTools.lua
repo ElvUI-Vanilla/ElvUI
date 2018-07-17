@@ -1,6 +1,8 @@
 local modulo = math.modulo
 local getn = table.getn
 
+local LUA_ERROR = "Lua Error"
+
 EVENT_TRACE_EVENT_HEIGHT = 16;
 EVENT_TRACE_MAX_ENTRIES = 1000;
 
