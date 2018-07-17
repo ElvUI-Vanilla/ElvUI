@@ -3,21 +3,33 @@ local DT = E:GetModule("DataTexts");
 
 --Cache global variables
 --Lua functions
-local time = time
-local format, join = string.format, string.join
+local next, unpack = next, unpack
+local format, gsub, join = string.format, string.gsub, string.join
+local abs = math.abs
+local getn, insert = table.getn, table.insert
+local time, utf8sub = time, string.utf8sub
 --WoW API / Variables
 local GetGameTime = GetGameTime
 local GetNumSavedInstances = GetNumSavedInstances
 local GetSavedInstanceInfo = GetSavedInstanceInfo
+local IsAddOnLoaded = IsAddOnLoaded
 local SecondsToTime = SecondsToTime
-local TIMEMANAGER_TOOLTIP_REALMTIME = "Realm time:"
 
 local timeDisplayFormat = ""
 local dateDisplayFormat = ""
 local europeDisplayFormat_nocolor = join("", "%02d", ":|r%02d")
-local lockoutInfoFormatNoEnc = "%s%s |cffaaaaaa(%s)"
-local difficultyInfo = {"N", "N", "H", "H"}
+local lockoutInfoFormat = "|cffaaaaaa(%s)"
 local lockoutColorExtended, lockoutColorNormal = {r = 0.3, g = 1, b = 0.3}, {r = .8, g = .8, b = .8}
+
+local function OnClick()
+	if IsAddOnLoaded("TimeManager") then -- https://github.com/gashole/TimeManager
+		if arg1 == "RightButton" then
+			TimeManagerClockButton_OnClick()
+		else
+			GameTimeFrame_OnClick()
+		end
+	end
+end
 
 local function OnLeave()
 	DT.tooltip:Hide()
@@ -26,28 +38,33 @@ end
 local function OnEnter(self)
 	DT:SetupTooltip(self)
 
-	local name, _, reset, difficultyId, locked, extended, isRaid, maxPlayers
-	local oneraid, lockoutColor
-	for i = 1, GetNumSavedInstances() do
-		name, _, reset, difficultyId, locked, extended, _, isRaid, maxPlayers = GetSavedInstanceInfo(i)
-		if isRaid and (locked or extended) and name then
-			if not oneraid then
-				DT.tooltip:AddLine(L["Saved Raid(s)"])
-				DT.tooltip:AddLine(" ")
-				oneraid = true
-			end
-			if extended then
-				lockoutColor = lockoutColorExtended
-			else
-				lockoutColor = lockoutColorNormal
-			end
+	RequestRaidInfo()
 
-			DT.tooltip:AddDoubleLine(format(lockoutInfoFormatNoEnc, maxPlayers, difficultyInfo[difficultyId], name), SecondsToTime(reset, false, nil, 3), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
+	local lockedInstances = {raids = {}}
+	local _, name, reset
+
+	for i = 1, GetNumSavedInstances() do
+		name, _, reset = GetSavedInstanceInfo(i)
+		if name then
+			insert(lockedInstances["raids"], {name, reset})
 		end
 	end
 
-	DT.tooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_REALMTIME, format(europeDisplayFormat_nocolor, GetGameTime()), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+	if next(lockedInstances["raids"]) then
+		DT.tooltip:AddLine(" ")
+		DT.tooltip:AddLine(L["Saved Raid(s)"])
 
+		for i = 1, getn(lockedInstances["raids"]) do
+			name, reset = unpack(lockedInstances["raids"][i])
+			lockoutColor = extended and lockoutColorExtended or lockoutColorNormal
+			DT.tooltip:AddDoubleLine(format(lockoutInfoFormat, name), SecondsToTime(abs(reset), 1, 1, false), 1, 1, 1, lockoutColor.r, lockoutColor.g, lockoutColor.b)
+		end
+
+		DT.tooltip:Show()
+		DT.tooltip:AddLine(" ")
+	end
+
+	DT.tooltip:AddDoubleLine(L["Realm time:"], format(europeDisplayFormat_nocolor, GetGameTime()), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
 	DT.tooltip:Show()
 end
 
@@ -57,6 +74,14 @@ local function OnUpdate(self, t)
 	int = int - t
 
 	if int > 0 then return end
+
+	if IsAddOnLoaded("TimeManager") then -- https://github.com/gashole/TimeManager
+		if TimeManagerClockButton.alarmFiring then
+			-- E:Flash(self)
+		else
+			-- E:StopFlash(self)
+		end
+	end
 
 	self.text:SetText(gsub(gsub(BetterDate(E.db.datatexts.timeFormat.." "..E.db.datatexts.dateFormat, time()), ":", timeDisplayFormat), "%s", dateDisplayFormat))
 
@@ -74,4 +99,4 @@ local function ValueColorUpdate(hex)
 end
 E["valueColorUpdateFuncs"][ValueColorUpdate] = true
 
-DT:RegisterDatatext("Time", nil, nil, OnUpdate, nil, OnEnter, OnLeave)
+DT:RegisterDatatext("Time", nil, nil, OnUpdate, OnClick, OnEnter, OnLeave)

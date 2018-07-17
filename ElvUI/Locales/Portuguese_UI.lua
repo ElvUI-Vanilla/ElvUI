@@ -83,6 +83,7 @@ L["Miss Chance"] = true;
 L["Mitigation By Level: "] = "Mitigação por nível"
 L["No Guild"] = "Sem Guilda"
 L["Profit:"] = "Lucro:"
+L["Realm time:"] = "Hora do reino:"
 L["Reload UI"] = true;
 L["Reset Data: Hold Shift + Right Click"] = "Redefinir Dados: Segurar Shifr + Clique Direito"
 L["Right Click: Reset CPU Usage"] = true;

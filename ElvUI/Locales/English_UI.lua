@@ -83,6 +83,7 @@ L["Miss Chance"] = true;
 L["Mitigation By Level: "] = true;
 L["No Guild"] = true;
 L["Profit:"] = true;
+L["Realm time:"] = true;
 L["Reload UI"] = true;
 L["Reset Data: Hold Shift + Right Click"] = true;
 L["Right Click: Reset CPU Usage"] = true;
