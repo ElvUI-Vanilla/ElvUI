@@ -320,6 +320,40 @@ function string.trim(str, chars)
 end
 strtrim = string.trim
 
+function strconcat(...)
+	if arg.n == 0 then
+		return ""
+	elseif arg.n == 1 then
+		return tostring(arg[1])
+	else
+		for i = 1, arg.n do
+			if type(arg[i]) ~= "string" then
+				error(format("attempt to concatenate a %s value", type(arg[i])), 2)
+			end
+		end
+	end
+
+	return concat(arg)
+end
+
+function table.maxn(t)
+	if type(t) ~= "table" then
+		error(format("bad argument #1 to 'maxn' (table expected, got %s)", t and type(t) or "no value"), 2)
+	end
+
+	local maxn = 0
+	local i = next(t, nil)
+
+	while i do
+		if type(i) == "number" and i > maxn then
+			maxn = i
+		end
+		i = next(t, i)
+	end
+
+	return maxn
+end
+
 function table.wipe(t)
 	if type(t) ~= "table" then
 		error(format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"), 2)
