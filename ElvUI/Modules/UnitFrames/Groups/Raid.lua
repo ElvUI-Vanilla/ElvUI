@@ -42,14 +42,31 @@ function UF:Construct_RaidFrames()
 	return self
 end
 
+function UF:RaidSmartVisibility()
+	if not self then self = this end
+
+	if GetNumRaidMembers() > 1 then
+		self:Show()
+	else
+		self:Hide()
+	end
+end
+
 function UF:Update_RaidHeader(header)
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
 		E:CreateMover(header, header:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID")
+
+		header:RegisterEvent("PARTY_MEMBERS_CHANGED")
+		header:RegisterEvent("RAID_ROSTER_UPDATE")
+		header:SetScript("OnEvent", UF["RaidSmartVisibility"])
+
 		header.positioned = true
 	end
+
+	UF.RaidSmartVisibility(header)
 end
 
 function UF:Update_RaidFrames(frame, db)

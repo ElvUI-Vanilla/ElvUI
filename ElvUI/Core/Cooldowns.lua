@@ -7,7 +7,6 @@ local format = string.format
 local GetTime = GetTime
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local hooksecurefunc = hooksecurefunc
 
 local ICON_SIZE = 36 --the normal size for an icon (don't change this)
 local FONT_SIZE = 20 --the base font size to use at a scale of 1

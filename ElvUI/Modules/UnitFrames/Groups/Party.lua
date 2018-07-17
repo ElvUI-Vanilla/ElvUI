@@ -42,16 +42,32 @@ function UF:Construct_PartyFrames()
 	return self;
 end
 
+function UF:PartySmartVisibility()
+	if not self then self = this end
+
+	if GetNumRaidMembers() < 1 then
+		self:Show()
+	else
+		self:Hide()
+	end
+end
+
 function UF:Update_PartyHeader(header)
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
 		E:CreateMover(header, header:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY")
+
+		header:RegisterEvent("PARTY_MEMBERS_CHANGED")
+		header:RegisterEvent("RAID_ROSTER_UPDATE")
+		header:SetScript("OnEvent", UF["PartySmartVisibility"])
+
 		header.positioned = true
 	end
-end
 
+	UF.PartySmartVisibility(header)
+end
 
 function UF:Update_PartyFrames(frame, db)
 	frame.db = db
