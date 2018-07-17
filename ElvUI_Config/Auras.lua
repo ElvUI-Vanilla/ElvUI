@@ -4,7 +4,7 @@ local A = E:GetModule("Auras");
 --Cache global variables
 --Lua functions
 local format = string.format
-local getn = string.getn
+local getn = table.getn
 --WoW API / Variables
 local FONT_SIZE, GENERAL, NAME, NONE = FONT_SIZE, GENERAL, NAME, NONE
 
