@@ -378,7 +378,7 @@ function B:IsSpecialtyBag(bagID)
 	local bag = GetInventoryItemLink("player", inventorySlot)
 	if not bag then return false end
 
-	local family = GetBagFamily(bag)
+	local family = GetItemFamily(bag, true)
 	if family == 0 or family == nil then return false end
 
 	return family
@@ -393,7 +393,7 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 			itemFamily = 1
 		end
 	end
-	local bagFamily = GetBagFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(targetBag)))
+	local bagFamily = GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(targetBag)), true)
 	if itemFamily then
 		return (bagFamily == 0) or band(itemFamily, bagFamily) > 0
 	else

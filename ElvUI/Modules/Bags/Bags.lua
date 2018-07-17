@@ -454,7 +454,7 @@ function B:Layout(isBank)
 			end
 
 			f.Bags[bagID].numSlots = numSlots
-			f.Bags[bagID].type = GetBagFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)))
+			f.Bags[bagID].type = GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)), true)
 
 			--Hide unused slots
 			for i = 1, MAX_CONTAINER_ITEMS do
