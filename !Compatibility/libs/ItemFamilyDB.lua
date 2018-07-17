@@ -1,30 +1,29 @@
-local MAJOR_VERSION = "LibBabble-ItemBagFamily-3.0"
-local MINOR_VERSION = 90000 + tonumber(string.match("$Revision: 50 $", "%d+"))
+local MAJOR_VERSION = "ItemFamilyDB"
+local MINOR_VERSION = 90000 + tonumber(string.match("$Revision: 1 $", "%d+"))
 
-if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
-local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
+local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
 
-lib.ItemBagFamily = {
-	[8217] = 1,
-	[7371] = 1,
-	[7278] = 1,
-	[5439] = 1,
-	[3605] = 1,
-	[3573] = 1,
-	[2662] = 1,
+lib.BagFamily = {
 	[2101] = 1,
-	[19319] = 1,
-	[18714] = 1,
+	[2662] = 1,
+	[3573] = 1,
+	[3605] = 1,
+	[5439] = 1,
+	[7278] = 1,
+	[7371] = 1,
+	[8217] = 1,
 	[11362] = 1,
-	[8218] = 2,
-	[7372] = 2,
-	[7279] = 2,
-	[5441] = 2,
-	[3604] = 2,
-	[3574] = 2,
-	[2663] = 2,
+	[18714] = 1,
+	[19319] = 1,
 	[2102] = 2,
+	[2663] = 2,
+	[3574] = 2,
+	[3604] = 2,
+	[5441] = 2,
+	[7279] = 2,
+	[7372] = 2,
+	[8218] = 2,
 	[19320] = 2,
 	[21340] = 4,
 	[21341] = 4,
