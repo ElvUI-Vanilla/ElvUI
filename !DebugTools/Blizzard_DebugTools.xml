@@ -437,10 +437,10 @@
 						<Size x="343" y="194"/>
 						<Scripts>
 							<OnCursorChanged>
-								ScrollingEdit_OnCursorChanged(this);
+								ScrollingEdit_OnCursorChanged(this, arg1, arg2, arg3, arg4);
 							</OnCursorChanged>
 							<OnUpdate>
-								ScrollingEdit_OnUpdate(this, arg1, this:GetParent());
+								ScrollingEdit_OnUpdate(this, this:GetParent());
 							</OnUpdate>
 							<OnEditFocusGained>
 								this:HighlightText(0);
