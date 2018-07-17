@@ -1,27 +1,29 @@
 local modulo = math.modulo
 local getn = table.getn
 
-EVENT_TRACE_EVENT_HEIGHT = 16
-EVENT_TRACE_MAX_ENTRIES = 1000
+local LUA_ERROR = "Lua Error"
 
-DEBUGLOCALS_LEVEL = 4
-local _normalFontColor = {1, .82, 0, 1}
+EVENT_TRACE_EVENT_HEIGHT = 16;
+EVENT_TRACE_MAX_ENTRIES = 1000;
 
-EVENT_TRACE_SYSTEM_TIMES = {}
-EVENT_TRACE_SYSTEM_TIMES["System"] = true
-EVENT_TRACE_SYSTEM_TIMES["Elapsed"] = true
+DEBUGLOCALS_LEVEL = 4;
+local _normalFontColor = {1, .82, 0, 1};
 
-EVENT_TRACE_EVENT_COLORS = {}
-EVENT_TRACE_EVENT_COLORS["System"] = _normalFontColor
-EVENT_TRACE_EVENT_COLORS["Elapsed"] = {.6, .6, .6, 1}
+EVENT_TRACE_SYSTEM_TIMES = {};
+EVENT_TRACE_SYSTEM_TIMES["System"] = true;
+EVENT_TRACE_SYSTEM_TIMES["Elapsed"] = true;
 
-local _EventTraceFrame
+EVENT_TRACE_EVENT_COLORS = {};
+EVENT_TRACE_EVENT_COLORS["System"] = _normalFontColor;
+EVENT_TRACE_EVENT_COLORS["Elapsed"] = {.6, .6, .6, 1};
 
-local _framesSinceLast = 0
-local _timeSinceLast = 0
+local _EventTraceFrame;
 
-local _timer = CreateFrame("FRAME")
-_timer:SetScript("OnUpdate", function () _framesSinceLast = _framesSinceLast + 1 _timeSinceLast = _timeSinceLast + arg1 end)
+local _framesSinceLast = 0;
+local _timeSinceLast = 0;
+
+local _timer = CreateFrame("FRAME");
+_timer:SetScript("OnUpdate", function () _framesSinceLast = _framesSinceLast + 1; _timeSinceLast = _timeSinceLast + arg1; end);
 
 function EventTraceFrame_OnLoad(self)
 	local frameName = self:GetName()
@@ -29,487 +31,487 @@ function EventTraceFrame_OnLoad(self)
 	_G[frameName.."DialogBG"]:SetVertexColor(0, 0, 0)
 	_G[frameName.."DialogBG"]:SetAlpha(0.75)
 
-	self.buttons = {}
-	self.events = {}
-	self.times = {}
-	self.rawtimes = {}
-	self.eventids = {}
-	self.eventtimes = {}
-	self.numhandlers = {}
-	self.slowesthandlers = {}
+	self.buttons = {};
+	self.events = {};
+	self.times = {};
+	self.rawtimes = {};
+	self.eventids = {};
+	self.eventtimes = {};
+	self.numhandlers = {};
+	self.slowesthandlers = {};
 	self.slowesthandlertimes = {}
-	self.timeSinceLast = {}
-	self.framesSinceLast = {}
-	self.args = {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}}
-	self.ignoredEvents = {}
-	self.lastIndex = 0
-	self.visibleButtons = 0
-	_EventTraceFrame = self
-	self:SetScript("OnSizeChanged", function() EventTraceFrame_OnSizeChanged(this, this:GetWidth(), this:GetHeight()) end)
-	EventTraceFrame_OnSizeChanged(self, self:GetWidth(), self:GetHeight())
-	self:EnableMouse(true)
-	self:EnableMouseWheel(true)
-	self:SetScript("OnMouseWheel", function() EventTraceFrame_OnMouseWheel(this, arg1) end)
+	self.timeSinceLast = {};
+	self.framesSinceLast = {};
+	self.args = {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}};
+	self.ignoredEvents = {};
+	self.lastIndex = 0;
+	self.visibleButtons = 0;
+	_EventTraceFrame = self;
+	self:SetScript("OnSizeChanged", function() EventTraceFrame_OnSizeChanged(this, this:GetWidth(), this:GetHeight()) end);
+	EventTraceFrame_OnSizeChanged(self, self:GetWidth(), self:GetHeight());
+	self:EnableMouse(true);
+	self:EnableMouseWheel(true);
+	self:SetScript("OnMouseWheel", function() EventTraceFrame_OnMouseWheel(this, arg1) end);
 end
 
-local _workTable = {}
-function EventTraceFrame_OnEvent(self, event, ...)
-	if not self.ignoredEvents[event] then
-		if _framesSinceLast ~= 0 and event ~= "On Update" then
-			EventTraceFrame_OnEvent(self, "On Update")
+local _workTable = {};
+function EventTraceFrame_OnEvent (self, event, ...)
+	if (not self.ignoredEvents[event]) then
+		if (_framesSinceLast ~= 0 and event ~= "On Update") then
+			EventTraceFrame_OnEvent(self, "On Update");
 		end
 
-		local nextIndex = self.lastIndex + 1
-		if nextIndex > EVENT_TRACE_MAX_ENTRIES then
-			local staleIndex = nextIndex - EVENT_TRACE_MAX_ENTRIES
-			self.events[staleIndex] = nil
-			self.times[staleIndex] = nil
-			self.rawtimes[staleIndex] = nil
-			self.timeSinceLast[staleIndex] = nil
-			self.framesSinceLast[staleIndex] = nil
-			self.eventids[staleIndex] = nil
-			self.eventtimes[staleIndex] = nil
-			self.numhandlers[staleIndex] = nil
-			self.slowesthandlers[staleIndex] = nil
-			self.slowesthandlertimes[staleIndex] = nil
+		local nextIndex = self.lastIndex + 1;
+		if (nextIndex > EVENT_TRACE_MAX_ENTRIES) then
+			local staleIndex = nextIndex - EVENT_TRACE_MAX_ENTRIES;
+			self.events[staleIndex] = nil;
+			self.times[staleIndex] = nil;
+			self.rawtimes[staleIndex] = nil;
+			self.timeSinceLast[staleIndex] = nil;
+			self.framesSinceLast[staleIndex] = nil;
+			self.eventids[staleIndex] = nil;
+			self.eventtimes[staleIndex] = nil;
+			self.numhandlers[staleIndex] = nil;
+			self.slowesthandlers[staleIndex] = nil;
+			self.slowesthandlertimes[staleIndex] = nil;
 			for k, v in next, self.args do
-				self.args[k][staleIndex] = nil
+				self.args[k][staleIndex] = nil;
 			end
 		end
 
-		if event == "Begin Capture" or event == "End Capture" then
-			self.times[nextIndex] = "System"
-			if self.eventsToCapture then
-				self.events[nextIndex] = string.format("%s (%s events)", event, tostring(self.eventsToCapture))
+		if (event == "Begin Capture" or event == "End Capture") then
+			self.times[nextIndex] = "System";
+			if (self.eventsToCapture) then
+				self.events[nextIndex] = string.format("%s (%s events)", event, tostring(self.eventsToCapture));
 			else
-				self.events[nextIndex] = event
+				self.events[nextIndex] = event;
 			end
-			self.timeSinceLast[nextIndex] = 0
-			self.framesSinceLast[nextIndex] = 0
-		elseif event == "On Update" then
-			self.times[nextIndex] = "Elapsed"
-			self.events[nextIndex] = string.format("%.3f sec - %d frame(s)", _timeSinceLast, _framesSinceLast)
-			self.timeSinceLast[nextIndex] = _timeSinceLast
-			self.framesSinceLast[nextIndex] = _framesSinceLast
-			_timeSinceLast = 0
-			_framesSinceLast = 0
+			self.timeSinceLast[nextIndex] = 0;
+			self.framesSinceLast[nextIndex] = 0;
+		elseif (event == "On Update") then
+			self.times[nextIndex] = "Elapsed";
+			self.events[nextIndex] = string.format("%.3f sec - %d frame(s)", _timeSinceLast, _framesSinceLast);
+			self.timeSinceLast[nextIndex] = _timeSinceLast;
+			self.framesSinceLast[nextIndex] = _framesSinceLast;
+			_timeSinceLast = 0;
+			_framesSinceLast = 0;
 		else
-			self.events[nextIndex] = event
-			local seconds = GetTime()
-			local minutes = math.floor(math.floor(seconds) / 60)
-			local hours = math.floor(minutes / 60)
-			seconds = seconds - 60 * minutes
-			minutes = minutes - 60 * hours
+			self.events[nextIndex] = event;
+			local seconds = GetTime();
+			local minutes = math.floor(math.floor(seconds) / 60);
+			local hours = math.floor(minutes / 60);
+			seconds = seconds - 60 * minutes;
+			minutes = minutes - 60 * hours;
 			hours = modulo(hours, 1000)
-			self.times[nextIndex] = string.format("%.2d:%.2d:%06.3f", hours, minutes, seconds)
-			self.timeSinceLast[nextIndex] = 0
-			self.framesSinceLast[nextIndex] = 0
-			self.eventids[nextIndex] = GetCurrentEventID()
+			self.times[nextIndex] = string.format("%.2d:%.2d:%06.3f", hours, minutes, seconds);
+			self.timeSinceLast[nextIndex] = 0;
+			self.framesSinceLast[nextIndex] = 0;
+			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = getn(arg)
+			local numArgs = getn(arg);
 			for i = 1, numArgs do
-				if not self.args[i] then
-					self.args[i] = {}
+				if (not self.args[i]) then
+					self.args[i] = {};
 				end
-				self.args[i][nextIndex] = arg[i]
+				self.args[i][nextIndex] = arg[i];
 			end
 
-			if self.eventsToCapture then
-				self.eventsToCapture = self.eventsToCapture - 1
+			if (self.eventsToCapture) then
+				self.eventsToCapture = self.eventsToCapture - 1;
 			end
 		end
 
-		self.rawtimes[nextIndex] = GetTime()
-		self.lastIndex = nextIndex
-		if self.eventsToCapture and self.eventsToCapture <= 0 then
-			self.eventsToCapture = nil
-			EventTraceFrame_StopEventCapture()
+		self.rawtimes[nextIndex] = GetTime();
+		self.lastIndex = nextIndex;
+		if (self.eventsToCapture and self.eventsToCapture <= 0) then
+			self.eventsToCapture = nil;
+			EventTraceFrame_StopEventCapture();
 		end
 	end
 end
 
 function EventTraceFrame_OnShow(self)
-	wipe(self.ignoredEvents)
-	local scrollBar = _G["EventTraceFrameScroll"]
-	local minValue, maxValue = scrollBar:GetMinMaxValues()
-	scrollBar:SetValue(maxValue)
+	wipe(self.ignoredEvents);
+	local scrollBar = _G["EventTraceFrameScroll"];
+	local minValue, maxValue = scrollBar:GetMinMaxValues();
+	scrollBar:SetValue(maxValue);
 end
 
-function EventTraceFrame_OnUpdate(self, elapsed)
-	EventTraceFrame_Update()
+function EventTraceFrame_OnUpdate (self, elapsed)
+	EventTraceFrame_Update();
 end
 
-function EventTraceFrame_OnSizeChanged(self, width, height)
-	local numButtonsToDisplay = math.floor((height - 36)/EVENT_TRACE_EVENT_HEIGHT)
-	local numButtonsCreated = getn(self.buttons)
+function EventTraceFrame_OnSizeChanged (self, width, height)
+	local numButtonsToDisplay = math.floor((height - 36)/EVENT_TRACE_EVENT_HEIGHT);
+	local numButtonsCreated = getn(self.buttons);
 
-	if numButtonsCreated < numButtonsToDisplay then
+	if (numButtonsCreated < numButtonsToDisplay) then
 		for i = numButtonsCreated + 1, numButtonsToDisplay do
-			local button = CreateFrame("BUTTON", "EventTraceFrameButton" .. i, self, "EventTraceEventTemplate")
-			button:SetPoint("BOTTOMLEFT", 12, (16 * (i - 1)) + 12)
-			button:SetPoint("RIGHT", -28, 0)
-			tinsert(self.buttons, button)
+			local button = CreateFrame("BUTTON", "EventTraceFrameButton" .. i, self, "EventTraceEventTemplate");
+			button:SetPoint("BOTTOMLEFT", 12, (16 * (i - 1)) + 12);
+			button:SetPoint("RIGHT", -28, 0);
+			tinsert(self.buttons, button);
 		end
 		for i = self.visibleButtons + 1, numButtonsToDisplay do
-			self.buttons[i]:Show()
+			self.buttons[i]:Show();
 		end
-		self.visibleButtons = numButtonsToDisplay
-		EventTraceFrame_Update()
-	elseif self.visibleButtons < numButtonsToDisplay then
+		self.visibleButtons = numButtonsToDisplay;
+		EventTraceFrame_Update();
+	elseif (self.visibleButtons < numButtonsToDisplay) then
 		for i = self.visibleButtons + 1, numButtonsToDisplay do
-			self.buttons[i]:Show()
+			self.buttons[i]:Show();
 		end
-		self.visibleButtons = numButtonsToDisplay
-		EventTraceFrame_Update()
-	elseif numButtonsToDisplay < self.visibleButtons then
+		self.visibleButtons = numButtonsToDisplay;
+		EventTraceFrame_Update();
+	elseif (numButtonsToDisplay < self.visibleButtons) then
 		for i = numButtonsToDisplay + 1, self.visibleButtons do
-			self.buttons[i]:Hide()
+			self.buttons[i]:Hide();
 		end
-		self.visibleButtons = numButtonsToDisplay
+		self.visibleButtons = numButtonsToDisplay;
 	end
 end
 
 function EventTraceFrame_Update ()
-	local offset = 0
+	local offset = 0;
 
-	local scrollBar = _G["EventTraceFrameScroll"]
-	local scrollBarValue = scrollBar:GetValue()
-	local minValue, maxValue = scrollBar:GetMinMaxValues()
+	local scrollBar = _G["EventTraceFrameScroll"];
+	local scrollBarValue = scrollBar:GetValue();
+	local minValue, maxValue = scrollBar:GetMinMaxValues();
 
-	local firstID = max(1, _EventTraceFrame.lastIndex - EVENT_TRACE_MAX_ENTRIES + 1)
-	local lastID = _EventTraceFrame.lastIndex or 1
+	local firstID = max(1, _EventTraceFrame.lastIndex - EVENT_TRACE_MAX_ENTRIES + 1);
+	local lastID = _EventTraceFrame.lastIndex or 1;
 
-	if firstID >= lastID then
-		scrollBar:SetMinMaxValues(firstID-1, lastID)
+	if (firstID >= lastID) then
+		scrollBar:SetMinMaxValues(firstID-1, lastID);
 	else
-		scrollBar:SetMinMaxValues(firstID, lastID)
+		scrollBar:SetMinMaxValues(firstID, lastID);
 	end
-	if scrollBarValue < firstID then
-		scrollBar:SetValue(firstID)
-		scrollBarValue = firstID
+	if (scrollBarValue < firstID) then
+		scrollBar:SetValue(firstID);
+		scrollBarValue = firstID;
 	end
 
-	if scrollBarValue < 1 then
-		scrollBarValue = 1
-	elseif not _EventTraceFrame.selectedEvent then
-		if scrollBarValue == maxValue then
-			scrollBar:SetValue(_EventTraceFrame.lastIndex)
+	if (scrollBarValue < 1) then
+		scrollBarValue = 1;
+	elseif (not _EventTraceFrame.selectedEvent) then
+		if (scrollBarValue == maxValue) then
+			scrollBar:SetValue(_EventTraceFrame.lastIndex);
 		end
 	end
 
 	for i = 1, _EventTraceFrame.visibleButtons do
-		local button = _EventTraceFrame.buttons[i]
-		if button then
-			local index = scrollBarValue - (i - 1)
-			local event = _EventTraceFrame.events[index]
-			if event then
+		local button = _EventTraceFrame.buttons[i];
+		if (button) then
+			local index = scrollBarValue - (i - 1);
+			local event = _EventTraceFrame.events[index];
+			if (event) then
 				local timeString = _EventTraceFrame.times[index]
-				button.index = index
-				button.time:SetText(timeString)
-				button.event:SetText(event)
-				if _EventTraceFrame.eventids[index] and not _EventTraceFrame.eventtimes[index] then
-					local eventTime, numHandlers, slowestHandler, slowestHandlerTime = GetEventTime(_EventTraceFrame.eventids[index])
-					_EventTraceFrame.eventtimes[index] = eventTime
-					_EventTraceFrame.numhandlers[index] = numHandlers
-					_EventTraceFrame.slowesthandlers[index] = slowestHandler
-					_EventTraceFrame.slowesthandlertimes[index] = slowestHandlerTime
+				button.index = index;
+				button.time:SetText(timeString);
+				button.event:SetText(event);
+				if (_EventTraceFrame.eventids[index] and not _EventTraceFrame.eventtimes[index]) then
+					local eventTime, numHandlers, slowestHandler, slowestHandlerTime = GetEventTime(_EventTraceFrame.eventids[index]);
+					_EventTraceFrame.eventtimes[index] = eventTime;
+					_EventTraceFrame.numhandlers[index] = numHandlers;
+					_EventTraceFrame.slowesthandlers[index] = slowestHandler;
+					_EventTraceFrame.slowesthandlertimes[index] = slowestHandlerTime;
 				end
-				local color = EVENT_TRACE_EVENT_COLORS[event] or EVENT_TRACE_EVENT_COLORS[timeString]
-				if color then
-					button.time:SetTextColor(unpack(color))
-					button.event:SetTextColor(unpack(color))
+				local color = EVENT_TRACE_EVENT_COLORS[event] or EVENT_TRACE_EVENT_COLORS[timeString];
+				if (color) then
+					button.time:SetTextColor(unpack(color));
+					button.event:SetTextColor(unpack(color));
 				else
-					local eventTime = _EventTraceFrame.eventtimes[index]
-					if eventTime and eventTime > 50.0 then
-						button.time:SetTextColor(1, 0, 0, 1)
-						button.event:SetTextColor(1, 0, 0, 1)
-					elseif eventTime and eventTime > 20.0 then
-						button.time:SetTextColor(1, .5, 0, 1)
-						button.event:SetTextColor(1, .5, 0, 1)
-					elseif eventTime and eventTime > 10.0 then
-						button.time:SetTextColor(1, .8, 0, 1)
-						button.event:SetTextColor(1, .8, 0, 1)
-					elseif eventTime and eventTime > 5.0 then
-						button.time:SetTextColor(1, 1, .6, 1)
-						button.event:SetTextColor(1, 1, .6, 1)
+					local eventTime = _EventTraceFrame.eventtimes[index];
+					if (eventTime and eventTime > 50.0) then
+						button.time:SetTextColor(1, 0, 0, 1);
+						button.event:SetTextColor(1, 0, 0, 1);
+					elseif (eventTime and eventTime > 20.0) then
+						button.time:SetTextColor(1, .5, 0, 1);
+						button.event:SetTextColor(1, .5, 0, 1);
+					elseif (eventTime and eventTime > 10.0) then
+						button.time:SetTextColor(1, .8, 0, 1);
+						button.event:SetTextColor(1, .8, 0, 1);
+					elseif (eventTime and eventTime > 5.0) then
+						button.time:SetTextColor(1, 1, .6, 1);
+						button.event:SetTextColor(1, 1, .6, 1);
 					else
-						button.time:SetTextColor(1, 1, 1, 1)
-						button.event:SetTextColor(1, 1, 1, 1)
+						button.time:SetTextColor(1, 1, 1, 1);
+						button.event:SetTextColor(1, 1, 1, 1);
 					end
 				end
-				button:Show()
-				if _EventTraceFrame.selectedEvent then
-					if index == _EventTraceFrame.selectedEvent then
-						EventTraceFrameEvent_DisplayTooltip(button)
-						button:GetHighlightTexture():SetVertexColor(.15, .25, 1, .35)
-						button:LockHighlight(true)
-						button.wasSelected = true
-					elseif button.wasSelected then
-						button.wasSelected = nil
-						button:GetHighlightTexture():SetVertexColor(.8, .8, 1, .15)
-						button:UnlockHighlight()
+				button:Show();
+				if (_EventTraceFrame.selectedEvent) then
+					if (index == _EventTraceFrame.selectedEvent) then
+						EventTraceFrameEvent_DisplayTooltip(button);
+						button:GetHighlightTexture():SetVertexColor(.15, .25, 1, .35);
+						button:LockHighlight(true);
+						button.wasSelected = true;
+					elseif (button.wasSelected) then
+						button.wasSelected = nil;
+						button:GetHighlightTexture():SetVertexColor(.8, .8, 1, .15);
+						button:UnlockHighlight();
 					end
 				else
-					if button.wasSelected then
-						button.wasSelected = nil
-						button:GetHighlightTexture():SetVertexColor(.8, .8, 1, .15)
-						button:UnlockHighlight()
+					if (button.wasSelected) then
+						button.wasSelected = nil;
+						button:GetHighlightTexture():SetVertexColor(.8, .8, 1, .15);
+						button:UnlockHighlight();
 					end
 				end
-				if button == GetMouseFocus() then
-					EventTraceFrameEvent_OnEnter(button)
+				if (button == GetMouseFocus()) then
+					EventTraceFrameEvent_OnEnter(button);
 				else
-					button.HideButton:Hide()
+					button.HideButton:Hide();
 				end
 			else
-				button.index = index
-				button:Hide()
+				button.index = index;
+				button:Hide();
 			end
 		end
 	end
 
-	EventTraceFrame_UpdateKeyboardStatus()
+	EventTraceFrame_UpdateKeyboardStatus();
 end
 
 function EventTraceFrame_StartEventCapture()
-	if _EventTraceFrame.started then
-		return
+	if (_EventTraceFrame.started) then
+		return;
 	end
 
 	EventHandler_Enable()
 
-	_EventTraceFrame.started = true
-	_framesSinceLast = 0
-	_timeSinceLast = 0
-	_EventTraceFrame:RegisterAllEvents()
-	EventTraceFrame_OnEvent(_EventTraceFrame, "Begin Capture")
+	_EventTraceFrame.started = true;
+	_framesSinceLast = 0;
+	_timeSinceLast = 0;
+	_EventTraceFrame:RegisterAllEvents();
+	EventTraceFrame_OnEvent(_EventTraceFrame, "Begin Capture");
 end
 
 function EventTraceFrame_StopEventCapture()
-	if not _EventTraceFrame.started then
-		return
+	if (not _EventTraceFrame.started) then
+		return;
 	end
 
 	EventHandler_Disable()
 
-	_EventTraceFrame.started = false
-	_framesSinceLast = 0
-	_timeSinceLast = 0
-	_EventTraceFrame:UnregisterAllEvents()
-	EventTraceFrame_OnEvent(_EventTraceFrame, "End Capture")
+	_EventTraceFrame.started = false;
+	_framesSinceLast = 0;
+	_timeSinceLast = 0;
+	_EventTraceFrame:UnregisterAllEvents();
+	EventTraceFrame_OnEvent(_EventTraceFrame, "End Capture");
 end
 
 function EventTraceFrame_HandleSlashCmd(msg)
-	msg = strlower(msg)
-	if msg == "start" then
-		EventTraceFrame_StartEventCapture()
-	elseif msg == "stop" then
-		EventTraceFrame_StopEventCapture()
-	elseif tonumber(msg) and tonumber(msg) > 0 then
-		if not _EventTraceFrame.started then
-			_EventTraceFrame.eventsToCapture = tonumber(msg)
-			EventTraceFrame_StartEventCapture()
+	msg = strlower(msg);
+	if (msg == "start") then
+		EventTraceFrame_StartEventCapture();
+	elseif (msg == "stop") then
+		EventTraceFrame_StopEventCapture();
+	elseif (tonumber(msg) and tonumber(msg) > 0) then
+		if (not _EventTraceFrame.started) then
+			_EventTraceFrame.eventsToCapture = tonumber(msg);
+			EventTraceFrame_StartEventCapture();
 		end
-	elseif msg == "" then
-		if not _EventTraceFrame:IsShown() then
-			_EventTraceFrame:Show()
-			if _EventTraceFrame.started == nil then
-				EventTraceFrame_StartEventCapture()
+	elseif (msg == "") then
+		if (not _EventTraceFrame:IsShown()) then
+			_EventTraceFrame:Show();
+			if (_EventTraceFrame.started == nil) then
+				EventTraceFrame_StartEventCapture();
 			end
 		else
-			_EventTraceFrame:Hide()
+			_EventTraceFrame:Hide();
 		end
 	end
 end
 
 function EventTraceFrame_OnMouseWheel(self, delta)
-	local scrollBar = _G["EventTraceFrameScroll"]
-	local minVal, maxVal = scrollBar:GetMinMaxValues()
-	local currentValue = scrollBar:GetValue()
+	local scrollBar = _G["EventTraceFrameScroll"];
+	local minVal, maxVal = scrollBar:GetMinMaxValues();
+	local currentValue = scrollBar:GetValue();
 
-	local newValue = currentValue - (delta * 3)
-	newValue = max(newValue, minVal)
-	newValue = min(newValue, maxVal)
-	if newValue ~= currentValue then
-		scrollBar:SetValue(newValue)
+	local newValue = currentValue - (delta * 3);
+	newValue = max(newValue, minVal);
+	newValue = min(newValue, maxVal);
+	if (newValue ~= currentValue) then
+		scrollBar:SetValue(newValue);
 	end
 end
 
 function EventTraceFrame_UpdateKeyboardStatus()
-	if _EventTraceFrame.selectedEvent then
-		local focus = GetMouseFocus()
-		if focus == _EventTraceFrame or (focus and focus:GetParent() == _EventTraceFrame) then
-			_EventTraceFrame:EnableKeyboard(true)
-			return
+	if (_EventTraceFrame.selectedEvent) then
+		local focus = GetMouseFocus();
+		if (focus == _EventTraceFrame or (focus and focus:GetParent() == _EventTraceFrame)) then
+			_EventTraceFrame:EnableKeyboard(true);
+			return;
 		end
 	end
-	_EventTraceFrame:EnableKeyboard(false)
+	_EventTraceFrame:EnableKeyboard(false);
 end
 
 function EventTraceFrame_OnKeyUp(self, key)
-	if key == "ESCAPE" then
-		self.selectedEvent = nil
-		EventTraceTooltip:Hide()
-		EventTraceFrame_Update()
+	if (key == "ESCAPE") then
+		self.selectedEvent = nil;
+		EventTraceTooltip:Hide();
+		EventTraceFrame_Update();
 	end
 end
 
 function EventTraceFrame_RemoveEvent(i)
-	if i >= 1 and i <= EventTraceFrame.lastIndex then
-		tremove(EventTraceFrame.events, i)
-		tremove(EventTraceFrame.times, i)
-		tremove(EventTraceFrame.rawtimes, i)
-		tremove(EventTraceFrame.timeSinceLast, i)
-		tremove(EventTraceFrame.framesSinceLast, i)
-		tremove(EventTraceFrame.eventtimes, i)
-		tremove(EventTraceFrame.eventids, i)
-		tremove(EventTraceFrame.numhandlers, i)
-		tremove(EventTraceFrame.slowesthandlers, i)
-		tremove(EventTraceFrame.slowesthandlertimes, i)
+	if (i >= 1 and i <= EventTraceFrame.lastIndex) then
+		tremove(EventTraceFrame.events, i);
+		tremove(EventTraceFrame.times, i);
+		tremove(EventTraceFrame.rawtimes, i);
+		tremove(EventTraceFrame.timeSinceLast, i);
+		tremove(EventTraceFrame.framesSinceLast, i);
+		tremove(EventTraceFrame.eventtimes, i);
+		tremove(EventTraceFrame.eventids, i);
+		tremove(EventTraceFrame.numhandlers, i);
+		tremove(EventTraceFrame.slowesthandlers, i);
+		tremove(EventTraceFrame.slowesthandlertimes, i);
 
 		for k, v in next, EventTraceFrame.args do
 			for j = i, EventTraceFrame.lastIndex do
-				EventTraceFrame.args[k][j] = EventTraceFrame.args[k][j+1]
+				EventTraceFrame.args[k][j] = EventTraceFrame.args[k][j+1];
 			end
 		end
-		EventTraceFrame.lastIndex = EventTraceFrame.lastIndex-1
+		EventTraceFrame.lastIndex = EventTraceFrame.lastIndex-1;
 	end
 end
 
-local TIME_LABEL = "Time:"
-local DETAILS_LABEL = "Details:"
-local SLOWEST_LABEL = "Slowest:"
-local ARGUMENT_LABEL_FORMAT = "arg %d:"
-local NUM_HANDLERS_FORMAT = "(%d handlers)"
-local EVENT_TIME_FORMAT = "%.2fms"
+local TIME_LABEL = "Time:";
+local DETAILS_LABEL = "Details:";
+local SLOWEST_LABEL = "Slowest:";
+local ARGUMENT_LABEL_FORMAT = "arg %d:";
+local NUM_HANDLERS_FORMAT = "(%d handlers)";
+local EVENT_TIME_FORMAT = "%.2fms";
 
-local function EventTrace_FormatArgValue(val)
-	if type(val) == "string" then
-		return string.format('"%s"', val)
-	elseif type(val) == "number" then
-		return tostring(val)
-	elseif type(val) == "boolean" then
-		return string.format('|cffaaaaff%s|r', tostring(val))
-	elseif type(val) == "table" or type(val) == "bool" then
-		return string.format('|cffffaaaa%s|r', tostring(val))
+local function EventTrace_FormatArgValue (val)
+	if (type(val) == "string") then
+		return string.format('"%s"', val);
+	elseif (type(val) == "number") then
+		return tostring(val);
+	elseif (type(val) == "boolean") then
+		return string.format('|cffaaaaff%s|r', tostring(val));
+	elseif (type(val) == "table" or type(val) == "bool") then
+		return string.format('|cffffaaaa%s|r', tostring(val));
 	end
 end
 
-function EventTraceFrameEvent_DisplayTooltip(eventButton)
-	local index = eventButton.index
-	if not index then
-		return
+function EventTraceFrameEvent_DisplayTooltip (eventButton)
+	local index = eventButton.index;
+	if (not index) then
+		return;
 	end
 
-	local tooltip = _G["EventTraceTooltip"]
-	tooltip:SetOwner(eventButton, "ANCHOR_NONE")
-	tooltip:SetPoint("TOPLEFT", eventButton, "TOPRIGHT", 24, 2)
+	local tooltip = _G["EventTraceTooltip"];
+	tooltip:SetOwner(eventButton, "ANCHOR_NONE");
+	tooltip:SetPoint("TOPLEFT", eventButton, "TOPRIGHT", 24, 2);
 	local timeString = _EventTraceFrame.times[index]
-	if EVENT_TRACE_SYSTEM_TIMES[timeString] then
-		tooltip:AddLine(timeString, 1, 1, 1)
-		tooltip:AddDoubleLine(TIME_LABEL, _EventTraceFrame.rawtimes[index], 1, .82, 0, 1, 1, 1)
-		tooltip:AddDoubleLine(DETAILS_LABEL, _EventTraceFrame.events[index], 1, .82, 0, 1, 1, 1)
+	if (EVENT_TRACE_SYSTEM_TIMES[timeString]) then
+		tooltip:AddLine(timeString, 1, 1, 1);
+		tooltip:AddDoubleLine(TIME_LABEL, _EventTraceFrame.rawtimes[index], 1, .82, 0, 1, 1, 1);
+		tooltip:AddDoubleLine(DETAILS_LABEL, _EventTraceFrame.events[index], 1, .82, 0, 1, 1, 1);
 	else
-		tooltip:AddLine(_EventTraceFrame.events[index], 1, 1, 1)
-		local eventTime = _EventTraceFrame.eventtimes[index]
-		if eventTime then
-			if eventTime < 0 then
-				eventTime = "?"
+		tooltip:AddLine(_EventTraceFrame.events[index], 1, 1, 1);
+		local eventTime = _EventTraceFrame.eventtimes[index];
+		if (eventTime) then
+			if (eventTime < 0) then
+				eventTime = "?";
 			else
-				eventTime = format(EVENT_TIME_FORMAT, eventTime)
+				eventTime = format(EVENT_TIME_FORMAT, eventTime);
 			end
-			tooltip:AddDoubleLine(TIME_LABEL, eventTime .. "  " .. format(NUM_HANDLERS_FORMAT, _EventTraceFrame.numhandlers[index] or 0), 1, .82, 0, 1, 1, 1)
+			tooltip:AddDoubleLine(TIME_LABEL, eventTime .. "  " .. format(NUM_HANDLERS_FORMAT, _EventTraceFrame.numhandlers[index] or 0), 1, .82, 0, 1, 1, 1);
 		else
-			tooltip:AddDoubleLine(TIME_LABEL, _EventTraceFrame.rawtimes[index], 1, .82, 0, 1, 1, 1)
+			tooltip:AddDoubleLine(TIME_LABEL, _EventTraceFrame.rawtimes[index], 1, .82, 0, 1, 1, 1);
 		end
-		if _EventTraceFrame.slowesthandlers[index] then
-			tooltip:AddDoubleLine(SLOWEST_LABEL, format("%s  (%.2fms)", _EventTraceFrame.slowesthandlers[index], _EventTraceFrame.slowesthandlertimes[index]), 1, .82, 0, 1, 1, 1)
+		if (_EventTraceFrame.slowesthandlers[index]) then
+			tooltip:AddDoubleLine(SLOWEST_LABEL, format("%s  (%.2fms)", _EventTraceFrame.slowesthandlers[index], _EventTraceFrame.slowesthandlertimes[index]), 1, .82, 0, 1, 1, 1);
 		end
 		for k, v in ipairs(EventTraceFrame.args) do
-			if v[index] then
-				tooltip:AddDoubleLine(format(ARGUMENT_LABEL_FORMAT, k), EventTrace_FormatArgValue(v[index]), 1, .82, 0, 1, 1, 1)
+			if (v[index]) then
+				tooltip:AddDoubleLine(format(ARGUMENT_LABEL_FORMAT, k), EventTrace_FormatArgValue(v[index]), 1, .82, 0, 1, 1, 1);
 			end
 		end
 	end
-	tooltip:Show()
+	tooltip:Show();
 end
 
-function EventTraceFrameEvent_OnEnter(self)
-	if not EVENT_TRACE_SYSTEM_TIMES[EventTraceFrame.times[self.index]] then
-		self.HideButton:Show()
+function EventTraceFrameEvent_OnEnter (self)
+	if (not EVENT_TRACE_SYSTEM_TIMES[EventTraceFrame.times[self.index]]) then
+		self.HideButton:Show();
 	else
-		self.HideButton:Hide()
+		self.HideButton:Hide();
 	end
-	if _EventTraceFrame.selectedEvent then
-		return
+	if (_EventTraceFrame.selectedEvent) then
+		return;
 	else
-		EventTraceFrameEvent_DisplayTooltip(self)
+		EventTraceFrameEvent_DisplayTooltip(self);
 	end
 end
 
-function EventTraceFrameEvent_OnLeave(self)
-	if not self.HideButton == GetMouseFocus() then
-		self.HideButton:Hide()
+function EventTraceFrameEvent_OnLeave (self)
+	if (not self.HideButton == GetMouseFocus()) then
+		self.HideButton:Hide();
 	end
-	if not _EventTraceFrame.selectedEvent then
-		EventTraceTooltip:Hide()
+	if (not _EventTraceFrame.selectedEvent) then
+		EventTraceTooltip:Hide();
 	end
 end
 
-function EventTraceFrameEvent_OnClick(self)
-	if _EventTraceFrame.selectedEvent == self.index then
-		_EventTraceFrame.selectedEvent = nil
+function EventTraceFrameEvent_OnClick (self)
+	if (_EventTraceFrame.selectedEvent == self.index) then
+		_EventTraceFrame.selectedEvent = nil;
 	else
-		_EventTraceFrame.selectedEvent = self.index
+		_EventTraceFrame.selectedEvent = self.index;
 	end
-	EventTraceFrame_Update()
+	EventTraceFrame_Update();
 end
 
-function EventTraceFrameEventHideButton_OnClick(button)
-	local eventName = button:GetParent().event:GetText()
-	EventTraceFrame.ignoredEvents[eventName] = 1
-	EventTraceFrame.selectedEvent = nil
+function EventTraceFrameEventHideButton_OnClick (button)
+	local eventName = button:GetParent().event:GetText();
+	EventTraceFrame.ignoredEvents[eventName] = 1;
+	EventTraceFrame.selectedEvent = nil;
 
 	for i = EventTraceFrame.lastIndex, 1, -1 do
-		if EventTraceFrame.events[i] == eventName then
-			EventTraceFrame_RemoveEvent(i)
+		if (EventTraceFrame.events[i] == eventName) then
+			EventTraceFrame_RemoveEvent(i);
 		end
 	end
 
-	local lastWasElapsed = false
+	local lastWasElapsed = false;
 	for i = EventTraceFrame.lastIndex, 1, -1 do
-		if EventTraceFrame.times[i] == "Elapsed" then
-			if lastWasElapsed then
-				EventTraceFrame.timeSinceLast[i] = EventTraceFrame.timeSinceLast[i] + EventTraceFrame.timeSinceLast[i+1]
-				EventTraceFrame.framesSinceLast[i] = EventTraceFrame.framesSinceLast[i] + EventTraceFrame.framesSinceLast[i+1]
-				EventTraceFrame.events[i] = string.format(string.format("%.3f sec", EventTraceFrame.timeSinceLast[i]) .. " - %d frame(s)", EventTraceFrame.framesSinceLast[i])
-				EventTraceFrame_RemoveEvent(i+1)
+		if (EventTraceFrame.times[i] == "Elapsed") then
+			if (lastWasElapsed) then
+				EventTraceFrame.timeSinceLast[i] = EventTraceFrame.timeSinceLast[i] + EventTraceFrame.timeSinceLast[i+1];
+				EventTraceFrame.framesSinceLast[i] = EventTraceFrame.framesSinceLast[i] + EventTraceFrame.framesSinceLast[i+1];
+				EventTraceFrame.events[i] = string.format(string.format("%.3f sec", EventTraceFrame.timeSinceLast[i]) .. " - %d frame(s)", EventTraceFrame.framesSinceLast[i]);
+				EventTraceFrame_RemoveEvent(i+1);
 			end
-			lastWasElapsed = true
+			lastWasElapsed = true;
 		else
-			lastWasElapsed = false
+			lastWasElapsed = false;
 		end
 	end
 
-	EventTraceFrame_Update()
+	EventTraceFrame_Update();
 end
 
 local ERROR_FORMAT = [[|cffffd200Message:|r|cffffffff %s|r
 |cffffd200Time:|r|cffffffff %s|r
 |cffffd200Count:|r|cffffffff %s|r
-|cffffd200Stack:|r|cffffffff %s|r]]
+|cffffd200Stack:|r|cffffffff %s|r]];
 
 local WARNING_AS_ERROR_FORMAT = [[|cffffd200Message:|r|cffffffff %s|r
 |cffffd200Time:|r|cffffffff %s|r
-|cffffd200Count:|r|cffffffff %s|r]]
+|cffffd200Count:|r|cffffffff %s|r]];
 
-local WARNING_FORMAT = "Lua Warning:\n"..WARNING_AS_ERROR_FORMAT
+local WARNING_FORMAT = "Lua Warning:\n"..WARNING_AS_ERROR_FORMAT;
 
 local INDEX_ORDER_FORMAT = "%d / %d"
 
-local _ScriptErrorsFrame
+local _ScriptErrorsFrame;
 
-function ScriptErrorsFrame_OnLoad(self)
+function ScriptErrorsFrame_OnLoad (self)
 	local frameName = self:GetName()
 	self.title = _G[frameName.."Title"]
 	self.indexLabel = _G[frameName.."IndexLabel"]
@@ -518,61 +520,61 @@ function ScriptErrorsFrame_OnLoad(self)
 	self.next = _G[frameName.."Next"]
 	self.close = _G[frameName.."CloseButton"]
 
-	self.title:SetText(LUA_ERROR)
-	self:RegisterForDrag("LeftButton")
-	self.seen = {}
-	self.order = {}
-	self.count = {}
-	self.messages = {}
-	self.times = {}
-	_ScriptErrorsFrame = self
+	self.title:SetText(LUA_ERROR);
+	self:RegisterForDrag("LeftButton");
+	self.seen = {};
+	self.order = {};
+	self.count = {};
+	self.messages = {};
+	self.times = {};
+	_ScriptErrorsFrame = self;
 end
 
-function ScriptErrorsFrame_OnShow(self)
-	ScriptErrorsFrame_Update()
+function ScriptErrorsFrame_OnShow (self)
+	ScriptErrorsFrame_Update();
 end
 
-function ScriptErrorsFrame_OnError(message, keepHidden)
-	local stack = debugstack(DEBUGLOCALS_LEVEL)
+function ScriptErrorsFrame_OnError (message, keepHidden)
+	local stack = debugstack(DEBUGLOCALS_LEVEL);
 
-	local messageStack = message..stack
+	local messageStack = message..stack;
 
-	if _ScriptErrorsFrame then
-		local index = _ScriptErrorsFrame.seen[messageStack]
-		if index then
-			_ScriptErrorsFrame.count[index] = _ScriptErrorsFrame.count[index] + 1
-			_ScriptErrorsFrame.messages[index] = message
-			_ScriptErrorsFrame.times[index] = date()
+	if (_ScriptErrorsFrame) then
+		local index = _ScriptErrorsFrame.seen[messageStack];
+		if (index) then
+			_ScriptErrorsFrame.count[index] = _ScriptErrorsFrame.count[index] + 1;
+			_ScriptErrorsFrame.messages[index] = message;
+			_ScriptErrorsFrame.times[index] = date();
 		else
-			tinsert(_ScriptErrorsFrame.order, stack)
-			index = getn(_ScriptErrorsFrame.order)
-			_ScriptErrorsFrame.count[index] = 1
-			_ScriptErrorsFrame.messages[index] = message
-			_ScriptErrorsFrame.times[index] = date()
-			_ScriptErrorsFrame.seen[messageStack] = index
+			tinsert(_ScriptErrorsFrame.order, stack);
+			index = getn(_ScriptErrorsFrame.order);
+			_ScriptErrorsFrame.count[index] = 1;
+			_ScriptErrorsFrame.messages[index] = message;
+			_ScriptErrorsFrame.times[index] = date();
+			_ScriptErrorsFrame.seen[messageStack] = index;
 		end
 
-		if not _ScriptErrorsFrame:IsShown() and not keepHidden then
-			_ScriptErrorsFrame.index = index
-			_ScriptErrorsFrame:Show()
+		if (not _ScriptErrorsFrame:IsShown() and not keepHidden) then
+			_ScriptErrorsFrame.index = index;
+			_ScriptErrorsFrame:Show();
 		else
-			ScriptErrorsFrame_Update()
+			ScriptErrorsFrame_Update();
 		end
 	end
 end
 
-function ScriptErrorsFrame_Update()
-	local editBox = ScriptErrorsFrameScrollFrameText
-	local index = _ScriptErrorsFrame.index
-	if not index or not _ScriptErrorsFrame.order[index] then
-		index = getn(_ScriptErrorsFrame.order)
-		_ScriptErrorsFrame.index = index
+function ScriptErrorsFrame_Update ()
+	local editBox = ScriptErrorsFrameScrollFrameText;
+	local index = _ScriptErrorsFrame.index;
+	if (not index or not _ScriptErrorsFrame.order[index]) then
+		index = getn(_ScriptErrorsFrame.order);
+		_ScriptErrorsFrame.index = index;
 	end
 
-	if index == 0 then
-		editBox:SetText("")
-		ScriptErrorsFrame_UpdateButtons()
-		return
+	if (index == 0) then
+		editBox:SetText("");
+		ScriptErrorsFrame_UpdateButtons();
+		return;
 	end
 
 	local text = string.format(
@@ -581,67 +583,68 @@ function ScriptErrorsFrame_Update()
 		_ScriptErrorsFrame.times[index],
 		_ScriptErrorsFrame.count[index],
 		_ScriptErrorsFrame.order[index]
-	)
+	);
 
-	local parent = editBox:GetParent()
-	local prevText = editBox.text
-	editBox.text = text
-	if prevText ~= text then
-		editBox:SetText(text)
-		editBox:HighlightText(0)
+	local parent = editBox:GetParent();
+	local prevText = editBox.text;
+	editBox.text = text;
+	if (prevText ~= text) then
+		editBox:SetText(text);
+		editBox:HighlightText(0);
+--		editBox:SetCursorPosition(0);
 	else
-		ScriptErrorsFrameScrollFrame:UpdateScrollChildRect()
+		ScriptErrorsFrameScrollFrame:UpdateScrollChildRect();
 	end
-	parent:SetVerticalScroll(0)
+	parent:SetVerticalScroll(0);
 
-	ScriptErrorsFrame_UpdateButtons()
+	ScriptErrorsFrame_UpdateButtons();
 end
 
-function ScriptErrorsFrame_UpdateButtons()
-	local index = _ScriptErrorsFrame.index
-	local numErrors = getn(_ScriptErrorsFrame.order)
-	if index == 0 then
-		_ScriptErrorsFrame.next:Disable()
-		_ScriptErrorsFrame.previous:Disable()
+function ScriptErrorsFrame_UpdateButtons ()
+	local index = _ScriptErrorsFrame.index;
+	local numErrors = getn(_ScriptErrorsFrame.order);
+	if (index == 0) then
+		_ScriptErrorsFrame.next:Disable();
+		_ScriptErrorsFrame.previous:Disable();
 	else
-		if numErrors == 1 then
-			_ScriptErrorsFrame.next:Disable()
-			_ScriptErrorsFrame.previous:Disable()
-		elseif index == 1 then
-			_ScriptErrorsFrame.next:Enable()
-			_ScriptErrorsFrame.previous:Disable()
-		elseif index == numErrors then
-			_ScriptErrorsFrame.next:Disable()
-			_ScriptErrorsFrame.previous:Enable()
+		if (numErrors == 1) then
+			_ScriptErrorsFrame.next:Disable();
+			_ScriptErrorsFrame.previous:Disable();
+		elseif (index == 1) then
+			_ScriptErrorsFrame.next:Enable();
+			_ScriptErrorsFrame.previous:Disable();
+		elseif (index == numErrors) then
+			_ScriptErrorsFrame.next:Disable();
+			_ScriptErrorsFrame.previous:Enable();
 		else
-			_ScriptErrorsFrame.next:Enable()
-			_ScriptErrorsFrame.previous:Enable()
+			_ScriptErrorsFrame.next:Enable();
+			_ScriptErrorsFrame.previous:Enable();
 		end
 	end
 
-	_ScriptErrorsFrame.indexLabel:SetText(string.format(INDEX_ORDER_FORMAT, index, numErrors))
+	_ScriptErrorsFrame.indexLabel:SetText(string.format(INDEX_ORDER_FORMAT, index, numErrors));
 end
 
-function ScriptErrorsFrame_DeleteError(index)
-	if _ScriptErrorsFrame.order[index] then
-		_ScriptErrorsFrame.seen[_ScriptErrorsFrame.messages[index] .. _ScriptErrorsFrame.order[index]] = nil
-		tremove(_ScriptErrorsFrame.order, index)
-		tremove(_ScriptErrorsFrame.messages, index)
-		tremove(_ScriptErrorsFrame.times, index)
-		tremove(_ScriptErrorsFrame.count, index)
+function ScriptErrorsFrame_DeleteError (index)
+	if (_ScriptErrorsFrame.order[index]) then
+		_ScriptErrorsFrame.seen[_ScriptErrorsFrame.messages[index] .. _ScriptErrorsFrame.order[index]] = nil;
+		tremove(_ScriptErrorsFrame.order, index);
+		tremove(_ScriptErrorsFrame.messages, index);
+		tremove(_ScriptErrorsFrame.times, index);
+		tremove(_ScriptErrorsFrame.count, index);
 	end
 end
 
-function ScriptErrorsFrameButton_OnClick(self)
-	local id = self:GetID()
+function ScriptErrorsFrameButton_OnClick (self)
+	local id = self:GetID();
 
-	if id == 1 then
-		_ScriptErrorsFrame.index = _ScriptErrorsFrame.index + 1
+	if (id == 1) then
+		_ScriptErrorsFrame.index = _ScriptErrorsFrame.index + 1;
 	else
-		_ScriptErrorsFrame.index = _ScriptErrorsFrame.index - 1
+		_ScriptErrorsFrame.index = _ScriptErrorsFrame.index - 1;
 	end
 
-	ScriptErrorsFrame_Update()
+	ScriptErrorsFrame_Update();
 end
 
 function DebugTooltip_OnLoad(self)
@@ -654,7 +657,7 @@ end
 
 function FrameStackTooltip_OnDisplaySizeChanged(self)
 	local height = GetScreenHeight()
-	if height > 768 then
+	if (height > 768) then
 		self:SetScale(768 / height)
 	else
 		self:SetScale(1)
@@ -669,14 +672,14 @@ function FrameStackTooltip_OnLoad(self)
 end
 
 function FrameStackTooltip_OnEvent(self, event, ...)
-	if event == "DISPLAY_SIZE_CHANGED" then
+	if (event == "DISPLAY_SIZE_CHANGED") then
 		FrameStackTooltip_OnDisplaySizeChanged(self)
 	end
 end
 
 function FrameStackTooltip_Toggle(showHidden)
 	local tooltip = _G["FrameStackTooltip"]
-	if tooltip:IsVisible() then
+	if (tooltip:IsVisible()) then
 		tooltip:Hide()
 		FrameStackHighlight:Hide()
 	else
@@ -692,17 +695,17 @@ FRAMESTACK_UPDATE_TIME = .1
 local _timeSinceLast = 0
 function FrameStackTooltip_OnUpdate(self, elapsed)
 	_timeSinceLast = _timeSinceLast - elapsed
-	if _timeSinceLast <= 0 then
+	if (_timeSinceLast <= 0) then
 		_timeSinceLast = FRAMESTACK_UPDATE_TIME
 		local highlightFrame = UpdateFrameStack(self, self.showHidden)
 
-		FrameStackHighlight:ClearAllPoints()
-		if highlightFrame then
-			FrameStackHighlight:SetPoint("BOTTOMLEFT", highlightFrame)
-			FrameStackHighlight:SetPoint("TOPRIGHT", highlightFrame)
-			FrameStackHighlight:Show()
+		FrameStackHighlight:ClearAllPoints();
+		if (highlightFrame) then
+			FrameStackHighlight:SetPoint("BOTTOMLEFT", highlightFrame);
+			FrameStackHighlight:SetPoint("TOPRIGHT", highlightFrame);
+			FrameStackHighlight:Show();
 		else
-			FrameStackHighlight:Hide()
+			FrameStackHighlight:Hide();
 		end
 	end
 end
@@ -716,14 +719,14 @@ function FrameStackTooltip_OnShow(self)
 	local x, y = GetCursorPosition()
 	self:ClearAllPoints()
 
-	if x > px then
-		if y > py then
+	if (x > px) then
+		if (y > py) then
 			self:SetPoint("BOTTOMLEFT", parent, "BOTTOMLEFT", 20, 20)
 		else
 			self:SetPoint("TOPLEFT", parent, "TOPLEFT", 20, -20)
 		end
 	else
-		if y > py then
+		if (y > py) then
 			self:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -20, 20)
 		else
 			self:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -20, -20)

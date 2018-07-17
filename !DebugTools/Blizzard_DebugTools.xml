@@ -436,11 +436,14 @@
 					<EditBox name="$parentText" multiLine="true" letters="4000" autoFocus="false">
 						<Size x="343" y="194"/>
 						<Scripts>
+							<OnTextChanged>
+								ScrollingEdit_OnTextChanged(this:GetParent());
+							</OnTextChanged>
 							<OnCursorChanged>
-								ScrollingEdit_OnCursorChanged(this);
+								ScrollingEdit_OnCursorChanged(arg1, arg2, arg3, arg4);
 							</OnCursorChanged>
 							<OnUpdate>
-								ScrollingEdit_OnUpdate(this, arg1, this:GetParent());
+								ScrollingEdit_OnUpdate(this:GetParent());
 							</OnUpdate>
 							<OnEditFocusGained>
 								this:HighlightText(0);

@@ -2,6 +2,7 @@
 local error = error
 local geterrorhandler = geterrorhandler
 local loadstring = loadstring
+local next = next
 local pairs = pairs
 local pcall = pcall
 local tonumber = tonumber
@@ -10,21 +11,12 @@ local type = type
 local unpack = unpack
 local abs, ceil, exp, floor = math.abs, math.ceil, math.exp, math.floor
 local find, format, gfind, gsub, len, sub = string.find, string.format, string.gfind, string.gsub, string.len, string.sub
-local concat, tinsert, getn, setn = table.concat, table.insert, table.getn, table.setn
+local concat, getn, setn, tremove = table.concat, table.getn, table.setn, table.remove
 
 math.fmod = math.mod
 math.huge = 1/0
 string.gmatch = string.gfind
-
-function difftime(time2, time1)
-	if type(time2) ~= "number" then
-		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"), 2)
-	elseif time1 and type(time1) ~= "number" then
-		error(format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"), 2)
-	end
-
-	return time1 and time2 - time1 or time2
-end
+gmatch = string.gfind
 
 function select(n, ...)
 	if not (type(n) == "number" or (type(n) == "string" and n == "#")) then
@@ -231,6 +223,7 @@ function string.reverse(str)
 
 	return str
 end
+strrev = string.reverse
 
 function string.split(delimiter, str)
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
@@ -240,7 +233,7 @@ function string.split(delimiter, str)
 	end
 
 	local fields = {}
-	gsub(str, format("([^%s]+)", delimiter), function(c) tinsert(fields, c) end)
+	gsub(str, format("([^%s]+)", delimiter), function(c) fields[getn(fields) + 1] = c end)
 
 	return unpack(fields)
 end
@@ -303,10 +296,15 @@ function string.trim(str, chars)
 		local patternStart = loadstring("return \"^["..pattern.."](.-)$\"")()
 		local patternEnd = loadstring("return \"^(.-)["..pattern.."]$\"")()
 
-		local trimed, x, y = 1
+		local trimed, x, y = 1, 1, 1
 		while trimed > 0 do
-			str, x = gsub(str, patternStart, "%1")
-			str, y = gsub(str, patternEnd, "%1")
+			if x > 0 then
+				str, x = gsub(str, patternStart, "%1")
+			end
+			if y > 0 then
+				str, y = gsub(str, patternEnd, "%1")
+			end
+
 			trimed = x + y
 		end
 
@@ -319,6 +317,40 @@ function string.trim(str, chars)
 	end
 end
 strtrim = string.trim
+
+function strconcat(...)
+	if arg.n == 0 then
+		return ""
+	elseif arg.n == 1 then
+		return tostring(arg[1])
+	else
+		for i = 1, arg.n do
+			if type(arg[i]) ~= "string" then
+				error(format("attempt to concatenate a %s value", type(arg[i])), 2)
+			end
+		end
+	end
+
+	return concat(arg)
+end
+
+function table.maxn(t)
+	if type(t) ~= "table" then
+		error(format("bad argument #1 to 'maxn' (table expected, got %s)", t and type(t) or "no value"), 2)
+	end
+
+	local maxn = 0
+	local i = next(t, nil)
+
+	while i do
+		if type(i) == "number" and i > maxn then
+			maxn = i
+		end
+		i = next(t, i)
+	end
+
+	return maxn
+end
 
 function table.wipe(t)
 	if type(t) ~= "table" then

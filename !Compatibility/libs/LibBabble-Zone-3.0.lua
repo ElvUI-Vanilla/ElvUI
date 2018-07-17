@@ -7,10 +7,8 @@ Dependencies: None
 License: MIT
 ]]
 
-local match = string.match
-
 local MAJOR_VERSION = "LibBabble-Zone-3.0"
-local MINOR_VERSION = 90000 + tonumber(match("$Revision: 107 $", "%d+"))
+local MINOR_VERSION = 90000 + tonumber(string.match("$Revision: 107 $", "%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)

@@ -7,9 +7,13 @@ local select = select
 local tonumber = tonumber
 local type = type
 local unpack = unpack
-local find, format, gsub, lower, match, upper = string.find, string.format, string.gsub, string.lower, string.match, string.upper
+local find, format, gmatch, gsub, lower, match, upper = string.find, string.format, string.gmatch, string.gsub, string.lower, string.match, string.upper
 local getn = table.getn
 --WoW API
+local debugstack = debugstack
+local GetContainerItemInfo = GetContainerItemInfo
+local GetContainerItemLink = GetContainerItemLink
+local GetContainerNumSlots = GetContainerNumSlots
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetItemInfo = GetItemInfo
 local GetQuestGreenRange = GetQuestGreenRange
@@ -20,12 +24,14 @@ local IsInInstance = IsInInstance
 local UnitLevel = UnitLevel
 --WoW Variables
 local DUNGEON_DIFFICULTY1 = DUNGEON_DIFFICULTY1
+local DURABILITY_TEMPLATE = gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%d+)")
+local NUM_BAG_FRAMES = NUM_BAG_FRAMES
 local TIMEMANAGER_AM = gsub(TIME_TWELVEHOURAM, "^.-(%w+)$", "%1")
 local TIMEMANAGER_PM = gsub(TIME_TWELVEHOURPM, "^.-(%w+)$", "%1")
-local DURABILITY_TEMPLATE = gsub(DURABILITY_TEMPLATE, "%%d / %%d", "(%%d+) / (%%d+)")
 --Libs
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
+local IFDB = LibStub("ItemFamilyDB")
 
 CLASS_SORT_ORDER = {
 	"WARRIOR",
@@ -114,6 +120,31 @@ function hooksecurefunc(a1, a2, a3)
 	end
 end
 
+local secureFuncs = {
+	CameraOrSelectOrMoveStop = true,
+	MoveBackwardStop = true,
+	MoveForwardStop = true,
+	PitchDownStop = true,
+	PitchUpStop = true,
+	StrafeLeftStart = true,
+	StrafeRightStart = true,
+	ToggleMouseMove = true,
+	TurnLeftStart = true,
+	TurnOrActionStop = true,
+	TurnRightStart = true,
+	CameraOrSelectOrMoveStart = true,
+	Jump = true,
+	MoveBackwardStart = true,
+	MoveForwardStart = true,
+	PitchDownStart = true,
+	PitchUpStart = true,
+	StrafeLeftStop = true,
+	StrafeRightStop = true,
+	ToggleRun = true,
+	TurnLeftStop = true,
+	TurnOrActionStart = true,
+	TurnRightStop = true
+}
 --[[	issecurevariable([table], variable)
 	Returns 1, nil for undefined variables. This is because an undefined variable is secure since you have not tainted it.
 	Returns 1, nil for all untainted variables (i.e. Blizzard variables).
@@ -125,7 +156,18 @@ function issecurevariable(t, var)
 --	if type(var) ~= "table" or type(var) ~= "string" then
 --		error("Usage: issecurevariable([table,] \"variable\")", 2)
 --	end
-	return
+
+	local isSecure = secureFuncs[t] and 1 or nil
+	if not isSecure then
+		return
+	end
+
+	local taint
+	for x in gmatch(debugstack(), "\\AddOns\\(.-)\\") do
+		taint = x
+	end
+
+	return isSecure, taint
 end
 
 function tContains(table, item)
@@ -153,6 +195,16 @@ function UnitAura(unit, i, filter)
 		local texture, count, dType = UnitDebuff(unit, i, filter)
 		return texture, count, dType
 	end
+end
+
+function difftime(time2, time1)
+	if type(time2) ~= "number" then
+		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"), 2)
+	elseif time1 and type(time1) ~= "number" then
+		error(format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"), 2)
+	end
+
+	return time1 and time2 - time1 or time2
 end
 
 function BetterDate(formatString, timeVal)
@@ -263,29 +315,6 @@ function GetMapNameByID(id)
 	end
 
 	return mapByID[tonumber(id)]
-end
-
-local LBIBF = LibStub("LibBabble-ItemBagFamily-3.0")
-function GetItemFamily(id)
-	if not id then return end
-	if type(id) == "table" or type(id) == "function" then return end
-
-	if type(id) == "string" then
-		id = tonumber(match(id, "item:(%d+)"))
-	end
-
-	return LBIBF.ItemFamily[id] or 0
-end
-
-function GetBagFamily(id)
-	if not id then return end
-	if type(id) == "table" or type(id) == "function" then return end
-
-	if type(id) == "string" then
-		id = tonumber(match(id, "item:(%d+)"))
-	end
-
-	return LBIBF.ItemBagFamily[id] or 0
 end
 
 local arrow
@@ -417,6 +446,7 @@ function GetItemInfoByName(itemName)
 	end
 
 	if find(itemName, " of ") then
+		-- random enchantments
 		itemName = gsub(itemName, " of Spirit", "")
 		itemName = gsub(itemName, " of Intellect", "")
 		itemName = gsub(itemName, " of Strength", "")
@@ -461,7 +491,7 @@ function GetItemInfoByName(itemName)
 		for itemID = 1, LAST_ITEM_ID do
 			name = GetItemInfo(itemID)
 
-			if name ~= "" and name ~= nil then
+			if name ~= nil and name ~= "" then
 				itemInfoDB[name] = itemID
 
 				if name == itemName then
@@ -476,19 +506,36 @@ function GetItemInfoByName(itemName)
 	return GetItemInfo(itemInfoDB[itemName])
 end
 
+function GetItemFamily(item, isBag)
+	if not item or type(item) ~= "number" or type(item) ~= "string" then return end
+
+	if type(item) == "string" then
+		local _, _, itemID = find(itemLink, "(%d+):")
+		if not itemID then return end
+		item = tonumber(itemID)
+	end
+
+	if item > LAST_ITEM_ID then return end
+
+	return (isBag and IFDB.ItemBagFamily[item] or IFDB.ItemFamily[item]) or 0
+end
+
 function GetItemCount(itemName)
+	if type(itemName) ~= "string" then return 0 end
+
 	local count = 0
+
 	for bag = NUM_BAG_FRAMES, 0, -1 do
 		for slot = 1, GetContainerNumSlots(bag) do
 			local _, itemCount = GetContainerItemInfo(bag, slot)
+
 			if itemCount then
 				local itemLink = GetContainerItemLink(bag, slot)
-				local _, _, itemParse = find(itemLink, "(%d+):")
-				local queryName, _, _, _, _, _ = GetItemInfo(itemParse)
-				if queryName and queryName ~= "" then
-					if queryName == itemName then
-						count = count + itemCount
-					end
+				local _, _, itemID = find(itemLink, "(%d+):")
+				local queryName = GetItemInfo(itemID)
+
+				if queryName and queryName == itemName then
+					count = count + itemCount
 				end
 			end
 		end
@@ -497,22 +544,22 @@ function GetItemCount(itemName)
 	return count
 end
 
-local scan
+local scanTooltip
 function GetInventoryItemDurability(slot)
-	if not GetInventoryItemTexture("player", slot) then return nil, nil end
+	if not GetInventoryItemTexture("player", slot) then return end
 
-	if not scan then
-		scan = CreateFrame("GameTooltip", "DurabilityScan", nil, "ShoppingTooltipTemplate")
-		scan:SetOwner(UIParent, "ANCHOR_NONE")
+	if not scanTooltip then
+		scanTooltip = CreateFrame("GameTooltip", "Compatibility_ScanTooltip", nil, "ShoppingTooltipTemplate")
+		scanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
 	end
 
-	scan:ClearLines()
-	scan:SetInventoryItem("player", slot)
+	scanTooltip:ClearLines()
+	scanTooltip:SetInventoryItem("player", slot)
 
-	for i = 4, scan:NumLines() do
-		local text = _G[scan:GetName().."TextLeft"..i]:GetText()
-		for durability, max in string.gfind(text, DURABILITY_TEMPLATE) do
-			return tonumber(durability), tonumber(max)
+	for i = 4, scanTooltip:NumLines() do
+		local text = _G["Compatibility_ScanTooltipTextLeft"..i]:GetText()
+		for current, maximum in gmatch(text, DURABILITY_TEMPLATE) do
+			return tonumber(current), tonumber(maximum)
 		end
 	end
 end
