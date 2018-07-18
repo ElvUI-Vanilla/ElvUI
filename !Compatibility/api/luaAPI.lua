@@ -30,6 +30,7 @@ function select(n, ...)
 	end
 
 	local args = {}
+	args.n = arg.n - n + 1
 
 	for i = n, arg.n do
 		args[i-n+1] = arg[i]
