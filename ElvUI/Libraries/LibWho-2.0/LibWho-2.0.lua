@@ -1,18 +1,19 @@
 ---
 --- check for an already loaded old WhoLib
 ---
-
+------------------------CheckCallback
 if WhoLibByALeX or WhoLib then
 	-- the WhoLib-1.0 (WhoLibByALeX) or WhoLib (by Malex) is loaded -> fail!
 	error("an other WhoLib is already running - disable them first!\n")
 	return
-end
+end -- if
 
 ---
 --- check version
 ---
 
 assert(LibStub, "LibWho-2.0 requires LibStub")
+
 
 local major_version = 'LibWho-2.0'
 local minor_version = tonumber("154") or 99999
@@ -27,10 +28,8 @@ end
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 local callbacks = lib.callbacks
 
-local band = bit.band
-local find, format, gsub, len, sub = string.find, string.format, string.gsub, string.len, string.sub
-local insert, getn = table.insert, table.getn
-local random = math.random
+local find, format, gsub, len = string.find, string.format, string.gsub, string.len
+local tinsert, getn = table.insert, table.getn
 
 local am = {}
 local om = getmetatable(lib)
@@ -50,26 +49,26 @@ local dbg = NOP
 
 if type(lib['hooked']) ~= 'table' then
 	lib['hooked'] = {}
-end
+end -- if
 
 if type(lib['hook']) ~= 'table' then
 	lib['hook'] = {}
-end
+end -- if
 
 if type(lib['events']) ~= 'table' then
 	lib['events'] = {}
-end
+end -- if
 
 if type(lib['embeds']) ~= 'table' then
 	lib['embeds'] = {}
-end
+end -- if
 
 if type(lib['frame']) ~= 'table' then
-	lib['frame'] = CreateFrame('Frame', major_version)
-end
+	lib['frame'] = CreateFrame('Frame', major_version);
+end -- if
 lib['frame']:Hide()
 
-lib.Queue = {[1] = {}, [2] = {}, [3] = {}}
+lib.Queue = {[1]={}, [2]={}, [3]={}}
 lib.WhoInProgress = false
 lib.Result = nil
 lib.Args = nil
@@ -101,7 +100,7 @@ else
 		['console_query'] = 'Result of "/who %s"',
 		['gui_wait'] = '- Please Wait -',
 	}
-end
+end -- if
 
 
 ---
@@ -143,7 +142,7 @@ local queue_quiet = {
 lib['WHOLIB_FLAG_ALWAYS_CALLBACK'] = 1
 
 function lib:Reset()
-	self.Queue = {[1] = {}, [2] = {}, [3] = {}}
+    self.Queue = {[1]={}, [2]={}, [3]={}}
 	self.Cache = {}
 	self.CacheQueue = {}
 end
@@ -188,23 +187,23 @@ function lib.UserInfo(defhandler, name, opts)
 	-- now args - copied and verified from opts
 	local cachedName = self.Cache[args.name]
 
-	if cachedName ~= nil then
+	if(cachedName ~= nil)then
 		-- user is in cache
-		if cachedName.valid == true and (args.timeout < 0 or cachedName.last + args.timeout*60 > now) then
+		if(cachedName.valid == true and (args.timeout < 0 or cachedName.last + args.timeout*60 > now))then
 			-- cache is valid and timeout is in range
-			--dbg('Info('..args.name ..') returned immedeatly')
-			if band(args.flags, self.WHOLIB_FLAG_ALWAYS_CALLBACK) ~= 0 then
+			--dbg('Info(' .. args.name ..') returned immedeatly')
+			if(bit.band(args.flags, self.WHOLIB_FLAG_ALWAYS_CALLBACK) ~= 0)then
 				self:RaiseCallback(args, cachedName.data)
 				return false
 			else
 				return self:DupAll(self:ReturnUserInfo(args.name))
 			end
-		elseif cachedName.valid == false then
+		elseif(cachedName.valid == false)then
 			-- query is already running (first try)
-			if args.callback ~= nil then
-				insert(cachedName.callback, args)
+			if(args.callback ~= nil)then
+				tinsert(cachedName.callback, args)
 			end
-			--dbg('Info('..args.name ..') returned cause it\'s already searching')
+			--dbg('Info(' .. args.name ..') returned cause it\'s already searching')
 			return nil
 		end
 	else
@@ -213,34 +212,34 @@ function lib.UserInfo(defhandler, name, opts)
 
 	local cachedName = self.Cache[args.name]
 
-	if cachedName.inqueue then
+	if(cachedName.inqueue)then
 		-- query is running!
-		if args.callback ~= nil then
-			insert(cachedName.callback, args)
+		if(args.callback ~= nil)then
+			tinsert(cachedName.callback, args)
 		end
-		dbg('Info('..args.name..') returned cause it\'s already searching')
+		dbg('Info(' .. args.name ..') returned cause it\'s already searching')
 		return nil
 	end
-	if GetLocale() == "ruRU" then -- in ruRU with n- not show information about player in WIM addon
+	if (GetLocale() == "ruRU") then -- in ruRU with n- not show information about player in WIM addon
 	if args.name and len(args.name) > 0 then
-		local query = 'и-"'..args.name..'"'
+    	local query = 'и-"' .. args.name .. '"'
 		cachedName.inqueue = true
-		if args.callback ~= nil then
-			insert(cachedName.callback, args)
+    	if(args.callback ~= nil)then
+			tinsert(cachedName.callback, args)
 		end
 		self.CacheQueue[query] = args.name
-		dbg('Info('..args.name ..') added to queue')
+    	dbg('Info(' .. args.name ..') added to queue')
 		self:AskWho( { query = query, queue = args.queue, flags = 0, info = args.name } )
 	end
 	else
 		if args.name and len(args.name) > 0 then
-		local query = 'n-"'..args.name..'"'
+    	local query = 'n-"' .. args.name .. '"'
 		cachedName.inqueue = true
-		if args.callback ~= nil then
-			insert(cachedName.callback, args)
+    	if(args.callback ~= nil)then
+			tinsert(cachedName.callback, args)
 		end
 		self.CacheQueue[query] = args.name
-		dbg('Info('..args.name..') added to queue')
+    	dbg('Info(' .. args.name ..') added to queue')
 		self:AskWho( { query = query, queue = args.queue, flags = 0, info = args.name } )
 	end
 	end
@@ -273,7 +272,7 @@ end
 --
 --	self:CheckPreset(usage, 'event', self.events, event)
 --	local callback, handler = self:CheckCallback(usage, '', callback, handler, defhandler, true)
---	insert(self.events[event], {callback=callback, handler=handler})
+--	table.insert(self.events[event], {callback=callback, handler=handler})
 --end
 
 -- non-embedded externals
@@ -283,9 +282,9 @@ function lib.Embed(_, handler)
 
 	self:CheckArgument(usage, 'handler', 'table', handler)
 
-	for _, name in pairs(self.external) do
+	for _,name in pairs(self.external) do
 		handler[name] = self[name]
-	end
+	end -- do
 	self['embeds'][handler] = true
 
 	return handler
@@ -333,8 +332,8 @@ lib['frame']:SetScript("OnUpdate", function()
 	if lib.Timeout_time <= 0 then
 		lib['frame']:Hide()
 		lib:AskWhoNext()
-	end
-end)
+	end -- if
+end);
 
 
 -- queue scheduler
@@ -347,19 +346,19 @@ local INSTANT_QUERY_MIN_INTERVAL = 60 -- only once every 1 min
 
 function lib:UpdateWeights()
    local weightsum, sum, count = 0, 0, 0
-   for k, v in pairs(queue_weights) do
+   for k,v in pairs(queue_weights) do
 		sum = sum + v
 		weightsum = weightsum + v * getn(self.Queue[k])
    end
 
    if weightsum == 0 then
-		for k, v in pairs(queue_weights) do queue_bounds[k] = v end
+        for k,v in pairs(queue_weights) do queue_bounds[k] = v end
 		return
    end
 
    local adjust = sum / weightsum
 
-   for k, v in pairs(queue_bounds) do
+   for k,v in pairs(queue_bounds) do
 		queue_bounds[k] = queue_weights[k] * adjust * getn(self.Queue[k])
    end
 end
@@ -378,9 +377,9 @@ function lib:GetNextFromScheduler()
 		end
    end
 
-   local n,i = random(),0
+   local n,i = math.random(),0
    repeat
-		i = i + 1
+        i=i+1
 		n = n - queue_bounds[i]
    until i >= getn(self.Queue) or n <= 0
 
@@ -411,7 +410,7 @@ function lib:AskWhoNext()
 		self.Args = nil
 		if args.info and self.CacheQueue[args.query] ~= nil then
 			dbg("Requeing "..args.query)
-			insert(self.Queue[args.queue], args)
+			tinsert(self.Queue[args.queue], args)
 			if args.console_show ~= nil then
 				DEFAULT_CHAT_FRAME:AddMessage(format("Timeout on result of '%s' - retrying...", args.query),1,1,0)
 				args.console_show = true
@@ -420,19 +419,19 @@ function lib:AskWhoNext()
 
 		if queryInterval < lib.MaxInterval then
 			queryInterval = queryInterval + 0.5
-			dbg("--Throttling down to 1 who per "..queryInterval.."s")
+			dbg("--Throttling down to 1 who per " .. queryInterval .. "s")
 		end
 	end
 
 
 	self.WhoInProgress = false
 
-	local v, k, args = nil
+	local v,k,args = nil
 	local kludge = 10
 	repeat
 		k,v = self:GetNextFromScheduler()
 		if not k then break end
-		if WhoFrame:IsShown() and k > self.WHOLIB_QUEUE_QUIET then
+		if(WhoFrame:IsShown() and k > self.WHOLIB_QUEUE_QUIET)then
 			break
 		end
 		if getn(v) > 0 then
@@ -447,7 +446,7 @@ function lib:AskWhoNext()
 		self.Result = {}
 		self.Args = args
 		self.Total = -1
-		if args.console_show == true then
+		if(args.console_show == true)then
 			DEFAULT_CHAT_FRAME:AddMessage(format(self.L['console_query'], args.query), 1, 1, 0)
 
 		end
@@ -482,8 +481,8 @@ function lib:AskWhoNext()
 end
 
 function lib:AskWho(args)
-	insert(self.Queue[args.queue], args)
-	dbg('['..args.queue..'] added "'..args.query..'", queues='..getn(self.Queue[1])..'/'.. getn(self.Queue[2])..'/'.. getn(self.Queue[3]))
+	tinsert(self.Queue[args.queue], args)
+	dbg('[' .. args.queue .. '] added "' .. args.query .. '", queues=' .. getn(self.Queue[1]) .. '/' .. getn(self.Queue[2]) .. '/' .. getn(self.Queue[3]))
 	self:TriggerEvent('WHOLIB_QUERY_ADDED')
 
 	self:AskWhoNext()
@@ -495,23 +494,23 @@ function lib:ReturnWho()
 		return
 	end
 
-	if self.Args.queue == self.WHOLIB_QUEUE_QUIET or self.Args.queue == self.WHOLIB_QUEUE_SCANNING then
+	if(self.Args.queue == self.WHOLIB_QUEUE_QUIET or self.Args.queue == self.WHOLIB_QUEUE_SCANNING)then
 		self.Quiet = nil
 	end
 
 	if queryInterval > self.MinInterval then
 		queryInterval = queryInterval - 0.5
-		dbg("--Throttling up to 1 who per "..queryInterval.."s")
+		dbg("--Throttling up to 1 who per " .. queryInterval .. "s")
 	end
 
 	self.WhoInProgress = false
 	dbg("RESULT: "..self.Args.query)
-	dbg('['..self.Args.queue..'] returned "'..self.Args.query..'", total='..self.Total ..' , queues='..getn(self.Queue[1])..'/'.. getn(self.Queue[2])..'/'.. getn(self.Queue[3]))
+	dbg('[' .. self.Args.queue .. '] returned "' .. self.Args.query .. '", total=' .. self.Total .. ' , queues='..getn(self.Queue[1]) .. '/' .. getn(self.Queue[2]) .. '/' .. getn(self.Queue[3]))
 	local now = time()
 	local complete = (self.Total == getn(self.Result)) and (self.Total < MAX_WHOS_FROM_SERVER)
-	for _, v in pairs(self.Result)do
+	for _,v in pairs(self.Result)do
 		if v.Name then
-			if self.Cache[v.Name] == nil then
+			if(self.Cache[v.Name] == nil)then
 				self.Cache[v.Name] = { inqueue = false, callback = {} }
 			end
 
@@ -521,17 +520,17 @@ function lib:ReturnWho()
 			cachedName.data = v -- update data
 			cachedName.data.Online = true -- player is online
 			cachedName.last = now -- update timestamp
-			if cachedName.inqueue then
-				if self.Args.info and self.CacheQueue[self.Args.query] == v.Name then
+			if(cachedName.inqueue)then
+				if(self.Args.info and self.CacheQueue[self.Args.query] == v.Name)then
 					-- found by the query which was created to -> remove us from query
 					self.CacheQueue[self.Args.query] = nil
 				else
 					-- found by another query
 					for k2,v2 in pairs(self.CacheQueue) do
-						if v2 == v.Name then
-							for i = self.WHOLIB_QUEUE_QUIET, self.WHOLIB_QUEUE_SCANNING do
+						if(v2 == v.Name)then
+							for i=self.WHOLIB_QUEUE_QUIET, self.WHOLIB_QUEUE_SCANNING do
 								for k3,v3 in pairs(self.Queue[i]) do
-									if v3.query == k2 and v3.info then
+									if(v3.query == k2 and v3.info)then
 										-- remove the query which was generated for this user, cause another query was faster...
 										dbg("Found '"..v.Name.."' early via query '"..self.Args.query.."'")
 										table.remove(self.Queue[i], k3)
@@ -542,8 +541,8 @@ function lib:ReturnWho()
 						end
 					end
 				end
-				dbg('Info('..v.Name ..') returned: on')
-				for _, v2 in pairs(cachedName.callback) do
+				dbg('Info(' .. v.Name ..') returned: on')
+				for _,v2 in pairs(cachedName.callback) do
 					self:RaiseCallback(v2, self:ReturnUserInfo(v.Name))
 				end
 				cachedName.callback = {}
@@ -551,22 +550,22 @@ function lib:ReturnWho()
 			cachedName.inqueue = false -- query is done
 		end
 	end
-	if self.Args.info and self.CacheQueue[self.Args.query] then
+	if(self.Args.info and self.CacheQueue[self.Args.query])then
 		-- the query did not deliver the result => not online!
 		local name = self.CacheQueue[self.Args.query]
 		local cachedName = self.Cache[name]
-		if cachedName.inqueue then
+		if (cachedName.inqueue)then
 			-- nothing found (yet)
 			cachedName.valid = true -- is now valid
 			cachedName.inqueue = false -- query is done?
 			cachedName.last = now -- update timestamp
-			if complete then
+			if(complete)then
 				cachedName.data.Online = false -- player is offline
 			else
 				cachedName.data.Online = nil -- player is unknown (more results from who than can be displayed)
 			end
 		end
-		dbg('Info('..name ..') returned: '..(cachedName.data.Online == false and 'off' or 'unkn'))
+		dbg('Info(' .. name ..') returned: ' .. (cachedName.data.Online == false and 'off' or 'unkn'))
 		for _,v in pairs(cachedName.callback) do
 			self:RaiseCallback(v, self:ReturnUserInfo(name))
 		end
@@ -582,21 +581,21 @@ function lib:ReturnWho()
 end
 
 function lib:GuiWho(msg)
-	if msg == self.L['gui_wait'] then
+	if(msg == self.L['gui_wait'])then
 		return
 	end
 
 	for _,v in pairs(self.Queue[self.WHOLIB_QUEUE_USER]) do
-		if v.gui == true then
+		if(v.gui == true)then
 			return
 		end
 	end
-	if self.WhoInProgress then
+	if(self.WhoInProgress)then
 		WhoFrameEditBox:SetText(self.L['gui_wait'])
 	end
 	self.savedText = msg
 	self:AskWho({query = msg, queue = self.WHOLIB_QUEUE_USER, flags = 0, gui = true})
-	WhoFrameEditBox:ClearFocus()
+	WhoFrameEditBox:ClearFocus();
 end
 
 function lib:ConsoleWho(msg)
@@ -605,16 +604,16 @@ function lib:ConsoleWho(msg)
 	local q1 = self.Queue[self.WHOLIB_QUEUE_USER]
 	local q1count = getn(q1)
 
-	if q1count > 0 and q1[q1count].query == msg then -- last query is itdenical: drop
+	if(q1count > 0 and q1[q1count].query == msg)then -- last query is itdenical: drop
 		return
 	end
 
-	if q1count > 0 and q1[q1count].console_show == false then -- display 'queued' if console and not yet shown
-		DEFAULT_CHAT_FRAME:AddMessage(format(self.L['console_queued'], q1[q1count].query), 1, 1, 0)
+	if(q1count > 0 and q1[q1count].console_show == false)then -- display 'queued' if console and not yet shown
+		DEFAULT_CHAT_FRAME:AddMessage(string.format(self.L['console_queued'], q1[q1count].query), 1, 1, 0)
 		q1[q1count].console_show = true
 	end
-	if q1count > 0 or self.WhoInProgress then
-		DEFAULT_CHAT_FRAME:AddMessage(format(self.L['console_queued'], msg), 1, 1, 0)
+	if(q1count > 0 or self.WhoInProgress)then
+		DEFAULT_CHAT_FRAME:AddMessage(string.format(self.L['console_queued'], msg), 1, 1, 0)
 		console_show = true
 	end
 	self:AskWho({query = msg, queue = self.WHOLIB_QUEUE_USER, flags = 0, console_show = console_show})
@@ -631,7 +630,7 @@ function lib:RaiseCallback(args, ...)
 		args.callback(self:DupAll(unpack(arg)))
 	elseif args.callback then -- must be a string
 		args.handler[args.callback](args.handler, self:DupAll(unpack(arg)))
-	end
+	end -- if
 end
 
 -- Argument checking
@@ -642,8 +641,8 @@ function lib:CheckArgument(func, name, argtype, arg, defarg)
 	elseif type(arg) == argtype then
 		return arg
 	else
-		error(format("%s: '%s' - %s%s expected got %s", func, name, (defarg ~= nil) and 'nil or ' or '', argtype, type(arg)), 3)
-	end
+		error(string.format("%s: '%s' - %s%s expected got %s", func, name, (defarg ~= nil) and 'nil or ' or '', argtype, type(arg)), 3)
+	end -- if
 end
 
 function lib:CheckPreset(func, name, preset, arg, defarg)
@@ -655,13 +654,13 @@ function lib:CheckPreset(func, name, preset, arg, defarg)
 		local p = {}
 		for k,v in pairs(preset) do
 			if type(v) ~= 'string' then
-				insert(p, k)
+				table.insert(p, k)
 			else
-				insert(p, v)
-			end
-		end
-		error(format("%s: '%s' - one of %s%s expected got %s", func, name, (defarg ~= nil) and 'nil, ' or '', table.concat(p, ', '), self:simple_dump(arg)), 3)
-	end
+				table.insert(p, v)
+			end -- if
+		end -- for
+		error(string.format("%s: '%s' - one of %s%s expected got %s", func, name, (defarg ~= nil) and 'nil, ' or '', table.concat(p, ', '), self:simple_dump(arg)), 3)
+	end -- if
 end
 
 function lib:CheckCallback(func, prefix, callback, handler, defhandler, nonil)
@@ -671,19 +670,19 @@ function lib:CheckCallback(func, prefix, callback, handler, defhandler, nonil)
 	elseif type(callback) == 'function' then
 		-- simple function
 		if handler ~= nil then
-			error(format("%s: '%shandler' - nil expected got %s", func, prefix, type(arg)), 3)
-		end
+			error(string.format("%s: '%shandler' - nil expected got %s", func, prefix, type(arg)), 3)
+		end -- if
 	elseif type(callback) == 'string' then
 		-- method
 		if handler == nil then
 			handler = defhandler
-		end
+		end -- if
 		if type(handler) ~= 'table' or type(handler[callback]) ~= 'function' or handler == self then
-			error(format("%s: '%shandler' - nil or function expected got %s", func, prefix, type(arg)), 3)
-		end
+			error(string.format("%s: '%shandler' - nil or function expected got %s", func, prefix, type(arg)), 3)
+		end -- if
 	else
-		error(format("%s: '%scallback' - %sfunction or string expected got %s", func, prefix, nonil and 'nil or ' or '', type(arg)), 3)
-	end
+		error(string.format("%s: '%scallback' - %sfunction or string expected got %s", func, prefix, nonil and 'nil or ' or '', type(arg)), 3)
+	end -- if
 
 	return callback, handler
 end
@@ -708,8 +707,8 @@ function lib:Dup(from)
 			to[k] = self:Dup(v)
 		else
 			to[k] = v
-		end
-	end
+		end -- if
+	end -- for
 
 	return to
 end
@@ -721,7 +720,7 @@ function lib:DupAll(x, ...)
 		return x, self:DupAll(unpack(arg))
 	else
 		return nil
-	end
+	end -- if
 end
 
 local MULTIBYTE_FIRST_CHAR = "^([\192-\255]?%a?[\128-\191]*)"
@@ -749,9 +748,12 @@ end
 
 SlashCmdList['WHO'] = function(msg)
 	dbg("console /who: "..msg)
-	if msg == '' then
+	-- new /who function
+	--local self = lib
+
+	if(msg == '')then
 		lib:GuiWho(WhoFrame_GetDefaultWhoCommand())
-	elseif WhoFrame:IsVisible()then
+	elseif(WhoFrame:IsVisible())then
 		lib:GuiWho(msg)
 	else
 		lib:ConsoleWho(msg)
@@ -787,27 +789,28 @@ for _, name in pairs(hooks) do
         lib['hooked'][name] = _G[name]
         _G[name] = function()
             lib.hook[name](lib, arg1, arg2, arg3)
-        end
-    end
-end
+		end -- function
+	end -- if
+end -- for
 
 -- fake 'WhoFrame:Hide' as hooked
-insert(hooks, 'WhoFrame_Hide')
+table.insert(hooks, 'WhoFrame_Hide')
 
 -- check for unused hooks -> remove function
 for name, _ in pairs(lib['hook']) do
 	if not hooks[name] then
 		lib['hook'][name] = function() end
-	end
-end
+	end -- if
+end -- for
 
 -- secure hook 'WhoFrame:Hide'
 if not lib['hooked']['WhoFrame_Hide'] then
 	lib['hooked']['WhoFrame_Hide'] = true
 	hooksecurefunc(WhoFrame, 'Hide', function(...)
 		lib['hook']['WhoFrame_Hide'](lib)
-	end)
-end
+		end -- function
+	)
+end -- if
 
 ---
 --- hook replacements
@@ -830,26 +833,28 @@ function lib.hook.FriendsFrame_OnEvent()
 end
 
 hooksecurefunc(FriendsFrame, 'RegisterEvent', function()
-	if event == "WHO_LIST_UPDATE" then
-		self:UnregisterEvent("WHO_LIST_UPDATE")
-	end
-end)
+		if(event == "WHO_LIST_UPDATE") then
+				self:UnregisterEvent("WHO_LIST_UPDATE");
+		end
+	end);
 
-function lib.hook.SetWhoToUI(_, state)
+function lib.hook.SetWhoToUI(self, state)
 	lib.SetWhoToUIState = state
 end
 
 function lib.hook.WhoFrame_Hide()
-	if not lib.WhoInProgress then
+	if(not lib.WhoInProgress)then
 		lib:AskWhoNextIn5sec()
 	end
 end
+
 
 ---
 --- WoW events
 ---
 
-local who_pattern = gsub(WHO_NUM_RESULTS, '%%d', '%%d%+')
+local who_pattern = string.gsub(WHO_NUM_RESULTS, '%%d', '%%d%+')
+
 function lib:CHAT_MSG_SYSTEM()
 	if arg1 and find(arg1, who_pattern) then
 		lib:ProcessWhoResults()
@@ -857,6 +862,7 @@ function lib:CHAT_MSG_SYSTEM()
 end
 
 FriendsFrame:UnregisterEvent("WHO_LIST_UPDATE")
+
 function lib:WHO_LIST_UPDATE()
 	if not lib.Quiet then
 		WhoList_Update()
@@ -871,9 +877,9 @@ function lib:ProcessWhoResults()
 
 	local num
 	self.Total, num = GetNumWhoResults()
-	for i = 1, num do
+	for i=1, num do
 		local charname, guildname, level, race, class, zone, nonlocalclass, sex = GetWhoInfo(i)
-		self.Result[i] = {Name = charname, Guild = guildname, Level = level, Race = race, Class = class, Zone = zone, NoLocaleClass = nonlocalclass, Sex = sex }
+		self.Result[i] = {Name=charname, Guild=guildname, Level=level, Race=race, Class=class, Zone=zone, NoLocaleClass=nonlocalclass, Sex=sex }
 	end
 
 	self:ReturnWho()
@@ -883,25 +889,26 @@ end
 --- event activation
 ---
 
-lib['frame']:UnregisterAllEvents()
+lib['frame']:UnregisterAllEvents();
 
 lib['frame']:SetScript("OnEvent", function(...)
 	lib[event](lib, unpack(arg))
-end)
+end);
 
-for _, name in pairs({
+for _,name in pairs({
 	'CHAT_MSG_SYSTEM',
 	'WHO_LIST_UPDATE',
 }) do
-	lib['frame']:RegisterEvent(name)
-end
+	lib['frame']:RegisterEvent(name);
+end -- for
+
 
 ---
 --- re-embed
 ---
 
-for target, _ in pairs(lib['embeds']) do
+for target,_ in pairs(lib['embeds']) do
 	if type(target) == 'table' then
 		lib:Embed(target)
-	end
-end
+	end -- if
+end -- for
