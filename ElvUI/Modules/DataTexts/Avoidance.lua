@@ -32,10 +32,13 @@ local AVD_DECAY_RATE = 0.2
 
 local function IsWearingShield()
 	local slotID = GetInventorySlotInfo("SecondaryHandSlot")
-	local _, _, itemID = find(GetInventoryItemLink("player", slotID), "(%d+):")
+	local link = GetInventoryItemLink("player", slotID)
+	if link then
+		local _, _, itemID = find(link, "(%d+):")
 
-	if itemID then
-		return select(9, GetItemInfo(itemID))
+		if itemID then
+			return select(9, GetItemInfo(itemID))
+		end
 	end
 end
 
