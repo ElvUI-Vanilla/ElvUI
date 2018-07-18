@@ -31,7 +31,7 @@ SlashCmdList["FRAME"] = function(arg)
 	end
 
 	if arg ~= nil then FRAME = arg end --Set the global variable FRAME to = whatever we are mousing over to simplify messing with frames that have no name.
-	if arg ~= nil and this:GetName() ~= nil then
+	if arg ~= nil and arg:GetName() ~= nil then
 		local point, relativeTo, relativePoint, xOfs, yOfs = arg:GetPoint()
 		ChatFrame1:AddMessage("|cffCC0000----------------------------")
 		ChatFrame1:AddMessage("Name: |cffFFD100"..arg:GetName())
