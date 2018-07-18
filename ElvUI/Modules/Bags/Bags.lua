@@ -484,7 +484,7 @@ function B:Layout(isBank)
 
 					if bagID ~= BANK_CONTAINER then
 						f.Bags[bagID][slotID].cooldown = _G[f.Bags[bagID][slotID]:GetName().."Cooldown"]
-						f.Bags[bagID][slotID].cooldown:SetModelScale(buttonSize / 48)
+						f.Bags[bagID][slotID].cooldown:SetModelScale(buttonSize / (37 / 0.75))
 						E:RegisterCooldown(f.Bags[bagID][slotID].cooldown)
 						f.Bags[bagID][slotID].bagID = bagID
 						f.Bags[bagID][slotID].slotID = slotID
@@ -557,7 +557,7 @@ function B:Layout(isBank)
 				f.keyFrame.slots[i]:SetID(i)
 
 				f.keyFrame.slots[i].cooldown = _G[f.keyFrame.slots[i]:GetName().."Cooldown"]
-				f.keyFrame.slots[i].cooldown:SetModelScale(buttonSize / 48)
+				f.keyFrame.slots[i].cooldown:SetModelScale(buttonSize / (37 / 0.75))
 				E:RegisterCooldown(f.keyFrame.slots[i].cooldown)
 
 				f.keyFrame.slots[i].iconTexture = _G[f.keyFrame.slots[i]:GetName().."IconTexture"]
