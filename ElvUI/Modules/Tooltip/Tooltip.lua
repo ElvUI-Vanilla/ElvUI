@@ -288,6 +288,7 @@ function TT:SetPrice(tt, id, count)
 end
 
 function TT:SetAction(tt, id)
+	if GameTooltipTextRight1:IsShown() then return end
 	local itemName = GameTooltipTextLeft1:GetText()
 	if not itemName then return end
 
