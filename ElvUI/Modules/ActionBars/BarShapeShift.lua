@@ -180,7 +180,7 @@ function AB:PositionAndSizeBarShapeShift()
 		button:ClearAllPoints()
 		E:Size(button, size)
 
-		_G[button:GetName().."Cooldown"]:SetModelScale(size / 48)
+		_G[button:GetName().."Cooldown"]:SetModelScale(size / 40)
 
 		if self.db["barShapeShift"].mouseover == true then
 			bar:SetAlpha(0)

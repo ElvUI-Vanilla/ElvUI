@@ -171,7 +171,7 @@ function AB:PositionAndSizeBarPet()
 		button:ClearAllPoints()
 		E:Size(button, size)
 
-		_G[button:GetName().."Cooldown"]:SetModelScale(size / 48)
+		_G[button:GetName().."Cooldown"]:SetModelScale(size / 40)
 
 		button:Show()
 
