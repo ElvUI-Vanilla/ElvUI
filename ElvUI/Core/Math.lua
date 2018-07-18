@@ -208,7 +208,8 @@ function E:GetFormattedText(style, min, max)
 
 	if max == 0 then max = 1 end
 
-	gftDec = E.db.general.decimalLength or 1
+	local gftUseStyle
+	local gftDec = E.db.general.decimalLength or 1
 	if gftDec ~= 1 and find(style, "PERCENT") then
 		gftUseStyle = gsub(styles[style], "%%%.1f%%%%", "%%."..gftDec.."f%%%%")
 	else
@@ -216,7 +217,7 @@ function E:GetFormattedText(style, min, max)
 	end
 
 	if style == "DEFICIT" then
-		gftDeficit = max - min
+		local gftDeficit = max - min
 		return ((gftDeficit > 0) and format(gftUseStyle, E:ShortValue(gftDeficit))) or ""
 	elseif style == "PERCENT" then
 		return format(gftUseStyle, min / max * 100)

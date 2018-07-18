@@ -21,6 +21,7 @@ local SendAddonMessage = SendAddonMessage
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
+local _
 _, E.myclass = UnitClass("player") -- Constants
 _, E.myrace = UnitRace("player")
 _, E.myfaction = UnitFactionGroup("player")

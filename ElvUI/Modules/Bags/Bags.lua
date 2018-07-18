@@ -248,7 +248,7 @@ function B:UpdateSlot(bagID, slotID)
 	if B.ProfessionColors[bagType] then
 		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
 	elseif clink then
-		local iLvl, itemEquipLoc
+		local _, iLvl, itemEquipLoc
 		slot.name, _, slot.rarity, iLvl, _, _, _, itemEquipLoc = GetItemInfo(match(clink, "item:(%d+)"))
 
 		local r, g, b

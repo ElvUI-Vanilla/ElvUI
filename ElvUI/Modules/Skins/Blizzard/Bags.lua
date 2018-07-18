@@ -68,7 +68,7 @@ local function LoadSkin()
 
 		S:SecureHookScript(containerFrame, "OnShow", "ContainerFrame_Update")
 
-		local itemButton, itemButtonIcon
+		local itemButton, itemButtonIcon, itemButtonCooldown
 		for k = 1, MAX_CONTAINER_ITEMS, 1 do
 			itemButton = _G["ContainerFrame"..i.."Item"..k]
 			itemButtonIcon = _G["ContainerFrame"..i.."Item"..k.."IconTexture"]

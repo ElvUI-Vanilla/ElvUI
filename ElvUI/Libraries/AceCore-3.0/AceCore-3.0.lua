@@ -123,7 +123,7 @@ end
 
 local function strsplit(delim, s, n)
 	if n and n < 2 then return s end
-	beg = beg or 1
+	local beg = beg or 1
 	local i,j = string.find(s,delim,beg)
 	if not i then
 		return s, nil

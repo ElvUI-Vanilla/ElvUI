@@ -10,7 +10,7 @@ local HasPetUI = HasPetUI
 local hooksecurefunc = hooksecurefunc
 local UnitExists = UnitExists
 
-function LoadSkin()
+local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.stable ~= true then return end
 
 	E:StripTextures(PetStableFrame)

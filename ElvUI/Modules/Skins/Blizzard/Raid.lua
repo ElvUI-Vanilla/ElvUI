@@ -8,7 +8,7 @@ local pairs = pairs
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 
-function LoadSkin()
+local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.raid ~= true then return end
 
 	-- RaidFrame

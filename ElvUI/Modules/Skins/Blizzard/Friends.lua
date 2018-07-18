@@ -20,7 +20,7 @@ for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
 	localizedTable[v] = k
 end
 
-function LoadSkin()
+local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.friends ~= true then return end
 
 	-- Friends Frame

@@ -112,6 +112,7 @@ local function LoadSkin()
 
 	local function QuestQualityColors(frame, text, quality, link)
 		if link and not quality then
+			local _
 			_, _, quality = GetItemInfo(match(link, "item:(%d+)"))
 		end
 
