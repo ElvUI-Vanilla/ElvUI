@@ -11,7 +11,6 @@ local floor = floor
 local format, find, match, strrep, len, sub, gsub = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local GetActiveTalentGroup = GetActiveTalentGroup
 local GetCVar = GetCVar
 local GetFunctionCPUUsage = GetFunctionCPUUsage
 local GetTalentTabInfo = GetTalentTabInfo
@@ -20,8 +19,6 @@ local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNum
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local SendAddonMessage = SendAddonMessage
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
-local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
-local MAX_TALENT_TABS = MAX_TALENT_TABS
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 _, E.myclass = UnitClass("player") -- Constants

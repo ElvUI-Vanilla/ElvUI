@@ -6,7 +6,7 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 local pairs = pairs
-local find, match, split = string.find, string.match, string.split
+local match = string.match
 --WoW API / Variables
 local GetInventoryItemLink = GetInventoryItemLink
 local GetItemInfo = GetItemInfo

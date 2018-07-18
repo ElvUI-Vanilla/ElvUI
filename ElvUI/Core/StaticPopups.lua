@@ -3,7 +3,7 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 --Cache global variables
 --Lua functions
 local _G = _G
-local pairs, type, unpack, assert = pairs, type, unpack, assert
+local pairs, assert = pairs, assert
 local getn, tremove, tContains, tinsert, wipe = table.getn, tremove, tContains, tinsert, table.wipe
 local lower = string.lower
 --WoW API / Variables

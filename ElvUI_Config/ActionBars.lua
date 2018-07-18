@@ -7,7 +7,6 @@ local ACD = LibStub("AceConfigDialog-3.0");
 local _G = _G
 local getn = table.getn
 --WoW API / Variables
-local SetCVar = SetCVar
 local GameTooltip = _G["GameTooltip"]
 
 local ACTIONBAR_LABEL, COLOR, GENERAL, LOCK_ACTIONBAR_TEXT, NONE = ACTIONBAR_LABEL, COLOR, GENERAL, LOCK_ACTIONBAR_TEXT, NONE

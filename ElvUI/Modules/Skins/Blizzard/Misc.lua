@@ -5,10 +5,7 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local find = string.find
 --WoW API / Variables
-local IsAddOnLoaded = IsAddOnLoaded
-local UnitIsUnit = UnitIsUnit
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -370,7 +367,7 @@ local function LoadSkin()
 	end
 
 	-- Interface Options Checkboxes
-	for index, value in UIOptionsFrameCheckButtons do
+	for _, value in UIOptionsFrameCheckButtons do
 		local UIOptionsFrameCheckBox = _G["UIOptionsFrameCheckButton"..value.index]
 		if UIOptionsFrameCheckBox then
 			S:HandleCheckBox(UIOptionsFrameCheckBox)
@@ -378,7 +375,7 @@ local function LoadSkin()
 	end
 
 	-- Video Options Checkboxes
-	for index, value in OptionsFrameCheckButtons do
+	for _, value in OptionsFrameCheckButtons do
 		local OptionsFrameCheckButton = _G["OptionsFrameCheckButton"..value.index]
 		if OptionsFrameCheckButton then
 			S:HandleCheckBox(OptionsFrameCheckButton)
@@ -386,7 +383,7 @@ local function LoadSkin()
 	end
 
 	-- Sound Options Checkboxes
-	for index, value in SoundOptionsFrameCheckButtons do
+	for _, value in SoundOptionsFrameCheckButtons do
 		local SoundOptionsFrameCheckButton = _G["SoundOptionsFrameCheckButton"..value.index]
 		if SoundOptionsFrameCheckButton then
 			S:HandleCheckBox(SoundOptionsFrameCheckButton)
@@ -394,17 +391,17 @@ local function LoadSkin()
 	end
 
 	-- Interface Options Sliders
-	for i, v in UIOptionsFrameSliders do
+	for i in UIOptionsFrameSliders do
 		S:HandleSliderFrame(_G["UIOptionsFrameSlider"..i])
 	end
 
 	-- Video Options Sliders
-	for i, v in OptionsFrameSliders do
+	for i in OptionsFrameSliders do
 		S:HandleSliderFrame(_G["OptionsFrameSlider"..i])
 	end
 
 	-- Sound Options Sliders
-	for i, v in SoundOptionsFrameSliders do
+	for i in SoundOptionsFrameSliders do
 		S:HandleSliderFrame(_G["SoundOptionsFrameSlider"..i])
 	end
 end

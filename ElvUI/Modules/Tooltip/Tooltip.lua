@@ -158,14 +158,12 @@ function TT:UPDATE_MOUSEOVER_UNIT(_, unit)
 
 	TT:RemoveTrashLines(GameTooltip)
 	local level = UnitLevel(unit)
-	local isShiftKeyDown = IsShiftKeyDown()
 
 	local color
 	if UnitIsPlayer(unit) then
 		local localeClass, class = UnitClass(unit)
 		local name = UnitName(unit)
 		local guildName, guildRankName = GetGuildInfo(unit)
-		local pvpName = UnitPVPName(unit)
 		if not localeClass or not class then return end
 
 		color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]

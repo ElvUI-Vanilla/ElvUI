@@ -6,8 +6,6 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 local getn = table.getn
---WoW API / Variables
-local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.debug ~= true then return end
@@ -54,7 +52,6 @@ local function LoadSkin()
 	E:Point(ScriptErrorsFrame.next, "BOTTOM", ScriptErrorsFrame, "BOTTOM", 50, 7)
 	E:Point(ScriptErrorsFrame.close, "BOTTOMRIGHT", -12, 8)
 
-	local noscalemult = E.mult * GetCVar("uiScale")
 	HookScript(FrameStackTooltip, "OnShow", function()
 		E:SetTemplate(this, "Transparent")
 		this:SetBackdropColor(unpack(E["media"].backdropfadecolor))

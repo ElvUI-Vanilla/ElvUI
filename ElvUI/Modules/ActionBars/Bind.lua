@@ -5,7 +5,7 @@ local AB = E:GetModule("ActionBars");
 --Lua functions
 local _G = _G
 local find, format, upper, sub = string.find, string.format, string.upper, string.sub
-local floor, mod = math.floor, math.mod
+local floor = math.floor
 local select, tonumber, pairs, getn = select, tonumber, pairs, getn
 --WoW API / Variables
 local CreateFrame = CreateFrame

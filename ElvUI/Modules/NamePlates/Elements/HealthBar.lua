@@ -3,9 +3,8 @@ local mod = E:GetModule("NamePlates")
 local LSM = LibStub("LibSharedMedia-3.0")
 --local LMH = LibStub("LibMobHealth-4.0")
 
-local tonumber = tonumber
+--local tonumber = tonumber
 
-local GetInstanceDifficulty = GetInstanceDifficulty
 local UnitLevel = UnitLevel
 
 function mod:UpdateElement_HealthOnValueChanged()

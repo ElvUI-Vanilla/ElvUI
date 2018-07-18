@@ -195,7 +195,7 @@ function CC:GetCacheSize(global)
 
 	if global then
 		for realm in pairs(self.cache) do
-			for name in pairs(self.cache[realm]) do
+			for _ in pairs(self.cache[realm]) do
 				size = size + 1
 			end
 		end
@@ -204,7 +204,7 @@ function CC:GetCacheSize(global)
 		self.cacheDBCalculationTime = GetTime()
 	else
 		for realm in pairs(self.tempCache) do
-			for name in pairs(self.tempCache[realm]) do
+			for _ in pairs(self.tempCache[realm]) do
 				size = size + 1
 			end
 		end

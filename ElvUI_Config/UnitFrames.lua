@@ -9,8 +9,8 @@ local ElvUF = ns.oUF
 local _G = _G
 local find, format = string.find, string.format
 local gsub, match, split = string.gsub, string.match, string.split
-local ipairs, next, pairs, select = ipairs, next, pairs, select
 local concat, getn, insert, remove, wipe = table.concat, table.getn, table.insert, table.remove, table.wipe
+local ipairs, pairs, select = ipairs, pairs, select
 --WoW API / Variables
 local GetScreenWidth = GetScreenWidth
 local IsAddOnLoaded = IsAddOnLoaded
@@ -84,9 +84,9 @@ local auraBarsSortValues = {
 local auraSortValues = {
 	["TIME_REMAINING"] = L["Time Remaining"],
 	["DURATION"] = L["Duration"],
-	["NAME"] = "NAME",
+	["NAME"] = NAME,
 	["INDEX"] = L["Index"],
-	["PLAYER"] = "PLAYER",
+	["PLAYER"] = PLAYER,
 }
 
 local auraSortMethodValues = {
@@ -1259,7 +1259,6 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 					if numUnits then
 						for i=1, numUnits do
 							if _G[frameName..i] then
-								local v = _G[frameName..i].Power:GetValue()
 								local min, max = _G[frameName..i].Power:GetMinMaxValues()
 								_G[frameName..i].Power:SetMinMaxValues(min, max + 500)
 								_G[frameName..i].Power:SetValue(1)
@@ -1268,7 +1267,6 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 						end
 					else
 						if _G[frameName] and _G[frameName].Power then
-							local v = _G[frameName].Power:GetValue()
 							local min, max = _G[frameName].Power:GetMinMaxValues()
 							_G[frameName].Power:SetMinMaxValues(min, max + 500)
 							_G[frameName].Power:SetValue(1)
@@ -1277,7 +1275,6 @@ local function GetOptionsTable_Power(hasDetatchOption, updateFunc, groupName, nu
 							for i=1, _G[frameName]:GetNumChildren() do
 								local child = select(i, _G[frameName]:GetChildren())
 								if child and child.Power then
-									local v = child.Power:GetValue()
 									local min, max = child.Power:GetMinMaxValues()
 									child.Power:SetMinMaxValues(min, max + 500)
 									child.Power:SetValue(1)
@@ -3710,13 +3707,6 @@ E.Options.args.unitframe.args.pettarget = {
 		--buffs = GetOptionsTable_Auras(false, "buffs", false, UF.CreateAndUpdateUF, "pettarget"),
 		--debuffs = GetOptionsTable_Auras(false, "debuffs", false, UF.CreateAndUpdateUF, "pettarget"),
 	},
-}
-
-local groupPoints = {
-	["TOP"] = "TOP",
-	["BOTTOM"] = "BOTTOM",
-	["LEFT"] = "LEFT",
-	["RIGHT"] = "RIGHT",
 }
 
 --Party Frames

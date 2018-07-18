@@ -9,7 +9,6 @@ local ipairs, unpack = ipairs, unpack
 local GetInboxHeaderInfo = GetInboxHeaderInfo
 local GetInboxItem = GetInboxItem
 local GetInboxNumItems = GetInboxNumItems
-local GetItemInfo = GetItemInfo
 local GetItemInfoByName = GetItemInfoByName
 local GetItemQualityColor = GetItemQualityColor
 local GetSendMailItem = GetSendMailItem

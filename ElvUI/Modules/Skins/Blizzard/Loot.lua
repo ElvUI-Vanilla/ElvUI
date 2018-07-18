@@ -60,7 +60,6 @@ local function LoadSkin()
 		for i = 1, LOOTFRAME_NUMBUTTONS do
 			local slot = (((LootFrame.page - 1) * numLootToShow) + i)
 			local lootButton = _G["LootButton"..i]
-			local lootButtonIcon = _G["LootButton"..i.."IconTexture"]
 
 			S:HandleItemButton(lootButton, true)
 

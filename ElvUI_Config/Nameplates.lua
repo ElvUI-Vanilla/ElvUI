@@ -1,6 +1,5 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local NP = E:GetModule("NamePlates");
-local ACD = LibStub("AceConfigDialog-3.0")
 
 --Cache global variables
 --Lua functions

@@ -667,7 +667,7 @@ function CH:ChatFrame_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, a
 	if event == "UPDATE_CHAT_WINDOWS" then
 		local _, fontSize, _, _, _, _, shown = GetChatWindowInfo(self:GetID())
 		if fontSize > 0 then
-			local fontFile, unused, fontFlags = self:GetFont()
+			local fontFile, _, fontFlags = self:GetFont()
 			self:SetFont(fontFile, fontSize, fontFlags)
 		end
 		if shown then
@@ -1028,7 +1028,8 @@ function CH:SetupChat()
 
 	local editbox = _G["ChatFrameEditBox"]
 	if not editbox.isSkinned then
-		local a, b, c = select(6, editbox:GetRegions()) E:Kill(a) E:Kill(b) E:Kill(c)
+		local a, b, c = select(6, editbox:GetRegions())
+		E:Kill(a) E:Kill(b) E:Kill(c)
 		E:SetTemplate(editbox, "Default", true)
 		editbox:SetAltArrowKeyMode(CH.db.useAltKey)
 		editbox:SetAllPoints(LeftChatDataPanel)

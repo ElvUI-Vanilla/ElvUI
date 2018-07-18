@@ -1,4 +1,4 @@
-local E, L, DF = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Blizzard");
 
 --Cache global variables
@@ -27,7 +27,7 @@ function E:PostAlertMove()
 
 	local rollBars = E:GetModule("Misc").RollBars
 	if E.private.general.lootRoll then
-		local lastframe, lastShownFrame
+		local lastframe
 		for i, frame in pairs(rollBars) do
 			frame:ClearAllPoints()
 			if i ~= 1 then
@@ -44,13 +44,9 @@ function E:PostAlertMove()
 				end
 			end
 			lastframe = frame
-
-			if frame:IsShown() then
-				lastShownFrame = frame
-			end
 		end
 	elseif E.private.skins.blizzard.enable and E.private.skins.blizzard.lootRoll then
-		local lastframe, lastShownFrame
+		local lastframe
 		for i = 1, NUM_GROUP_LOOT_FRAMES do
 			local frame = _G["GroupLootFrame" .. i]
 			if frame then
@@ -69,10 +65,6 @@ function E:PostAlertMove()
 					end
 				end
 				lastframe = frame
-
-				if frame:IsShown() then
-					lastShownFrame = frame
-				end
 			end
 		end
 	end

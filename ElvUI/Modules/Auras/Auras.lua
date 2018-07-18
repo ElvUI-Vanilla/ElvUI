@@ -4,7 +4,6 @@ local LSM = LibStub("LibSharedMedia-3.0");
 
 --Cache global variables
 --Lua functions
-local GetTime = GetTime
 local _G = _G
 local unpack, select, pairs, ipairs = unpack, select, pairs, ipairs
 local floor, min, max, huge = math.floor, math.min, math.max, math.huge

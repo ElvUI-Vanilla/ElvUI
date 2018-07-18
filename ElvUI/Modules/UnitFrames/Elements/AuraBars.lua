@@ -7,7 +7,6 @@ local match = string.match
 local strsplit = strsplit
 local tostring = tostring
 local format = format
-local select = select
 local getn = table.getn
 --WoW API / Variables
 local CreateFrame = CreateFrame

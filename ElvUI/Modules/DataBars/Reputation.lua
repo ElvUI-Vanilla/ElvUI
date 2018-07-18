@@ -8,7 +8,6 @@ local _G = _G
 local format = format
 --WoW API / Variables
 local GetWatchedFactionInfo, GetNumFactions, GetFactionInfo = GetWatchedFactionInfo, GetNumFactions, GetFactionInfo
-local InCombatLockdown = InCombatLockdown
 local FACTION_BAR_COLORS = FACTION_BAR_COLORS
 local REPUTATION, STANDING = REPUTATION, STANDING
 

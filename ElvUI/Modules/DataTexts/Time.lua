@@ -4,10 +4,10 @@ local DT = E:GetModule("DataTexts");
 --Cache global variables
 --Lua functions
 local next, unpack = next, unpack
+local time = time
 local format, gsub, join = string.format, string.gsub, string.join
 local abs = math.abs
-local getn, insert = table.getn, table.insert
-local time, utf8sub = time, string.utf8sub
+local getn, tinsert = table.getn, table.insert
 --WoW API / Variables
 local GetGameTime = GetGameTime
 local GetNumSavedInstances = GetNumSavedInstances
@@ -46,7 +46,7 @@ local function OnEnter(self)
 	for i = 1, GetNumSavedInstances() do
 		name, _, reset = GetSavedInstanceInfo(i)
 		if name then
-			insert(lockedInstances["raids"], {name, reset})
+			tinsert(lockedInstances["raids"], {name, reset})
 		end
 	end
 
@@ -74,14 +74,6 @@ local function OnUpdate(self, t)
 	int = int - t
 
 	if int > 0 then return end
-
-	if IsAddOnLoaded("TimeManager") then -- https://github.com/gashole/TimeManager
-		if TimeManagerClockButton.alarmFiring then
-			-- E:Flash(self)
-		else
-			-- E:StopFlash(self)
-		end
-	end
 
 	self.text:SetText(gsub(gsub(BetterDate(E.db.datatexts.timeFormat.." "..E.db.datatexts.dateFormat, time()), ":", timeDisplayFormat), "%s", dateDisplayFormat))
 

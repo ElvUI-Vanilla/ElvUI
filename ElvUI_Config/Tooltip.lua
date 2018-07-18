@@ -6,7 +6,7 @@ local TT = E:GetModule("Tooltip");
 local tonumber, tostring = tonumber, tostring
 local getn = table.getn
 --WoW API / Variables
-local ACTIONBAR_LABEL, FONT_SIZE, GENERAL, HIDE, NONE, OPACITY = ACTIONBAR_LABEL, FONT_SIZE, GENERAL, HIDE, NONE, OPACITY
+local ACTIONBAR_LABEL, FONT_SIZE, GENERAL, NONE, OPACITY = ACTIONBAR_LABEL, FONT_SIZE, GENERAL, NONE, OPACITY
 
 E.Options.args.tooltip = {
 	type = "group",

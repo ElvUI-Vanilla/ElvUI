@@ -1,13 +1,13 @@
 --[[
 	Credit to Jaslm, most of this code is his from the addon ColorPickerPlus
 ]]
-local E, L, DF = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Blizzard");
 local S = E:GetModule("Skins");
 
 --Cache global variables
 --Lua functions
-local tonumber, collectgarbage = tonumber, collectgarbage
+local collectgarbage = collectgarbage
 local floor = math.floor
 local format = string.format
 --WoW API / Variables

@@ -8,7 +8,6 @@ local pairs, type, error = pairs, type, error
 local len = string.len
 
 local CreateFrame = CreateFrame
-local InCombatLockdown = InCombatLockdown
 local IsInInstance = IsInInstance
 
 function DT:Initialize()

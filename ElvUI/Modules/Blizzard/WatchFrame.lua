@@ -1,4 +1,4 @@
-local E, L, DF = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Blizzard");
 
 --Cache global variables
@@ -6,7 +6,6 @@ local B = E:GetModule("Blizzard");
 local min = math.min
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
-local GetScreenWidth = GetScreenWidth
 local GetScreenHeight = GetScreenHeight
 
 local WatchFrameHolder = CreateFrame("Frame", "WatchFrameHolder", E.UIParent)

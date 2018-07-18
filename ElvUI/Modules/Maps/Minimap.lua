@@ -11,11 +11,9 @@ local CreateFrame = CreateFrame
 local ToggleCharacter = ToggleCharacter
 local ToggleFrame = ToggleFrame
 local ToggleFriendsFrame = ToggleFriendsFrame
-local IsAddOnLoaded = IsAddOnLoaded
 local ToggleHelpFrame = ToggleHelpFrame
 local GetZonePVPInfo = GetZonePVPInfo
 local IsShiftKeyDown = IsShiftKeyDown
-local ToggleDropDownMenu = ToggleDropDownMenu
 local Minimap_OnClick = Minimap_OnClick
 local GetMinimapZoneText = GetMinimapZoneText
 

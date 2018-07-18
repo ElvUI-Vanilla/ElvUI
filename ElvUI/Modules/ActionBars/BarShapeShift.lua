@@ -7,11 +7,9 @@ local _G = _G
 local ceil, mod = math.ceil, math.mod
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local GetShapeshiftForm = GetShapeshiftForm
 local GetNumShapeshiftForms = GetNumShapeshiftForms
 local GetShapeshiftFormCooldown = GetShapeshiftFormCooldown
 local GetShapeshiftFormInfo = GetShapeshiftFormInfo
-local GetSpellTexture = GetSpellTexture
 local GetBindingKey = GetBindingKey
 local NUM_SHAPESHIFT_SLOTS = NUM_SHAPESHIFT_SLOTS
 
@@ -32,9 +30,8 @@ function AB:SPELL_UPDATE_COOLDOWN()
 end
 
 function AB:StyleShapeShift()
-	local numForms = GetNumShapeshiftForms()
-	local texture, name, isActive, isCastable, _
 	local buttonName, button, icon, cooldown
+	local texture, name, isActive, isCastable, _
 	local numForms = GetNumShapeshiftForms()
 
 	for i = 1, NUM_SHAPESHIFT_SLOTS do

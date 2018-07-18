@@ -448,8 +448,8 @@ end
 
 local function IsInShapeshiftForm()
 	for i = 1, GetNumShapeshiftForms() do
-		local texture, _, active = GetShapeshiftFormInfo(i)
 		if i ~= 5 and active ~= nil then
+		local _, _, active = GetShapeshiftFormInfo(i)
 			return true
 		end
 	end

@@ -8,7 +8,7 @@ local LIP = LibStub("ItemPrice-1.1", true);
 local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
-local floor, ceil = math.floor, math.ceil
+local floor = math.floor
 local len, gsub, sub, find, match = string.len, string.gsub, string.sub, string.find, string.match
 --WoW API / Variables
 local BankFrameItemButton_OnUpdate = BankFrameItemButton_OnUpdate

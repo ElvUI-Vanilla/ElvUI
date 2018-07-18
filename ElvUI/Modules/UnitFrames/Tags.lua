@@ -6,7 +6,6 @@ local _G = _G
 local floor = math.floor
 local format = string.format
 --WoW API / Variables
-local GetPVPTimer = GetPVPTimer
 local GetTime = GetTime
 local UnitClass = UnitClass
 local UnitClassification = UnitClassification

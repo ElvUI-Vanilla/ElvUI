@@ -2,10 +2,8 @@ local E, L, V, P, G = unpack(ElvUI)
 local UF = E:GetModule("UnitFrames")
 
 local _G = _G
-local tinsert = table.insert
 
 local CreateFrame = CreateFrame
-local IsInInstance = IsInInstance
 
 local ns = oUF
 local ElvUF = ns.oUF

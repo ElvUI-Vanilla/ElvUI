@@ -5,7 +5,6 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local upper = string.upper
 --WoW API / Variables
 local GetWhoInfo = GetWhoInfo
 local GetGuildRosterInfo = GetGuildRosterInfo

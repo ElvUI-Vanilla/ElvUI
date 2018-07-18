@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local mod = E:NewModule("NamePlates", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
-local CC = E:GetModule("ClassCache");
+--local CC = E:GetModule("ClassCache");
 
 --Cache global variables
 --Lua functions
@@ -13,10 +13,9 @@ local twipe = table.wipe
 local CreateFrame = CreateFrame
 local GetBattlefieldScore = GetBattlefieldScore
 local GetNumBattlefieldScores = GetNumBattlefieldScores
-local UnitClass = UnitClass
+--local UnitClass = UnitClass
 local UnitExists = UnitExists
-local UnitGUID = UnitGUID
-local SetCVar = SetCVar
+--local SetCVar = SetCVar
 local WorldFrame = WorldFrame
 local WorldGetNumChildren, WorldGetChildren = WorldFrame.GetNumChildren, WorldFrame.GetChildren
 
@@ -116,7 +115,6 @@ function mod:SetTargetFrame(frame)
 		end
 		frame.isTarget = true
 		frame.unit = "target"
-	--	frame.guid = UnitGUID("target")
 
 		if self.db.units[frame.UnitType].healthbar.enable ~= true then
 			frame.Name:ClearAllPoints()
@@ -598,7 +596,7 @@ end
 
 function mod:SearchNameplateByName(sourceName)
 	if not sourceName then return end
-	local SearchFor = strsplit("-", sourceName)
+	local SearchFor = split("-", sourceName)
 	for frame in pairs(self.VisiblePlates) do
 		if frame and frame:IsShown() and frame.UnitName == SearchFor and RAID_CLASS_COLORS[frame.UnitClass] then
 			return frame

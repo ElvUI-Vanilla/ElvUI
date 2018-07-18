@@ -3,15 +3,14 @@
 local _G = _G
 local print, tostring, select = print, tostring, select
 local format = format
---WoW API / Variables
-local CreateFrame = CreateFrame
+ --WoW API / Variables
 local FrameStackTooltip_Toggle = FrameStackTooltip_Toggle
 local GetMouseFocus = GetMouseFocus
 local IsAddOnLoaded = IsAddOnLoaded
-local LoadAddOn = LoadAddOn
 
 --[[
 	Command to grab frame information when mouseing over a frame
+
 	Frame Name
 	Width
 	Height
@@ -29,7 +28,6 @@ SlashCmdList["FRAME"] = function(arg)
 	else
 		arg = GetMouseFocus()
 	end
-
 	if arg ~= nil then FRAME = arg end --Set the global variable FRAME to = whatever we are mousing over to simplify messing with frames that have no name.
 	if arg ~= nil and arg:GetName() ~= nil then
 		local point, relativeTo, relativePoint, xOfs, yOfs = arg:GetPoint()

@@ -1,9 +1,5 @@
-local E, L, DF = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Blizzard");
-
---Cache global variables
---Lua functions
---WoW API / Variables
 
 function B:PositionGMFrames()
 	TicketStatusFrame:ClearAllPoints()

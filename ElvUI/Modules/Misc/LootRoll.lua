@@ -258,7 +258,7 @@ function M:START_LOOT_ROLL()
 	f.greed:SetText(0)
 	f.pass:SetText(0)
 
-	local texture, name, count, quality, bindOnPickUp = GetLootRollItemInfo(arg1)
+	local texture, name, _, quality, bindOnPickUp = GetLootRollItemInfo(arg1)
 	f.button.icon:SetTexture(texture)
 	f.button.link = GetLootRollItemLink(arg1)
 

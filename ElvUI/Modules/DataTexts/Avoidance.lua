@@ -7,7 +7,6 @@ local format, join = string.format, string.join
 local abs = math.abs
 --WoW API / Variables
 local GetInventorySlotInfo = GetInventorySlotInfo
-local GetInventoryItemID = GetInventoryItemID
 local GetItemInfo = GetItemInfo
 local UnitLevel = UnitLevel
 local GetDodgeChance = GetDodgeChance

@@ -67,7 +67,6 @@ function E:UIScale(event)
 	if E.Round and E:Round(UIParent:GetScale(), 5) ~= E:Round(scale, 5) and (event == "PLAYER_LOGIN") then
 		SetCVar("UseUIScale", 1)
 		SetCVar("UIScale", scale)
-		WorldMapFrame.hasTaint = true;
 	end
 
 	if (event == "PLAYER_LOGIN" or event == "UPDATE_FLOATING_CHAT_WINDOWS") then

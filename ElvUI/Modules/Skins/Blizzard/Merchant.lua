@@ -5,13 +5,12 @@ local S = E:GetModule("Skins");
 --Lua functions
 local _G = _G
 local unpack = unpack
-local match, split = string.match, string.split
+local match = string.match
 --WoW API / Variables
 local GetBuybackItemInfo = GetBuybackItemInfo
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
 local GetMerchantItemLink = GetMerchantItemLink
-local GetItemLinkByName = GetItemLinkByName
 local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
@@ -41,8 +40,6 @@ local function LoadSkin()
 		local item = _G["MerchantItem"..i]
 		local itemButton = _G["MerchantItem"..i.."ItemButton"]
 		local iconTexture = _G["MerchantItem"..i.."ItemButtonIconTexture"]
-		local altCurrencyTex1 = _G["MerchantItem"..i.."AltCurrencyFrameItem1Texture"]
-		local altCurrencyTex2 = _G["MerchantItem"..i.."AltCurrencyFrameItem2Texture"]
 
 		E:StripTextures(item, true)
 		E:CreateBackdrop(item, "Default")

@@ -19,7 +19,6 @@ local GetContainerItemLink = GetContainerItemLink
 local PickupContainerItem = PickupContainerItem
 local SplitContainerItem = SplitContainerItem
 local GetContainerNumSlots = GetContainerNumSlots
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local ContainerIDToInventoryID = ContainerIDToInventoryID
 local GetInventoryItemLink = GetInventoryItemLink
 local CursorHasItem = CursorHasItem
@@ -60,7 +59,6 @@ local bagGroups = {}
 local initialOrder = {}
 local itemTypes, itemSubTypes
 local bagSorted, bagLocked = {}, {}
-local bagRole
 local moves = {}
 local targetItems = {}
 local sourceUsed = {}
@@ -254,7 +252,6 @@ local function IterateForwards(bagList, i)
 			end
 		end
 	end
-	bagRole = nil
 end
 
 local function IterateBackwards(bagList, i)
@@ -274,11 +271,9 @@ local function IterateBackwards(bagList, i)
 			end
 		end
 	end
-	bagRole = nil
 end
 
 function B.IterateBags(bagList, reverse, role)
-	bagRole = role
 	return (reverse and IterateBackwards or IterateForwards), bagList, 0
 end
 

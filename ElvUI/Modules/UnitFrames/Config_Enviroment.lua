@@ -7,7 +7,7 @@ local ElvUF = ns.oUF;
 --Lua functions
 local _G = _G
 local setmetatable, getfenv, setfenv = setmetatable, getfenv, setfenv
-local type, unpack, select, pairs = type, unpack, select, pairs
+local type, unpack, pairs = type, unpack, pairs
 local min, random = math.min, math.random
 local format = string.format
 local find = string.find
