@@ -484,8 +484,8 @@ end
 
 local function IsInShapeshiftForm()
 	for i = 1, GetNumShapeshiftForms() do
-		local _, _, active = GetShapeshiftFormInfo(i)
-		if active ~= nil then return true end
+		local _, name, active = GetShapeshiftFormInfo(i)
+		if name ~= "Moonkin Form" and active ~= nil then return true end
 	end
 	return false
 end
