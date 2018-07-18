@@ -74,11 +74,11 @@ if IsAddOnLoaded("!DebugTools") then
 	end)
 
 	local _timeSinceLast = 0
-	HookScript(FrameStackTooltip, "OnUpdate", function()
+	FrameStackTooltip:SetScript("OnUpdate", function()
 		_timeSinceLast = _timeSinceLast - arg1
 		if _timeSinceLast <= 0 then
 			_timeSinceLast = FRAMESTACK_UPDATE_TIME
-			local highlightFrame = GetMouseFocus()
+			local highlightFrame = UpdateFrameStack(this, this.showHidden)
 
 			FrameStackHighlight:ClearAllPoints()
 			if highlightFrame and highlightFrame ~= _G["WorldFrame"] then
