@@ -519,17 +519,17 @@ function GetItemInfoByName(itemName)
 end
 
 function GetItemFamily(item, isBag)
-	if not item or type(item) ~= "number" or type(item) ~= "string" then return end
+	if not item or (type(item) ~= "number" and type(item) ~= "string") then return end
 
 	if type(item) == "string" then
-		local _, _, itemID = find(itemLink, "(%d+):")
+		local _, _, itemID = find(item, "(%d+):")
 		if not itemID then return end
 		item = tonumber(itemID)
 	end
 
 	if item > LAST_ITEM_ID then return end
 
-	return (isBag and IFDB.ItemBagFamily[item] or IFDB.ItemFamily[item]) or 0
+	return (isBag and IFDB.BagFamily[item] or IFDB.ItemFamily[item]) or 0
 end
 
 function GetItemCount(itemName)
