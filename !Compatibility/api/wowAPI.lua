@@ -120,54 +120,66 @@ function hooksecurefunc(a1, a2, a3)
 	end
 end
 
-local secureFuncs = {
-	CameraOrSelectOrMoveStop = true,
-	MoveBackwardStop = true,
-	MoveForwardStop = true,
-	PitchDownStop = true,
-	PitchUpStop = true,
-	StrafeLeftStart = true,
-	StrafeRightStart = true,
-	ToggleMouseMove = true,
-	TurnLeftStart = true,
-	TurnOrActionStop = true,
-	TurnRightStart = true,
-	CameraOrSelectOrMoveStart = true,
-	Jump = true,
-	MoveBackwardStart = true,
-	MoveForwardStart = true,
-	PitchDownStart = true,
-	PitchUpStart = true,
-	StrafeLeftStop = true,
-	StrafeRightStop = true,
-	ToggleRun = true,
-	TurnLeftStop = true,
-	TurnOrActionStart = true,
-	TurnRightStop = true
+local secureFunctions = {
+	["CameraOrSelectOrMoveStop"] = true,
+	["MoveBackwardStop"] = true,
+	["MoveForwardStop"] = true,
+	["PitchDownStop"] = true,
+	["PitchUpStop"] = true,
+	["StrafeLeftStart"] = true,
+	["StrafeRightStart"] = true,
+	["ToggleMouseMove"] = true,
+	["TurnLeftStart"] = true,
+	["TurnOrActionStop"] = true,
+	["TurnRightStart"] = true,
+	["CameraOrSelectOrMoveStart"] = true,
+	["Jump"] = true,
+	["MoveBackwardStart"] = true,
+	["MoveForwardStart"] = true,
+	["PitchDownStart"] = true,
+	["PitchUpStart"] = true,
+	["StrafeLeftStop"] = true,
+	["StrafeRightStop"] = true,
+	["ToggleRun"] = true,
+	["TurnLeftStop"] = true,
+	["TurnOrActionStart"] = true,
+	["TurnRightStop"] = true
 }
---[[	issecurevariable([table], variable)
-	Returns 1, nil for undefined variables. This is because an undefined variable is secure since you have not tainted it.
-	Returns 1, nil for all untainted variables (i.e. Blizzard variables).
-	Returns nil for any global variable that is hooked insecurely (tainted), even unprotected ones like UnitName().
-	Returns nil for all user defined global variables.
-	If a table is passed first, it checks table.variable (e.g. issecurevariable(PlayerFrame, "Show") checks PlayerFrame["Show"] or PlayerFrame.Show (they are the same thing)).
-]]
-function issecurevariable(t, var)
---	if type(var) ~= "table" or type(var) ~= "string" then
+local secureScripts = {}
+function issecurevariable(a1, a2)
+--	local isMethod = type(a1) == "table" and type(a2) == "string" and type(a1[a2]) == "function"
+--	if not (isMethod or (type(a1) == "string" and type(_G[a1]) == "function") then
 --		error("Usage: issecurevariable([table,] \"variable\")", 2)
 --	end
+--
+--	local isSecure
+--	if isMethod then
+--		isSecure = secureScripts[a2] and 1
+--	else
+--		isSecure = secureFunctions[a1] and 1
+--	end
+--
+--	return isSecure
 
-	local isSecure = secureFuncs[t] and 1 or nil
-	if not isSecure then
-		return
+	if type(a1) == "table" then return end
+
+	if type(a1) ~= "string" then
+		error("Usage: issecurevariable([table,] \"variable\")", 2)
 	end
 
-	local taint
-	for x in gmatch(debugstack(), "\\AddOns\\(.-)\\") do
-		taint = x
-	end
+	return secureFunctions[a1] and 1
+end
 
-	return isSecure, taint
+function issecure()
+	return
+end
+
+function securecall(f, ...)
+	if arg.n > 0 then
+		_G[f](unpack(arg))
+	else
+		_G[f]()
+	end
 end
 
 function tContains(table, item)

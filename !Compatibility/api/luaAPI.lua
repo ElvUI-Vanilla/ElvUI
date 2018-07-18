@@ -340,7 +340,7 @@ function table.maxn(t)
 	end
 
 	local maxn = 0
-	local i = next(t, nil)
+	local i = next(t)
 
 	while i do
 		if type(i) == "number" and i > maxn then
