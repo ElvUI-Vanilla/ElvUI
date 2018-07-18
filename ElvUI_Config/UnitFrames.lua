@@ -9,8 +9,8 @@ local ElvUF = ns.oUF
 local _G = _G
 local find, format = string.find, string.format
 local gsub, match, split = string.gsub, string.match, string.split
-local concat, getn, insert, remove, wipe = table.concat, table.getn, table.insert, table.remove, table.wipe
 local ipairs, pairs, select = ipairs, pairs, select
+local tconcat, getn, tinsert, tremove, twipe = table.concat, table.getn, table.insert, table.remove, table.wipe
 --WoW API / Variables
 local GetScreenWidth = GetScreenWidth
 local IsAddOnLoaded = IsAddOnLoaded
@@ -117,8 +117,8 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 			if tbl[i] == value then sv = i elseif tbl[i] == movehere then sm = i end
 			if sv and sm then break end
 		end
-		remove(tbl, sm);insert(tbl, sv, movehere);
-		E.db.unitframe.units[groupName][auraType].priority = concat(tbl,",")
+		tremove(tbl, sm);tinsert(tbl, sv, movehere);
+		E.db.unitframe.units[groupName][auraType].priority = tconcat(tbl,",")
 	elseif found and friendState then
 		local realValue = match(value, "^Friendly:([^,]*)") or match(value, "^Enemy:([^,]*)") or value
 		local friend = filterMatch(filter, filterValue("Friendly:"..realValue))
@@ -139,8 +139,8 @@ local function filterPriority(auraType, groupName, value, remove, movehere, frie
 				for i in ipairs(tbl) do
 					if tbl[i] == value then sv = i;break end
 				end
-				insert(tbl, sv, state);remove(tbl, sv+1)
-				E.db.unitframe.units[groupName][auraType].priority = concat(tbl,",")
+				tinsert(tbl, sv, state);tremove(tbl, sv+1)
+				E.db.unitframe.units[groupName][auraType].priority = tconcat(tbl,",")
 			end
 		end
 	elseif found and remove then
@@ -933,7 +933,7 @@ local function CreateCustomTextGroup(unit, objectName)
 		return
 	elseif E.Options.args.unitframe.args[unit].args.customText.args[objectName] then
 		E.Options.args.unitframe.args[unit].args.customText.args[objectName].hidden = false -- Re-show existing custom texts which belong to current profile and were previously hidden
-		insert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden again on profile change
+		tinsert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden again on profile change
 		return
 	end
 
@@ -1056,7 +1056,7 @@ local function CreateCustomTextGroup(unit, objectName)
 		},
 	}
 
-	insert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden on profile change
+	tinsert(CUSTOMTEXT_CONFIGS, E.Options.args.unitframe.args[unit].args.customText.args[objectName]) --Register this custom text config to be hidden on profile change
 end
 
 local function GetOptionsTable_CustomText(updateFunc, groupName, numUnits, orderOverride)
@@ -4780,7 +4780,7 @@ function E:RefreshCustomTextsConfigs()
 	for _, customText in pairs(CUSTOMTEXT_CONFIGS) do
 		customText.hidden = true
 	end
-	wipe(CUSTOMTEXT_CONFIGS)
+	twipe(CUSTOMTEXT_CONFIGS)
 
 	for unit, _ in pairs(E.db.unitframe.units) do
 		if E.db.unitframe.units[unit].customTexts then
