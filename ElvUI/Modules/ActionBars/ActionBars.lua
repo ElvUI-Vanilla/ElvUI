@@ -12,8 +12,6 @@ local mod = math.mod
 local CreateFrame = CreateFrame
 local UIFrameFadeIn = UIFrameFadeIn
 local UIFrameFadeOut = UIFrameFadeOut
-local GetNumShapeshiftForms = GetNumShapeshiftForms
-local GetShapeshiftFormInfo = GetShapeshiftFormInfo
 
 E.ActionBars = AB
 
@@ -222,6 +220,7 @@ function AB:CreateBar(id)
 		bar:SetScript("OnEvent", function()
 			if GetBonusBarOffset() > 0 then
 				bar.lastBonusBar = GetBonusBarOffset()
+				ShowBonusActionBar()
 
 				for i = 1, NUM_ACTIONBAR_BUTTONS do
 					bar.buttons[i]:SetParent(E.HiddenFrame)
@@ -229,6 +228,8 @@ function AB:CreateBar(id)
 
 				bar.buttons = bar.bonusButtons
 			else
+				HideBonusActionBar()
+
 				for i = 1, NUM_ACTIONBAR_BUTTONS do
 					bar.buttons[i]:SetParent(E.HiddenFrame)
 				end
@@ -446,27 +447,6 @@ function AB:FixKeybindText(button)
 	hotkey:SetPoint("TOPRIGHT", 0, -3)
 end
 
-local function IsInShapeshiftForm()
-	for i = 1, GetNumShapeshiftForms() do
-		if i ~= 5 and active ~= nil then
-		local _, _, active = GetShapeshiftFormInfo(i)
-			return true
-		end
-	end
-	return false
-end
-
-function AB:UPDATE_BONUS_ACTIONBAR()
-	if E.myclass == "ROGUE" or E.myclass == "DRUID" then
-		local inForm = IsInShapeshiftForm()
-		if inForm then
-			BonusActionBarFrame:Show()
-		else
-			BonusActionBarFrame:Hide()
-		end
-	end
-end
-
 function AB:Initialize()
 	self.db = E.db.actionbar
 
@@ -487,11 +467,6 @@ function AB:Initialize()
 	self:LoadKeyBinder()
 
 	self:SecureHook("PetActionBar_Update", "UpdatePet")
-	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
-
-	if E.myclass == "WARRIOR" or (E.myclass == "DRUID" and IsInShapeshiftForm()) then
-		BonusActionBarFrame:Show()
-	end
 
 	function _G.ActionButton_OnUpdate(elapsed)
 		if not this.updateTooltip then return end
