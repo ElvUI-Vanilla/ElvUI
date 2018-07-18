@@ -53,17 +53,6 @@ for k, v in next, {
 		end
 	end,
 
-	UpdateElement = function(self, name)
-		local unit = self.unit
-		if(not unit or not UnitExists(unit)) then return end
-
-		local element = elements[name]
-		if(not element or not self:IsElementEnabled(name) or not activeElements[self]) then return end
-		if(element.update) then
-			element.update(self, "OnShow", unit)
-		end
-	end,
-
 	--[[ frame:EnableElement(name, unit)
 	Used to activate an element for the given unit frame.
 

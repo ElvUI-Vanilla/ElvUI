@@ -81,8 +81,8 @@ local function setCleanupTables(...)
 	if not LibCompress.frame:IsShown() then
 		LibCompress.frame:Show()
 	end
-	for i = 1, getn(arg) do
-		tables_to_clean[(select(i, unpack(arg)))] = true
+	for i = 1, arg.n do
+		tables_to_clean[arg[i]] = true
 	end
 end
 
@@ -825,18 +825,25 @@ end
 
 --[[
 	Howto: Encode and Decode:
+
 	3 functions are supplied, 2 of them are variants of the first.  They return a table with functions to encode and decode text.
+
 	table, msg = LibCompress:GetEncodeTable(reservedChars, escapeChars,  mapChars)
+
 		reservedChars: The characters in this string will not appear in the encoded data.
 		escapeChars: A string of characters used as escape-characters (don't supply more than needed). #escapeChars >= 1
 		mapChars: First characters in reservedChars maps to first characters in mapChars.  (#mapChars <= #reservedChars)
+
 	return value:
 		table
 			if nil then msg holds an error message, otherwise use like this:
+
 			encoded_message = table:Encode(message)
 			message = table:Decode(encoded_message)
+
 	GetAddonEncodeTable: Sets up encoding for the addon channel (\000 is encoded)
 	GetChatEncodeTable: Sets up encoding for the chat channel (many bytes encoded, see the function for details)
+
 	Except for the mapped characters, all encoding will be with 1 escape character followed by 1 suffix, i.e. 2 bytes.
 ]]
 -- to be able to match any requested byte value, the search string must be preprocessed
@@ -1122,7 +1129,9 @@ end
 ---------------------------------------------------------------------------
 Copyright (c) 2003, Dominik Reichl <dominik.reichl@t-online.de>, Germany.
 All rights reserved.
+
 Distributed under the terms of the GNU General Public License v2.
+
 This software is provided 'as is' with no explicit or implied warranties
 in respect of its properties, including, but not limited to, correctness
 and/or fitness for purpose.
@@ -1186,7 +1195,9 @@ end
 ---------------------------------------------------------------------------
 Copyright (c) 2003, Dominik Reichl <dominik.reichl@t-online.de>, Germany.
 All rights reserved.
+
 Distributed under the terms of the GNU General Public License v2.
+
 This software is provided 'as is' with no explicit or implied warranties
 in respect of its properties, including, but not limited to, correctness
 and/or fitness for purpose.

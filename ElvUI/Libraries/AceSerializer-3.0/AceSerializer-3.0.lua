@@ -20,7 +20,7 @@ if not AceSerializer then return end
 local strbyte, strchar, gsub, gmatch, format = string.byte, string.char, string.gsub, string.gmatch, string.format
 local assert, error, pcall = assert, error, pcall
 local type, tostring, tonumber = type, tostring, tonumber
-local pairs, select, frexp = pairs, select, math.frexp
+local pairs, frexp = pairs, math.frexp
 local tconcat = table.concat
 
 -- quick copies of string representations of wonky numbers

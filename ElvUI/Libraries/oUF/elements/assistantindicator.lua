@@ -27,7 +27,6 @@ local oUF = ns.oUF
 
 local UnitInRaid = UnitInRaid
 local UnitIsPartyLeader = UnitIsPartyLeader
-local UnitIsRaidOfficer = UnitIsRaidOfficer
 
 local function Update(self, event)
 	local element = self.AssistantIndicator

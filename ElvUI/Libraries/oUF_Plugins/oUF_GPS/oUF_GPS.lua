@@ -9,7 +9,6 @@ local pi2 = 3.141592653589793 / 2
 local GetPlayerMapPosition = GetPlayerMapPosition
 local UnitInParty = UnitInParty
 local UnitInRaid = UnitInRaid
-local UnitInRange = UnitInRange
 local UnitIsConnected = UnitIsConnected
 local UnitIsUnit = UnitIsUnit
 

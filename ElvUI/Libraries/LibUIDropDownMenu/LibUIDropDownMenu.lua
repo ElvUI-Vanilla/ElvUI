@@ -4,8 +4,7 @@
 -- ----------------------------------------------------------------------------
 local _G = _G
 local strsub, strlen, strmatch, gsub = strsub, strlen, strmatch, gsub
-local max, match = max, match
-local securecall, issecure = securecall, issecure
+local max = max
 local tonumber = tonumber
 local type = type
 local wipe = table.wipe
@@ -43,7 +42,7 @@ L_UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = nil;
 -- List of open menus
 L_OPEN_DROPDOWNMENUS = {};
 
-local UIDropDownMenuDelegate = CreateFrame("FRAME");
+--local UIDropDownMenuDelegate = CreateFrame("FRAME");
 
 function L_UIDropDownMenu_InitializeHelper (frame)
 	-- This deals with the potentially tainted stuff!
@@ -204,20 +203,10 @@ info.minWidth = [nil, NUMBER] -- Minimum width for this line
 
 local UIDropDownMenu_ButtonInfo = {};
 
---Until we get around to making this betterz...
-local UIDropDownMenu_SecureInfo = {};
-
---local wipe = table.wipe;
-
 function L_UIDropDownMenu_CreateInfo()
 	-- Reuse the same table to prevent memory churn
 
---	if ( issecure() ) then
---		securecall(wipe, UIDropDownMenu_SecureInfo);
---		return UIDropDownMenu_SecureInfo;
---	else
-		return wipe(UIDropDownMenu_ButtonInfo);
---	end
+	return wipe(UIDropDownMenu_ButtonInfo);
 end
 
 function L_UIDropDownMenu_CreateFrames(level, index)
@@ -577,7 +566,7 @@ function L_UIDropDownMenu_GetButtonWidth(button)
 end
 
 function L_UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
-	local button, checked, checkImage, normalText, width;
+	local button, checked, checkImage, width;
 	local maxWidth = 0;
 	local somethingChecked = nil;
 	if ( not dropdownLevel ) then
@@ -1123,7 +1112,7 @@ function L_UIDropDownMenuButton_GetName(self)
 end
 
 function L_UIDropDownMenuButton_OpenColorPicker(self, button)
-	securecall("CloseMenus");
+	CloseMenus()
 	if ( not button ) then
 		button = self;
 	end

@@ -10,7 +10,7 @@ local meta = {__index = function(tbl, key) tbl[key] = {} return tbl[key] end}
 local tconcat = table.concat
 local assert, error, loadstring = assert, error, loadstring
 local setmetatable, rawset, rawget = setmetatable, rawset, rawget
-local next, select, pairs, type, tostring = next, select, pairs, type, tostring
+local next, pairs, type, tostring = next, pairs, type, tostring
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script

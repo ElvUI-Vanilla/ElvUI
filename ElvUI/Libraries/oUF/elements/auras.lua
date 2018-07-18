@@ -67,7 +67,6 @@ local tinsert, getn = table.insert, table.getn
 local floor, min, mod = math.floor, math.min, math.mod
 
 local CreateFrame = CreateFrame
-local GetTime = GetTime
 local UnitAura = UnitAura
 local GetPlayerBuff = GetPlayerBuff
 local GetPlayerBuffTexture = GetPlayerBuffTexture

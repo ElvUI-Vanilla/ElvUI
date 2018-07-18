@@ -12,13 +12,13 @@ if not LibBase64 then
 	return
 end
 
-local byte, char, format, gsub, len, sub = string.byte, string.char, string.format, string.gsub, string.len, string.sub
-local concat, insert = table.concat, table.insert
-local error, pairs, tonumber, tostring, type = error, pairs, tonumber, tostring, type
+local error = error
+local type = type
 local mod = math.mod
+local byte, char, format, len, sub = string.byte, string.char, string.format, string.len, string.sub
+local concat = table.concat
 
 local _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-local charTable = {}
 local byteToNum = {}
 local numToChar = {}
 

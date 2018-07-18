@@ -88,7 +88,6 @@ do
 		end
 
 		Unusable[class] = nil
-		subs = nil
 	end
 
 	Lib.unusable = Unusable
@@ -97,9 +96,9 @@ end
 
 --[[ API ]]--
 
-function Lib:IsItemUnusable(arg1)
-	if arg1 then
-		local subclass, _, slot = select(7, GetItemInfo(arg1))
+function Lib:IsItemUnusable(item)
+	if item then
+		local subclass, _, slot = select(7, GetItemInfo(item))
 		return Lib:IsClassUnusable(subclass, slot)
 	end
 end

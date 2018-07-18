@@ -9,7 +9,7 @@ Dependencies: LibStub, CallbackHandler-1.0
 License: LGPL v2.1
 ]]
 
-local MAJOR, MINOR = "LibSharedMedia-3.0", 2040001 -- 2.4.3 / increase manually on changes
+local MAJOR, MINOR = "LibSharedMedia-3.0", 1120001 -- 1.12.1 / increase manually on changes
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
