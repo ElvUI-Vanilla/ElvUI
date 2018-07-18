@@ -1,4 +1,5 @@
 --Cache global variables
+--Lua functions
 local setmetatable, getmetatable = setmetatable, getmetatable
 local pairs, type = pairs, type
 local table = table

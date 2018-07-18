@@ -3,6 +3,6 @@
 ]]
 
 SLASH_RELOADUI1 = "/rl"
-SLASH_RELOADUI3 = "/reload"
-SLASH_RELOADUI2 = "/reloadui"
+SLASH_RELOADUI2 = "/reload"
+SLASH_RELOADUI3 = "/reloadui"
 SlashCmdList.RELOADUI = ReloadUI
