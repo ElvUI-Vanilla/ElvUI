@@ -446,46 +446,12 @@ function AB:FixKeybindText(button)
 	hotkey:SetPoint("TOPRIGHT", 0, -3)
 end
 
-function _G.ActionButton_OnUpdate(elapsed)
-	if not this.updateTooltip then return end
-
-	this.updateTooltip = this.updateTooltip - elapsed
-	if this.updateTooltip > 0 then return end
-
-	if GameTooltip:IsOwned(this) then
-		ActionButton_SetTooltip()
-	else
-		this.updateTooltip = nil
-	end
-end
-
-function _G.ActionButton_GetPagedID(button)
-	if button.isBonus and CURRENT_ACTIONBAR_PAGE == 1 then
-		local offset = GetBonusBarOffset()
-		if offset == 0 and ElvUI_Bar1 and ElvUI_Bar1.lastBonusBar then
-			offset = ElvUI_Bar1.lastBonusBar
-		end
-		return button:GetID() + ((NUM_ACTIONBAR_PAGES + offset - 1) * NUM_ACTIONBAR_BUTTONS)
-	end
-
-	local parentName = button:GetParent():GetName()
-	if parentName == "ElvUI_Bar5" then
-		return button:GetID() + ((BOTTOMLEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-	elseif parentName == "ElvUI_Bar2" then
-		return button:GetID() + ((BOTTOMRIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-	elseif parentName == "ElvUI_Bar4" then
-		return button:GetID() + ((LEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-	elseif parentName == "ElvUI_Bar3" then
-		return button:GetID() + ((RIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-	else
-		return button:GetID() + ((CURRENT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
-	end
-end
-
 local function IsInShapeshiftForm()
 	for i = 1, GetNumShapeshiftForms() do
-		local _, name, active = GetShapeshiftFormInfo(i)
-		if name ~= "Moonkin Form" and active ~= nil then return true end
+		local texture, _, active = GetShapeshiftFormInfo(i)
+		if i ~= 5 and active ~= nil then
+			return true
+		end
 	end
 	return false
 end
@@ -525,6 +491,42 @@ function AB:Initialize()
 
 	if E.myclass == "WARRIOR" or (E.myclass == "DRUID" and IsInShapeshiftForm()) then
 		BonusActionBarFrame:Show()
+	end
+
+	function _G.ActionButton_OnUpdate(elapsed)
+		if not this.updateTooltip then return end
+
+		this.updateTooltip = this.updateTooltip - elapsed
+		if this.updateTooltip > 0 then return end
+
+		if GameTooltip:IsOwned(this) then
+			ActionButton_SetTooltip()
+		else
+			this.updateTooltip = nil
+		end
+	end
+
+	function _G.ActionButton_GetPagedID(button)
+		if button.isBonus and CURRENT_ACTIONBAR_PAGE == 1 then
+			local offset = GetBonusBarOffset()
+			if offset == 0 and ElvUI_Bar1 and ElvUI_Bar1.lastBonusBar then
+				offset = ElvUI_Bar1.lastBonusBar
+			end
+			return button:GetID() + ((NUM_ACTIONBAR_PAGES + offset - 1) * NUM_ACTIONBAR_BUTTONS)
+		end
+
+		local parentName = button:GetParent():GetName()
+		if parentName == "ElvUI_Bar5" then
+			return button:GetID() + ((BOTTOMLEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		elseif parentName == "ElvUI_Bar2" then
+			return button:GetID() + ((BOTTOMRIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		elseif parentName == "ElvUI_Bar4" then
+			return button:GetID() + ((LEFT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		elseif parentName == "ElvUI_Bar3" then
+			return button:GetID() + ((RIGHT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		else
+			return button:GetID() + ((CURRENT_ACTIONBAR_PAGE - 1) * NUM_ACTIONBAR_BUTTONS)
+		end
 	end
 end
 
