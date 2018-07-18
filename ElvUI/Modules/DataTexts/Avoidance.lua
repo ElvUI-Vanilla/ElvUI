@@ -3,9 +3,10 @@ local DT = E:GetModule("DataTexts");
 
 --Cache global variables
 --Lua functions
-local format, join = string.format, string.join
+local find, format, join, match = string.find, string.format, string.join, string.match
 local abs = math.abs
 --WoW API / Variables
+local GetInventoryItemLink = GetInventoryItemLink
 local GetInventorySlotInfo = GetInventorySlotInfo
 local GetItemInfo = GetItemInfo
 local UnitLevel = UnitLevel
@@ -31,7 +32,7 @@ local AVD_DECAY_RATE = 0.2
 
 local function IsWearingShield()
 	local slotID = GetInventorySlotInfo("SecondaryHandSlot")
-	local itemID = nil
+	local _, _, itemID = find(GetInventoryItemLink("player", slotID), "(%d+):")
 
 	if itemID then
 		return select(9, GetItemInfo(itemID))
