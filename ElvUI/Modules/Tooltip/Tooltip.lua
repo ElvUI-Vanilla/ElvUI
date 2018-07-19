@@ -287,20 +287,20 @@ function TT:SetPrice(tt, id, count)
 	end
 end
 
-function TT:SetAction(tt, id)
+function TT:SetAction(tt, buttonID)
 	if GameTooltipTextRight1:IsShown() then return end
 	local itemName = GameTooltipTextLeft1:GetText()
 	if not itemName then return end
 
 	local item, link = GetItemInfoByName(itemName)
 	if not link then return end
-	
+
 	local id = tonumber(match(link, "item:(%d+)"))
-	
+
 	if E.db.tooltip.itemPrice then
 		local count = 1
-		if IsConsumableAction(id) then
-			local actionCount = GetActionCount(id)
+		if IsConsumableAction(buttonID) then
+			local actionCount = GetActionCount(buttonID)
 			if actionCount and actionCount == GetItemCount(item) then
 				count = actionCount
 			end
@@ -348,7 +348,7 @@ function TT:SetBagItem(tt, bag, slot)
 	if not link then return end
 
 	local id = tonumber(match(link, "item:(%d+)"))
-	
+
 	if E.db.tooltip.itemPrice then
 		local _, count = GetContainerItemInfo(bag, slot)
 		self:SetPrice(tt, id, count)
@@ -542,7 +542,7 @@ function TT:SetTradePlayerItem(tt, index)
 	if not link then return end
 
 	local id = tonumber(match(link, "item:(%d+)"))
-	
+
 	if E.db.tooltip.itemPrice then
 		local _, _, count = GetTradePlayerItemInfo(index)
 		self:SetPrice(tt, id, count)
@@ -577,7 +577,7 @@ function TT:SetTradeTargetItem(tt, index)
 	if not link then return end
 
 	local id = tonumber(match(link, "item:(%d+)"))
-	
+
 	if E.db.tooltip.itemPrice then
 		local _, _, count = GetTradeTargetItemInfo(index)
 		self:SetPrice(tt, id, count)
