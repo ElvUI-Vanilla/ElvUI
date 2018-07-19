@@ -1124,7 +1124,7 @@ function E:Initialize()
 	self:UpdateFrameTemplates()
 	--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole")
 	-- self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole")
-	self:RegisterEvent("UPDATE_FLOATING_CHAT_WINDOWS", "UIScale")
+	self:RegisterEvent("CVAR_UPDATE", "UIScale")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	if self.db.general.kittys then
