@@ -394,6 +394,8 @@ function AB:DisableBlizzard()
 	end
 	elements = nil
 
+	BonusActionBarFrame:EnableMouse(false)
+
 	local uiManagedFrames = {
 		"MultiBarLeft",
 		"MultiBarRight",
