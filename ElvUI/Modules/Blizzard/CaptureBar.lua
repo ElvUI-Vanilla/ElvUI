@@ -49,5 +49,5 @@ function B:PositionCaptureBar()
 	E:Size(pvpHolder, 30, 70)
 	E:Point(pvpHolder, "TOP", E.UIParent, "TOP", 0, -4)
 
-	E:CreateMover(pvpHolder, "PvPMover", L["PvP"], nil, nil, nil, "ALL")
+	E:CreateMover(pvpHolder, "PvPMover", HELPFRAME_HOME_ISSUE3_HEADER, nil, nil, nil, "ALL")
 end

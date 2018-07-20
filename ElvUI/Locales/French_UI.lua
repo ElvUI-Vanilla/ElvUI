@@ -236,7 +236,6 @@ L["Player Castbar"] = "Barre d'incantation du joueur"
 L["Player Debuffs"] = "Affaiblissements du joueur"
 L["Player Frame"] = "Cadre du joueur" --Also used in UnitFrames
 L["Player Powerbar"] = "Barre de pouvoir du joueur" -- need review.
-L["PvP"] = true;
 L["Raid Frames"] = "Cadres de Raid"
 L["Raid Pet Frames"] = "Cadres de Raid des Familiers"
 L["Raid-40 Frames"] = "Cadres de Raid 40"

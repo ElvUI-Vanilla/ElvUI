@@ -236,7 +236,6 @@ L["Player Castbar"] = true;
 L["Player Debuffs"] = true;
 L["Player Frame"] = true; --Also used in UnitFrames
 L["Player Powerbar"] = true;
-L["PvP"] = true;
 L["Raid Frames"] = true;
 L["Raid Pet Frames"] = true;
 L["Raid-40 Frames"] = true;
