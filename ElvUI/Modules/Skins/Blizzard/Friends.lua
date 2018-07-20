@@ -242,7 +242,7 @@ local function LoadSkin()
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
 				button = _G["GuildFrameButton"..i]
 				_, _, _, level, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
-				
+
 				classFileName = localizedTable[class]
 				if classFileName then
 					if online then
@@ -334,8 +334,7 @@ local function LoadSkin()
 	-- Control Frame
 	E:StripTextures(GuildControlPopupFrame)
 	E:CreateBackdrop(GuildControlPopupFrame, "Transparent")
-	E:Point(GuildControlPopupFrame.backdrop, "TOPLEFT", 3, -6)
-	E:Point(GuildControlPopupFrame.backdrop, "BOTTOMRIGHT", -27, 27)
+	E:Point(GuildControlPopupFrame.backdrop, "TOPLEFT", 3, 0)
 
 	S:HandleDropDownBox(GuildControlPopupFrameDropDown, 185)
 	E:Size(GuildControlPopupFrameDropDownButton, 16)
@@ -363,6 +362,9 @@ local function LoadSkin()
 	E:Point(GuildControlPopupFrameAddRankButton, "LEFT", GuildControlPopupFrameDropDown, "RIGHT", -8, 3)
 	SkinPlusMinus(GuildControlPopupFrameAddRankButton)
 	SkinPlusMinus(GuildControlPopupFrameRemoveRankButton, true)
+
+	local left, right = select(6, GuildControlPopupFrameEditBox:GetRegions())
+	E:Kill(left) E:Kill(right)
 
 	S:HandleEditBox(GuildControlPopupFrameEditBox)
 	E:Point(GuildControlPopupFrameEditBox.backdrop, "TOPLEFT", 0, -5)

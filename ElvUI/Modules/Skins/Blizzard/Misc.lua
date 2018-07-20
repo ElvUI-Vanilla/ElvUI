@@ -321,14 +321,6 @@ local function LoadSkin()
 		end
 	end
 
-	--[[for i = 1, UIOptionsFrame:GetNumChildren() do
-		local child = select(i, UIOptionsFrame:GetChildren())
-		if child.GetPushedTexture and child:GetPushedTexture() and not child:GetName() then
-			child:SetFrameLevel(UIOptionsFrame:GetFrameLevel() + 2)
-			S:HandleCloseButton(child, UIOptionsFrame.backdrop)
-		end
-	end--]]
-
 	OptionsFrameDefaults:ClearAllPoints()
 	E:Point(OptionsFrameDefaults, "TOPLEFT", OptionsFrame, "BOTTOMLEFT", 15, 36)
 
