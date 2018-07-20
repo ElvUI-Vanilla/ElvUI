@@ -236,7 +236,6 @@ L["Player Castbar"] = "玩家施法條"
 L["Player Debuffs"] = "玩家減益"
 L["Player Frame"] = "玩家框架" --Also used in UnitFrames
 L["Player Powerbar"] = "玩家能量條"
-L["PvP"] = true;
 L["Raid Frames"] = "團隊框架"
 L["Raid Pet Frames"] = "團隊寵物框架"
 L["Raid-40 Frames"] = "40人團隊框架"

@@ -236,7 +236,6 @@ L["Player Castbar"] = "Barra de Lanzamiento del Jugador"
 L["Player Debuffs"] = "Perjuicios de Jugador"
 L["Player Frame"] = "Marco de Jugador"
 L["Player Powerbar"] = "Barra de Poder del Jugador"
-L["PvP"] = true;
 L["Raid Frames"] = "Marcos de Banda"
 L["Raid Pet Frames"] = "Marcos de Banda con Mascotas"
 L["Raid-40 Frames"] = "Marcos de Banda de 40"
