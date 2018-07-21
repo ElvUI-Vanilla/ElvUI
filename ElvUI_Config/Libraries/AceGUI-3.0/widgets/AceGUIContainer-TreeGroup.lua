@@ -494,6 +494,7 @@ local methods = {
 		end
 
 		local buttonnum = 1
+		local treewidth = treeframe:GetWidth()
 		for i = first, last do
 			local line = lines[i]
 			local button = buttons[buttonnum]
@@ -503,19 +504,20 @@ local methods = {
 				buttons[buttonnum] = button
 				button:SetParent(treeframe)
 				button:SetFrameLevel(treeframe:GetFrameLevel()+1)
-				button:ClearAllPoints()
-				if buttonnum == 1 then
-					if self.showscroll then
-						button:SetPoint("TOPRIGHT", -22, -10)
-						button:SetPoint("TOPLEFT", 0, -10)
-					else
-						button:SetPoint("TOPRIGHT", 0, -10)
-						button:SetPoint("TOPLEFT", 0, -10)
-					end
+			end
+
+			button:ClearAllPoints()
+			if buttonnum == 1 then
+				if self.showscroll then
+					button:SetWidth(treewidth - 22)
+					button:SetPoint("TOPRIGHT", -22, -10)
 				else
-					button:SetPoint("TOPRIGHT", buttons[buttonnum-1], "BOTTOMRIGHT",0,0)
-					button:SetPoint("TOPLEFT", buttons[buttonnum-1], "BOTTOMLEFT",0,0)
+					button:SetWidth(treewidth)
+					button:SetPoint("TOPRIGHT", 0, -10)
 				end
+			else
+				button:SetWidth(self.showscroll and (treewidth - 22) or treewidth)
+				button:SetPoint("TOPRIGHT", buttons[buttonnum-1], "BOTTOMRIGHT",0,0)
 			end
 
 			UpdateButton(button, line, status.selected == line.uniquevalue, line.hasChildren, groupstatus[line.uniquevalue] )
@@ -558,11 +560,13 @@ local methods = {
 		if show then
 			self.scrollbar:Show()
 			if self.buttons[1] then
+				self.buttons[1]:SetWidth(self.treeframe:GetWidth() - 22)
 				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",-22,-10)
 			end
 		else
 			self.scrollbar:Hide()
 			if self.buttons[1] then
+				self.buttons[1]:SetWidth(self.treeframe:GetWidth())
 				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",0,-10)
 			end
 		end
