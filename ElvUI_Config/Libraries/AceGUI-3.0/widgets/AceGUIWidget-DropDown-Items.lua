@@ -3,31 +3,31 @@
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
-local select, assert = select, assert
+local assert, unpack = assert, unpack
+local getn = table.getn
 
 -- WoW APIs
 local PlaySound = PlaySound
 local CreateFrame = CreateFrame
 
-local function fixlevels(parent,...)
-	local i = 1
-	local child = select(i, ...)
-	while child do
-		child:SetFrameLevel(parent:GetFrameLevel()+1)
-		fixlevels(child, child:GetChildren())
-		i = i + 1
-		child = select(i, ...)
+local function fixlevels(parent, ...)
+	local child
+	local level = parent:GetFrameLevel() + 1
+
+	for i = 1, getn(arg) do
+		child = arg[i]
+		child:SetFrameLevel(level)
+		fixlevels(child)
 	end
 end
 
 local function fixstrata(strata, parent, ...)
-	local i = 1
-	local child = select(i, ...)
+	local child
 	parent:SetFrameStrata(strata)
-	while child do
-		fixstrata(strata, child, child:GetChildren())
-		i = i + 1
-		child = select(i, ...)
+
+	for i = 1, getn(arg) do
+		child = arg[i]
+		fixstrata(strata, child)
 	end
 end
 
@@ -45,7 +45,7 @@ local ItemBase = {
 	counter = 0,
 }
 
-function ItemBase.Frame_OnEnter(this)
+function ItemBase.Frame_OnEnter()
 	local self = this.obj
 
 	if self.useHighlight then
@@ -58,7 +58,7 @@ function ItemBase.Frame_OnEnter(this)
 	end
 end
 
-function ItemBase.Frame_OnLeave(this)
+function ItemBase.Frame_OnLeave()
 	local self = this.obj
 
 	self.highlight:Hide()
@@ -108,7 +108,7 @@ end
 
 -- exported
 function ItemBase.SetPoint(self, ...)
-	self.frame:SetPoint(...)
+	self.frame:SetPoint(unpack(arg))
 end
 
 -- exported
@@ -248,7 +248,7 @@ do
 	local widgetType = "Dropdown-Item-Header"
 	local widgetVersion = 1
 
-	local function OnEnter(this)
+	local function OnEnter()
 		local self = this.obj
 		self:Fire("OnEnter")
 
@@ -257,7 +257,7 @@ do
 		end
 	end
 
-	local function OnLeave(this)
+	local function OnLeave()
 		local self = this.obj
 		self:Fire("OnLeave")
 
@@ -297,7 +297,7 @@ do
 	local widgetType = "Dropdown-Item-Execute"
 	local widgetVersion = 1
 
-	local function Frame_OnClick(this, button)
+	local function Frame_OnClick()
 		local self = this.obj
 		if self.disabled then return end
 		self:Fire("OnClick")
@@ -338,7 +338,7 @@ do
 		self:SetValue(nil)
 	end
 
-	local function Frame_OnClick(this, button)
+	local function Frame_OnClick()
 		local self = this.obj
 		if self.disabled then return end
 		self.value = not self.value
@@ -385,7 +385,7 @@ do
 	local widgetType = "Dropdown-Item-Menu"
 	local widgetVersion = 2
 
-	local function OnEnter(this)
+	local function OnEnter()
 		local self = this.obj
 		self:Fire("OnEnter")
 
@@ -400,7 +400,7 @@ do
 		end
 	end
 
-	local function OnHide(this)
+	local function OnHide()
 		local self = this.obj
 		if self.submenu then
 			self.submenu:Close()

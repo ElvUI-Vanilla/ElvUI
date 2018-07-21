@@ -6,6 +6,10 @@ local Media = LibStub("LibSharedMedia-3.0")
 
 local AGSMW = LibStub("AceGUISharedMediaWidgets-1.0")
 
+local next, ipairs, pairs = next, ipairs, pairs
+local upper = string.upper
+local tinsert, tremove, sort = table.insert, table.remove, table.sort
+
 do
 	local widgetType = "LSM30_Sound"
 	local widgetVersion = 11
@@ -15,10 +19,10 @@ do
 		self:ClearAllPoints()
 		self:Hide()
 		self.check:Hide()
-		table.insert(contentFrameCache, self)
+		tinsert(contentFrameCache, self)
 	end
 
-	local function ContentOnClick(this, button)
+	local function ContentOnClick()
 		local self = this.obj
 		self:Fire("OnValueChanged", this.text:GetText())
 		if self.dropdown then
@@ -26,7 +30,7 @@ do
 		end
 	end
 
-	local function ContentSpeakerOnClick(this, button)
+	local function ContentSpeakerOnClick()
 		local self = this.frame.obj
 		local sound = this.frame.text:GetText()
 		PlaySoundFile(self.list[sound] ~= sound and self.list[sound] or Media:Fetch('sound',sound), "Master")
@@ -35,7 +39,7 @@ do
 	local function GetContentLine()
 		local frame
 		if next(contentFrameCache) then
-			frame = table.remove(contentFrameCache)
+			frame = tremove(contentFrameCache)
 		else
 			frame = CreateFrame("Button", nil, UIParent)
 				--frame:SetWidth(200)
@@ -145,11 +149,11 @@ do
 	end
 
 	local function textSort(a,b)
-		return string.upper(a) < string.upper(b)
+		return upper(a) < upper(b)
 	end
 
 	local sortedlist = {}
-	local function ToggleDrop(this)
+	local function ToggleDrop()
 		local self = this.obj
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
@@ -161,9 +165,9 @@ do
 			self.dropdown:SetPoint("TOPLEFT", self.frame, "BOTTOMLEFT")
 			self.dropdown:SetPoint("TOPRIGHT", self.frame, "BOTTOMRIGHT", width < 160 and (160 - width) or 0, 0)
 			for k, v in pairs(self.list) do
-				sortedlist[#sortedlist+1] = k
+				tinsert(sortedlist, k)
 			end
-			table.sort(sortedlist, textSort)
+			sort(sortedlist, textSort)
 			for i, k in ipairs(sortedlist) do
 				local f = GetContentLine()
 				f.text:SetText(k)
@@ -183,22 +187,22 @@ do
 		end
 	end
 
-	local function OnHide(this)
+	local function OnHide()
 		local self = this.obj
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
 		end
 	end
 
-	local function Drop_OnEnter(this)
+	local function Drop_OnEnter()
 		this.obj:Fire("OnEnter")
 	end
 
-	local function Drop_OnLeave(this)
+	local function Drop_OnLeave()
 		this.obj:Fire("OnLeave")
 	end
 
-	local function WidgetPlaySound(this)
+	local function WidgetPlaySound()
 		local self = this.obj
 		local sound = self.frame.text:GetText()
 		PlaySoundFile(self.list[sound] ~= sound and self.list[sound] or Media:Fetch('sound',sound), "Master")

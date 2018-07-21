@@ -31,11 +31,12 @@ local scripts = AceHook.scripts
 local onceSecure = AceHook.onceSecure
 
 -- Lua APIs
-local pairs, next, type = pairs, next, type
+local pairs, next, type, unpack = pairs, next, type, unpack
 local format = string.format
 local assert, error = assert, error
 
 -- WoW APIs
+local HookScript = HookScript
 local issecurevariable, hooksecurefunc = issecurevariable, hooksecurefunc
 local _G = _G
 
@@ -87,12 +88,12 @@ function createHook(self, handler, orig, secure, failsafe)
 		uid = function(...)
 			if actives[uid] then
 				if method then
-					self[handler](self, ...)
+					self[handler](self, unpack(arg))
 				else
-					handler(...)
+					handler(unpack(arg))
 				end
 			end
-			return orig(...)
+			return orig(unpack(arg))
 		end
 		-- /failsafe hook
 	else
@@ -100,12 +101,12 @@ function createHook(self, handler, orig, secure, failsafe)
 		uid = function(...)
 			if actives[uid] then
 				if method then
-					return self[handler](self, ...)
+					return self[handler](self, unpack(arg))
 				else
-					return handler(...)
+					return handler(unpack(arg))
 				end
 			elseif not secure then -- backup on non secure
-				return orig(...)
+				return orig(unpack(arg))
 			end
 		end
 		-- /hook
@@ -226,7 +227,7 @@ function hook(self, obj, method, handler, script, secure, raw, forceSecure, usag
 			if not secure then
 				obj:SetScript(method, uid)
 			else
-				obj:HookScript2(method, uid)
+				HookScript(obj, method, uid)
 			end
 		else
 			if not secure then

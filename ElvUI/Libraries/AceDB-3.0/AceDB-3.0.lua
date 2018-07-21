@@ -49,6 +49,7 @@ if not AceDB then return end -- No upgrade needed
 -- Lua APIs
 local type, pairs, next, error = type, pairs, next, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
+local format = string.format
 
 -- WoW APIs
 local _G = _G
@@ -74,6 +75,7 @@ local function copyTable(src, dest)
 	if type(dest) ~= "table" then dest = {} end
 	if type(src) == "table" then
 		for k,v in pairs(src) do
+			local v = v
 			if type(v) == "table" then
 				-- try to index the key first so that the metatable creates the defaults, if set, and use that table
 				v = copyTable(v, dest[k])
@@ -93,6 +95,7 @@ local function copyDefaults(dest, src)
 	-- this happens if some value in the SV overwrites our default value with a non-table
 	--if type(dest) ~= "table" then return end
 	for k, v in pairs(src) do
+		local v = v
 		if k == "*" or k == "**" then
 			if type(v) == "table" then
 				-- This is a metatable used for table defaults
@@ -140,10 +143,12 @@ local function removeDefaults(db, defaults, blocker)
 	setmetatable(db, nil)
 	-- loop through the defaults and remove their content
 	for k,v in pairs(defaults) do
+		local v = v
 		if k == "*" or k == "**" then
 			if type(v) == "table" then
 				-- Loop through all the actual k,v pairs and remove
 				for key, value in pairs(db) do
+					local value = value
 					if type(value) == "table" then
 						-- if the key was not explicitly specified in the defaults table, just strip everything from * and ** tables
 						if defaults[key] == nil and (not blocker or blocker[key] == nil) then
@@ -242,7 +247,7 @@ local function validateDefaults(defaults, keyTbl, offset)
 	offset = offset or 0
 	for k in pairs(defaults) do
 		if not keyTbl[k] or k == "profiles" then
-			error(("Usage: AceDBObject:RegisterDefaults(defaults): '%s' is not a valid datatype."):format(k), 3 + offset)
+			error(format("Usage: AceDBObject:RegisterDefaults(defaults): '%s' is not a valid datatype.", k), 3 + offset)
 		end
 	end
 end
@@ -260,9 +265,10 @@ local charKey = UnitName("player") .. " - " .. realmKey
 local _, classKey = UnitClass("player")
 local _, raceKey = UnitRace("player")
 local factionKey = UnitFactionGroup("player")
+factionKey = factionKey or "Others"
 local factionrealmKey = factionKey .. " - " .. realmKey
-local factionrealmregionKey = factionrealmKey .. " - " .. string.sub(GetCVar("realmList"), 1, 2):upper()
-local localeKey = GetLocale():lower()
+local factionrealmregionKey = factionrealmKey .. " - " .. string.upper(string.sub(GetCVar("realmList"), 1, 2))
+local localeKey = string.lower(GetLocale())
 
 -- Actual database initialization function
 local function initdb(sv, defaults, defaultProfile, olddb, parent)
@@ -353,7 +359,7 @@ end
 -- handle PLAYER_LOGOUT
 -- strip all defaults from all databases
 -- and cleans up empty sections
-local function logoutHandler(frame, event)
+local function logoutHandler()
 	if event == "PLAYER_LOGOUT" then
 		for db in pairs(AceDB.db_registry) do
 			db.callbacks:Fire("OnDatabaseShutdown", db)

@@ -4,9 +4,10 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local pairs = pairs
+local format = string.format
 
 -- WoW APIs
-local GetCursorInfo, GetSpellInfo, ClearCursor = GetCursorInfo, GetSpellInfo, ClearCursor
+local GetCursorInfo, GetSpellName, ClearCursor = GetCursorInfo, GetSpellName, ClearCursor
 local CreateFrame, UIParent = CreateFrame, UIParent
 local _G = _G
 
@@ -20,13 +21,12 @@ Support functions
 
 if not AceGUIMultiLineEditBoxInsertLink then
 	-- upgradeable hook
-	hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.AceGUIMultiLineEditBoxInsertLink(...) end)
 end
 
 function _G.AceGUIMultiLineEditBoxInsertLink(text)
 	for i = 1, AceGUI:GetWidgetCount(Type) do
-		local editbox = _G[("MultiLineEditBox%uEdit"):format(i)]
-		if editbox and editbox:IsVisible() and editbox:HasFocus() then
+		local editbox = _G[format("MultiLineEditBox%uEdit",i)]
+		if editbox and editbox:IsVisible() and editbox.hasfocus then
 			editbox:Insert(text)
 			return true
 		end
@@ -55,78 +55,88 @@ end
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function OnClick(self)                                                     -- Button
-	self = self.obj
+local function OnClick()                                                     -- Button
+	local self = this.obj
 	self.editBox:ClearFocus()
 	if not self:Fire("OnEnterPressed", self.editBox:GetText()) then
 		self.button:Disable()
 	end
 end
 
-local function OnCursorChanged(self, _, y, _, cursorHeight)                      -- EditBox
-	self, y = self.obj.scrollFrame, -y
+local function OnCursorChanged()                      -- EditBox
+	local self, y = this.obj.scrollFrame, -arg2
 	local offset = self:GetVerticalScroll()
 	if y < offset then
 		self:SetVerticalScroll(y)
 	else
-		y = y + cursorHeight - self:GetHeight()
+		y = y + arg4 - self:GetHeight()
 		if y > offset then
 			self:SetVerticalScroll(y)
 		end
 	end
 end
 
-local function OnEditFocusLost(self)                                             -- EditBox
-	self:HighlightText(0, 0)
-	self.obj:Fire("OnEditFocusLost")
+local function OnEditFocusLost()                                             -- EditBox
+	this.hasfocus = nil
+	this:HighlightText(0, 0)
+	this.obj:Fire("OnEditFocusLost")
 end
 
-local function OnEnter(self)                                                     -- EditBox / ScrollFrame
-	self = self.obj
+local function OnEnter()                                                     -- EditBox / ScrollFrame
+	local self = this.obj
 	if not self.entered then
 		self.entered = true
 		self:Fire("OnEnter")
 	end
 end
 
-local function OnLeave(self)                                                     -- EditBox / ScrollFrame
-	self = self.obj
+local function OnLeave()                                                     -- EditBox / ScrollFrame
+	local self = this.obj
 	if self.entered then
 		self.entered = nil
 		self:Fire("OnLeave")
 	end
 end
 
-local function OnMouseUp(self)                                                   -- ScrollFrame
-	self = self.obj.editBox
+local function OnMouseUp()                                                   -- ScrollFrame
+	local self = this.obj.editBox
 	self:SetFocus()
-	self:SetCursorPosition(self:GetNumLetters())
+	EditBoxSetCursorPosition(self, self:GetNumLetters())
 end
 
-local function OnReceiveDrag(self)                                               -- EditBox / ScrollFrame
+local function OnReceiveDrag()                                               -- EditBox / ScrollFrame
+	if not GetCursorInfo then print("TODO GetCursorInfo") return end	-- TODO
+
 	local type, id, info = GetCursorInfo()
 	if type == "spell" then
-		info = GetSpellInfo(id, info)
+		local name, rank = GetSpellName(id, info)
+		if rank ~= "" then
+			name = name.."("..rank..")"
+		end
+		info = name
 	elseif type ~= "item" then
 		return
 	end
 	ClearCursor()
-	self = self.obj
+	local self = this.obj
 	local editBox = self.editBox
-	if not editBox:HasFocus() then
+	if not this.hasfocus then
+		this.hasfocus = true
 		editBox:SetFocus()
-		editBox:SetCursorPosition(editBox:GetNumLetters())
+		EditBoxSetCursorPosition(editBox, editBox:GetNumLetters())
 	end
 	editBox:Insert(info)
 	self.button:Enable()
 end
 
-local function OnSizeChanged(self, width, height)                                -- ScrollFrame
-	self.obj.editBox:SetWidth(width)
+local function OnSizeChanged()                                -- ScrollFrame
+	this:UpdateScrollChildRect()
+	this:SetVerticalScroll(this:GetHeight())
+	this.obj.editBox:SetWidth(arg1)
 end
 
-local function OnTextChanged(self)                                               -- EditBox
-	self = self.obj
+local function OnTextChanged()                                               -- EditBox
+	local self = this.obj
 	local value = self.editBox:GetText()
 	if not self.lastText or value ~= self.lastText then
 		self:Fire("OnTextChanged", value)
@@ -138,26 +148,31 @@ local function OnTextChanged(self)                                              
 	end
 end
 
-local function OnTextSet(self)                                                   -- EditBox
-	self:HighlightText(0, 0)
-	self:SetCursorPosition(self:GetNumLetters())
-	self:SetCursorPosition(0)
-	self.obj.button:Disable()
+local function OnTextSet()                                                   -- EditBox
+	this:HighlightText(0, 0)
+	EditBoxSetCursorPosition(this, this:GetNumLetters())
+	EditBoxSetCursorPosition(this, 0)
+	this.obj.button:Disable()
 end
 
-local function OnVerticalScroll(self, offset)                                    -- ScrollFrame
-	local editBox = self.obj.editBox
-	editBox:SetHitRectInsets(0, 0, offset, editBox:GetHeight() - offset - self:GetHeight())
+local function OnVerticalScroll()                                    -- ScrollFrame
+	local editBox = this.obj.editBox
+	editBox:SetHitRectInsets(0, 0, arg1, editBox:GetHeight() - arg1 - this:GetHeight())
 end
 
-local function OnShowFocus(frame)
-	frame.obj.editBox:SetFocus()
-	frame:SetScript("OnShow", nil)
+local function OnShowFocus()
+	this.obj.editBox:SetFocus()
+	this:SetScript("OnShow", nil)
 end
 
-local function OnEditFocusGained(frame)
-	AceGUI:SetFocus(frame.obj)
-	frame.obj:Fire("OnEditFocusGained")
+local function OnEditFocusGained()
+	this.hasfocus = true
+	AceGUI:SetFocus(this.obj)
+	this.obj:Fire("OnEditFocusGained")
+end
+
+local function OnEscapePressed()
+	AceGUI:ClearFocus()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -257,11 +272,11 @@ local methods = {
 	end,
 
 	["GetCursorPosition"] = function(self)
-		return self.editBox:GetCursorPosition()
+		return EditBoxGetCursorPosition(self.editBox)
 	end,
 
-	["SetCursorPosition"] = function(self, ...)
-		return self.editBox:SetCursorPosition(...)
+	["SetCursorPosition"] = function(self, pos)
+		return EditBoxSetCursorPosition(self.editBox, pos)
 	end,
 
 
@@ -289,7 +304,7 @@ local function Constructor()
 	label:SetText(ACCEPT)
 	label:SetHeight(10)
 
-	local button = CreateFrame("Button", ("%s%dButton"):format(Type, widgetNum), frame, "UIPanelButtonTemplate2")
+	local button = CreateFrame("Button", format("%s%dButton", Type, widgetNum), frame, "UIPanelButtonTemplate")
 	button:SetPoint("BOTTOMLEFT", 0, 4)
 	button:SetHeight(22)
 	button:SetWidth(label:GetStringWidth() + 24)
@@ -308,7 +323,7 @@ local function Constructor()
 	scrollBG:SetBackdropColor(0, 0, 0)
 	scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
 
-	local scrollFrame = CreateFrame("ScrollFrame", ("%s%dScrollFrame"):format(Type, widgetNum), frame, "UIPanelScrollFrameTemplate")
+	local scrollFrame = CreateFrame("ScrollFrame", format("%s%dScrollFrame", Type, widgetNum), frame, "UIPanelScrollFrameTemplate")
 
 	local scrollBar = _G[scrollFrame:GetName() .. "ScrollBar"]
 	scrollBar:ClearAllPoints()
@@ -326,10 +341,9 @@ local function Constructor()
 	scrollFrame:SetScript("OnMouseUp", OnMouseUp)
 	scrollFrame:SetScript("OnReceiveDrag", OnReceiveDrag)
 	scrollFrame:SetScript("OnSizeChanged", OnSizeChanged)
-	scrollFrame:HookScript("OnVerticalScroll", OnVerticalScroll)
+	HookScript(scrollFrame, "OnVerticalScroll", OnVerticalScroll)
 
-	local editBox = CreateFrame("EditBox", ("%s%dEdit"):format(Type, widgetNum), scrollFrame)
-	editBox:SetAllPoints()
+	local editBox = CreateFrame("EditBox", format("%s%dEdit", Type, widgetNum), scrollFrame)
 	editBox:SetFontObject(ChatFontNormal)
 	editBox:SetMultiLine(true)
 	editBox:EnableMouse(true)
@@ -337,7 +351,7 @@ local function Constructor()
 	editBox:SetScript("OnCursorChanged", OnCursorChanged)
 	editBox:SetScript("OnEditFocusLost", OnEditFocusLost)
 	editBox:SetScript("OnEnter", OnEnter)
-	editBox:SetScript("OnEscapePressed", editBox.ClearFocus)
+	editBox:SetScript("OnEscapePressed", OnEscapePressed)
 	editBox:SetScript("OnLeave", OnLeave)
 	editBox:SetScript("OnMouseDown", OnReceiveDrag)
 	editBox:SetScript("OnReceiveDrag", OnReceiveDrag)
@@ -347,6 +361,7 @@ local function Constructor()
 
 
 	scrollFrame:SetScrollChild(editBox)
+	editBox:SetAllPoints()
 
 	local widget = {
 		button      = button,

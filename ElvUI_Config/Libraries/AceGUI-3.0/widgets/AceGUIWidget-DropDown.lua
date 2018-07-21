@@ -3,8 +3,9 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
-local select, pairs, ipairs, type = select, pairs, ipairs, type
-local tsort = table.sort
+local pairs, ipairs, type = pairs, ipairs, type
+local tsort, tinsert, getn, setn = table.sort, table.insert, table.getn, table.setn
+local format = string.format
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -15,25 +16,24 @@ local _G = _G
 -- List them here for Mikk's FindGlobals script
 -- GLOBALS: CLOSE
 
-local function fixlevels(parent,...)
-	local i = 1
-	local child = select(i, ...)
-	while child do
-		child:SetFrameLevel(parent:GetFrameLevel()+1)
-		fixlevels(child, child:GetChildren())
-		i = i + 1
-		child = select(i, ...)
+local function fixlevels(parent, ...)
+	local child
+	local level = parent:GetFrameLevel() + 1
+
+	for i = 1, getn(arg) do
+		child = arg[i]
+		child:SetFrameLevel(level)
+		fixlevels(child)
 	end
 end
 
 local function fixstrata(strata, parent, ...)
-	local i = 1
-	local child = select(i, ...)
+	local child
 	parent:SetFrameStrata(strata)
-	while child do
-		fixstrata(strata, child, child:GetChildren())
-		i = i + 1
-		child = select(i, ...)
+
+	for i = 1, getn(arg) do
+		child = arg[i]
+		fixstrata(strata, child)
 	end
 end
 
@@ -76,15 +76,15 @@ do
 	end
 
 	-- See the note in Constructor() for each scroll related function
-	local function OnMouseWheel(this, value)
-		this.obj:MoveScroll(value)
+	local function OnMouseWheel()
+		this.obj:MoveScroll(arg1)
 	end
 
-	local function OnScrollValueChanged(this, value)
-		this.obj:SetScroll(value)
+	local function OnScrollValueChanged()
+		this.obj:SetScroll(arg1)
 	end
 
-	local function OnSizeChanged(this)
+	local function OnSizeChanged()
 		this.obj:FixScroll()
 	end
 
@@ -169,9 +169,9 @@ do
 
 	-- exported
 	local function AddItem(self, item)
-		self.items[#self.items + 1] = item
+		tinsert(self.items, item)
 
-		local h = #self.items * 16
+		local h = getn(self.items) * 16
 		self.itemFrame:SetHeight(h)
 		self.frame:SetHeight(min(h + 34, self.maxHeight)) -- +34: 20 for scrollFrame placement (10 offset) and +14 for item placement
 
@@ -222,6 +222,7 @@ do
 			AceGUI:Release(item)
 			items[i] = nil
 		end
+		setn(items, 0)
 	end
 
 	-- exported
@@ -362,24 +363,24 @@ do
 
 	--[[ UI event handler ]]--
 
-	local function Control_OnEnter(this)
+	local function Control_OnEnter()
 		this.obj.button:LockHighlight()
 		this.obj:Fire("OnEnter")
 	end
 
-	local function Control_OnLeave(this)
+	local function Control_OnLeave()
 		this.obj.button:UnlockHighlight()
 		this.obj:Fire("OnLeave")
 	end
 
-	local function Dropdown_OnHide(this)
+	local function Dropdown_OnHide()
 		local self = this.obj
 		if self.open then
 			self.pullout:Close()
 		end
 	end
 
-	local function Dropdown_TogglePullout(this)
+	local function Dropdown_TogglePullout()
 		local self = this.obj
 		PlaySound("igMainMenuOptionCheckBoxOn") -- missleading name, but the Blizzard code uses this sound
 		if self.open then
@@ -571,7 +572,7 @@ do
 	local function AddListItem(self, value, text, itemType)
 		if not itemType then itemType = "Dropdown-Item-Toggle" end
 		local exists = AceGUI:GetWidgetVersion(itemType)
-		if not exists then error(("The given item type, %q, does not exist within AceGUI-3.0"):format(tostring(itemType)), 2) end
+		if not exists then error(format("The given item type, %q, does not exist within AceGUI-3.0", tostring(itemType)), 2) end
 
 		local item = AceGUI:Create(itemType)
 		item:SetText(text)
@@ -600,7 +601,7 @@ do
 
 		if type(order) ~= "table" then
 			for v in pairs(list) do
-				sortlist[#sortlist + 1] = v
+				tinsert(sortlist, v)
 			end
 			tsort(sortlist)
 
@@ -608,6 +609,7 @@ do
 				AddListItem(self, key, list[key], itemType)
 				sortlist[i] = nil
 			end
+			setn(sortlist, 0)
 		else
 			for i, key in ipairs(order) do
 				AddListItem(self, key, list[key], itemType)

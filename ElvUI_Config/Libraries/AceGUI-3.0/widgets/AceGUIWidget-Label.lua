@@ -7,7 +7,8 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local max, select, pairs = math.max, select, pairs
+local max, pairs, unpack = math.max, pairs, unpack
+local getn = table.getn
 
 -- WoW APIs
 local CreateFrame, UIParent = CreateFrame, UIParent
@@ -35,14 +36,14 @@ local function UpdateImageAnchor(self)
 		local imagewidth = image:GetWidth()
 		if (width - imagewidth) < 200 or (label:GetText() or "") == "" then
 			-- image goes on top centered when less than 200 width for the text, or if there is no text
-			image:SetPoint("TOP")
+			image:SetPoint("TOP", 0, 0)
 			label:SetPoint("TOP", image, "BOTTOM")
-			label:SetPoint("LEFT")
+			label:SetPoint("LEFT", 0, 0)
 			label:SetWidth(width)
 			height = image:GetHeight() + label:GetHeight()
 		else
 			-- image on the left
-			image:SetPoint("TOPLEFT")
+			image:SetPoint("TOPLEFT", 0, 0)
 			if image:GetHeight() > label:GetHeight() then
 				label:SetPoint("LEFT", image, "RIGHT", 4, 0)
 			else
@@ -53,7 +54,7 @@ local function UpdateImageAnchor(self)
 		end
 	else
 		-- no image shown
-		label:SetPoint("TOPLEFT")
+		label:SetPoint("TOPLEFT", 0, 0)
 		label:SetWidth(width)
 		height = label:GetHeight()
 	end
@@ -111,9 +112,9 @@ local methods = {
 
 		if image:GetTexture() then
 			self.imageshown = true
-			local n = select("#", ...)
+			local n = getn(arg)
 			if n == 4 or n == 8 then
-				image:SetTexCoord(...)
+				image:SetTexCoord(unpack(arg))
 			else
 				image:SetTexCoord(0, 1, 0, 1)
 			end

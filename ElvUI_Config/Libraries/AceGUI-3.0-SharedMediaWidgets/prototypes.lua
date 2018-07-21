@@ -16,6 +16,11 @@ local Media = LibStub("LibSharedMedia-3.0")
 
 AGSMW = AGSMW or {}
 
+local next, ipairs = next, ipairs
+local tinsert, tremove = table.insert, table.remove
+
+local GetScreenHeight = GetScreenHeight
+
 AceGUIWidgetLSMlists = {
 	['font'] = Media:HashTable("font"),
 	['sound'] = Media:HashTable("sound"),
@@ -156,8 +161,8 @@ do
 		insets = { left = 11, right = 12, top = 12, bottom = 9 },
 	}
 
-	local function OnMouseWheel(self, dir)
-		self.slider:SetValue(self.slider:GetValue()+(15*dir*-1))
+	local function OnMouseWheel()
+		this.slider:SetValue(this.slider:GetValue()+(15*arg1*-1))
 	end
 
 	local function AddFrame(self, frame)
@@ -166,20 +171,19 @@ do
 		frame:SetFrameLevel(self:GetFrameLevel() + 100)
 
 		if next(self.contentRepo) then
-			frame:SetPoint("TOPLEFT", self.contentRepo[#self.contentRepo], "BOTTOMLEFT", 0, 0)
+			frame:SetPoint("TOPLEFT", self.contentRepo[getn(self.contentRepo)], "BOTTOMLEFT", 0, 0)
 			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
 			self.contentframe:SetHeight(self.contentframe:GetHeight() + frame:GetHeight())
-			self.contentRepo[#self.contentRepo+1] = frame
 		else
 			self.contentframe:SetHeight(frame:GetHeight())
 			frame:SetPoint("TOPLEFT", self.contentframe, "TOPLEFT", 0, 0)
 			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
-			self.contentRepo[1] = frame
 		end
+		tinsert(self.contentRepo, frame)
 
-		if self.contentframe:GetHeight() > UIParent:GetHeight()*2/5 - 20 then
+		if self.contentframe:GetHeight() > GetScreenHeight()*2/5 - 20 then
 			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -28, 12)
-			self:SetHeight(UIParent:GetHeight()*2/5)
+			self:SetHeight(GetScreenHeight()*2/5)
 			self.slider:Show()
 			self:SetScript("OnMouseWheel", OnMouseWheel)
 			self.scrollframe:UpdateScrollChildRect()
@@ -202,15 +206,15 @@ do
 		end
 	end
 
-	local function slider_OnValueChanged(self, value)
-		self.frame.scrollframe:SetVerticalScroll(value)
+	local function slider_OnValueChanged()
+		this.frame.scrollframe:SetVerticalScroll(arg1)
 	end
 
 	local DropDownCache = {}
 	function AGSMW:GetDropDownFrame()
 		local frame
 		if next(DropDownCache) then
-			frame = table.remove(DropDownCache)
+			frame = tremove(DropDownCache)
 		else
 			frame = CreateFrame("Frame", nil, UIParent)
 				frame:SetClampedToScreen(true)
@@ -255,7 +259,7 @@ do
 				slider:SetScript("OnValueChanged", slider_OnValueChanged)
 			frame.slider = slider
 		end
-		frame:SetHeight(UIParent:GetHeight()*2/5)
+		frame:SetHeight(GetScreenHeight()*2/5)
 		frame.slider:SetValue(0)
 		frame:Show()
 		return frame
@@ -267,7 +271,7 @@ do
 		frame:Hide()
 		frame:SetBackdrop(frameBackdrop)
 		frame.bgTex:SetTexture(nil)
-		table.insert(DropDownCache, frame)
+		tinsert(DropDownCache, frame)
 		return nil
 	end
 end

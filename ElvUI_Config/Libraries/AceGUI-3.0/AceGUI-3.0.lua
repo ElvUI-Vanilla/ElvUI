@@ -31,8 +31,9 @@ local AceGUI, oldminor = LibStub:NewLibrary(ACEGUI_MAJOR, ACEGUI_MINOR)
 if not AceGUI then return end -- No upgrade needed
 
 -- Lua APIs
-local tconcat, tremove, tinsert = table.concat, table.remove, table.insert
-local select, pairs, next, type = select, pairs, next, type
+local tconcat, tremove, tinsert, getn = table.concat, table.remove, table.insert, table.getn
+local format, gsub, upper = string.format, string.gsub, string.upper
+local pairs, next, type, unpack = pairs, next, type, unpack
 local error, assert, loadstring = error, assert, loadstring
 local setmetatable, rawget, rawset = setmetatable, rawget, rawset
 local math_max = math.max
@@ -68,14 +69,14 @@ end
 
 local function CreateDispatcher(argCount)
 	local code = [[
-		local xpcall, eh = ...
+		local xpcall, eh = xpcall, function(err) return geterrorhandler()(err) end
 		local method, ARGS
 		local function call() return method(ARGS) end
 
 		local function dispatch(func, ...)
 			method = func
 			if not method then return end
-			ARGS = ...
+			ARGS = unpack(arg)
 			return xpcall(call, eh)
 		end
 
@@ -84,7 +85,7 @@ local function CreateDispatcher(argCount)
 
 	local ARGS = {}
 	for i = 1, argCount do ARGS[i] = "arg"..i end
-	code = code:gsub("ARGS", tconcat(ARGS, ", "))
+	code = gsub(code, "ARGS", tconcat(ARGS, ", "))
 	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(xpcall, errorhandler)
 end
 
@@ -98,7 +99,7 @@ Dispatchers[0] = function(func)
 end
 
 local function safecall(func, ...)
-	return Dispatchers[select("#", ...)](func, ...)
+	return Dispatchers[getn(arg)](func, unpack(arg))
 end
 
 -- Recycling functions
@@ -158,6 +159,18 @@ do
 end
 
 
+local function fixlevels(parent)
+	local child
+	local childList = {parent:GetChildren()}
+	local level = parent:GetFrameLevel() + 1
+
+	for i = 1, getn(childList) do
+		child = childList[i]
+		child:SetFrameLevel(level)
+		fixlevels(child)
+	end
+end
+
 -------------------
 -- API Functions --
 -------------------
@@ -189,7 +202,7 @@ function AceGUI:Create(type)
 		if widget.OnAcquire then
 			widget:OnAcquire()
 		else
-			error(("Widget type %s doesn't supply an OnAcquire Function"):format(type))
+			error(format("Widget type %s doesn't supply an OnAcquire Function", type))
 		end
 		-- Set the default Layout ("List")
 		safecall(widget.SetLayout, widget, "List")
@@ -211,7 +224,7 @@ function AceGUI:Release(widget)
 	if widget.OnRelease then
 		widget:OnRelease()
 --	else
---		error(("Widget type %s doesn't supply an OnRelease Function"):format(widget.type))
+--		error(format("Widget type %s doesn't supply an OnRelease Function", widget.type))
 	end
 	for k in pairs(widget.userdata) do
 		widget.userdata[k] = nil
@@ -301,6 +314,7 @@ do
 		frame:SetParent(nil)
 		frame:SetParent(parent.content)
 		self.parent = parent
+		fixlevels(frame)
 	end
 
 	WidgetBase.SetCallback = function(self, name, func)
@@ -311,7 +325,7 @@ do
 
 	WidgetBase.Fire = function(self, name, ...)
 		if self.events[name] then
-			local success, ret = safecall(self.events[name], self, name, ...)
+			local success, ret = safecall(self.events[name], self, name, unpack(arg))
 			if success then
 				return ret
 			end
@@ -363,7 +377,7 @@ do
 	end
 
 	WidgetBase.SetPoint = function(self, ...)
-		return self.frame:SetPoint(...)
+		return self.frame:SetPoint(unpack(arg))
 	end
 
 	WidgetBase.ClearAllPoints = function(self)
@@ -375,7 +389,7 @@ do
 	end
 
 	WidgetBase.GetPoint = function(self, ...)
-		return self.frame:GetPoint(...)
+		return self.frame:GetPoint(unpack(arg))
 	end
 
 	WidgetBase.GetUserDataTable = function(self)
@@ -463,8 +477,8 @@ do
 	end
 
 	WidgetContainerBase.AddChildren = function(self, ...)
-		for i = 1, select("#", ...) do
-			local child = select(i, ...)
+		for i = 1, getn(arg) do
+			local child = arg[i]
 			tinsert(self.children, child)
 			child:SetParent(self)
 			child.frame:Show()
@@ -474,9 +488,20 @@ do
 
 	WidgetContainerBase.ReleaseChildren = function(self)
 		local children = self.children
-		for i = 1,#children do
-			AceGUI:Release(children[i])
-			children[i] = nil
+		for i = 1,getn(children) do
+			AceGUI:Release(tremove(children))
+		end
+	end
+
+	WidgetContainerBase.SetParent = function(self, parent)
+		WidgetBase.SetParent(self, parent)
+
+		local level = self.frame:GetFrameLevel()
+		self.content:SetFrameLevel(level + 1)
+		local children = self.children
+		for i = 1,getn(children) do
+			local child = children[i]
+			child:SetParent(self)
 		end
 	end
 
@@ -492,7 +517,7 @@ do
 		end
 	end
 
-	local function FrameResize(this)
+	local function FrameResize()
 		local self = this.obj
 		if this:GetWidth() and this:GetHeight() then
 			if self.OnWidthSet then
@@ -504,7 +529,7 @@ do
 		end
 	end
 
-	local function ContentResize(this)
+	local function ContentResize()
 		if this:GetWidth() and this:GetHeight() then
 			this.width = this:GetWidth()
 			this.height = this:GetHeight()
@@ -573,7 +598,7 @@ end
 function AceGUI:RegisterLayout(Name, LayoutFunc)
 	assert(type(LayoutFunc) == "function")
 	if type(Name) == "string" then
-		Name = Name:upper()
+		Name = upper(Name)
 	end
 	LayoutRegistry[Name] = LayoutFunc
 end
@@ -582,7 +607,7 @@ end
 -- @param Name The name of the layout
 function AceGUI:GetLayout(Name)
 	if type(Name) == "string" then
-		Name = Name:upper()
+		Name = upper(Name)
 	end
 	return LayoutRegistry[Name]
 end
@@ -629,7 +654,7 @@ AceGUI:RegisterLayout("List",
 	function(content, children)
 		local height = 0
 		local width = content.width or content:GetWidth() or 0
-		for i = 1, #children do
+		for i = 1, getn(children) do
 			local child = children[i]
 
 			local frame = child.frame
@@ -676,7 +701,7 @@ AceGUI:RegisterLayout("Fill",
 local layoutrecursionblock = nil
 local function safelayoutcall(object, func, ...)
 	layoutrecursionblock = true
-	object[func](object, ...)
+	object[func](object, unpack(arg))
 	layoutrecursionblock = nil
 end
 
@@ -703,7 +728,7 @@ AceGUI:RegisterLayout("Flow",
 		local frameoffset
 		local lastframeoffset
 		local oversize
-		for i = 1, #children do
+		for i = 1, getn(children) do
 			local child = children[i]
 			oversize = nil
 			local frame = child.frame

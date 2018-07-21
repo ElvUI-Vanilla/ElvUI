@@ -14,9 +14,9 @@ REQUIRES: AceConsole-3.0 for command registration (loaded on demand)
 
 -- TODO: plugin args
 
-local cfgreg = LibStub("AceConfigRegistry-3.0-ElvUI")
+local cfgreg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigCmd-3.0-ElvUI", 14
+local MAJOR, MINOR = "AceConfigCmd-3.0", 14
 local AceConfigCmd = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigCmd then return end
@@ -29,8 +29,10 @@ local AceConsoleName = "AceConsole-3.0"
 
 -- Lua APIs
 local strsub, strsplit, strlower, strmatch, strtrim = string.sub, string.split, string.lower, string.match, string.trim
+local strgsub, strupper, strfind, strlen, strbyte, strgmatch = string.gsub, string.upper, string.find, string.len, string.byte, string.gmatch
 local format, tonumber, tostring = string.format, tonumber, tostring
-local tsort, tinsert = table.sort, table.insert
+local tsort, tinsert, getn = table.sort, table.insert, table.getn
+local fmod = math.fmod
 local select, pairs, next, type = select, pairs, next, type
 local error, assert = error, assert
 
@@ -64,9 +66,9 @@ local funcmsg = "expected function or member name"
 -- pickfirstset() - picks the first non-nil value and returns it
 
 local function pickfirstset(...)
-	for i=1,select("#",...) do
-		if select(i,...)~=nil then
-			return select(i,...)
+	for i=1,getn(arg) do
+		if arg[i]~=nil then
+			return arg[i]
 		end
 	end
 end
@@ -101,12 +103,12 @@ local function callmethod(info, inputpos, tab, methodtype, ...)
 	info.type = tab.type
 
 	if type(method)=="function" then
-		return method(info, ...)
+		return method(info, unpack(arg))
 	elseif type(method)=="string" then
 		if type(info.handler[method])~="function" then
 			err(info, inputpos, "'"..methodtype.."': '"..method.."' is not a member function of "..tostring(info.handler))
 		end
-		return info.handler[method](info.handler, info, ...)
+		return info.handler[method](info.handler, info, unpack(arg))
 	else
 		assert(false)	-- type should have already been checked on read
 	end
@@ -122,7 +124,11 @@ local function callfunction(info, tab, methodtype, ...)
 	info.type = tab.type
 
 	if type(method)=="function" then
-		return method(info, ...)
+		if getn(arg) > 0 then
+			return method(info, unpack(arg))
+		else
+			return method(info)
+		end
 	else
 		assert(false) -- type should have already been checked on read
 	end
@@ -132,7 +138,7 @@ end
 
 local function do_final(info, inputpos, tab, methodtype, ...)
 	if info.validate then
-		local res = callmethod(info,inputpos,tab,"validate",...)
+		local res = callmethod(info,inputpos,tab,"validate",unpack(arg))
 		if type(res)=="string" then
 			usererr(info, inputpos, "'"..strsub(info.input, inputpos).."' - "..res)
 			return
@@ -140,7 +146,7 @@ local function do_final(info, inputpos, tab, methodtype, ...)
 	end
 	-- console ignores .confirm
 
-	callmethod(info,inputpos,tab,methodtype, ...)
+	callmethod(info,inputpos,tab,methodtype, unpack(arg))
 end
 
 
@@ -222,16 +228,16 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 		local o2 = refTbl[two].order or 100
 		if type(o1) == "function" or type(o1) == "string" then
 			info.order = o1
-			info[#info+1] = one
+			tinsert(info, one)
 			o1 = callmethod(info, inputpos, refTbl[one], "order")
-			info[#info] = nil
+			tremove(info)
 			info.order = nil
 		end
 		if type(o2) == "function" or type(o1) == "string" then
 			info.order = o2
-			info[#info+1] = two
+			tinsert(info, two)
 			o2 = callmethod(info, inputpos, refTbl[two], "order")
-			info[#info] = nil
+			tremove(info)
 			info.order = nil
 		end
 		if o1<0 and o2<0 then return o1<o2 end
@@ -241,7 +247,7 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 		return o1<o2
 	end)
 
-	for i = 1, #sortTbl do
+	for i = 1, getn(sortTbl) do
 		local k = sortTbl[i]
 		local v = refTbl[k]
 		if not checkhidden(info, inputpos, v) then
@@ -260,7 +266,7 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 					showhelp(info, inputpos, v, depth, true)
 					info.handler,info.handler_at = oldhandler,oldhandler_at
 				else
-					local key = k:gsub(" ", "_")
+					local key = strgsub(k, " ", "_")
 					print("  |cffffff78"..key.."|r - "..(desc or name or ""))
 				end
 			end
@@ -273,7 +279,7 @@ local function keybindingValidateFunc(text)
 	if text == nil or text == "NONE" then
 		return nil
 	end
-	text = text:upper()
+	text = strupper(text)
 	local shift, ctrl, alt
 	local modifier
 	while true do
@@ -311,7 +317,7 @@ local function keybindingValidateFunc(text)
 	if text == "" then
 		return false
 	end
-	if not text:find("^F%d+$") and text ~= "CAPSLOCK" and text:len() ~= 1 and (text:byte() < 128 or text:len() > 4) and not _G["KEY_" .. text] then
+	if not strfind(text,"^F%d+$") and text ~= "CAPSLOCK" and strlen(text) ~= 1 and (strbyte(text) < 128 or strlen(text) > 4) and not _G["KEY_" .. text] then
 		return false
 	end
 	local s = text
@@ -357,7 +363,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 		if tab.plugins and type(tab.plugins)~="table" then err(info,inputpos) end
 
 		-- grab next arg from input
-		local _,nextpos,arg = (info.input):find(" *([^ ]+) *", inputpos)
+		local _,nextpos,arg = strfind(info.input, " *([^ ]+) *", inputpos)
 		if not arg then
 			showhelp(info, inputpos, tab, depth)
 			return
@@ -370,16 +376,16 @@ local function handle(info, inputpos, tab, depth, retfalse)
 
 			-- is this child an inline group? if so, traverse into it
 			if v.type=="group" and pickfirstset(v.cmdInline, v.inline, false) then
-				info[depth+1] = k
+				tinsert(info,k)
 				if handle(info, inputpos, v, depth+1, true)==false then
-					info[depth+1] = nil
+					tremove(info)
 					-- wasn't found in there, but that's ok, we just keep looking down here
 				else
 					return	-- done, name was found in inline group
 				end
 			-- matching name and not a inline group
-			elseif strlower(arg)==strlower(k:gsub(" ", "_")) then
-				info[depth+1] = k
+			elseif strlower(arg)==strlower(strgsub(k, " ", "_")) then
+				tinsert(info,k)
 				return handle(info,nextpos,v,depth+1)
 			end
 		end
@@ -471,7 +477,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			return
 		end
 		if type(info.step)=="number" then
-			val = val- (val % info.step)
+			val = val- fmod(val, info.step)
 		end
 		if type(info.min)=="number" and val<info.min then
 			usererr(info, inputpos, val.." - "..format(L["must be equal to or higher than %s"], tostring(info.min)) )
@@ -500,12 +506,12 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			local b = callmethod(info, inputpos, tab, "get")
 			local fmt = "|cffffff78- [%s]|r %s"
 			local fmt_sel = "|cffffff78- [%s]|r %s |cffff0000*|r"
-			print(L["Options for |cffffff78"..info[#info].."|r:"])
+			print(L["Options for |cffffff78"..info[getn(info)].."|r:"])
 			for k, v in pairs(values) do
 				if b == k then
-					print(fmt_sel:format(k, v))
+					print(format(fmt_sel, k, v))
 				else
-					print(fmt:format(k, v))
+					print(format(fmt, k, v))
 				end
 			end
 			return
@@ -540,12 +546,12 @@ local function handle(info, inputpos, tab, depth, retfalse)
 		if str == "" then
 			local fmt = "|cffffff78- [%s]|r %s"
 			local fmt_sel = "|cffffff78- [%s]|r %s |cffff0000*|r"
-			print(L["Options for |cffffff78"..info[#info].."|r (multiple possible):"])
+			print(L["Options for |cffffff78"..info[getn(info)].."|r (multiple possible):"])
 			for k, v in pairs(values) do
 				if callmethod(info, inputpos, tab, "get", k) then
-					print(fmt_sel:format(k, v))
+					print(format(fmt_sel, k, v))
 				else
-					print(fmt:format(k, v))
+					print(format(fmt, k, v))
 				end
 			end
 			return
@@ -555,9 +561,9 @@ local function handle(info, inputpos, tab, depth, retfalse)
 		--parse for =on =off =default in the process
 		--table will be key = true for options that should toggle, key = [on|off|default] for options to be set
 		local sels = {}
-		for v in str:gmatch("[^ ]+") do
+		for v in strgfind(str, "[^ ]+") do
 			--parse option=on etc
-			local opt, val = v:match('(.+)=(.+)')
+			local _, _, opt, val = strfind(v, '(.+)=(.+)')
 			--get option if toggling
 			if not opt then
 				opt = v
@@ -640,7 +646,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			return
 		end
 
-		local r, g, b, a
+		local _, r, g, b, a
 
 		local hasAlpha = tab.hasAlpha
 		if type(hasAlpha) == "function" or type(hasAlpha) == "string" then
@@ -650,12 +656,12 @@ local function handle(info, inputpos, tab, depth, retfalse)
 		end
 
 		if hasAlpha then
-			if str:len() == 8 and str:find("^%x*$")  then
+			if strlen(str) == 8 and strfind(str, "^%x*$")  then
 				--parse a hex string
-				r,g,b,a = tonumber(str:sub(1, 2), 16) / 255, tonumber(str:sub(3, 4), 16) / 255, tonumber(str:sub(5, 6), 16) / 255, tonumber(str:sub(7, 8), 16) / 255
+				r,g,b,a = tonumber(strsub(str, 1, 2), 16) / 255, tonumber(strsub(str, 3, 4), 16) / 255, tonumber(strsub(str, 5, 6), 16) / 255, tonumber(strsub(str, 7, 8), 16) / 255
 			else
 				--parse seperate values
-				r,g,b,a = str:match("^([%d%.]+) ([%d%.]+) ([%d%.]+) ([%d%.]+)$")
+				_,_,r,g,b,a = strfind(str, "^([%d%.]+) ([%d%.]+) ([%d%.]+) ([%d%.]+)$")
 				r,g,b,a = tonumber(r), tonumber(g), tonumber(b), tonumber(a)
 			end
 			if not (r and g and b and a) then
@@ -677,12 +683,12 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			end
 		else
 			a = 1.0
-			if str:len() == 6 and str:find("^%x*$") then
+			if strlen(str) == 6 and strfind(str, "^%x*$") then
 				--parse a hex string
-				r,g,b = tonumber(str:sub(1, 2), 16) / 255, tonumber(str:sub(3, 4), 16) / 255, tonumber(str:sub(5, 6), 16) / 255
+				r,g,b = tonumber(strsub(str, 1, 2), 16) / 255, tonumber(strsub(str, 3, 4), 16) / 255, tonumber(strsub(str, 5, 6), 16) / 255
 			else
 				--parse seperate values
-				r,g,b = str:match("^([%d%.]+) ([%d%.]+) ([%d%.]+)$")
+				_,_,r,g,b = strfind(str, "^([%d%.]+) ([%d%.]+) ([%d%.]+)$")
 				r,g,b = tonumber(r), tonumber(g), tonumber(b)
 			end
 			if not (r and g and b) then
@@ -711,7 +717,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			--TODO: Show current value
 			return
 		end
-		local value = keybindingValidateFunc(str:upper())
+		local value = keybindingValidateFunc(strupper(str))
 		if value == false then
 			usererr(info, inputpos, format(L["'%s' - Invalid Keybinding."], str))
 			return
@@ -741,7 +747,7 @@ end
 -- -- Show the GUI if no input is supplied, otherwise handle the chat input.
 -- function MyAddon:ChatCommand(input)
 --   -- Assuming "MyOptions" is the appName of a valid options table
---   if not input or input:trim() == "" then
+--   if not input or trim(input) == "" then
 --     LibStub("AceConfigDialog-3.0"):Open("MyOptions")
 --   else
 --     LibStub("AceConfigCmd-3.0").HandleCommand(MyAddon, "mychat", "MyOptions", input)

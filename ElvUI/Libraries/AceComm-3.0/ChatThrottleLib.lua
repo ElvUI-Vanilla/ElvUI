@@ -64,6 +64,7 @@ ChatThrottleLib.MIN_FPS = 20				-- Reduce output CPS to half (and don't burst) i
 
 
 local setmetatable = setmetatable
+local table_insert = table.insert
 local table_remove = table.remove
 local tostring = tostring
 local GetTime = GetTime
@@ -121,7 +122,7 @@ ChatThrottleLib.PipeBin = nil -- pre-v19, drastically different
 local PipeBin = setmetatable({}, {__mode="k"})
 
 local function DelPipe(pipe)
-	for i = #pipe, 1, -1 do
+	for i = getn(pipe), 1, -1 do
 		pipe[i] = nil
 	end
 	pipe.prev = nil
@@ -209,12 +210,12 @@ function ChatThrottleLib:Init()
 		-- Use secure hooks as of v16. Old regular hook support yanked out in v21.
 		self.securelyHooked = true
 		--SendChatMessage
-		hooksecurefunc("SendChatMessage", function(...)
-			return ChatThrottleLib.Hook_SendChatMessage(...)
+		hooksecurefunc("SendChatMessage", function(text, chattype, language, destination)
+			return ChatThrottleLib.Hook_SendChatMessage(text, chattype, language, destination)
 		end)
 		--SendAddonMessage
-		hooksecurefunc("SendAddonMessage", function(...)
-			return ChatThrottleLib.Hook_SendAddonMessage(...)
+		hooksecurefunc("SendAddonMessage", function(prefix, text, chattype, destination)
+			return ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destination)
 		end)
 	end
 	self.nBypass = 0
@@ -240,8 +241,8 @@ function ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destinati
 		return
 	end
 	local self = ChatThrottleLib
-	local size = tostring(text or ""):len() + tostring(prefix or ""):len();
-	size = size + tostring(destination or ""):len() + self.MSG_OVERHEAD
+	local size = strlen(tostring(text or "")) + strlen(tostring(prefix or ""));
+	size = size + strlen(tostring(destination or "")) + self.MSG_OVERHEAD
 	self.avail = self.avail - size
 	self.nBypass = self.nBypass + size	-- just a statistic
 end
@@ -307,7 +308,7 @@ function ChatThrottleLib:Despool(Prio)
 end
 
 
-function ChatThrottleLib.OnEvent(this,event)
+function ChatThrottleLib.OnEvent()
 	-- v11: We know that the rate limiter is touchy after login. Assume that it's touchy after zoning, too.
 	local self = ChatThrottleLib
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -317,10 +318,10 @@ function ChatThrottleLib.OnEvent(this,event)
 end
 
 
-function ChatThrottleLib.OnUpdate(this,delay)
+function ChatThrottleLib.OnUpdate()
 	local self = ChatThrottleLib
 
-	self.OnUpdateDelay = self.OnUpdateDelay + delay
+	self.OnUpdateDelay = self.OnUpdateDelay + arg1
 	if self.OnUpdateDelay < 0.08 then
 		return
 	end
@@ -386,7 +387,7 @@ function ChatThrottleLib:Enqueue(prioname, pipename, msg)
 		Prio.Ring:Add(pipe)
 	end
 
-	pipe[#pipe + 1] = msg
+	table_insert(pipe, msg)
 
 	self.bQueueing = true
 end
@@ -401,7 +402,7 @@ function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, languag
 		error('ChatThrottleLib:ChatMessage(): callbackFn: expected function, got '..type(callbackFn), 2)
 	end
 
-	local nSize = text:len()
+	local nSize = strlen(text)
 
 	if nSize>255 then
 		error("ChatThrottleLib:SendChatMessage(): message length cannot exceed 255 bytes", 2)
@@ -446,7 +447,7 @@ function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, 
 		error('ChatThrottleLib:SendAddonMessage(): callbackFn: expected function, got '..type(callbackFn), 2)
 	end
 
-	local nSize = prefix:len() + 1 + text:len();
+	local nSize = strlen(prefix) + 1 + strlen(text);
 
 	if nSize>255 then
 		error("ChatThrottleLib:SendAddonMessage(): prefix + message length cannot exceed 254 bytes", 2)

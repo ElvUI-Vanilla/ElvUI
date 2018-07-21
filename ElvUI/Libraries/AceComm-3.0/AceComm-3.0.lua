@@ -26,9 +26,9 @@ local AceComm,oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AceComm then return end
 
 -- Lua APIs
-local type, next, pairs, tostring = type, next, pairs, tostring
-local strsub, strfind = string.sub, string.find
-local tinsert, tconcat = table.insert, table.concat
+local type, next, pairs, tostring, unpack = type, next, pairs, tostring, unpack
+local strsub, strfind, strlen = string.sub, string.find, string.len
+local tinsert, tconcat, tremove = table.insert, table.concat, table.remove
 local error, assert = error, assert
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
@@ -91,8 +91,8 @@ function AceComm:SendCommMessage(prefix, text, distribution, target, prio, callb
 	end
 
 
-	local textlen = #text
-	local maxtextlen = 254 - #prefix	-- 254 is the max length of prefix + text that can be sent in one message
+	local textlen = strlen(text)
+	local maxtextlen = 254 - strlen(prefix)	-- 254 is the max length of prefix + text that can be sent in one message
 	local queueName = prefix..distribution..(target or "")
 
 	local ctlCallback = nil
@@ -139,8 +139,8 @@ do
 		local t = next(compost)
 		if t then
 			compost[t]=nil
-			for i=#t,3,-1 do	-- faster than pairs loop. don't even nil out 1/2 since they'll be overwritten
-				t[i]=nil
+			for i=getn(t),3,-1 do	-- faster than pairs loop. don't even nil out 1/2 since they'll be overwritten
+				tremove(t, i)
 			end
 			return t
 		end
@@ -253,9 +253,9 @@ function AceComm.callbacks:OnUnused(target, prefix)
 	AceComm.multipart_reassemblers[prefix..MSG_MULTI_LAST] = nil
 end
 
-local function OnEvent(this, event, ...)
+local function OnEvent()
 	if event == "CHAT_MSG_ADDON" then
-		local prefix,message,distribution,sender = ...
+		local prefix,message,distribution,sender = unpack(arg)
 		local reassemblername = AceComm.multipart_reassemblers[prefix]
 		if reassemblername then
 			-- multipart: reassemble

@@ -49,9 +49,10 @@ AceTimer.frame = AceTimer.frame or CreateFrame("Frame", "AceTimer30Frame")
 -- Lua APIs
 local assert, error, loadstring = assert, error, loadstring
 local setmetatable, rawset, rawget = setmetatable, rawset, rawget
-local select, pairs, type, next, tostring = select, pairs, type, next, tostring
-local floor, max, min = math.floor, math.max, math.min
-local tconcat = table.concat
+local pairs, type, next, tostring, unpack = pairs, type, next, tostring, unpack
+local gsub = string.gsub
+local floor, max, min, fmod = math.floor, math.max, math.min, math.fmod
+local tconcat, getn = table.concat, table.getn
 
 -- WoW APIs
 local GetTime = GetTime
@@ -93,14 +94,14 @@ end
 
 local function CreateDispatcher(argCount)
 	local code = [[
-		local xpcall, eh = ...	-- our arguments are received as unnamed values in "..." since we don't have a proper function declaration
+		local xpcall, eh = xpcall, function(err) return geterrorhandler()(err) end	-- our arguments are received as unnamed values in "..." since we don't have a proper function declaration
 		local method, ARGS
 		local function call() return method(ARGS) end
 
 		local function dispatch(func, ...)
 			 method = func
 			 if not method then return end
-			 ARGS = ...
+			 ARGS = unpack(arg)
 			 return xpcall(call, eh)
 		end
 
@@ -109,7 +110,7 @@ local function CreateDispatcher(argCount)
 
 	local ARGS = {}
 	for i = 1, argCount do ARGS[i] = "arg"..i end
-	code = code:gsub("ARGS", tconcat(ARGS, ", "))
+	code = gsub(code, "ARGS", tconcat(ARGS, ", "))
 	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(xpcall, errorhandler)
 end
 
@@ -125,7 +126,7 @@ Dispatchers[0] = function(func)
 end
 
 local function safecall(func, ...)
-	return Dispatchers[select('#', ...)](func, ...)
+	return Dispatchers[getn(arg)](func, unpack(arg))
 end
 
 local lastint = floor(GetTime() * HZ)
@@ -147,7 +148,7 @@ local function OnUpdate()
 	-- Pass through each bucket at most once
 	-- Happens on e.g. instance loads, but COULD happen on high local load situations also
 	for curint = (max(lastint, nowint - BUCKETS) + 1), nowint do -- loop until we catch up with "now", usually only 1 iteration
-		local curbucket = (curint % BUCKETS)+1
+		local curbucket = (fmod(curint, BUCKETS))+1
 		-- Yank the list of timers out of the bucket and empty it. This allows reinsertion in the currently-processed bucket from callbacks.
 		local nexttimer = hash[curbucket]
 		hash[curbucket] = false -- false rather than nil to prevent the array from becoming a hash
@@ -184,7 +185,7 @@ local function OnUpdate()
 					timer.when = newtime
 
 					-- add next timer execution to the correct bucket
-					local bucket = (floor(newtime * HZ) % BUCKETS) + 1
+					local bucket = (fmod(floor(newtime * HZ), BUCKETS)) + 1
 					timer.next = hash[bucket]
 					hash[bucket] = timer
 				end
@@ -208,7 +209,7 @@ end
 -- repeating(boolean) - repeating timer, or oneshot
 --
 -- returns the handle of the timer for later processing (canceling etc)
-local function Reg(self, callback, delay, arg, repeating)
+local function Reg(self, callback, delay, argument, repeating)
 	if type(callback) ~= "string" and type(callback) ~= "function" then
 		local error_origin = repeating and "ScheduleRepeatingTimer" or "ScheduleTimer"
 		error(MAJOR..": " .. error_origin .. "(callback, delay, arg): 'callback' - function or method name expected.", 3)
@@ -237,10 +238,10 @@ local function Reg(self, callback, delay, arg, repeating)
 	timer.object = self
 	timer.callback = callback
 	timer.delay = (repeating and delay)
-	timer.arg = arg
+	timer.arg = argument
 	timer.when = now + delay
 
-	local bucket = (floor((now+delay)*HZ) % BUCKETS) + 1
+	local bucket = (fmod(floor((now+delay)*HZ), BUCKETS)) + 1
 	timer.next = hash[bucket]
 	hash[bucket] = timer
 
@@ -273,8 +274,8 @@ end
 -- function MyAddon:TimerFeedback()
 --   print("5 seconds passed")
 -- end
-function AceTimer:ScheduleTimer(callback, delay, arg)
-	return Reg(self, callback, delay, arg)
+function AceTimer:ScheduleTimer(callback, delay, argument)
+	return Reg(self, callback, delay, argument)
 end
 
 --- Schedule a repeating timer.
@@ -292,14 +293,14 @@ end
 --
 -- function MyAddon:TimerFeedback()
 --   self.timerCount = self.timerCount + 1
---   print(("%d seconds passed"):format(5 * self.timerCount))
+--   print(format("%d seconds passed", 5 * self.timerCount))
 --   -- run 30 seconds in total
 --   if self.timerCount == 6 then
 --     self:CancelTimer(self.testTimer)
 --   end
 -- end
-function AceTimer:ScheduleRepeatingTimer(callback, delay, arg)
-	return Reg(self, callback, delay, arg, true)
+function AceTimer:ScheduleRepeatingTimer(callback, delay, argument)
+	return Reg(self, callback, delay, argument, true)
 end
 
 --- Cancels a timer with the given handle, registered by the same addon object as used for `:ScheduleTimer`
@@ -384,7 +385,7 @@ end
 
 local lastCleaned = nil
 
-local function OnEvent(this, event)
+local function OnEvent()
 	if event~="PLAYER_REGEN_ENABLED" then
 		return
 	end

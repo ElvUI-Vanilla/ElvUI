@@ -21,9 +21,9 @@ AceConsole.commands = AceConsole.commands or {} -- table containing commands reg
 AceConsole.weakcommands = AceConsole.weakcommands or {} -- table containing self, command => func references for weak commands that don't persist through enable/disable
 
 -- Lua APIs
-local tconcat, tostring, select = table.concat, tostring, select
+local tconcat, getn, tostring = table.concat, table.getn, tostring
 local type, pairs, error = type, pairs, error
-local format, strfind, strsub = string.format, string.find, string.sub
+local format, strfind, strsub, upper, lower = string.format, string.find, string.sub, string.upper, string.lower
 local max = math.max
 
 -- WoW APIs
@@ -40,9 +40,9 @@ local function Print(self,frame,...)
 		n=n+1
 		tmp[n] = "|cff33ff99"..tostring( self ).."|r:"
 	end
-	for i=1, select("#", ...) do
+	for i=1, getn(arg) do
 		n=n+1
-		tmp[n] = tostring(select(i, ...))
+		tmp[n] = tostring(arg[i])
 	end
 	frame:AddMessage( tconcat(tmp," ",1,n) )
 end
@@ -52,11 +52,11 @@ end
 -- @param chatframe Custom ChatFrame to print to (or any frame with an .AddMessage function)
 -- @param ... List of any values to be printed
 function AceConsole:Print(...)
-	local frame = ...
+	local frame = arg[1]
 	if type(frame) == "table" and frame.AddMessage then	-- Is first argument something with an .AddMessage member?
-		return Print(self, frame, select(2,...))
+		return Print(self, unpack(arg))
 	else
-		return Print(self, DEFAULT_CHAT_FRAME, ...)
+		return Print(self, DEFAULT_CHAT_FRAME, unpack(arg))
 	end
 end
 
@@ -67,11 +67,12 @@ end
 -- @param format Format string - same syntax as standard Lua format()
 -- @param ... Arguments to the format string
 function AceConsole:Printf(...)
-	local frame = ...
+	local frame = arg[1]
 	if type(frame) == "table" and frame.AddMessage then	-- Is first argument something with an .AddMessage member?
-		return Print(self, frame, format(select(2,...)))
+		tremove(arg, 1)
+		return Print(self, frame, format(unpack(arg)))
 	else
-		return Print(self, DEFAULT_CHAT_FRAME, format(...))
+		return Print(self, DEFAULT_CHAT_FRAME, format(unpack(arg)))
 	end
 end
 
@@ -87,7 +88,7 @@ function AceConsole:RegisterChatCommand( command, func, persist )
 
 	if persist==nil then persist=true end	-- I'd rather have my addon's "/addon enable" around if the author screws up. Having some extra slash regged when it shouldnt be isn't as destructive. True is a better default. /Mikk
 
-	local name = "ACECONSOLE_"..command:upper()
+	local name = "ACECONSOLE_"..upper(command)
 
 	if type( func ) == "string" then
 		SlashCmdList[name] = function(input, editBox)
@@ -96,7 +97,7 @@ function AceConsole:RegisterChatCommand( command, func, persist )
 	else
 		SlashCmdList[name] = func
 	end
-	_G["SLASH_"..name.."1"] = "/"..command:lower()
+	_G["SLASH_"..name.."1"] = "/"..lower(command)
 	AceConsole.commands[command] = name
 	-- non-persisting commands are registered for enabling disabling
 	if not persist then
@@ -113,7 +114,7 @@ function AceConsole:UnregisterChatCommand( command )
 	if name then
 		SlashCmdList[name] = nil
 		_G["SLASH_" .. name .. "1"] = nil
-		hash_SlashCmdList["/" .. command:upper()] = nil
+		hash_SlashCmdList["/" .. upper(command)] = nil
 		AceConsole.commands[command] = nil
 	end
 end
@@ -125,11 +126,11 @@ function AceConsole:IterateChatCommands() return pairs(AceConsole.commands) end
 
 local function nils(n, ...)
 	if n>1 then
-		return nil, nils(n-1, ...)
+		return nil, nils(n-1, unpack(arg))
 	elseif n==1 then
-		return nil, ...
+		return nil, unpack(arg)
 	else
-		return ...
+		return unpack(arg)
 	end
 end
 

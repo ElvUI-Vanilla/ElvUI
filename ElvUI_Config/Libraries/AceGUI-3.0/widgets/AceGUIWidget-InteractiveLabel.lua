@@ -6,7 +6,8 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local select, pairs = select, pairs
+local pairs, unpack = pairs, unpack
+local getn = table.getn
 
 -- WoW APIs
 local CreateFrame, UIParent = CreateFrame, UIParent
@@ -18,16 +19,16 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function Control_OnEnter(frame)
-	frame.obj:Fire("OnEnter")
+local function Control_OnEnter()
+	this.obj:Fire("OnEnter")
 end
 
-local function Control_OnLeave(frame)
-	frame.obj:Fire("OnLeave")
+local function Control_OnLeave()
+	this.obj:Fire("OnLeave")
 end
 
-local function Label_OnClick(frame, button)
-	frame.obj:Fire("OnClick", button)
+local function Label_OnClick()
+	this.obj:Fire("OnClick", arg1)
 	AceGUI:ClearFocus()
 end
 
@@ -45,13 +46,13 @@ local methods = {
 	-- ["OnRelease"] = nil,
 
 	["SetHighlight"] = function(self, ...)
-		self.highlight:SetTexture(...)
+		self.highlight:SetTexture(unpack(arg))
 	end,
 
 	["SetHighlightTexCoord"] = function(self, ...)
-		local c = select("#", ...)
+		local c = getn(arg)
 		if c == 4 or c == 8 then
-			self.highlight:SetTexCoord(...)
+			self.highlight:SetTexCoord(unpack(arg))
 		else
 			self.highlight:SetTexCoord(0, 1, 0, 1)
 		end
