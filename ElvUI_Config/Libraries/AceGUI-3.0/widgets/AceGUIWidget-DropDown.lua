@@ -104,7 +104,7 @@ do
 		end
 		child:ClearAllPoints()
 		child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
-		child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", self.slider:IsShown() and -12 or 0, offset)
+--		child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", self.slider:IsShown() and -12 or 0, offset)
 		status.offset = offset
 		status.scrollvalue = value
 	end
@@ -148,7 +148,7 @@ do
 			if value < 1000 then
 				child:ClearAllPoints()
 				child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
-				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, offset)
+--				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, offset)
 				status.offset = offset
 			end
 		end
@@ -321,16 +321,19 @@ do
 		slider.obj = self
 
 		scrollFrame:SetScrollChild(itemFrame)
+		scrollFrame:SetWidth(defaultWidth - 12)
+		scrollFrame:SetHeight(self.maxHeight - 24)
 		scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -12)
-		scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 12)
+--		scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 12)
 		scrollFrame:EnableMouseWheel(true)
 		scrollFrame:SetScript("OnMouseWheel", OnMouseWheel)
 		scrollFrame:SetScript("OnSizeChanged", OnSizeChanged)
 		scrollFrame:SetToplevel(true)
 		scrollFrame:SetFrameStrata("FULLSCREEN_DIALOG")
 
+		itemFrame:SetWidth(defaultWidth - 12)
 		itemFrame:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 0, 0)
-		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -12, 0)
+--		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -12, 0)
 		itemFrame:SetHeight(400)
 		itemFrame:SetToplevel(true)
 		itemFrame:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -389,7 +392,10 @@ do
 			AceGUI:ClearFocus()
 		else
 			self.open = true
-			self.pullout:SetWidth(self.pulloutWidth or self.frame:GetWidth())
+			local width = self.pulloutWidth or self.frame:GetWidth()
+			self.pullout:SetWidth(width)
+			self.pullout.scrollFrame:SetWidth(width - 12)
+			self.pullout.itemFrame:SetWidth(width - (self.pullout.slider:IsShown() and 24 or 12))
 			self.pullout:Open("TOPLEFT", self.frame, "BOTTOMLEFT", 0, self.label:IsShown() and -2 or 0)
 			AceGUI:SetFocus(self)
 		end
