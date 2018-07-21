@@ -101,7 +101,7 @@ end
 local function OnMouseUp()                                                   -- ScrollFrame
 	local self = this.obj.editBox
 	self:SetFocus()
-	EditBoxSetCursorPosition(self, self:GetNumLetters())
+--	EditBoxSetCursorPosition(self, self:GetNumLetters())
 end
 
 local function OnReceiveDrag()                                               -- EditBox / ScrollFrame
@@ -123,16 +123,14 @@ local function OnReceiveDrag()                                               -- 
 	if not this.hasfocus then
 		this.hasfocus = true
 		editBox:SetFocus()
-		EditBoxSetCursorPosition(editBox, editBox:GetNumLetters())
+--		EditBoxSetCursorPosition(editBox, editBox:GetNumLetters())
 	end
 	editBox:Insert(info)
 	self.button:Enable()
 end
 
 local function OnSizeChanged()                                -- ScrollFrame
-	this:UpdateScrollChildRect()
-	this:SetVerticalScroll(this:GetHeight())
-	this.obj.editBox:SetWidth(arg1)
+	this.obj.editBox:SetWidth(this.obj.editBox:GetWidth())
 end
 
 local function OnTextChanged()                                               -- EditBox
@@ -150,8 +148,8 @@ end
 
 local function OnTextSet()                                                   -- EditBox
 	this:HighlightText(0, 0)
-	EditBoxSetCursorPosition(this, this:GetNumLetters())
-	EditBoxSetCursorPosition(this, 0)
+--	EditBoxSetCursorPosition(this, this:GetNumLetters())
+--	EditBoxSetCursorPosition(this, 0)
 	this.obj.button:Disable()
 end
 
@@ -272,14 +270,20 @@ local methods = {
 	end,
 
 	["GetCursorPosition"] = function(self)
-		return EditBoxGetCursorPosition(self.editBox)
+		--return EditBoxGetCursorPosition(self.editBox)
 	end,
 
 	["SetCursorPosition"] = function(self, pos)
-		return EditBoxSetCursorPosition(self.editBox, pos)
+		--return EditBoxSetCursorPosition(self.editBox, pos)
 	end,
 
+	["OnWidthSet"] = function(self, width)
+		self.scrollFrame:SetWidth(width)
+	end,
 
+	["OnHeightSet"] = function(self, height)
+		self.scrollFrame:SetHeight(height)
+	end
 }
 
 --[[-----------------------------------------------------------------------------
