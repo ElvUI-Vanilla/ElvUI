@@ -191,7 +191,7 @@ local function EditBox_OnEnterPressed()
 end
 
 local function EditBox_OnReceiveDrag()
-	if not GetCursorInfo then print("TODO GetCursorInfo") return end	-- TODO
+	if not GetCursorInfo then return end
 
 	local self = this.obj
 	local type, id, info = GetCursorInfo()

@@ -217,7 +217,7 @@ local function OnMouseUp()                                                   -- 
 end
 
 local function OnReceiveDrag()                                               -- EditBox / ScrollFrame
-	if not GetCursorInfo then print("TODO GetCursorInfo") return end	-- TODO
+	if not GetCursorInfo then return end
 
 	local type, id, info = GetCursorInfo()
 	if type == "spell" then
