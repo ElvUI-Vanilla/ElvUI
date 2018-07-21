@@ -7,7 +7,7 @@ local select = select
 local tonumber = tonumber
 local type = type
 local unpack = unpack
-local find, format, gmatch, gsub, lower, match, upper = string.find, string.format, string.gmatch, string.gsub, string.lower, string.match, string.upper
+local find, format, gmatch, gsub, len, lower, match, upper, sub = string.find, string.format, string.gmatch, string.gsub, string.len, string.lower, string.match, string.upper, string.sub
 local getn = table.getn
 --WoW API
 local debugstack = debugstack
@@ -410,6 +410,80 @@ function CreateStatusBarTexturePointer(statusbar)
 	hooksecurefunc(statusbar, "SetOrientation", OnOrientationChanged)
 
 	return f
+end
+
+local function removeScript(self, script)
+	local func = self:GetScript(script)
+
+	if func then
+		self:SetScript(script, nil)
+	end
+
+	return func
+end
+
+local nbsp = string.char(255)
+function EditBoxGetCursorPosition(self)
+	if self == WowLuaFrameEditBox or self == WowLuaFrameCommandEditBox then return 0 end
+
+	if self:GetText() == "" then return 0 end
+
+	local occ = removeScript(self, "OnCursorChanged")
+	local otc = removeScript(self, "OnTextChanged")
+	local ots = removeScript(self, "OnTextSet")
+
+	self:Insert(nbsp)
+
+	local pos = find(self:GetText(), nbsp)
+	if not pos then
+		pos = len(self:GetText())
+		print(format("CursorPosition position for `%s` not found!", self.GetName and self:GetName() or tostring(self)))
+	else
+		self:HighlightText(pos - 1, pos)
+		self:Insert("")
+	end
+
+	if occ then self:SetScript("OnCursorChanged", occ) end
+	if otc then self:SetScript("OnTextChanged", otc) end
+	if ots then self:SetScript("OnTextSet", ots) end
+
+	return pos - 1
+end
+
+function EditBoxSetCursorPosition(self, pos)
+	if self == WowLuaFrameEditBox or self == WowLuaFrameCommandEditBox then return end
+
+	if self:GetText() == "" then return end
+
+	local occ = removeScript(self, "OnCursorChanged")
+	local otc = removeScript(self, "OnTextChanged")
+	local ots = removeScript(self, "OnTextSet")
+
+	local text = self:GetText()
+	local size = len(text)
+
+	if pos < 0 then
+		pos = 0
+	elseif pos > size then
+		pos = size
+	end
+
+	if pos == 0 then
+		text = sub(text, 0, 1)
+		self:HighlightText(0, 1)
+		self:Insert(nbsp)
+		self:Insert(text)
+		self:HighlightText(0, 1)
+		self:Insert("")
+	else
+		text = sub(text, pos, pos)
+		self:HighlightText(pos - 1, pos)
+		self:Insert(text)
+	end
+
+	if occ then self:SetScript("OnCursorChanged", occ) end
+	if otc then self:SetScript("OnTextChanged", otc) end
+	if ots then self:SetScript("OnTextSet", ots) end
 end
 
 local threatColors = {
