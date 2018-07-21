@@ -112,9 +112,6 @@ local methods = {
 
 		-- Normal texture
 		local texture = _G[tabname.."Left"]
-		texture:ClearAllPoints()
-		texture:SetPoint("BOTTOMLEFT", tab,"BOTTOMLEFT")
-		texture:SetPoint("TOPLEFT", tab,"TOPLEFT")
 		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
 		texture = _G[tabname.."Middle"]
 		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
@@ -122,9 +119,6 @@ local methods = {
 		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
 		-- Disabled texture
 		texture = _G[tabname.."LeftDisabled"]
-		texture:ClearAllPoints()
-		texture:SetPoint("BOTTOMLEFT", tab,"BOTTOMLEFT")
-		texture:SetPoint("TOPLEFT", tab,"TOPLEFT")
 		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
 		texture = _G[tabname.."MiddleDisabled"]
 		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
