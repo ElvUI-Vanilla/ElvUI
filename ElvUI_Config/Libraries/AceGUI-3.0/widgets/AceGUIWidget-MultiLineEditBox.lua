@@ -4,12 +4,26 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local pairs = pairs
-local format = string.format
+local format, gsub, sub = string.format, string.gsub, string.sub
 
 -- WoW APIs
 local GetCursorInfo, GetSpellName, ClearCursor = GetCursorInfo, GetSpellName, ClearCursor
 local CreateFrame, UIParent = CreateFrame, UIParent
 local _G = _G
+local GetContainerItemLink = GetContainerItemLink
+local GetInventoryItemLink = GetInventoryItemLink
+local GetLootSlotLink = GetLootSlotLink
+local GetMerchantItemLink = GetMerchantItemLink
+local GetQuestItemLink = GetQuestItemLink
+local GetQuestLogItemLink = GetQuestLogItemLink
+local GetSpellName = GetSpellName
+local IsShiftKeyDown = IsShiftKeyDown
+local IsSpellPassive = IsSpellPassive
+local SpellBook_GetSpellID = SpellBook_GetSpellID
+
+local BANK_CONTAINER = BANK_CONTAINER
+local KEYRING_CONTAINER = KEYRING_CONTAINER
+local MAX_SPELLS = MAX_SPELLS
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -21,6 +35,104 @@ Support functions
 
 if not AceGUIMultiLineEditBoxInsertLink then
 	-- upgradeable hook
+	local orig_BankFrameItemButtonGeneric_OnClick = BankFrameItemButtonGeneric_OnClick
+	function BankFrameItemButtonGeneric_OnClick(button)
+		if button == "LeftButton" and IsShiftKeyDown() and not this.isBag then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetContainerItemLink(BANK_CONTAINER, this:GetID()))
+		end
+	end
+
+	local orig_ContainerFrameItemButton_OnClick = ContainerFrameItemButton_OnClick
+	function ContainerFrameItemButton_OnClick(button, ignoreModifiers)
+		if button == "LeftButton" and IsShiftKeyDown() and not ignoreModifiers then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetContainerItemLink(this:GetParent():GetID(), this:GetID()))
+		end
+	end
+
+	local orig_KeyRingItemButton_OnClick = KeyRingItemButton_OnClick
+	function KeyRingItemButton_OnClick(button)
+		if button == "LeftButton" and IsShiftKeyDown() and not this.isBag then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetContainerItemLink(KEYRING_CONTAINER, this:GetID()))
+		end
+	end
+
+	local orig_LootFrameItem_OnClick = LootFrameItem_OnClick
+	function LootFrameItem_OnClick(button)
+		if button == "LeftButton" and IsShiftKeyDown() then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetLootSlotLink(this.slot))
+		end
+	end
+
+	local orig_SetItemRef = SetItemRef
+	function SetItemRef(link, text, button)
+		if IsShiftKeyDown() then
+			if sub(link, 1, 6) == "player" then
+				local name = sub(link, 8)
+				if name and name ~= "" then
+					return _G.AceGUIMultiLineEditBoxInsertLink(name)
+				end
+			else
+				return _G.AceGUIMultiLineEditBoxInsertLink(text)
+			end
+		end
+	end
+
+	local orig_MerchantItemButton_OnClick = MerchantItemButton_OnClick
+	function MerchantItemButton_OnClick(button, ignoreModifiers)
+		if MerchantFrame.selectedTab == 1 and button == "LeftButton" and IsShiftKeyDown() and not ignoreModifiers then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetMerchantItemLink(this:GetID()))
+		end
+	end
+
+	local orig_PaperDollItemSlotButton_OnClick = PaperDollItemSlotButton_OnClick
+	function PaperDollItemSlotButton_OnClick(button, ignoreModifiers)
+		if button == "LeftButton" and IsShiftKeyDown() and not ignoreModifiers then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetInventoryItemLink("player", this:GetID()))
+		end
+	end
+
+	local orig_QuestItem_OnClick = QuestItem_OnClick
+	function QuestItem_OnClick()
+		if IsShiftKeyDown() and this.rewardType ~= "spell" then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetQuestItemLink(this.type, this:GetID()))
+		end
+	end
+
+	local orig_QuestRewardItem_OnClick = QuestRewardItem_OnClick
+	function QuestRewardItem_OnClick()
+		if IsShiftKeyDown() and this.rewardType ~= "spell" then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetQuestItemLink(this.type, this:GetID()))
+		end
+	end
+
+	local orig_QuestLogTitleButton_OnClick = QuestLogTitleButton_OnClick
+	function QuestLogTitleButton_OnClick(button)
+		if IsShiftKeyDown() and (not this.isHeader) then
+			return _G.AceGUIMultiLineEditBoxInsertLink(gsub(this:GetText(), " *(.*)", "%1"))
+		end
+	end
+
+	local orig_QuestLogRewardItem_OnClick = QuestLogRewardItem_OnClick
+	function QuestLogRewardItem_OnClick()
+		if IsShiftKeyDown() and this.rewardType ~= "spell" then
+			return _G.AceGUIMultiLineEditBoxInsertLink(GetQuestLogItemLink(this.type, this:GetID()))
+		end
+	end
+
+	local orig_SpellButton_OnClick = SpellButton_OnClick
+	function SpellButton_OnClick(drag)
+		local id = SpellBook_GetSpellID(this:GetID())
+		if id <= MAX_SPELLS and (not drag) and IsShiftKeyDown() then
+			local spellName, subSpellName = GetSpellName(id, SpellBookFrame.bookType)
+			if spellName and not IsSpellPassive(id, SpellBookFrame.bookType) then
+				if subSpellName and subSpellName ~= "" then
+					_G.AceGUIMultiLineEditBoxInsertLink(spellName.."("..subSpellName..")")
+				else
+					_G.AceGUIMultiLineEditBoxInsertLink(spellName)
+				end
+			end
+		end
+	end
 end
 
 function _G.AceGUIMultiLineEditBoxInsertLink(text)

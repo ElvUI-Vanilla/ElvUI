@@ -29,7 +29,15 @@ local function Control_OnLeave()
 	this.obj:Fire("OnLeave")
 end
 
---[[
+local function Keybinding_OnHide()
+	local self = this.obj
+	this:EnableKeyboard(false)
+	this:EnableMouseWheel(false)
+	self.msgframe:Hide()
+	this:UnlockHighlight()
+	self.waitingForKey = nil
+end
+
 local function Keybinding_OnClick()
 	if arg1 == "LeftButton" or arg1 == "RightButton" then
 		local self = this.obj
@@ -49,7 +57,6 @@ local function Keybinding_OnClick()
 	end
 	AceGUI:ClearFocus()
 end
-]]
 
 local ignoreKeys = {
 	["BUTTON1"] = true, ["BUTTON2"] = true,
@@ -224,6 +231,7 @@ local function Constructor()
 	button:SetScript("OnKeyDown", Keybinding_OnKeyDown)
 	button:SetScript("OnMouseDown", Keybinding_OnMouseDown)
 	button:SetScript("OnMouseWheel", Keybinding_OnMouseWheel)
+	button:SetScript("OnHide", Keybinding_OnHide)
 	button:SetPoint("BOTTOMLEFT", 0, 0)
 	button:SetPoint("BOTTOMRIGHT", 0, 0)
 	button:SetHeight(24)
