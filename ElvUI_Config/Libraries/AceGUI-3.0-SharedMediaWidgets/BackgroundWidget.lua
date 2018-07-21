@@ -6,10 +6,6 @@ local Media = LibStub("LibSharedMedia-3.0")
 
 local AGSMW = LibStub("AceGUISharedMediaWidgets-1.0")
 
-local next, ipairs, pairs = next, ipairs, pairs
-local upper = string.upper
-local tinsert, sort, tremove = table.insert, table.sort, table.remove
-
 do
 	local widgetType = "LSM30_Background"
 	local widgetVersion = 11
@@ -19,12 +15,12 @@ do
 		self:ClearAllPoints()
 		self:Hide()
 		self.check:Hide()
-		tinsert(contentFrameCache, self)
+		table.insert(contentFrameCache, self)
 	end
 
 	local function ContentOnClick(this, button)
 		local self = this.obj
-		self:Fire("OnValueChanged", 1, this.text:GetText())
+		self:Fire("OnValueChanged", this.text:GetText())
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
 		end
@@ -40,12 +36,12 @@ do
 	local function GetContentLine()
 		local frame
 		if next(contentFrameCache) then
-			frame = tremove(contentFrameCache)
+			frame = table.remove(contentFrameCache)
 		else
 			frame = CreateFrame("Button", nil, UIParent)
 				--frame:SetWidth(200)
 				frame:SetHeight(18)
-				frame:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+				frame:SetHighlightTexture([[Interface\QuestFrame\UI-QuestTitleHighlight]], "ADD")
 				frame:SetScript("OnClick", ContentOnClick)
 				frame:SetScript("OnEnter", ContentOnEnter)
 
@@ -144,7 +140,7 @@ do
 	end
 
 	local function textSort(a,b)
-		return upper(a) < upper(b)
+		return string.upper(a) < string.upper(b)
 	end
 
 	local sortedlist = {}
@@ -160,18 +156,19 @@ do
 			self.dropdown:SetPoint("TOPLEFT", self.frame, "BOTTOMLEFT")
 			self.dropdown:SetPoint("TOPRIGHT", self.frame, "BOTTOMRIGHT", width < 160 and (160 - width) or 0, 0)
 			for k, v in pairs(self.list) do
-				tinsert(sortedlist, k)
+				sortedlist[#sortedlist+1] = k
 			end
-			sort(sortedlist, textSort)
+			table.sort(sortedlist, textSort)
 			for i, k in ipairs(sortedlist) do
 				local f = GetContentLine()
 				f.text:SetText(k)
+				--print(k)
 				if k == self.value then
 					f.check:Show()
 				end
 				f.obj = self
 				f.dropdown = self.dropdown
-				self.dropdown:AddFrame(f, i)
+				self.dropdown:AddFrame(f)
 			end
 			wipe(sortedlist)
 		end

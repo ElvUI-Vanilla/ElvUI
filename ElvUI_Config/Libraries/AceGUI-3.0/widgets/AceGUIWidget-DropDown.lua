@@ -1,18 +1,15 @@
 --[[ $Id: AceGUIWidget-DropDown.lua 1116 2014-10-12 08:15:46Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
-local AceCore = LibStub("AceCore-3.0")
-
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
-local pairs, ipairs, type = pairs, ipairs, type
-local tsort, tinsert, tgetn, tsetn = table.sort, table.insert, table.getn, table.setn
-local format = string.format
+local select, pairs, ipairs, type = select, pairs, ipairs, type
+local tsort = table.sort
 
 -- WoW APIs
 local PlaySound = PlaySound
 local UIParent, CreateFrame = UIParent, CreateFrame
-local _G = AceCore._G
+local _G = _G
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -20,23 +17,23 @@ local _G = AceCore._G
 
 local function fixlevels(parent,...)
 	local i = 1
-	local child = arg[i]
+	local child = select(i, ...)
 	while child do
 		child:SetFrameLevel(parent:GetFrameLevel()+1)
 		fixlevels(child, child:GetChildren())
 		i = i + 1
-		child = arg[i]
+		child = select(i, ...)
 	end
 end
 
 local function fixstrata(strata, parent, ...)
 	local i = 1
-	local child = arg[i]
+	local child = select(i, ...)
 	parent:SetFrameStrata(strata)
 	while child do
 		fixstrata(strata, child, child:GetChildren())
 		i = i + 1
-		child = arg[i]
+		child = select(i, ...)
 	end
 end
 
@@ -79,15 +76,15 @@ do
 	end
 
 	-- See the note in Constructor() for each scroll related function
-	local function OnMouseWheel()
-		this.obj:MoveScroll(arg1)
+	local function OnMouseWheel(this, value)
+		this.obj:MoveScroll(value)
 	end
 
-	local function OnScrollValueChanged()
-		this.obj:SetScroll(arg1)
+	local function OnScrollValueChanged(this, value)
+		this.obj:SetScroll(value)
 	end
 
-	local function OnSizeChanged()
+	local function OnSizeChanged(this)
 		this.obj:FixScroll()
 	end
 
@@ -107,6 +104,7 @@ do
 		end
 		child:ClearAllPoints()
 		child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
+		child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", self.slider:IsShown() and -12 or 0, offset)
 		status.offset = offset
 		status.scrollvalue = value
 	end
@@ -150,6 +148,7 @@ do
 			if value < 1000 then
 				child:ClearAllPoints()
 				child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
+				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, offset)
 				status.offset = offset
 			end
 		end
@@ -170,9 +169,9 @@ do
 
 	-- exported
 	local function AddItem(self, item)
-		tinsert(self.items, item)
+		self.items[#self.items + 1] = item
 
-		local h = tgetn(self.items) * 16
+		local h = #self.items * 16
 		self.itemFrame:SetHeight(h)
 		self.frame:SetHeight(min(h + 34, self.maxHeight)) -- +34: 20 for scrollFrame placement (10 offset) and +14 for item placement
 
@@ -223,7 +222,6 @@ do
 			AceGUI:Release(item)
 			items[i] = nil
 		end
-		tsetn(items,0)
 	end
 
 	-- exported
@@ -322,17 +320,16 @@ do
 		slider.obj = self
 
 		scrollFrame:SetScrollChild(itemFrame)
-		scrollFrame:SetWidth(defaultWidth - 12)
-		scrollFrame:SetHeight(self.maxHeight - 24)
 		scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -12)
+		scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 12)
 		scrollFrame:EnableMouseWheel(true)
 		scrollFrame:SetScript("OnMouseWheel", OnMouseWheel)
 		scrollFrame:SetScript("OnSizeChanged", OnSizeChanged)
 		scrollFrame:SetToplevel(true)
 		scrollFrame:SetFrameStrata("FULLSCREEN_DIALOG")
 
-		itemFrame:SetWidth(defaultWidth - 12)
 		itemFrame:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 0, 0)
+		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -12, 0)
 		itemFrame:SetHeight(400)
 		itemFrame:SetToplevel(true)
 		itemFrame:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -365,24 +362,24 @@ do
 
 	--[[ UI event handler ]]--
 
-	local function Control_OnEnter()
+	local function Control_OnEnter(this)
 		this.obj.button:LockHighlight()
 		this.obj:Fire("OnEnter")
 	end
 
-	local function Control_OnLeave()
+	local function Control_OnLeave(this)
 		this.obj.button:UnlockHighlight()
 		this.obj:Fire("OnLeave")
 	end
 
-	local function Dropdown_OnHide()
+	local function Dropdown_OnHide(this)
 		local self = this.obj
 		if self.open then
 			self.pullout:Close()
 		end
 	end
 
-	local function Dropdown_TogglePullout()
+	local function Dropdown_TogglePullout(this)
 		local self = this.obj
 		PlaySound("igMainMenuOptionCheckBoxOn") -- missleading name, but the Blizzard code uses this sound
 		if self.open then
@@ -391,10 +388,7 @@ do
 			AceGUI:ClearFocus()
 		else
 			self.open = true
-			local width = self.pulloutWidth or self.frame:GetWidth()
-			self.pullout:SetWidth(width)
-			self.pullout.scrollFrame:SetWidth(width - 12)
-			self.pullout.itemFrame:SetWidth(width - (self.pullout.slider:IsShown() and 24 or 12))
+			self.pullout:SetWidth(self.pulloutWidth or self.frame:GetWidth())
 			self.pullout:Open("TOPLEFT", self.frame, "BOTTOMLEFT", 0, self.label:IsShown() and -2 or 0)
 			AceGUI:SetFocus(self)
 		end
@@ -436,20 +430,17 @@ do
 		self:SetText(text)
 	end
 
-	local function OnItemValueChanged(this, event, _, checked)
+	local function OnItemValueChanged(this, event, checked)
 		local self = this.userdata.obj
 
 		if self.multiselect then
-			self:Fire("OnValueChanged", 2, this.userdata.value, checked)
+			self:Fire("OnValueChanged", this.userdata.value, checked)
 			ShowMultiText(self)
 		else
 			if checked then
 				self:SetValue(this.userdata.value)
-				self:Fire("OnValueChanged", 1, this.userdata.value)
-				this:SetValue(false)
+				self:Fire("OnValueChanged", this.userdata.value)
 			else
-				self:SetValue(nil)
-				self:Fire("OnValueChanged", 1, nil)
 				this:SetValue(true)
 			end
 			if self.open then
@@ -468,7 +459,6 @@ do
 		pullout:SetCallback("OnClose", OnPulloutClose)
 		pullout:SetCallback("OnOpen", OnPulloutOpen)
 		self.pullout.frame:SetFrameLevel(self.frame:GetFrameLevel() + 1)
-		local frame = self.pullout.frame
 		fixlevels(self.pullout.frame, self.pullout.frame:GetChildren())
 
 		self:SetHeight(44)
@@ -581,7 +571,7 @@ do
 	local function AddListItem(self, value, text, itemType)
 		if not itemType then itemType = "Dropdown-Item-Toggle" end
 		local exists = AceGUI:GetWidgetVersion(itemType)
-		if not exists then error(format("The given item type, %q, does not exist within AceGUI-3.0", tostring(itemType)), 2) end
+		if not exists then error(("The given item type, %q, does not exist within AceGUI-3.0"):format(tostring(itemType)), 2) end
 
 		local item = AceGUI:Create(itemType)
 		item:SetText(text)
@@ -610,7 +600,7 @@ do
 
 		if type(order) ~= "table" then
 			for v in pairs(list) do
-				tinsert(sortlist, v)
+				sortlist[#sortlist + 1] = v
 			end
 			tsort(sortlist)
 
@@ -618,7 +608,6 @@ do
 				AddListItem(self, key, list[key], itemType)
 				sortlist[i] = nil
 			end
-			tsetn(sortlist,0)
 		else
 			for i, key in ipairs(order) do
 				AddListItem(self, key, list[key], itemType)

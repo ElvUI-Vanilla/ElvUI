@@ -12,15 +12,14 @@ Very light wrapper library that combines all the AceConfig subcomponents into on
 
 ]]
 
-local MAJOR, MINOR = "AceConfig-3.0", 2
+local cfgreg = LibStub("AceConfigRegistry-3.0-ElvUI")
+local cfgcmd = LibStub("AceConfigCmd-3.0-ElvUI")
+
+local MAJOR, MINOR = "AceConfig-3.0-ElvUI", 3
 local AceConfig = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfig then return end
 
-AceConfig.embeds = AceConfig.embeds or {}
-
-local cfgreg = LibStub("AceConfigRegistry-3.0")
-local cfgcmd = LibStub("AceConfigCmd-3.0")
 --TODO: local cfgdlg = LibStub("AceConfigDialog-3.0", true)
 --TODO: local cfgdrp = LibStub("AceConfigDropdown-3.0", true)
 
@@ -44,27 +43,16 @@ local pcall, error, type, pairs = pcall, error, type, pairs
 -- local AceConfig = LibStub("AceConfig-3.0")
 -- AceConfig:RegisterOptionsTable("MyAddon", myOptions, {"/myslash", "/my"})
 function AceConfig:RegisterOptionsTable(appName, options, slashcmd)
-	if self == AceConfig then
-		error([[Usage: RegisterOptionsTable(appName, options[, slashcmd]): 'self' - use your own 'self']], 2)
-	end
 	local ok,msg = pcall(cfgreg.RegisterOptionsTable, self, appName, options)
 	if not ok then error(msg, 2) end
-	
+
 	if slashcmd then
 		if type(slashcmd) == "table" then
 			for _,cmd in pairs(slashcmd) do
-				cfgcmd.CreateChatCommand(self, cmd, appName)
+				cfgcmd:CreateChatCommand(cmd, appName)
 			end
 		else
-			cfgcmd.CreateChatCommand(self, slashcmd, appName)
+			cfgcmd:CreateChatCommand(slashcmd, appName)
 		end
 	end
-end
-
-function AceConfig:Embed(target)
-	target["RegisterOptionsTable"] = self["RegisterOptionsTable"]
-end
-
-for addon in pairs(AceConfig.embeds) do
-	AceConfig:Embed(addon)
 end

@@ -20,7 +20,7 @@ if not AceSerializer then return end
 local strbyte, strchar, gsub, gmatch, format = string.byte, string.char, string.gsub, string.gmatch, string.format
 local assert, error, pcall = assert, error, pcall
 local type, tostring, tonumber = type, tostring, tonumber
-local pairs, frexp = pairs, math.frexp
+local pairs, select, frexp = pairs, select, math.frexp
 local tconcat = table.concat
 
 -- quick copies of string representations of wonky numbers
@@ -116,8 +116,9 @@ local serializeTbl = { "^1" }	-- "^1" = Hi, I'm data serialized by AceSerializer
 function AceSerializer:Serialize(...)
 	local nres = 1
 
-	for i = 1, arg.n do
-		nres = SerializeValue(arg[i], serializeTbl, nres)
+	for i=1,select("#", ...) do
+		local v = select(i, ...)
+		nres = SerializeValue(v, serializeTbl, nres)
 	end
 
 	serializeTbl[nres+1] = "^^"	-- "^^" = End of serialized data

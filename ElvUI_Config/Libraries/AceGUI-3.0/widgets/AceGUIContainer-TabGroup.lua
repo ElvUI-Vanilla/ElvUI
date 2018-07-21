@@ -2,14 +2,12 @@
 TabGroup Container
 Container that uses tabs on top to switch between groups.
 -------------------------------------------------------------------------------]]
-local Type, Version = "TabGroup-ElvUI", 31
+local Type, Version = "TabGroup", 31
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local pairs, ipairs, assert, type, wipe = pairs, ipairs, assert, type, wipe
-local getn = table.getn
-local format = string.format
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -54,34 +52,34 @@ local function Tab_SetDisabled(frame, disabled)
 	UpdateTabLook(frame)
 end
 
-local function BuildTabsOnUpdate()
-	local self = this.obj
+local function BuildTabsOnUpdate(frame)
+	local self = frame.obj
 	self:BuildTabs()
-	this:SetScript("OnUpdate", nil)
+	frame:SetScript("OnUpdate", nil)
 end
 
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function Tab_OnClick()
-	if not (this.selected or this.disabled) then
+local function Tab_OnClick(frame)
+	if not (frame.selected or frame.disabled) then
 		PlaySound("igCharacterInfoTab")
-		this.obj:SelectTab(this.value)
+		frame.obj:SelectTab(frame.value)
 	end
 end
 
-local function Tab_OnEnter()
-	local self = this.obj
-	self:Fire("OnTabEnter", 2, self.tabs[this.id].value, this)
+local function Tab_OnEnter(frame)
+	local self = frame.obj
+	self:Fire("OnTabEnter", self.tabs[frame.id].value, frame)
 end
 
-local function Tab_OnLeave()
-	local self = this.obj
-	self:Fire("OnTabLeave", 2, self.tabs[this.id].value, this)
+local function Tab_OnLeave(frame)
+	local self = frame.obj
+	self:Fire("OnTabLeave", self.tabs[frame.id].value, frame)
 end
 
-local function Tab_OnShow()
-	_G[this:GetName().."HighlightTexture"]:SetWidth(this:GetTextWidth() + 30)
+local function Tab_OnShow(frame)
+	_G[frame:GetName().."HighlightTexture"]:SetWidth(frame:GetTextWidth() + 30)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -104,11 +102,10 @@ local methods = {
 	end,
 
 	["CreateTab"] = function(self, id)
-		local tabname = format("AceGUITabGroup%dTab%d", self.num, id)
-		local tab = CreateFrame("Button", tabname, self.border, "TabButtonTemplate")
+		local tabname = ("AceGUITabGroup%dTab%d"):format(self.num, id)
+		local tab = CreateFrame("Button", tabname, self.border, "OptionsFrameTabButtonTemplate")
 		tab.obj = self
 		tab.id = id
-		tab:SetHeight(24)
 
 		tab.text = _G[tabname .. "Text"]
 		tab.text:ClearAllPoints()
@@ -156,7 +153,7 @@ local methods = {
 		end
 		status.selected = value
 		if found then
-			self:Fire("OnGroupSelected",1,value)
+			self:Fire("OnGroupSelected",value)
 		end
 	end,
 
@@ -196,16 +193,16 @@ local methods = {
 			widths[i] = tab:GetWidth() - 6 --tabs are anchored 10 pixels from the right side of the previous one to reduce spacing, but add a fixed 4px padding for the text
 		end
 
-		local numtabs = getn(tablist)
-		for i = numtabs+1, numtabs, 1 do
+		for i = (#tablist)+1, #tabs, 1 do
 			tabs[i]:Hide()
 		end
 
 		--First pass, find the minimum number of rows needed to hold all tabs and the initial tab layout
+		local numtabs = #tablist
 		local numrows = 1
 		local usedwidth = 0
 
-		for i = 1, numtabs do
+		for i = 1, #tablist do
 			--If this is not the first tab of a row and there isn't room for it
 			if usedwidth ~= 0 and (width - usedwidth - widths[i]) < 0 then
 				rowwidths[numrows] = usedwidth + 10 --first tab in each row takes up an extra 10px
@@ -216,7 +213,7 @@ local methods = {
 			usedwidth = usedwidth + widths[i]
 		end
 		rowwidths[numrows] = usedwidth + 10 --first tab in each row takes up an extra 10px
-		rowends[numrows] = numtabs
+		rowends[numrows] = #tablist
 
 		--Fix for single tabs being left on the last row, move a tab from the row above if applicable
 		if numrows > 1 then

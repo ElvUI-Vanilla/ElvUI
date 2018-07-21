@@ -10,7 +10,7 @@ local meta = {__index = function(tbl, key) tbl[key] = {} return tbl[key] end}
 local tconcat = table.concat
 local assert, error, loadstring = assert, error, loadstring
 local setmetatable, rawset, rawget = setmetatable, rawset, rawget
-local next, pairs, type, tostring = next, pairs, type, tostring
+local next, select, pairs, type, tostring = next, select, pairs, type, tostring
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -24,6 +24,8 @@ end
 
 local function CreateDispatcher(argCount)
 	local code = [[
+	local next, xpcall, eh = ...
+
 	local method, ARGS
 	local function call() method(ARGS) end
 
@@ -32,9 +34,9 @@ local function CreateDispatcher(argCount)
 		index, method = next(handlers)
 		if not method then return end
 		local OLD_ARGS = ARGS
-		ARGS = unpack(arg)
+		ARGS = ...
 		repeat
-			xpcall(call, function(err) return geterrorhandler()(err) end)
+			xpcall(call, eh)
 			index, method = next(handlers, index)
 		until not method
 		ARGS = OLD_ARGS
@@ -45,7 +47,7 @@ local function CreateDispatcher(argCount)
 
 	local ARGS, OLD_ARGS = {}, {}
 	for i = 1, argCount do ARGS[i], OLD_ARGS[i] = "arg"..i, "old_arg"..i end
-	code = gsub(gsub(code, "OLD_ARGS", tconcat(OLD_ARGS, ", ")), "ARGS", tconcat(ARGS, ", "))
+	code = code:gsub("OLD_ARGS", tconcat(OLD_ARGS, ", ")):gsub("ARGS", tconcat(ARGS, ", "))
 	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(next, xpcall, errorhandler)
 end
 
@@ -85,7 +87,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 		local oldrecurse = registry.recurse
 		registry.recurse = oldrecurse + 1
 
-		Dispatchers[getn(arg) + 1](events[eventname], eventname, unpack(arg))
+		Dispatchers[select('#', ...) + 1](events[eventname], eventname, ...)
 
 		registry.recurse = oldrecurse
 
@@ -136,10 +138,11 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 				error("Usage: "..RegisterName.."(\"eventname\", \"methodname\"): 'methodname' - method '"..tostring(method).."' not found on self.", 2)
 			end
 
-			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
-				regfunc = function(...) self[method](self,arg1,unpack(arg)) end
+			if select("#",...)>=1 then	-- this is not the same as testing for arg==nil!
+				local arg=select(1,...)
+				regfunc = function(...) self[method](self,arg,...) end
 			else
-				regfunc = function(...) self[method](self,unpack(arg)) end
+				regfunc = function(...) self[method](self,...) end
 			end
 		else
 			-- function ref with self=object or self="addonId" or self=thread
@@ -147,8 +150,9 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 				error("Usage: "..RegisterName.."(self or \"addonId\", eventname, method): 'self or addonId': table or string or thread expected.", 2)
 			end
 
-			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
-				regfunc = function(...) method(arg1,unpack(arg)) end
+			if select("#",...)>=1 then	-- this is not the same as testing for arg==nil!
+				local arg=select(1,...)
+				regfunc = function(...) method(arg,...) end
 			else
 				regfunc = method
 			end
@@ -194,16 +198,16 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 	-- OPTIONAL: Unregister all callbacks for given selfs/addonIds
 	if UnregisterAllName then
 		target[UnregisterAllName] = function(...)
-			if getn(arg)<1 then
+			if select("#",...)<1 then
 				error("Usage: "..UnregisterAllName.."([whatFor]): missing 'self' or \"addonId\" to unregister events for.", 2)
 			end
-			if getn(arg)==1 and arg1==target then
+			if select("#",...)==1 and ...==target then
 				error("Usage: "..UnregisterAllName.."([whatFor]): supply a meaningful 'self' or \"addonId\"", 2)
 			end
 
 
-			for i=1,getn(arg) do
-				local self = arg[i]
+			for i=1,select("#",...) do
+				local self = select(i,...)
 				if registry.insertQueue then
 					for eventname, callbacks in pairs(registry.insertQueue) do
 						if callbacks[self] then

@@ -1,12 +1,12 @@
 --- **AceTimer-3.0** provides a central facility for registering timers.
 -- AceTimer supports one-shot timers and repeating timers. All timers are stored in an efficient
--- data structure that allows easy dispatching and fast rescheduling. Timers can be registered
+-- data structure that allows easy dispatching and fast rescheduling. Timers can be registered, rescheduled
 -- or canceled at any time, even from within a running timer, without conflict or large overhead.\\
--- AceTimer is currently limited to firing timers at a frequency of 0.01s as this is what the WoW timer API
--- restricts us to.
+-- AceTimer is currently limited to firing timers at a frequency of 0.1s. This constant may change
+-- in the future, but for now it seemed like a good compromise in efficiency and accuracy.
 --
 -- All `:Schedule` functions will return a handle to the current timer, which you will need to store if you
--- need to cancel the timer you just registered.
+-- need to cancel or reschedule the timer you just registered.
 --
 -- **AceTimer-3.0** can be embeded into your addon, either explicitly by calling AceTimer:Embed(MyAddon) or by
 -- specifying it as an embeded library in your AceAddon. All functions will be available on your addon object
@@ -15,32 +15,53 @@
 -- make into AceTimer.
 -- @class file
 -- @name AceTimer-3.0
--- @release $Id: AceTimer-3.0.lua 1119 2014-10-14 17:23:29Z nevcairiel $
+-- @release $Id: AceTimer-3.0.lua 895 2009-12-06 16:28:55Z nevcairiel $
 
-local MAJOR, MINOR = "AceTimer-3.0", 17 -- Bump minor on changes
+--[[
+	Basic assumptions:
+	* In a typical system, we do more re-scheduling per second than there are timer pulses per second
+	* Regardless of timer implementation, we cannot guarantee timely delivery due to FPS restriction (may be as low as 10)
+
+	This implementation:
+		CON: The smallest timer interval is constrained by HZ (currently 1/10s).
+		PRO: It will still correctly fire any timer slower than HZ over a length of time, e.g. 0.11s interval -> 90 times over 10 seconds
+		PRO: In lag bursts, the system simly skips missed timer intervals to decrease load
+		CON: Algorithms depending on a timer firing "N times per minute" will fail
+		PRO: (Re-)scheduling is O(1) with a VERY small constant. It's a simple linked list insertion in a hash bucket.
+		CAUTION: The BUCKETS constant constrains how many timers can be efficiently handled. With too many hash collisions, performance will decrease.
+
+	Major assumptions upheld:
+	- ALLOWS scheduling multiple timers with the same funcref/method
+	- ALLOWS scheduling more timers during OnUpdate processing
+	- ALLOWS unscheduling ANY timer (including the current running one) at any time, including during OnUpdate processing
+]]
+
+local MAJOR, MINOR = "AceTimer-3.0", 6
 local AceTimer, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceTimer then return end -- No upgrade needed
 
-local AceCore = LibStub("AceCore-3.0")
-local safecall = AceCore.safecall
-
-AceTimer.counter = AceTimer.counter or {}
-AceTimer.hash = AceTimer.hash or {}	-- Array of [1..BUCKETS] = linked list of timers (using .next member)
-AceTimer.activeTimers = AceTimer.activeTimers or {} -- Active timer list
+AceTimer.hash = AceTimer.hash or {}         -- Array of [0..BUCKET-1] = linked list of timers (using .next member)
+                                            -- Linked list gets around ACE-88 and ACE-90.
+AceTimer.selfs = AceTimer.selfs or {}       -- Array of [self]={[handle]=timerobj, [handle2]=timerobj2, ...}
 AceTimer.frame = AceTimer.frame or CreateFrame("Frame", "AceTimer30Frame")
 
-local counter = AceTimer.counter
-local activeTimers = AceTimer.activeTimers -- Upvalue our private data
-local timerFrame = AceTimer.frame
-
 -- Lua APIs
-local type, unpack, next, error = type, unpack, next, error
-local floor, max, min, mod = math.floor, math.max, math.min, math.mod
-local tostring = tostring
+local assert, error, loadstring = assert, error, loadstring
+local setmetatable, rawset, rawget = setmetatable, rawset, rawget
+local select, pairs, type, next, tostring = select, pairs, type, next, tostring
+local floor, max, min = math.floor, math.max, math.min
+local tconcat = table.concat
 
 -- WoW APIs
 local GetTime = GetTime
+
+-- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
+-- List them here for Mikk's FindGlobals script
+-- GLOBALS: DEFAULT_CHAT_FRAME, geterrorhandler
+
+-- Simple ONE-SHOT timer cache. Much more efficient than a full compost for our purposes.
+local timerCache = nil
 
 --[[
 	Timers will not be fired more often than HZ-1 times per second.
@@ -49,7 +70,6 @@ local GetTime = GetTime
 	If this number is ever changed, all entries need to be rehashed on lib upgrade.
 	]]
 local HZ = 11
-local minDelay = 1/(HZ-1)
 
 --[[
 	Prime for good distribution
@@ -62,188 +82,347 @@ for i=1,BUCKETS do
 	hash[i] = hash[i] or false	-- make it an integer-indexed array; it's faster than hashes
 end
 
-local new, del
-do
-local list = setmetatable({}, {__mode = "k"})
-function new(self, loop, func, delay, argc,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-	local name = loop and "ScheduleRepeatingTimer" or "ScheduleTimer"
-	if self == AceTimer then
-		error(MAJOR..": " .. name .. "(callback, delay, argc, args...): use your own 'self'", 3)
-	end
-	if not func or not delay then
-		error(MAJOR..": " .. name .. "(callback, delay, argc, args...): 'callback' and 'delay' must have set values.", 3)
-	end
-	if argc and (type(argc) ~= "number" or floor(argc) ~= argc) then
-		error(MAJOR..": " .. name .. "(callback, delay, argc, args...): 'argc' must be an integer.", 3)
-	end
-	if type(func) == "string" then
-		if type(self) ~= "table" then
-			error(MAJOR..": " .. name .. "(callback, delay, argc, args...): 'self' - must be a table.", 3)
-		elseif type(self[func]) ~= "function" then
-			error(MAJOR..": " .. name .. "(callback, delay, argc, args...): Tried to register '"..func.."' as the callback, but it is not a method.", 3)
+--[[
+	 xpcall safecall implementation
+]]
+local xpcall = xpcall
+
+local function errorhandler(err)
+	return geterrorhandler()(err)
+end
+
+local function CreateDispatcher(argCount)
+	local code = [[
+		local xpcall, eh = ...	-- our arguments are received as unnamed values in "..." since we don't have a proper function declaration
+		local method, ARGS
+		local function call() return method(ARGS) end
+
+		local function dispatch(func, ...)
+			 method = func
+			 if not method then return end
+			 ARGS = ...
+			 return xpcall(call, eh)
 		end
-	elseif type(func) ~= "function" then
-		error(MAJOR..": " .. name .. "(callback, delay, argc, args...): Tried to register '"..tostring(func).."' as the callback, but it is not a function.", 3)
+
+		return dispatch
+	]]
+
+	local ARGS = {}
+	for i = 1, argCount do ARGS[i] = "arg"..i end
+	code = code:gsub("ARGS", tconcat(ARGS, ", "))
+	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(xpcall, errorhandler)
+end
+
+local Dispatchers = setmetatable({}, {
+	__index=function(self, argCount)
+		local dispatcher = CreateDispatcher(argCount)
+		rawset(self, argCount, dispatcher)
+		return dispatcher
+	end
+})
+Dispatchers[0] = function(func)
+	return xpcall(func, errorhandler)
+end
+
+local function safecall(func, ...)
+	return Dispatchers[select('#', ...)](func, ...)
+end
+
+local lastint = floor(GetTime() * HZ)
+
+-- --------------------------------------------------------------------
+-- OnUpdate handler
+--
+-- traverse buckets, always chasing "now", and fire timers that have expired
+
+local function OnUpdate()
+	local now = GetTime()
+	local nowint = floor(now * HZ)
+
+	-- Have we passed into a new hash bucket?
+	if nowint == lastint then return end
+
+	local soon = now + 1 -- +1 is safe as long as 1 < HZ < BUCKETS/2
+
+	-- Pass through each bucket at most once
+	-- Happens on e.g. instance loads, but COULD happen on high local load situations also
+	for curint = (max(lastint, nowint - BUCKETS) + 1), nowint do -- loop until we catch up with "now", usually only 1 iteration
+		local curbucket = (curint % BUCKETS)+1
+		-- Yank the list of timers out of the bucket and empty it. This allows reinsertion in the currently-processed bucket from callbacks.
+		local nexttimer = hash[curbucket]
+		hash[curbucket] = false -- false rather than nil to prevent the array from becoming a hash
+
+		while nexttimer do
+			local timer = nexttimer
+			nexttimer = timer.next
+			local when = timer.when
+
+			if when < soon then
+				-- Call the timer func, either as a method on given object, or a straight function ref
+				local callback = timer.callback
+				if type(callback) == "string" then
+					safecall(timer.object[callback], timer.object, timer.arg)
+				elseif callback then
+					safecall(callback, timer.arg)
+				else
+					-- probably nilled out by CancelTimer
+					timer.delay = nil -- don't reschedule it
+				end
+
+				local delay = timer.delay	-- NOW make a local copy, can't do it earlier in case the timer cancelled itself in the callback
+
+				if not delay then
+					-- single-shot timer (or cancelled)
+					AceTimer.selfs[timer.object][tostring(timer)] = nil
+					timerCache = timer
+				else
+					-- repeating timer
+					local newtime = when + delay
+					if newtime < now then -- Keep lag from making us firing a timer unnecessarily. (Note that this still won't catch too-short-delay timers though.)
+						newtime = now + delay
+					end
+					timer.when = newtime
+
+					-- add next timer execution to the correct bucket
+					local bucket = (floor(newtime * HZ) % BUCKETS) + 1
+					timer.next = hash[bucket]
+					hash[bucket] = timer
+				end
+			else -- if when>=soon
+				-- reinsert (yeah, somewhat expensive, but shouldn't be happening too often either due to hash distribution)
+				timer.next = hash[curbucket]
+				hash[curbucket] = timer
+			end -- if when<soon ... else
+		end -- while nexttimer do
+	end -- for curint=lastint,nowint
+
+	lastint = nowint
+end
+
+-- ---------------------------------------------------------------------
+-- Reg( callback, delay, arg, repeating )
+--
+-- callback( function or string ) - direct function ref or method name in our object for the callback
+-- delay(int) - delay for the timer
+-- arg(variant) - any argument to be passed to the callback function
+-- repeating(boolean) - repeating timer, or oneshot
+--
+-- returns the handle of the timer for later processing (canceling etc)
+local function Reg(self, callback, delay, arg, repeating)
+	if type(callback) ~= "string" and type(callback) ~= "function" then
+		local error_origin = repeating and "ScheduleRepeatingTimer" or "ScheduleTimer"
+		error(MAJOR..": " .. error_origin .. "(callback, delay, arg): 'callback' - function or method name expected.", 3)
+	end
+	if type(callback) == "string" then
+		if type(self)~="table" then
+			local error_origin = repeating and "ScheduleRepeatingTimer" or "ScheduleTimer"
+			error(MAJOR..": " .. error_origin .. "(\"methodName\", delay, arg): 'self' - must be a table.", 3)
+		end
+		if type(self[callback]) ~= "function" then
+			local error_origin = repeating and "ScheduleRepeatingTimer" or "ScheduleTimer"
+			error(MAJOR..": " .. error_origin .. "(\"methodName\", delay, arg): 'methodName' - method not found on target object.", 3)
+		end
 	end
 
-	if delay < minDelay then
-		delay = minDelay
+	if delay < (1 / (HZ - 1)) then
+		delay = 1 / (HZ - 1)
 	end
 
 	-- Create and stuff timer in the correct hash bucket
 	local now = GetTime()
 
-	local timer = next(list) or {}
-	list[timer] = nil
+	local timer = timerCache or {}	-- Get new timer object (from cache if available)
+	timerCache = nil
 
 	timer.object = self
-	timer.func = func
-	timer.delay = delay
-	timer.status = loop and "loop" or "once"
-	timer.ends = now + delay
-	timer.argsCount = argc or 0
-	timer[1] = a1
-	timer[2] = a2
-	timer[3] = a3
-	timer[4] = a4
-	timer[5] = a5
-	timer[6] = a6
-	timer[7] = a7
-	timer[8] = a8
-	timer[9] = a9
-	timer[10] = a10
+	timer.callback = callback
+	timer.delay = (repeating and delay)
+	timer.arg = arg
+	timer.when = now + delay
 
-	local bucket = floor(mod((now+delay)*HZ,BUCKETS)) + 1
+	local bucket = (floor((now+delay)*HZ) % BUCKETS) + 1
 	timer.next = hash[bucket]
 	hash[bucket] = timer
 
-	local id = tostring(timer)	-- user has only access to the id but not the table itself
-	activeTimers[id] = timer
+	-- Insert timer in our self->handle->timer registry
+	local handle = tostring(timer)
 
-	counter[self] = (counter[self] or 0) + 1
-
-	timerFrame:Show()
-	return id
-end
-
-function del(t)
-	local id = tostring(t)
-	activeTimers[id] = nil
-	if not next(activeTimers) then
-		timerFrame:Hide()
+	local selftimers = AceTimer.selfs[self]
+	if not selftimers then
+		selftimers = {}
+		AceTimer.selfs[self] = selftimers
 	end
-	local self = t.object
-	for k in pairs(t) do t[k] = nil end
-	list[t] = true
-	if counter[self] then
-		counter[self] = counter[self] - 1
-	else
-		counter[self] = nil
-	end
+	selftimers[handle] = timer
+	selftimers.__ops = (selftimers.__ops or 0) + 1
+
+	return handle
 end
-end	-- new, del
 
 --- Schedule a new one-shot timer.
 -- The timer will fire once in `delay` seconds, unless canceled before.
 -- @param callback Callback function for the timer pulse (funcref or method name).
 -- @param delay Delay for the timer, in seconds.
--- @param argc The numbers of arguments to be passed to the callback function
--- @param a1,...,a10 The arguments
+-- @param arg An optional argument to be passed to the callback function.
 -- @usage
--- MyAddOn = LibStub("AceAddon-3.0"):NewAddon("MyAddOn", "AceTimer-3.0")
+-- MyAddon = LibStub("AceAddon-3.0"):NewAddon("TimerTest", "AceTimer-3.0")
 --
--- function MyAddOn:OnEnable()
+-- function MyAddon:OnEnable()
 --   self:ScheduleTimer("TimerFeedback", 5)
 -- end
 --
--- function MyAddOn:TimerFeedback()
+-- function MyAddon:TimerFeedback()
 --   print("5 seconds passed")
 -- end
-function AceTimer:ScheduleTimer(func, delay, argc, ...)
-	return new(self, nil, func, delay, argc, unpack(arg))
+function AceTimer:ScheduleTimer(callback, delay, arg)
+	return Reg(self, callback, delay, arg)
 end
 
 --- Schedule a repeating timer.
 -- The timer will fire every `delay` seconds, until canceled.
 -- @param callback Callback function for the timer pulse (funcref or method name).
 -- @param delay Delay for the timer, in seconds.
--- @param argc The numbers of arguments to be passed to the callback function
--- @param a1,...,a10 The arguments
+-- @param arg An optional argument to be passed to the callback function.
 -- @usage
--- MyAddOn = LibStub("AceAddon-3.0"):NewAddon("MyAddOn", "AceTimer-3.0")
+-- MyAddon = LibStub("AceAddon-3.0"):NewAddon("TimerTest", "AceTimer-3.0")
 --
--- function MyAddOn:OnEnable()
+-- function MyAddon:OnEnable()
 --   self.timerCount = 0
 --   self.testTimer = self:ScheduleRepeatingTimer("TimerFeedback", 5)
 -- end
 --
--- function MyAddOn:TimerFeedback()
+-- function MyAddon:TimerFeedback()
 --   self.timerCount = self.timerCount + 1
---   print(format("%d seconds passed", 5 * self.timerCount))
+--   print(("%d seconds passed"):format(5 * self.timerCount))
 --   -- run 30 seconds in total
 --   if self.timerCount == 6 then
 --     self:CancelTimer(self.testTimer)
 --   end
 -- end
-function AceTimer:ScheduleRepeatingTimer(func, delay, argc, ...)
-	return new(self, true, func, delay, argc, unpack(arg))
+function AceTimer:ScheduleRepeatingTimer(callback, delay, arg)
+	return Reg(self, callback, delay, arg, true)
 end
 
---- Cancels a timer with the given id, registered by the same addon object as used for `:ScheduleTimer`
--- Both one-shot and repeating timers can be canceled with this function, as long as the `id` is valid
+--- Cancels a timer with the given handle, registered by the same addon object as used for `:ScheduleTimer`
+-- Both one-shot and repeating timers can be canceled with this function, as long as the `handle` is valid
 -- and the timer has not fired yet or was canceled before.
--- @param id The id of the timer, as returned by `:ScheduleTimer` or `:ScheduleRepeatingTimer`
-function AceTimer:CancelTimer(id)
-	local timer = activeTimers[id]
-
-	if not timer then
-		return false
+-- @param handle The handle of the timer, as returned by `:ScheduleTimer` or `:ScheduleRepeatingTimer`
+-- @param silent If true, no error is raised if the timer handle is invalid (expired or already canceled)
+-- @return True if the timer was successfully cancelled.
+function AceTimer:CancelTimer(handle, silent)
+	if not handle then return end -- nil handle -> bail out without erroring
+	if type(handle) ~= "string" then
+		error(MAJOR..": CancelTimer(handle): 'handle' - expected a string", 2)	-- for now, anyway
+	end
+	local selftimers = AceTimer.selfs[self]
+	local timer = selftimers and selftimers[handle]
+	if silent then
+		if timer then
+			timer.callback = nil	-- don't run it again
+			timer.delay = nil		-- if this is the currently-executing one: don't even reschedule
+			-- The timer object is removed in the OnUpdate loop
+		end
+		return not not timer	-- might return "true" even if we double-cancel. we'll live.
 	else
-		-- Ace3v: the timer will always be collected in the next update but not here
-		-- this is necessary for AceBucket to determinate if the bucket has been unregistered
-		-- in the callback
-		timer.status = nil
-		activeTimers[id] = nil
+		if not timer then
+			geterrorhandler()(MAJOR..": CancelTimer(handle[, silent]): '"..tostring(handle).."' - no such timer registered")
+			return false
+		end
+		if not timer.callback then
+			geterrorhandler()(MAJOR..": CancelTimer(handle[, silent]): '"..tostring(handle).."' - timer already cancelled or expired")
+			return false
+		end
+		timer.callback = nil	-- don't run it again
+		timer.delay = nil		-- if this is the currently-executing one: don't even reschedule
 		return true
 	end
 end
 
 --- Cancels all timers registered to the current addon object ('self')
 function AceTimer:CancelAllTimers()
-	if type(self) ~= "table" then
-		error(MAJOR..": CancelAllTimers(): 'self' - must be a table",2)
+	if not(type(self) == "string" or type(self) == "table") then
+		error(MAJOR..": CancelAllTimers(): 'self' - must be a string or a table",2)
 	end
 	if self == AceTimer then
 		error(MAJOR..": CancelAllTimers(): supply a meaningful 'self'", 2)
 	end
 
-	for k,v in pairs(activeTimers) do
-		if v.object == self then
-			AceTimer.CancelTimer(self, k)
+	local selftimers = AceTimer.selfs[self]
+	if selftimers then
+		for handle,v in pairs(selftimers) do
+			if type(v) == "table" then  -- avoid __ops, etc
+				AceTimer.CancelTimer(self, handle, true)
+			end
 		end
 	end
 end
 
---- Returns the time left for a timer with the given id, registered by the current addon object ('self').
--- This function will return 0 when the id is invalid.
--- @param id The id of the timer, as returned by `:ScheduleTimer` or `:ScheduleRepeatingTimer`
--- @return The time left on the timer.
-function AceTimer:TimeLeft(id)
-	local timer = activeTimers[id]
-	if not timer then
-		return 0
-	else
-		return timer.ends - GetTime()
+--- Returns the time left for a timer with the given handle, registered by the current addon object ('self').
+-- This function will raise a warning when the handle is invalid, but not stop execution.
+-- @param handle The handle of the timer, as returned by `:ScheduleTimer` or `:ScheduleRepeatingTimer`
+-- @return The time left on the timer, or false if the handle is invalid.
+function AceTimer:TimeLeft(handle)
+	if not handle then return end
+	if type(handle) ~= "string" then
+		error(MAJOR..": TimeLeft(handle): 'handle' - expected a string", 2)    -- for now, anyway
 	end
+	local selftimers = AceTimer.selfs[self]
+	local timer = selftimers and selftimers[handle]
+	if not timer then
+		geterrorhandler()(MAJOR..": TimeLeft(handle): '"..tostring(handle).."' - no such timer registered")
+		return false
+	end
+	return timer.when - GetTime()
 end
 
-function AceTimer:TimerStatus(id)
-	local timer = activeTimers[id]
-	if not timer then
-		return nil
-	else
-		return timer.status
+
+-- ---------------------------------------------------------------------
+-- PLAYER_REGEN_ENABLED: Run through our .selfs[] array step by step
+-- and clean it out - otherwise the table indices can grow indefinitely
+-- if an addon starts and stops a lot of timers. AceBucket does this!
+--
+-- See ACE-94 and tests/AceTimer-3.0-ACE-94.lua
+
+local lastCleaned = nil
+
+local function OnEvent(this, event)
+	if event~="PLAYER_REGEN_ENABLED" then
+		return
 	end
+
+	-- Get the next 'self' to process
+	local selfs = AceTimer.selfs
+	local self = next(selfs, lastCleaned)
+	if not self then
+		self = next(selfs)
+	end
+	lastCleaned = self
+	if not self then	-- should only happen if .selfs[] is empty
+		return
+	end
+
+	-- Time to clean it out?
+	local list = selfs[self]
+	if (list.__ops or 0) < 250 then	-- 250 slosh indices = ~10KB wasted (worst case!). For one 'self'.
+		return
+	end
+
+	-- Create a new table and copy all members over
+	local newlist = {}
+	local n=0
+	for k,v in pairs(list) do
+		newlist[k] = v
+		if type(v)=="table" and v.callback then -- if the timer is actually live: count it
+			n=n+1
+		end
+	end
+	newlist.__ops = 0	-- Reset operation count
+
+	-- And since we now have a count of the number of live timers, check that it's reasonable. Emit a warning if not.
+	if n>BUCKETS then
+		DEFAULT_CHAT_FRAME:AddMessage(MAJOR..": Warning: The addon/module '"..tostring(self).."' has "..n.." live timers. Surely that's not intended?")
+	end
+
+	selfs[self] = newlist
 end
 
 -- ---------------------------------------------------------------------
@@ -265,115 +444,32 @@ function AceTimer:Embed(target)
 	return target
 end
 
--- AceTimer:OnEmbedDisable(target)
+-- AceTimer:OnEmbedDisable( target )
 -- target (object) - target object that AceTimer is embedded in.
 --
 -- cancel all timers registered for the object
-function AceTimer:OnEmbedDisable(target)
+function AceTimer:OnEmbedDisable( target )
 	target:CancelAllTimers()
 end
+
 
 for addon in pairs(AceTimer.embeds) do
 	AceTimer:Embed(addon)
 end
 
--- --------------------------------------------------------------------
--- OnUpdate handler
---
--- traverse buckets, always chasing "now", and fire timers that have expired
-local lastint = floor(GetTime() * HZ)
-local function OnUpdate()
-	local now = GetTime()
-	local nowint = floor(now * HZ)
+-- ---------------------------------------------------------------------
+-- Debug tools (expose copies of internals to test suites)
+AceTimer.debug = AceTimer.debug or {}
+AceTimer.debug.HZ = HZ
+AceTimer.debug.BUCKETS = BUCKETS
 
-	-- Have we passed into a new hash bucket?
-	if nowint == lastint then return end
+-- ---------------------------------------------------------------------
+-- Finishing touchups
 
-	local soon = now + 1	-- +1 is safe as long as 1 < HZ < BUCKETS/2
+AceTimer.frame:SetScript("OnUpdate", OnUpdate)
+AceTimer.frame:SetScript("OnEvent", OnEvent)
+AceTimer.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 
-	-- Pass through each bucket at most once
-	-- Happens on e.g. instance loads, but COULD happen on high local load situations also
-	for curint = (max(lastint, nowint-BUCKETS) + 1), nowint do	-- loop until we catch up with "now", usually only 1 iteratio
-		local curbucket = mod(curint,BUCKETS) + 1	-- Ace3v: both int so no floor here
-		-- Yank the list of timers out of the bucket and empty it. This allows reinsertion in the currently-processed bucket from callbacks.
-		local nexttimer = hash[curbucket]
-		hash[curbucket] = false	-- false rather than nil to prevent the array from becoming a hash
-
-		while nexttimer do
-			local timer = nexttimer
-			nexttimer = timer.next
-			local status = timer.status
-			if not status then
-				del(timer)
-			else
-				local ends = timer.ends
-				if (status == "loop" or status == "once") and ends < soon then
-					local object = timer.object
-					local callback = timer.func
-					if type(callback) == "string" then
-						callback = (type(object) == "table") and object[callback]
-						if type(callback) == "function" then
-							safecall(callback, timer.argsCount+1, object,
-								timer[1], timer[2], timer[3], timer[4], timer[5],
-								timer[6], timer[7], timer[8], timer[9], timer[10])
-						else
-							status = "once"
-						end
-					elseif type(callback) == "function" then
-						safecall(callback, timer.argsCount,
-							timer[1], timer[2], timer[3], timer[4], timer[5],
-							timer[6], timer[7], timer[8], timer[9], timer[10])
-					else
-						-- probably nilled out by CancelTimer
-						status = "once"	-- don't reschedule it
-					end
-
-					if status == "once" then
-						del(timer)
-					else
-						local delay = timer.delay
-						local newends = ends + delay
-						if newends < now then	-- Keep lag from making us firing a timer unnecessarily. (Note that this still won't catch too-short-delay timers though.)
-							newends = now + delay
-						end
-						timer.ends = newends
-						-- add next timer execution to the correct bucket
-						local bucket = floor(mod(newends*HZ,BUCKETS)) + 1
-						timer.next = hash[bucket]
-						hash[bucket] = timer
-					end
-				else
-					-- reinsert (yeah, somewhat expensive, but shouldn't be happening too often either due to hash distribution)
-					timer.next = hash[curbucket]
-					hash[curbucket] = timer
-				end
-			end
-		end
-	end
-
-	lastint = nowint
-end
-
-local lastchecked = nil
-local function OnEvent()
-	if event ~= "PLAYER_REGEN_ENABLED" then return end
-
-	local addon = next(counter, lastchecked)
-	if not addon then
-		addon = next(counter)
-	end
-	lastchecked = addon
-	if not addon then	-- should only happen if counter is empty
-		return
-	end
-
-	local n = counter[addon]
-	if n > BUCKETS then
-		DEFAULT_CHAT_FRAME:AddMessage(MAJOR..": Warning: The addon/module '"..tostring(addon).."' has "..tostring(n).." live timers. Surely that's not intended?")
-	end
-end
-
-timerFrame:SetScript("OnUpdate", OnUpdate)
-timerFrame:SetScript("OnEvent", OnEvent)
-timerFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-timerFrame:Hide()
+-- In theory, we could hide&show the frame based on there being timers or not.
+-- However, this job is fairly expensive, and the chance that there will
+-- actually be zero timers running is diminuitive to say the least.

@@ -1,7 +1,7 @@
 --[[-----------------------------------------------------------------------------
 ColorPicker Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "ColorPicker", 23
+local Type, Version = "ColorPicker-ElvUI", 22
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -25,12 +25,12 @@ local function ColorCallback(self, r, g, b, a, isAlpha)
 	self:SetColor(r, g, b, a)
 	if ColorPickerFrame:IsVisible() then
 		--colorpicker is still open
-		self:Fire("OnValueChanged", 4, r, g, b, a)
+		self:Fire("OnValueChanged", r, g, b, a)
 	else
 		--colorpicker is closed, color callback is first, ignore it,
 		--alpha callback is the final call after it closes so confirm now
 		if isAlpha then
-			self:Fire("OnValueConfirmed", 4, r, g, b, a)
+			self:Fire("OnValueConfirmed", r, g, b, a)
 		end
 	end
 end
@@ -38,19 +38,20 @@ end
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function Control_OnEnter()
-	this.obj:Fire("OnEnter")
+local function Control_OnEnter(frame)
+	frame.obj:Fire("OnEnter")
 end
 
-local function Control_OnLeave()
-	this.obj:Fire("OnLeave")
+local function Control_OnLeave(frame)
+	frame.obj:Fire("OnLeave")
 end
 
-local function ColorSwatch_OnClick()
+local function ColorSwatch_OnClick(frame)
 	HideUIPanel(ColorPickerFrame)
-	local self = this.obj
+	local self = frame.obj
 	if not self.disabled then
 		ColorPickerFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+		ColorPickerFrame:SetFrameLevel(frame:GetFrameLevel() + 10)
 		ColorPickerFrame:SetClampedToScreen(true)
 
 		ColorPickerFrame.func = function()
@@ -66,11 +67,19 @@ local function ColorSwatch_OnClick()
 			ColorCallback(self, r, g, b, a, true)
 		end
 
-		local r, g, b, a = self.r, self.g, self.b, self.a
+		local r, g, b, a, dR, dG, dB, dA = self.r, self.g, self.b, self.a, self.dR, self.dG, self.dB, self.dA
 		if self.HasAlpha then
 			ColorPickerFrame.opacity = 1 - (a or 0)
 		end
 		ColorPickerFrame:SetColorRGB(r, g, b)
+
+		if(ColorPPDefault and self.dR and self.dG and self.dB) then
+			local alpha = 1
+			if(self.dA) then
+				alpha = 1 - self.dA
+			end
+			ColorPPDefault.colors = {r = self.dR, g = self.dG, b = self.dB, a = alpha}
+		end
 
 		ColorPickerFrame.cancelFunc = function()
 			ColorCallback(self, r, g, b, a, true)
@@ -100,11 +109,15 @@ local methods = {
 		self.text:SetText(text)
 	end,
 
-	["SetColor"] = function(self, r, g, b, a)
+	["SetColor"] = function(self, r, g, b, a, defaultR, defaultG, defaultB, defaultA)
 		self.r = r
 		self.g = g
 		self.b = b
 		self.a = a or 1
+		self.dR = defaultR
+		self.dG = defaultG
+		self.dB = defaultB
+		self.dA = defaultA
 		self.colorSwatch:SetVertexColor(r, g, b, a)
 	end,
 
@@ -140,7 +153,7 @@ local function Constructor()
 	colorSwatch:SetWidth(19)
 	colorSwatch:SetHeight(19)
 	colorSwatch:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
-	colorSwatch:SetPoint("LEFT",0,0)
+	colorSwatch:SetPoint("LEFT")
 
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetWidth(16)
@@ -164,7 +177,7 @@ local function Constructor()
 	text:SetJustifyH("LEFT")
 	text:SetTextColor(1, 1, 1)
 	text:SetPoint("LEFT", colorSwatch, "RIGHT", 2, 0)
-	text:SetPoint("RIGHT",0,0)
+	text:SetPoint("RIGHT")
 
 	--local highlight = frame:CreateTexture(nil, "HIGHLIGHT")
 	--highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")

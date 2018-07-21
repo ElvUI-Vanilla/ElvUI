@@ -1,15 +1,13 @@
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "Frame", 24
+local Type, Version = "Frame", 25
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local AceCore = LibStub("AceCore-3.0")
-local wipe = AceCore.wipe
-
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
+local wipe = table.wipe
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -22,26 +20,30 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function Button_OnClick()
+local function Button_OnClick(frame)
 	PlaySound("gsTitleOptionExit")
-	this.obj:Hide()
+	frame.obj:Hide()
 end
 
-local function Frame_OnClose()
-	this.obj:Fire("OnClose")
+local function Frame_OnShow(frame)
+	frame.obj:Fire("OnShow")
 end
 
-local function Frame_OnMouseDown()
+local function Frame_OnClose(frame)
+	frame.obj:Fire("OnClose")
+end
+
+local function Frame_OnMouseDown(frame)
 	AceGUI:ClearFocus()
 end
 
-local function Title_OnMouseDown()
-	this:GetParent():StartMoving()
+local function Title_OnMouseDown(frame)
+	frame:GetParent():StartMoving()
 	AceGUI:ClearFocus()
 end
 
-local function MoverSizer_OnMouseUp()
-	local frame = this:GetParent()
+local function MoverSizer_OnMouseUp(mover)
+	local frame = mover:GetParent()
 	frame:StopMovingOrSizing()
 	local self = frame.obj
 	local status = self.status or self.localstatus
@@ -51,27 +53,27 @@ local function MoverSizer_OnMouseUp()
 	status.left = frame:GetLeft()
 end
 
-local function SizerSE_OnMouseDown()
-	this:GetParent():StartSizing("BOTTOMRIGHT")
+local function SizerSE_OnMouseDown(frame)
+	frame:GetParent():StartSizing("BOTTOMRIGHT")
 	AceGUI:ClearFocus()
 end
 
-local function SizerS_OnMouseDown()
-	this:GetParent():StartSizing("BOTTOM")
+local function SizerS_OnMouseDown(frame)
+	frame:GetParent():StartSizing("BOTTOM")
 	AceGUI:ClearFocus()
 end
 
-local function SizerE_OnMouseDown()
-	this:GetParent():StartSizing("RIGHT")
+local function SizerE_OnMouseDown(frame)
+	frame:GetParent():StartSizing("RIGHT")
 	AceGUI:ClearFocus()
 end
 
-local function StatusBar_OnEnter()
-	this.obj:Fire("OnEnterStatusBar")
+local function StatusBar_OnEnter(frame)
+	frame.obj:Fire("OnEnterStatusBar")
 end
 
-local function StatusBar_OnLeave()
-	this.obj:Fire("OnLeaveStatusBar")
+local function StatusBar_OnLeave(frame)
+	frame.obj:Fire("OnLeaveStatusBar")
 end
 
 --[[-----------------------------------------------------------------------------
@@ -85,7 +87,7 @@ local methods = {
 		self:SetStatusText()
 		self:ApplyStatus()
 		self:Show()
-		self:EnableResize(true)
+        self:EnableResize(true)
 	end,
 
 	["OnRelease"] = function(self)
@@ -105,7 +107,7 @@ local methods = {
 
 	["OnHeightSet"] = function(self, height)
 		local content = self.content
-		local contentheight = height - 67
+		local contentheight = height - 57
 		if contentheight < 0 then
 			contentheight = 0
 		end
@@ -154,7 +156,7 @@ local methods = {
 			frame:SetPoint("TOP", UIParent, "BOTTOM", 0, status.top)
 			frame:SetPoint("LEFT", UIParent, "LEFT", status.left, 0)
 		else
-			frame:SetPoint("CENTER", UIParent)
+			frame:SetPoint("CENTER")
 		end
 	end
 }
@@ -188,6 +190,7 @@ local function Constructor()
 	frame:SetBackdropColor(0, 0, 0, 1)
 	frame:SetMinResize(400, 200)
 	frame:SetToplevel(true)
+	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
@@ -245,9 +248,8 @@ local function Constructor()
 	titlebg_r:SetWidth(30)
 	titlebg_r:SetHeight(40)
 
-	-- bottom right sizer
 	local sizer_se = CreateFrame("Frame", nil, frame)
-	sizer_se:SetPoint("BOTTOMRIGHT", 0, 0)
+	sizer_se:SetPoint("BOTTOMRIGHT")
 	sizer_se:SetWidth(25)
 	sizer_se:SetHeight(25)
 	sizer_se:EnableMouse()
@@ -255,13 +257,24 @@ local function Constructor()
 	sizer_se:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
 
 	local line1 = sizer_se:CreateTexture(nil, "BACKGROUND")
-	line1:SetPoint("BOTTOMRIGHT", -10, 10)
-	line1:SetTexture("Interface\\Cursor\\Item")
-	line1:SetTexCoord(1, 0, 1, 0)
+	line1:SetWidth(14)
+	line1:SetHeight(14)
+	line1:SetPoint("BOTTOMRIGHT", -8, 8)
+	line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+	local x = 0.1 * 14/17
+	line1:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
+
+	local line2 = sizer_se:CreateTexture(nil, "BACKGROUND")
+	line2:SetWidth(8)
+	line2:SetHeight(8)
+	line2:SetPoint("BOTTOMRIGHT", -8, 8)
+	line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+	local x = 0.1 * 8/17
+	line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 
 	local sizer_s = CreateFrame("Frame", nil, frame)
 	sizer_s:SetPoint("BOTTOMRIGHT", -25, 0)
-	sizer_s:SetPoint("BOTTOMLEFT", 0, 0)
+	sizer_s:SetPoint("BOTTOMLEFT")
 	sizer_s:SetHeight(25)
 	sizer_s:EnableMouse(true)
 	sizer_s:SetScript("OnMouseDown", SizerS_OnMouseDown)
@@ -269,7 +282,7 @@ local function Constructor()
 
 	local sizer_e = CreateFrame("Frame", nil, frame)
 	sizer_e:SetPoint("BOTTOMRIGHT", 0, 25)
-	sizer_e:SetPoint("TOPRIGHT", 0, 0)
+	sizer_e:SetPoint("TOPRIGHT")
 	sizer_e:SetWidth(25)
 	sizer_e:EnableMouse(true)
 	sizer_e:SetScript("OnMouseDown", SizerE_OnMouseDown)
@@ -278,7 +291,7 @@ local function Constructor()
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", 17, -27)
-	--content:SetPoint("BOTTOMRIGHT", -17, 40)
+	content:SetPoint("BOTTOMRIGHT", -17, 40)
 
 	local widget = {
 		localstatus = {},

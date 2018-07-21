@@ -97,7 +97,7 @@ function AceLocale:NewLocale(application, locale, isDefault, silent)
 
 	local app = AceLocale.apps[application]
 
-	if silent and app and getmetatable(app) ~= readmetasilent then
+	if silent and app and getmetatable(app) ~= readmetasilent and not isDefault then
 		geterrorhandler()("Usage: NewLocale(application, locale[, isDefault[, silent]]): 'silent' must be specified for the first locale registered")
 	end
 
@@ -112,7 +112,7 @@ function AceLocale:NewLocale(application, locale, isDefault, silent)
 	end
 
 	if locale ~= gameLocale and not isDefault then
-		return nil	-- nop, we don't need these translations
+		return -- nop, we don't need these translations
 	end
 
 	registering = app -- remember globally for writeproxy and writedefaultproxy
