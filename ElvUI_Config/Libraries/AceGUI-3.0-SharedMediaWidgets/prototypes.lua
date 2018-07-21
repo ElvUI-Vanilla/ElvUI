@@ -172,30 +172,33 @@ do
 
 		if next(self.contentRepo) then
 			frame:SetPoint("TOPLEFT", self.contentRepo[getn(self.contentRepo)], "BOTTOMLEFT", 0, 0)
-			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
+--			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
 			self.contentframe:SetHeight(self.contentframe:GetHeight() + frame:GetHeight())
 		else
 			self.contentframe:SetHeight(frame:GetHeight())
 			frame:SetPoint("TOPLEFT", self.contentframe, "TOPLEFT", 0, 0)
-			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
+--			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
 		end
 		tinsert(self.contentRepo, frame)
 
 		if self.contentframe:GetHeight() > GetScreenHeight()*2/5 - 20 then
-			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -28, 12)
+--			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -28, 12)
+			self.scrollframe:SetWidth(128)
 			self:SetHeight(GetScreenHeight()*2/5)
 			self.slider:Show()
 			self:SetScript("OnMouseWheel", OnMouseWheel)
 			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, self.contentframe:GetHeight()-self.scrollframe:GetHeight())
 		else
-			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -14, 12)
+--			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -14, 12)
+			self.scrollframe:SetWidth(142)
 			self:SetHeight(self.contentframe:GetHeight()+25)
 			self.slider:Hide()
 			self:SetScript("OnMouseWheel", nil)
 			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, 0)
 		end
+		frame:SetWidth(self.scrollframe:GetWidth())
 		self.contentframe:SetWidth(self.scrollframe:GetWidth())
 	end
 
@@ -229,14 +232,15 @@ do
 			frame.contentframe = contentframe
 
 			local scrollframe = CreateFrame("ScrollFrame", nil, frame)
-				scrollframe:SetWidth(160)
+				scrollframe:SetWidth(128)
+				scrollframe:SetHeight((GetScreenHeight()*2/5) - 24)
 				scrollframe:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -13)
-				scrollframe:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 12)
+--				scrollframe:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 12)
 				scrollframe:SetScrollChild(contentframe)
 			frame.scrollframe = scrollframe
 
 			contentframe:SetPoint("TOPLEFT", scrollframe)
-			contentframe:SetPoint("TOPRIGHT", scrollframe)
+--			contentframe:SetPoint("TOPRIGHT", scrollframe)
 
 			local bgTex = frame:CreateTexture(nil, "ARTWORK")
 				bgTex:SetAllPoints(scrollframe)
