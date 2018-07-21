@@ -594,6 +594,14 @@ local methods = {
 	end,
 
 	["OnHeightSet"] = function(self, height)
+		local parent = self.parent
+		if parent and height then
+			local _, _, _, _, offset = self:GetPoint()
+			height = (parent.content.height or 0) + (offset or 0) or height
+			self.frame.height = (parent.content.height or 0) + (offset or 0)
+		end
+		self.treeframe:SetHeight(height)
+
 		local content = self.content
 		local contentheight = height - 20
 		if contentheight < 0 then
@@ -662,7 +670,6 @@ local function Constructor()
 
 	local treeframe = CreateFrame("Frame", nil, frame)
 	treeframe:SetPoint("TOPLEFT", 0, 0)
-	treeframe:SetPoint("BOTTOMLEFT", 0, 0)
 	treeframe:SetWidth(DEFAULT_TREE_WIDTH)
 	treeframe:EnableMouseWheel(true)
 	treeframe:SetBackdrop(PaneBackdrop)
@@ -710,7 +717,7 @@ local function Constructor()
 	--Container Support
 	local content = CreateFrame("Frame", nil, border)
 	content:SetPoint("TOPLEFT", 10, -10)
-	content:SetPoint("BOTTOMRIGHT", -10, 10)
+	--content:SetPoint("BOTTOMRIGHT", -10, 10)
 
 	local widget = {
 		frame        = frame,
