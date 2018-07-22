@@ -784,6 +784,7 @@ local hooks = {
 
 -- hook all functions (which are not yet hooked)
 for _, name in pairs(hooks) do
+	local name = name
     if not lib['hooked'][name] then
         lib['hooked'][name] = _G[name]
         _G[name] = function()
