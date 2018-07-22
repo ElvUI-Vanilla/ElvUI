@@ -48,7 +48,7 @@ function select(n, ...)
 	end
 	n = toInt(n)
 
-	for i = n, arg.n do
+	for i = 1, n - 1 do
 		tremove(arg, 1)
 	end
 
