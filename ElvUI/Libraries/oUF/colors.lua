@@ -65,16 +65,19 @@ colors.power[2] = {1.00, 0.50, 0.25}
 colors.power[3] = {1.00, 1.00, 0.00}
 colors.power[4] = {0.00, 1.00, 1.00}
 
-local function colorsAndPercent(a, b, ...)
-	if(a <= 0 or b == 0) then
-		return nil, unpack(arg)
-	elseif(a >= b) then
-		return nil, select(select('#', unpack(arg)) - 2, unpack(arg))
+local function colorsAndPercent(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
+	if(min <= 0 or max == 0) then
+		return nil, r1, g1, b1
+	elseif(min >= max) then
+		return nil, r3, g3, b3
 	end
 
-	local num = select('#', unpack(arg)) / 3
-	local segment, relperc = math.modf((a / b) * (num - 1))
-	return relperc, select((segment * 3) + 1, unpack(arg))
+	local segment, relperc = math.modf((min / max) * 2)
+	if segment > 0 then
+		r1, g1, b1, r2, g2, b2 = r2, g2, b2, r3, g3, b3
+	end
+
+	return relperc, r1, g1, b1, r2, g2, b2
 end
 
 -- http://www.wowwiki.com/ColorGradient
@@ -90,8 +93,9 @@ last 3 RGB values are returned.
 * b    - value used as denominator to calculate the percentage (number)
 * ...  - a list of RGB percent values. At least 6 values should be passed (number [0-1])
 --]]
-local function RGBColorGradient(...)
-	local relperc, r1, g1, b1, r2, g2, b2 = colorsAndPercent(unpack(arg))
+local function RGBColorGradient(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
+	local relperc
+	relperc, r1, g1, b1, r2, g2, b2 = colorsAndPercent(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
 	if(relperc) then
 		return r1 + (r2 - r1) * relperc, g1 + (g2 - g1) * relperc, b1 + (b2 - b1) * relperc
 	else
@@ -118,7 +122,7 @@ function oUF:RGBToHCY(r, g, b)
 	local hue
 	if(chroma > 0) then
 		if(r == max) then
-			hue = math.mod((g - b) / chroma, 6)
+			hue = math.fmod((g - b) / chroma, 6)
 		elseif(g == max) then
 			hue = (b - r) / chroma + 2
 		elseif(b == max) then
@@ -142,7 +146,7 @@ function oUF:HCYtoRGB(hue, chroma, luma)
 	local r, g, b = 0, 0, 0
 	if(hue and luma > 0) then
 		local h2 = hue * 6
-		local x = chroma * (1 - math_abs(math.mod(h2, 2 - 1)))
+		local x = chroma * (1 - math_abs(math.fmod(h2, 2) - 1))
 		if(h2 < 1) then
 			r, g, b = chroma, x, 0
 		elseif(h2 < 2) then
@@ -183,14 +187,14 @@ last 3 HCY values are returned.
 * b    - value used as denominator to calculate the percentage (number)
 * ...  - a list of HCY color values. At least 6 values should be passed (number [0-1])
 --]]
-local function HCYColorGradient(...)
-	local relperc, r1, g1, b1, r2, g2, b2 = colorsAndPercent(unpack(arg))
+local function HCYColorGradient(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
+	local relperc, r1, g1, b1, r2, g2, b2 = colorsAndPercent(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
 	if(not relperc) then
 		return r1, g1, b1
 	end
 
-	local h1, c1, y1 = self:RGBToHCY(r1, g1, b1)
-	local h2, c2, y2 = self:RGBToHCY(r2, g2, b2)
+	local h1, c1, y1 = oUF:RGBToHCY(r1, g1, b1)
+	local h2, c2, y2 = oUF:RGBToHCY(r2, g2, b2)
 	local c = c1 + (c2 - c1) * relperc
 	local y = y1 + (y2 - y1) * relperc
 
@@ -202,9 +206,9 @@ local function HCYColorGradient(...)
 			dh = dh - 1
 		end
 
-		return self:HCYtoRGB(math.mod(h1 + dh * relperc, 1), c, y)
+		return oUF:HCYtoRGB(math.fmod(h1 + dh * relperc, 1), c, y)
 	else
-		return self:HCYtoRGB(h1 or h2, c, y)
+		return oUF:HCYtoRGB(h1 or h2, c, y)
 	end
 
 end
@@ -218,8 +222,8 @@ set to true, `:HCYColorGradient` will be called, else `:RGBColorGradient`.
 * b    - value used as denominator to calculate the percentage (number)
 * ...  - a list of color values. At least 6 values should be passed (number [0-1])
 --]]
-local function ColorGradient(...)
-	return (oUF.useHCYColorGradient and HCYColorGradient or RGBColorGradient)(unpack(arg))
+local function ColorGradient(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
+	return (oUF.useHCYColorGradient and HCYColorGradient or RGBColorGradient)(min, max, r1, g1, b1, r2, g2, b2, r3, g3, b3)
 end
 
 Private.colors = colors
