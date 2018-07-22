@@ -43,8 +43,8 @@ local function Constructor()
 	frame:Hide()
 
 	local label = frame:CreateFontString(nil, "BACKGROUND", "GameFontNormal")
-	label:SetPoint("TOP",0,0)
-	label:SetPoint("BOTTOM",0,0)
+	label:SetPoint("TOP", 0, 0)
+	label:SetPoint("BOTTOM", 0, 0)
 	label:SetJustifyH("CENTER")
 
 	local left = frame:CreateTexture(nil, "BACKGROUND")

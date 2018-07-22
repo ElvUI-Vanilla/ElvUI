@@ -7,9 +7,6 @@ local AceDBOptions, oldminor = LibStub:NewLibrary(ACEDBO_MAJOR, ACEDBO_MINOR)
 
 if not AceDBOptions then return end -- No upgrade needed
 
-local AceCore = LibStub("AceCore-3.0")
-local new, del = AceCore.new, AceCore.del
-
 -- Lua APIs
 local pairs, next = pairs, next
 
@@ -233,6 +230,7 @@ elseif LOCALE == "ptBR" then
 end
 
 local defaultProfiles
+local tmpprofiles = {}
 
 -- Get a list of available profiles for the specified database.
 -- You can specify which profiles to include/exclude in the list using the two boolean parameters listed below.
@@ -241,24 +239,23 @@ local defaultProfiles
 -- @param nocurrent If true, then getProfileList will not display the current profile in the list
 -- @return Hashtable of all profiles with the internal name as keys and the display name as value.
 local function getProfileList(db, common, nocurrent)
-	local profiles = new()
-	local tmpprofiles = new()
+	local profiles = {}
+
 	-- copy existing profiles into the table
 	local currentProfile = db:GetCurrentProfile()
-	for i,v in pairs(db:GetProfiles(tmpprofiles)) do 
-		if not (nocurrent and v == currentProfile) then 
-			profiles[v] = v 
-		end 
+	for i,v in pairs(db:GetProfiles(tmpprofiles)) do
+		if not (nocurrent and v == currentProfile) then
+			profiles[v] = v
+		end
 	end
-	del(tmpprofiles)
-	
+
 	-- add our default profiles to choose from ( or rename existing profiles)
 	for k,v in pairs(defaultProfiles) do
 		if (common or profiles[k]) and not (nocurrent and k == currentProfile) then
 			profiles[k] = v
 		end
 	end
-	
+
 	return profiles
 end
 
@@ -283,18 +280,16 @@ function OptionsHandlerPrototype:GetCurrentProfile()
 	return self.db:GetCurrentProfile()
 end
 
---[[ 
+--[[
 	List all active profiles
 	you can control the output with the .arg variable
 	currently four modes are supported
-	
+
 	(empty) - return all available profiles
 	"nocurrent" - returns all available profiles except the currently active profile
 	"common" - returns all avaialble profiles + some commonly used profiles ("char - realm", "realm", "class", "Default")
 	"both" - common except the active profile
 ]]
--- Ace3v: It is recommanded to destroy the returned table by AceCore.del
---        if it is no longer needed
 function OptionsHandlerPrototype:ListProfiles(info)
 	local arg = info.arg
 	local profiles
@@ -307,15 +302,13 @@ function OptionsHandlerPrototype:ListProfiles(info)
 	else
 		profiles = getProfileList(self.db)
 	end
-	
+
 	return profiles
 end
 
 function OptionsHandlerPrototype:HasNoProfiles(info)
 	local profiles = self:ListProfiles(info)
-	local r = (not next(profiles)) and true or false
-	del(profiles)
-	return r
+	return ((not next(profiles)) and true or false)
 end
 
 --[[ Copy a profile ]]
@@ -343,19 +336,19 @@ local function getOptionsHandler(db, noDefaultProfiles)
 	if not defaultProfiles then
 		generateDefaultProfiles(db)
 	end
-	
+
 	local handler = AceDBOptions.handlers[db] or { db = db, noDefaultProfiles = noDefaultProfiles }
-	
+
 	for k,v in pairs(OptionsHandlerPrototype) do
 		handler[k] = v
 	end
-	
+
 	AceDBOptions.handlers[db] = handler
 	return handler
 end
 
 --[[
-	the real options table 
+	the real options table
 ]]
 local optionsTable = {
 	desc = {
@@ -393,7 +386,6 @@ local optionsTable = {
 		order = 30,
 		get = false,
 		set = "SetProfile",
-		nullable = false,	-- Ace3v: we do not want a null or empty value
 	},
 	choose = {
 		name = L["choose"],
@@ -403,7 +395,6 @@ local optionsTable = {
 		get = "GetCurrentProfile",
 		set = "SetProfile",
 		values = "ListProfiles",
-		valuesTableDestroyable = true,
 		arg = "common",
 	},
 	copydesc = {
@@ -419,7 +410,6 @@ local optionsTable = {
 		get = false,
 		set = "CopyProfile",
 		values = "ListProfiles",
-		valuesTableDestroyable = true,
 		disabled = "HasNoProfiles",
 		arg = "nocurrent",
 	},
@@ -436,7 +426,6 @@ local optionsTable = {
 		get = false,
 		set = "DeleteProfile",
 		values = "ListProfiles",
-		valuesTableDestroyable = true,
 		disabled = "HasNoProfiles",
 		arg = "nocurrent",
 		confirm = true,
@@ -447,7 +436,7 @@ local optionsTable = {
 --- Get/Create a option table that you can use in your addon to control the profiles of AceDB-3.0.
 -- @param db The database object to create the options table for.
 -- @return The options table to be used in AceConfig-3.0
--- @usage 
+-- @usage
 -- -- Assuming `options` is your top-level options table and `self.db` is your database:
 -- options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 function AceDBOptions:GetOptionsTable(db, noDefaultProfiles)
@@ -456,7 +445,7 @@ function AceDBOptions:GetOptionsTable(db, noDefaultProfiles)
 			name = L["profiles"],
 			desc = L["profiles_sub"],
 		}
-	
+
 	tbl.handler = getOptionsHandler(db, noDefaultProfiles)
 	tbl.args = optionsTable
 

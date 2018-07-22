@@ -8,7 +8,7 @@ local AGSMW = LibStub("AceGUISharedMediaWidgets-1.0")
 
 local next, ipairs, pairs = next, ipairs, pairs
 local upper = string.upper
-local tinsert, sort, tremove = table.insert, table.sort, table.remove
+local tinsert, tremove, sort = table.insert, table.remove, table.sort
 
 do
 	local widgetType = "LSM30_Sound"
@@ -24,7 +24,7 @@ do
 
 	local function ContentOnClick()
 		local self = this.obj
-		self:Fire("OnValueChanged", 1, this.text:GetText())
+		self:Fire("OnValueChanged", this.text:GetText())
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
 		end
@@ -44,7 +44,7 @@ do
 			frame = CreateFrame("Button", nil, UIParent)
 				--frame:SetWidth(200)
 				frame:SetHeight(18)
-				frame:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+				frame:SetHighlightTexture([[Interface\QuestFrame\UI-QuestTitleHighlight]], "ADD")
 				frame:SetScript("OnClick", ContentOnClick)
 			local check = frame:CreateTexture("OVERLAY")
 				check:SetWidth(16)
@@ -175,7 +175,7 @@ do
 					f.check:Show()
 				end
 				f.obj = self
-				self.dropdown:AddFrame(f, i)
+				self.dropdown:AddFrame(f)
 			end
 			wipe(sortedlist)
 		end

@@ -590,8 +590,8 @@ function ScriptErrorsFrame_Update ()
 	editBox.text = text;
 	if (prevText ~= text) then
 		editBox:SetText(text);
+		EditBoxSetCursorPosition(editBox, 0);
 		editBox:HighlightText(0);
---		editBox:SetCursorPosition(0);
 	else
 		ScriptErrorsFrameScrollFrame:UpdateScrollChildRect();
 	end

@@ -107,7 +107,7 @@ local function ChatFrame_OnMouseScroll()
 					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, 1, this)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, this)
 			end
 		end
 	else
@@ -133,7 +133,7 @@ local function ChatFrame_OnMouseScroll()
 					CH:CancelTimer(this.ScrollTimer, true)
 				end
 
-				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, 1, this)
+				this.ScrollTimer = CH:ScheduleTimer("ScrollToBottom", CH.db.scrollDownInterval, this)
 			end
 		end
 	end

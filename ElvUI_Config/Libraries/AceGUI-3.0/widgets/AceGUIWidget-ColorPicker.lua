@@ -1,7 +1,7 @@
 --[[-----------------------------------------------------------------------------
 ColorPicker Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "ColorPicker", 23
+local Type, Version = "ColorPicker", 22
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -25,12 +25,12 @@ local function ColorCallback(self, r, g, b, a, isAlpha)
 	self:SetColor(r, g, b, a)
 	if ColorPickerFrame:IsVisible() then
 		--colorpicker is still open
-		self:Fire("OnValueChanged", 4, r, g, b, a)
+		self:Fire("OnValueChanged", r, g, b, a)
 	else
 		--colorpicker is closed, color callback is first, ignore it,
 		--alpha callback is the final call after it closes so confirm now
 		if isAlpha then
-			self:Fire("OnValueConfirmed", 4, r, g, b, a)
+			self:Fire("OnValueConfirmed", r, g, b, a)
 		end
 	end
 end
@@ -51,6 +51,7 @@ local function ColorSwatch_OnClick()
 	local self = this.obj
 	if not self.disabled then
 		ColorPickerFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+		ColorPickerFrame:SetFrameLevel(this:GetFrameLevel() + 10)
 		ColorPickerFrame:SetClampedToScreen(true)
 
 		ColorPickerFrame.func = function()
@@ -140,7 +141,7 @@ local function Constructor()
 	colorSwatch:SetWidth(19)
 	colorSwatch:SetHeight(19)
 	colorSwatch:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
-	colorSwatch:SetPoint("LEFT",0,0)
+	colorSwatch:SetPoint("LEFT", 0, 0)
 
 	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	texture:SetWidth(16)
@@ -164,7 +165,7 @@ local function Constructor()
 	text:SetJustifyH("LEFT")
 	text:SetTextColor(1, 1, 1)
 	text:SetPoint("LEFT", colorSwatch, "RIGHT", 2, 0)
-	text:SetPoint("RIGHT",0,0)
+	text:SetPoint("RIGHT", 0, 0)
 
 	--local highlight = frame:CreateTexture(nil, "HIGHLIGHT")
 	--highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")

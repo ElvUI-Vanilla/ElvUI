@@ -19,6 +19,8 @@ AGSMW = AGSMW or {}
 local next, ipairs = next, ipairs
 local tinsert, tremove = table.insert, table.remove
 
+local GetScreenHeight = GetScreenHeight
+
 AceGUIWidgetLSMlists = {
 	['font'] = Media:HashTable("font"),
 	['sound'] = Media:HashTable("sound"),
@@ -140,8 +142,8 @@ end
 do
 
 	local sliderBackdrop = {
-		["bgFile"] = "Interface\\Buttons\\UI-SliderBar-Background",
-		["edgeFile"] = "Interface\\Buttons\\UI-SliderBar-Border",
+		["bgFile"] = [[Interface\Buttons\UI-SliderBar-Background]],
+		["edgeFile"] = [[Interface\Buttons\UI-SliderBar-Border]],
 		["tile"] = true,
 		["edgeSize"] = 8,
 		["tileSize"] = 8,
@@ -153,38 +155,42 @@ do
 		},
 	}
 	local frameBackdrop = {
-		bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+		bgFile=[[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
+		edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
 		tile = true, tileSize = 32, edgeSize = 32,
 		insets = { left = 11, right = 12, top = 12, bottom = 9 },
 	}
 
-	local function OnMouseWheel(self, dir)
-		self.slider:SetValue(self.slider:GetValue()+(15*dir*-1))
+	local function OnMouseWheel()
+		this.slider:SetValue(this.slider:GetValue()+(15*arg1*-1))
 	end
 
-	local function AddFrame(self, frame, i)
+	local function AddFrame(self, frame)
 		frame:SetParent(self.contentframe)
 		frame:SetFrameStrata(self:GetFrameStrata())
 		frame:SetFrameLevel(self:GetFrameLevel() + 100)
 
 		if next(self.contentRepo) then
-			frame:SetPoint("TOPLEFT", self.contentRepo[i-1], "BOTTOMLEFT", 0, 0)
+			frame:SetPoint("TOPLEFT", self.contentRepo[getn(self.contentRepo)], "BOTTOMLEFT", 0, 0)
+--			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
 			self.contentframe:SetHeight(self.contentframe:GetHeight() + frame:GetHeight())
 		else
 			self.contentframe:SetHeight(frame:GetHeight())
-			frame:SetPoint("TOPLEFT", self.contentframe, 0, 0)
+			frame:SetPoint("TOPLEFT", self.contentframe, "TOPLEFT", 0, 0)
+--			frame:SetPoint("RIGHT", self.contentframe, "RIGHT", 0, 0)
 		end
-		self.contentRepo[i] = frame
+		tinsert(self.contentRepo, frame)
 
 		if self.contentframe:GetHeight() > GetScreenHeight()*2/5 - 20 then
+--			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -28, 12)
 			self.scrollframe:SetWidth(128)
 			self:SetHeight(GetScreenHeight()*2/5)
 			self.slider:Show()
-			self:SetScript("OnMouseWheel", function() OnMouseWheel(this, arg1) end)
+			self:SetScript("OnMouseWheel", OnMouseWheel)
 			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, self.contentframe:GetHeight()-self.scrollframe:GetHeight())
 		else
+--			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -14, 12)
 			self.scrollframe:SetWidth(142)
 			self:SetHeight(self.contentframe:GetHeight()+25)
 			self.slider:Hide()
@@ -229,10 +235,12 @@ do
 				scrollframe:SetWidth(128)
 				scrollframe:SetHeight((GetScreenHeight()*2/5) - 24)
 				scrollframe:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -13)
+--				scrollframe:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 12)
 				scrollframe:SetScrollChild(contentframe)
 			frame.scrollframe = scrollframe
 
 			contentframe:SetPoint("TOPLEFT", scrollframe)
+--			contentframe:SetPoint("TOPRIGHT", scrollframe)
 
 			local bgTex = frame:CreateTexture(nil, "ARTWORK")
 				bgTex:SetAllPoints(scrollframe)
@@ -247,7 +255,7 @@ do
 				slider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -14, -10)
 				slider:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 10)
 				slider:SetBackdrop(sliderBackdrop)
-				slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Vertical")
+				slider:SetThumbTexture([[Interface\Buttons\UI-SliderBar-Button-Vertical]])
 				slider:SetMinMaxValues(0, 1)
 				--slider:SetValueStep(1)
 				slider:SetWidth(12)

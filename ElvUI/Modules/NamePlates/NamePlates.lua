@@ -467,7 +467,7 @@ function mod:UpdateElement_All(frame, noTargetFrame)
 	self:UpdateElement_Level(frame)
 
 	if not noTargetFrame then
-		mod:ScheduleTimer("ForEachPlate", 0.25, 1, "SetTargetFrame")
+		mod:ScheduleTimer("ForEachPlate", 0.25, "SetTargetFrame")
 	end
 end
 

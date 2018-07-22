@@ -1,25 +1,32 @@
---[[ $Id: AceGUIWidget-DropDown-Items.lua 1137 2016-05-15 10:57:36Z nevcairiel $ ]]--
+--[[ $Id: AceGUIWidget-DropDown-Items.lua 996 2010-12-01 18:34:17Z nevcairiel $ ]]--
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local IsLegion = false
-
 -- Lua APIs
-local assert = assert
-local tgetn = table.getn
+local assert, unpack = assert, unpack
 
 -- WoW APIs
 local PlaySound = PlaySound
 local CreateFrame = CreateFrame
 
-local function fixlevels(parent,...)
-	local i = 1
-	local child = arg[i]
-	while child do
-		child:SetFrameLevel(parent:GetFrameLevel()+1)
-		fixlevels(child, child:GetChildren())
-		i = i + 1
+local function fixlevels(parent, ...)
+	local child
+	local level = parent:GetFrameLevel() + 1
+
+	for i = 1, arg.n do
 		child = arg[i]
+		child:SetFrameLevel(level)
+		fixlevels(child)
+	end
+end
+
+local function fixstrata(strata, parent, ...)
+	local child
+	parent:SetFrameStrata(strata)
+
+	for i = 1, arg.n do
+		child = arg[i]
+		fixstrata(strata, child)
 	end
 end
 
@@ -83,9 +90,8 @@ function ItemBase.SetPullout(self, pullout)
 	self.pullout = pullout
 
 	self.frame:SetParent(nil)
-	local itemFrame = pullout.itemFrame
-	self.frame:SetParent(itemFrame)
-	self.parent = itemFrame
+	self.frame:SetParent(pullout.itemFrame)
+	self.parent = pullout.itemFrame
 	fixlevels(pullout.itemFrame, pullout.itemFrame:GetChildren())
 end
 
@@ -100,8 +106,8 @@ function ItemBase.GetText(self)
 end
 
 -- exported
-function ItemBase.SetPoint(self, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-	self.frame:SetPoint(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+function ItemBase.SetPoint(self, ...)
+	self.frame:SetPoint(unpack(arg))
 end
 
 -- exported
@@ -241,7 +247,7 @@ do
 	local widgetType = "Dropdown-Item-Header"
 	local widgetVersion = 1
 
-	local function OnEnter(this)
+	local function OnEnter()
 		local self = this.obj
 		self:Fire("OnEnter")
 
@@ -290,7 +296,7 @@ do
 	local widgetType = "Dropdown-Item-Execute"
 	local widgetVersion = 1
 
-	local function Frame_OnClick(this, button)
+	local function Frame_OnClick()
 		local self = this.obj
 		if self.disabled then return end
 		self:Fire("OnClick")
@@ -341,7 +347,7 @@ do
 			PlaySound("igMainMenuOptionCheckBoxOff")
 		end
 		UpdateToggle(self)
-		self:Fire("OnValueChanged", 1, self.value)
+		self:Fire("OnValueChanged", self.value)
 	end
 
 	-- exported
@@ -433,7 +439,7 @@ end
 -- A single line to separate items
 do
 	local widgetType = "Dropdown-Item-Separator"
-	local widgetVersion = 2
+	local widgetVersion = 1
 
 	-- exported, override
 	local function SetDisabled(self, disabled)
@@ -449,7 +455,6 @@ do
 		local line = self.frame:CreateTexture(nil, "OVERLAY")
 		line:SetHeight(1)
 		line:SetTexture(.5, .5, .5)
-
 		line:SetPoint("LEFT", self.frame, "LEFT", 10, 0)
 		line:SetPoint("RIGHT", self.frame, "RIGHT", -10, 0)
 

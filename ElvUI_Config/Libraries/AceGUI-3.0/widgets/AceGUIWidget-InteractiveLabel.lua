@@ -1,12 +1,12 @@
 --[[-----------------------------------------------------------------------------
 InteractiveLabel Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "InteractiveLabel", 20
+local Type, Version = "InteractiveLabel", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
-local pairs = pairs
+local pairs, unpack = pairs, unpack
 
 -- WoW APIs
 local CreateFrame, UIParent = CreateFrame, UIParent
@@ -27,7 +27,7 @@ local function Control_OnLeave()
 end
 
 local function Label_OnClick()
-	this.obj:Fire("OnClick", 1, arg1)
+	this.obj:Fire("OnClick", arg1)
 	AceGUI:ClearFocus()
 end
 
@@ -44,13 +44,14 @@ local methods = {
 
 	-- ["OnRelease"] = nil,
 
-	["SetHighlight"] = function(self, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
-		self.highlight:SetTexture(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	["SetHighlight"] = function(self, ...)
+		self.highlight:SetTexture(unpack(arg))
 	end,
 
-	["SetHighlightTexCoord"] = function(self, a1,a2,a3,a4,a5,a6,a7,a8)
-		if a4 or a8 then
-			self.highlight:SetTexCoord(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+	["SetHighlightTexCoord"] = function(self, ...)
+		local c = arg.n
+		if c == 4 or c == 8 then
+			self.highlight:SetTexCoord(unpack(arg))
 		else
 			self.highlight:SetTexCoord(0, 1, 0, 1)
 		end

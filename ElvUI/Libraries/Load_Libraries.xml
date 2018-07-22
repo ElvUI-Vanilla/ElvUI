@@ -1,7 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="LibStub\LibStub.xml"/>
 	<Include file="CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
-	<Include file="AceCore-3.0\AceCore-3.0.xml"/>
 	<Include file="AceAddon-3.0\AceAddon-3.0.xml"/>
 	<Include file="AceEvent-3.0\AceEvent-3.0.xml"/>
 	<Include file="AceConsole-3.0\AceConsole-3.0.xml"/>

@@ -8,7 +8,7 @@ local AGSMW = LibStub("AceGUISharedMediaWidgets-1.0")
 
 local next, ipairs, pairs = next, ipairs, pairs
 local upper = string.upper
-local tinsert, sort, tremove = table.insert, table.sort, table.remove
+local tinsert, tremove, sort = table.insert, table.remove, table.sort
 
 do
 	local widgetType = "LSM30_Background"
@@ -22,15 +22,15 @@ do
 		tinsert(contentFrameCache, self)
 	end
 
-	local function ContentOnClick(this, button)
+	local function ContentOnClick()
 		local self = this.obj
-		self:Fire("OnValueChanged", 1, this.text:GetText())
+		self:Fire("OnValueChanged", this.text:GetText())
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
 		end
 	end
 
-	local function ContentOnEnter(this, button)
+	local function ContentOnEnter()
 		local self = this.obj
 		local text = this.text:GetText()
 		local background = self.list[text] ~= text and self.list[text] or Media:Fetch('background',text)
@@ -45,7 +45,7 @@ do
 			frame = CreateFrame("Button", nil, UIParent)
 				--frame:SetWidth(200)
 				frame:SetHeight(18)
-				frame:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+				frame:SetHighlightTexture([[Interface\QuestFrame\UI-QuestTitleHighlight]], "ADD")
 				frame:SetScript("OnClick", ContentOnClick)
 				frame:SetScript("OnEnter", ContentOnEnter)
 
@@ -166,12 +166,13 @@ do
 			for i, k in ipairs(sortedlist) do
 				local f = GetContentLine()
 				f.text:SetText(k)
+				--print(k)
 				if k == self.value then
 					f.check:Show()
 				end
 				f.obj = self
 				f.dropdown = self.dropdown
-				self.dropdown:AddFrame(f, i)
+				self.dropdown:AddFrame(f)
 			end
 			wipe(sortedlist)
 		end
@@ -183,18 +184,18 @@ do
 		end
 	end
 
-	local function OnHide(this)
+	local function OnHide()
 		local self = this.obj
 		if self.dropdown then
 			self.dropdown = AGSMW:ReturnDropDownFrame(self.dropdown)
 		end
 	end
 
-	local function Drop_OnEnter(this)
+	local function Drop_OnEnter()
 		this.obj:Fire("OnEnter")
 	end
 
-	local function Drop_OnLeave(this)
+	local function Drop_OnLeave()
 		this.obj:Fire("OnLeave")
 	end
 

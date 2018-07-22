@@ -15,9 +15,6 @@ local AceHook, oldminor = LibStub:NewLibrary(ACEHOOK_MAJOR, ACEHOOK_MINOR)
 
 if not AceHook then return end -- No upgrade needed
 
-local AceCore = LibStub("AceCore-3.0")
-local new, del = AceCore.new, AceCore.del
-
 AceHook.embeded = AceHook.embeded or {}
 AceHook.registry = AceHook.registry or setmetatable({}, {__index = function(tbl, key) tbl[key] = {} return tbl[key] end })
 AceHook.handlers = AceHook.handlers or {}
@@ -34,14 +31,17 @@ local scripts = AceHook.scripts
 local onceSecure = AceHook.onceSecure
 
 -- Lua APIs
-local pairs, next, type = pairs, next, type
+local pairs, next, type, unpack = pairs, next, type, unpack
 local format = string.format
 local assert, error = assert, error
 
 -- WoW APIs
-local hooksecurefunc, issecurevariable = AceCore.hooksecurefunc, AceCore.issecurevariable
+local HookScript = HookScript
+local issecurevariable, hooksecurefunc = issecurevariable, hooksecurefunc
+local _G = _G
 
-local _G = AceCore._G
+-- functions for later definition
+local donothing, createHook, hook
 
 local protectedScripts = {
 	OnClick = true,
@@ -80,20 +80,15 @@ function AceHook:OnEmbedDisable( target )
 	target:UnhookAll()
 end
 
--- failsafe means even the hooking method fails, the original method will
--- always be called
-local function createHook(self, handler, orig, secure, failsafe)
+function createHook(self, handler, orig, secure, failsafe)
 	local uid
 	local method = type(handler) == "string"
-	-- Ace3v: when this function called in the "hook" function, we have
-	--        failsafe = not (raw or secure), so the first check condition
-	--        is same as "if failsafe" or "if not raw and not secure"
 	if failsafe and not secure then
 		-- failsafe hook creation
 		uid = function(...)
 			if actives[uid] then
 				if method then
-					self[handler](self,unpack(arg))
+					self[handler](self, unpack(arg))
 				else
 					handler(unpack(arg))
 				end
@@ -106,7 +101,7 @@ local function createHook(self, handler, orig, secure, failsafe)
 		uid = function(...)
 			if actives[uid] then
 				if method then
-					return self[handler](self,unpack(arg))
+					return self[handler](self, unpack(arg))
 				else
 					return handler(unpack(arg))
 				end
@@ -119,18 +114,9 @@ local function createHook(self, handler, orig, secure, failsafe)
 	return uid
 end
 
-local function donothing() end
+function donothing() end
 
--- @param self
--- @param obj			nil or a frame object, use with script = true
--- @param method		string, the name of a global function or the name of an object method
--- @param handler		function, or string when it's a method of 'self', if nil then will use the same value as method
--- @param script		boolean, must be true, if the hooked object is a frame
--- @param secure		boolean, if hooking a secure script, if true the original script will be called first, else later
--- @param raw			boolean, if raw hooking (replacing the original method)
--- @param forceSecure	boolean, if forcing to hook a secure method
--- @param usage
-local function hook(self, obj, method, handler, script, secure, raw, forceSecure, usage)
+function hook(self, obj, method, handler, script, secure, raw, forceSecure, usage)
 	if not handler then handler = method end
 
 	-- These asserts make sure AceHooks's devs play by the rules.
@@ -215,7 +201,6 @@ local function hook(self, obj, method, handler, script, secure, raw, forceSecure
 
 	local orig
 	if script then
-		-- Sometimes there is not a original function for a script.
 		orig = obj:GetScript(method) or donothing
 	elseif obj then
 		orig = obj[method]
@@ -230,11 +215,11 @@ local function hook(self, obj, method, handler, script, secure, raw, forceSecure
 	uid = createHook(self, handler, orig, secure, not (raw or secure))
 
 	if obj then
-		registry[self][obj] = registry[self][obj] or new()
+		self.hooks[obj] = self.hooks[obj] or {}
+		registry[self][obj] = registry[self][obj] or {}
 		registry[self][obj][method] = uid
 
 		if not secure then
-			self.hooks[obj] = self.hooks[obj] or new()
 			self.hooks[obj][method] = orig
 		end
 
@@ -242,12 +227,7 @@ local function hook(self, obj, method, handler, script, secure, raw, forceSecure
 			if not secure then
 				obj:SetScript(method, uid)
 			else
-				obj:SetScript(method, function(...)
-					local tmp = {orig(unpack(arg))}
-					uid(unpack(arg))
-					return unpack(tmp)
-				end)
-				--obj:HookScript(method, uid)	-- Ace3v: vanilla frame has no HookScript
+				HookScript(obj, method, uid)
 			end
 		else
 			if not secure then
@@ -464,12 +444,8 @@ function AceHook:Unhook(obj, method)
 	actives[uid], handlers[uid] = nil, nil
 
 	if obj then
-		local tmp = registry[self][obj]
-		tmp[method] = nil
-		if not next(tmp) then
-			del(tmp)
-			registry[self][obj] = nil
-		end
+		registry[self][obj][method] = nil
+		registry[self][obj] = next(registry[self][obj]) and registry[self][obj] or nil
 
 		-- if the hook reference doesnt exist, then its a secure hook, just bail out and dont do any unhooking
 		if not self.hooks[obj] or not self.hooks[obj][method] then return true end
@@ -481,12 +457,8 @@ function AceHook:Unhook(obj, method)
 			obj[method] = self.hooks[obj][method]
 		end
 
-		tmp = self.hooks[obj]
-		tmp[method] = nil
-		if not next(tmp) then
-			del(tmp)
-			self.hooks[obj] = nil
-		end
+		self.hooks[obj][method] = nil
+		self.hooks[obj] = next(self.hooks[obj]) and self.hooks[obj] or nil
 	else
 		registry[self][method] = nil
 

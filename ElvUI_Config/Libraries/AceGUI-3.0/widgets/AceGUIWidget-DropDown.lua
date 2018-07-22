@@ -1,42 +1,39 @@
 --[[ $Id: AceGUIWidget-DropDown.lua 1116 2014-10-12 08:15:46Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
-local AceCore = LibStub("AceCore-3.0")
-
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
 local pairs, ipairs, type = pairs, ipairs, type
-local tsort, tinsert, tgetn, tsetn = table.sort, table.insert, table.getn, table.setn
+local tsort, tinsert, getn, setn = table.sort, table.insert, table.getn, table.setn
 local format = string.format
 
 -- WoW APIs
 local PlaySound = PlaySound
 local UIParent, CreateFrame = UIParent, CreateFrame
-local _G = AceCore._G
+local _G = _G
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
 -- GLOBALS: CLOSE
 
-local function fixlevels(parent,...)
-	local i = 1
-	local child = arg[i]
-	while child do
-		child:SetFrameLevel(parent:GetFrameLevel()+1)
-		fixlevels(child, child:GetChildren())
-		i = i + 1
+local function fixlevels(parent, ...)
+	local child
+	local level = parent:GetFrameLevel() + 1
+
+	for i = 1, arg.n do
 		child = arg[i]
+		child:SetFrameLevel(level)
+		fixlevels(child)
 	end
 end
 
 local function fixstrata(strata, parent, ...)
-	local i = 1
-	local child = arg[i]
+	local child
 	parent:SetFrameStrata(strata)
-	while child do
-		fixstrata(strata, child, child:GetChildren())
-		i = i + 1
+
+	for i = 1, arg.n do
 		child = arg[i]
+		fixstrata(strata, child)
 	end
 end
 
@@ -107,6 +104,7 @@ do
 		end
 		child:ClearAllPoints()
 		child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
+--		child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", self.slider:IsShown() and -12 or 0, offset)
 		status.offset = offset
 		status.scrollvalue = value
 	end
@@ -150,6 +148,7 @@ do
 			if value < 1000 then
 				child:ClearAllPoints()
 				child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
+--				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, offset)
 				status.offset = offset
 			end
 		end
@@ -172,7 +171,7 @@ do
 	local function AddItem(self, item)
 		tinsert(self.items, item)
 
-		local h = tgetn(self.items) * 16
+		local h = getn(self.items) * 16
 		self.itemFrame:SetHeight(h)
 		self.frame:SetHeight(min(h + 34, self.maxHeight)) -- +34: 20 for scrollFrame placement (10 offset) and +14 for item placement
 
@@ -223,7 +222,7 @@ do
 			AceGUI:Release(item)
 			items[i] = nil
 		end
-		tsetn(items,0)
+		setn(items, 0)
 	end
 
 	-- exported
@@ -325,6 +324,7 @@ do
 		scrollFrame:SetWidth(defaultWidth - 12)
 		scrollFrame:SetHeight(self.maxHeight - 24)
 		scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -12)
+--		scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 12)
 		scrollFrame:EnableMouseWheel(true)
 		scrollFrame:SetScript("OnMouseWheel", OnMouseWheel)
 		scrollFrame:SetScript("OnSizeChanged", OnSizeChanged)
@@ -333,6 +333,7 @@ do
 
 		itemFrame:SetWidth(defaultWidth - 12)
 		itemFrame:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 0, 0)
+--		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -12, 0)
 		itemFrame:SetHeight(400)
 		itemFrame:SetToplevel(true)
 		itemFrame:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -436,20 +437,17 @@ do
 		self:SetText(text)
 	end
 
-	local function OnItemValueChanged(this, event, _, checked)
+	local function OnItemValueChanged(this, event, checked)
 		local self = this.userdata.obj
 
 		if self.multiselect then
-			self:Fire("OnValueChanged", 2, this.userdata.value, checked)
+			self:Fire("OnValueChanged", this.userdata.value, checked)
 			ShowMultiText(self)
 		else
 			if checked then
 				self:SetValue(this.userdata.value)
-				self:Fire("OnValueChanged", 1, this.userdata.value)
-				this:SetValue(false)
+				self:Fire("OnValueChanged", this.userdata.value)
 			else
-				self:SetValue(nil)
-				self:Fire("OnValueChanged", 1, nil)
 				this:SetValue(true)
 			end
 			if self.open then
@@ -468,7 +466,6 @@ do
 		pullout:SetCallback("OnClose", OnPulloutClose)
 		pullout:SetCallback("OnOpen", OnPulloutOpen)
 		self.pullout.frame:SetFrameLevel(self.frame:GetFrameLevel() + 1)
-		local frame = self.pullout.frame
 		fixlevels(self.pullout.frame, self.pullout.frame:GetChildren())
 
 		self:SetHeight(44)
@@ -618,7 +615,7 @@ do
 				AddListItem(self, key, list[key], itemType)
 				sortlist[i] = nil
 			end
-			tsetn(sortlist,0)
+			setn(sortlist, 0)
 		else
 			for i, key in ipairs(order) do
 				AddListItem(self, key, list[key], itemType)

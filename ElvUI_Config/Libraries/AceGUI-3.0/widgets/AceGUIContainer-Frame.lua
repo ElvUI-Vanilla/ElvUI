@@ -1,15 +1,13 @@
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "Frame", 24
+local Type, Version = "Frame", 25
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local AceCore = LibStub("AceCore-3.0")
-local wipe = AceCore.wipe
-
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
+local wipe = table.wipe
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -25,6 +23,10 @@ Scripts
 local function Button_OnClick()
 	PlaySound("gsTitleOptionExit")
 	this.obj:Hide()
+end
+
+local function Frame_OnShow()
+	this.obj:Fire("OnShow")
 end
 
 local function Frame_OnClose()
@@ -85,7 +87,7 @@ local methods = {
 		self:SetStatusText()
 		self:ApplyStatus()
 		self:Show()
-		self:EnableResize(true)
+        self:EnableResize(true)
 	end,
 
 	["OnRelease"] = function(self)
@@ -154,7 +156,7 @@ local methods = {
 			frame:SetPoint("TOP", UIParent, "BOTTOM", 0, status.top)
 			frame:SetPoint("LEFT", UIParent, "LEFT", status.left, 0)
 		else
-			frame:SetPoint("CENTER", UIParent)
+			frame:SetPoint("CENTER", 0, 0)
 		end
 	end
 }
@@ -188,6 +190,7 @@ local function Constructor()
 	frame:SetBackdropColor(0, 0, 0, 1)
 	frame:SetMinResize(400, 200)
 	frame:SetToplevel(true)
+	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
@@ -245,7 +248,6 @@ local function Constructor()
 	titlebg_r:SetWidth(30)
 	titlebg_r:SetHeight(40)
 
-	-- bottom right sizer
 	local sizer_se = CreateFrame("Frame", nil, frame)
 	sizer_se:SetPoint("BOTTOMRIGHT", 0, 0)
 	sizer_se:SetWidth(25)
@@ -255,9 +257,20 @@ local function Constructor()
 	sizer_se:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
 
 	local line1 = sizer_se:CreateTexture(nil, "BACKGROUND")
-	line1:SetPoint("BOTTOMRIGHT", -10, 10)
-	line1:SetTexture("Interface\\Cursor\\Item")
-	line1:SetTexCoord(1, 0, 1, 0)
+	line1:SetWidth(14)
+	line1:SetHeight(14)
+	line1:SetPoint("BOTTOMRIGHT", -8, 8)
+	line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+	local x = 0.1 * 14/17
+	line1:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
+
+	local line2 = sizer_se:CreateTexture(nil, "BACKGROUND")
+	line2:SetWidth(8)
+	line2:SetHeight(8)
+	line2:SetPoint("BOTTOMRIGHT", -8, 8)
+	line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+	local x = 0.1 * 8/17
+	line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 
 	local sizer_s = CreateFrame("Frame", nil, frame)
 	sizer_s:SetPoint("BOTTOMRIGHT", -25, 0)
@@ -278,7 +291,6 @@ local function Constructor()
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", 17, -27)
-	--content:SetPoint("BOTTOMRIGHT", -17, 40)
 
 	local widget = {
 		localstatus = {},

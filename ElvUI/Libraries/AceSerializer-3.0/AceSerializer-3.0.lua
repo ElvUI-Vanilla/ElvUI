@@ -116,8 +116,9 @@ local serializeTbl = { "^1" }	-- "^1" = Hi, I'm data serialized by AceSerializer
 function AceSerializer:Serialize(...)
 	local nres = 1
 
-	for i = 1, arg.n do
-		nres = SerializeValue(arg[i], serializeTbl, nres)
+	for i=1,arg.n do
+		local v = arg[i]
+		nres = SerializeValue(v, serializeTbl, nres)
 	end
 
 	serializeTbl[nres+1] = "^^"	-- "^^" = End of serialized data

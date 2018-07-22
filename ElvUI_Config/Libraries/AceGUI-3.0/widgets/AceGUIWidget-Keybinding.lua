@@ -38,10 +38,31 @@ local function Keybinding_OnHide()
 	self.waitingForKey = nil
 end
 
+local function Keybinding_OnClick()
+	if arg1 == "LeftButton" or arg1 == "RightButton" then
+		local self = this.obj
+		if self.waitingForKey then
+			this:EnableKeyboard(false)
+			this:EnableMouseWheel(false)
+			self.msgframe:Hide()
+			this:UnlockHighlight()
+			self.waitingForKey = nil
+		else
+			this:EnableKeyboard(true)
+			this:EnableMouseWheel(true)
+			self.msgframe:Show()
+			this:LockHighlight()
+			self.waitingForKey = true
+		end
+	end
+	AceGUI:ClearFocus()
+end
+
 local ignoreKeys = {
 	["BUTTON1"] = true, ["BUTTON2"] = true,
 	["UNKNOWN"] = true,
-	["SHIFT"] = true, ["CTRL"] = true, ["ALT"] = true,
+	["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
+	["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
 }
 local function Keybinding_OnKeyDown()
 	local self = this.obj
@@ -70,23 +91,14 @@ local function Keybinding_OnKeyDown()
 
 		if not self.disabled then
 			self:SetKey(keyPressed)
-			self:Fire("OnKeyChanged", 1, keyPressed)
+			self:Fire("OnKeyChanged", keyPressed)
 		end
 	end
 end
 
-local function Keybinding_OnMouseDown()
-	getglobal(this:GetName().."Left"):SetTexture("Interface\\Buttons\\UI-Panel-Button-Down");
-	getglobal(this:GetName().."Middle"):SetTexture("Interface\\Buttons\\UI-Panel-Button-Down");
-	getglobal(this:GetName().."Right"):SetTexture("Interface\\Buttons\\UI-Panel-Button-Down");
-end
-
 local function Keybinding_OnMouseUp()
-	getglobal(this:GetName().."Left"):SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
-	getglobal(this:GetName().."Middle"):SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
-	getglobal(this:GetName().."Right"):SetTexture("Interface\\Buttons\\UI-Panel-Button-Up");
-	local self = this.obj
 	if MouseIsOver(this) and not self.disabled then
+		local self = this.obj
 		if self.waitingForKey then
 			if arg1 ~= "LeftButton" and arg1 ~= "RightButton" then
 				Keybinding_OnKeyDown()
@@ -105,6 +117,19 @@ local function Keybinding_OnMouseUp()
 		end
 	end
 	AceGUI:ClearFocus()
+end
+
+local function Keybinding_OnMouseDown()
+	if arg1 == "LeftButton" or arg1 == "RightButton" then
+		return
+	elseif arg1 == "MiddleButton" then
+		arg1 = "BUTTON3"
+	elseif arg1 == "Button4" then
+		arg1 = "BUTTON4"
+	elseif arg1 == "Button5" then
+		arg1 = "BUTTON5"
+	end
+	Keybinding_OnKeyDown()
 end
 
 local function Keybinding_OnMouseWheel()
@@ -198,18 +223,17 @@ local function Constructor()
 
 	button:EnableMouse(true)
 	button:EnableMouseWheel(false)
+	button:RegisterForClicks("AnyDown")
 	button:SetScript("OnEnter", Control_OnEnter)
 	button:SetScript("OnLeave", Control_OnLeave)
-
-	button:SetScript("OnKeyDown", Keybinding_OnKeyDown)
-	button:RegisterForClicks("AnyDown","AnyUp")
-	-- Ace3v: RegisterForClicks means OnClick will not be triggered, so use OnKeyDown and OnKeyUp
-	button:SetScript("OnMouseDown", Keybinding_OnMouseDown)
+--	button:SetScript("OnClick", Keybinding_OnClick)
 	button:SetScript("OnMouseUp", Keybinding_OnMouseUp)
+	button:SetScript("OnKeyDown", Keybinding_OnKeyDown)
+	button:SetScript("OnMouseDown", Keybinding_OnMouseDown)
 	button:SetScript("OnMouseWheel", Keybinding_OnMouseWheel)
 	button:SetScript("OnHide", Keybinding_OnHide)
-	button:SetPoint("BOTTOMLEFT",0,0)
-	button:SetPoint("BOTTOMRIGHT",0,0)
+	button:SetPoint("BOTTOMLEFT", 0, 0)
+	button:SetPoint("BOTTOMRIGHT", 0, 0)
 	button:SetHeight(24)
 	button:EnableKeyboard(false)
 
@@ -218,8 +242,8 @@ local function Constructor()
 	text:SetPoint("RIGHT", -7, 0)
 
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-	label:SetPoint("TOPLEFT",0,0)
-	label:SetPoint("TOPRIGHT",0,0)
+	label:SetPoint("TOPLEFT", 0, 0)
+	label:SetPoint("TOPRIGHT", 0, 0)
 	label:SetJustifyH("CENTER")
 	label:SetHeight(18)
 

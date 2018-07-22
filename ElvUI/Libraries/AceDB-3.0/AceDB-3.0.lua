@@ -40,22 +40,19 @@
 -- end
 -- @class file
 -- @name AceDB-3.0.lua
--- @release $Id: AceDB-3.0.lua 1142 2016-07-11 08:36:19Z nevcairiel $
+-- @release $Id: AceDB-3.0.lua 1124 2014-10-27 21:00:07Z funkydude $
 local ACEDB_MAJOR, ACEDB_MINOR = "AceDB-3.0", 26
 local AceDB, oldminor = LibStub:NewLibrary(ACEDB_MAJOR, ACEDB_MINOR)
 
 if not AceDB then return end -- No upgrade needed
 
-local AceCore = LibStub("AceCore-3.0")
-local new, del = AceCore.new, AceCore.del
-
 -- Lua APIs
 local type, pairs, next, error = type, pairs, next, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
-local format, lower = string.format, string.lower
+local format = string.format
 
 -- WoW APIs
-local _G = AceCore._G
+local _G = _G
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -68,13 +65,6 @@ local CallbackHandler
 local CallbackDummy = { Fire = function() end }
 
 local DBObjectLib = {}
-
--- Ace3v: for all recursive functions we must declare the iterator as local again, this step is necessary in vanilla
--- Example:
---   for k,v in pairs(table) do
---       local v = v
---       ...
-
 
 --[[-------------------------------------------------------------------------
 	AceDB Utility Functions
@@ -220,35 +210,36 @@ end
 -- Metatable to handle the dynamic creation of sections and copying of sections.
 local dbmt = {
 	__index = function(t, section)
-		local keys = rawget(t, "keys")
-		local key = keys[section]
-		if key then
-			local defaultTbl = rawget(t, "defaults")
-			local defaults = defaultTbl and defaultTbl[section]
+			local keys = rawget(t, "keys")
+			local key = keys[section]
+			if key then
+				local defaultTbl = rawget(t, "defaults")
+				local defaults = defaultTbl and defaultTbl[section]
 
-			if section == "profile" then
-				if initSection(t, section, "profiles", key, defaults) then
-					-- Callback: OnNewProfile, database, newProfileKey
-					t.callbacks:Fire("OnNewProfile", 2, t, key)
+				if section == "profile" then
+					local new = initSection(t, section, "profiles", key, defaults)
+					if new then
+						-- Callback: OnNewProfile, database, newProfileKey
+						t.callbacks:Fire("OnNewProfile", t, key)
+					end
+				elseif section == "profiles" then
+					local sv = rawget(t, "sv")
+					if not sv.profiles then sv.profiles = {} end
+					rawset(t, "profiles", sv.profiles)
+				elseif section == "global" then
+					local sv = rawget(t, "sv")
+					if not sv.global then sv.global = {} end
+					if defaults then
+						copyDefaults(sv.global, defaults)
+					end
+					rawset(t, section, sv.global)
+				else
+					initSection(t, section, section, key, defaults)
 				end
-			elseif section == "profiles" then
-				local sv = rawget(t, "sv")
-				if not sv.profiles then sv.profiles = {} end
-				rawset(t, "profiles", sv.profiles)
-			elseif section == "global" then
-				local sv = rawget(t, "sv")
-				if not sv.global then sv.global = {} end
-				if defaults then
-					copyDefaults(sv.global, defaults)
-				end
-				rawset(t, section, sv.global)
-			else
-				initSection(t, section, section, key, defaults)
 			end
-		end
 
-		return rawget(t, section)
-	end
+			return rawget(t, section)
+		end
 }
 
 local function validateDefaults(defaults, keyTbl, offset)
@@ -273,10 +264,11 @@ local realmKey = GetRealmName()
 local charKey = UnitName("player") .. " - " .. realmKey
 local _, classKey = UnitClass("player")
 local _, raceKey = UnitRace("player")
-local _, factionKey = UnitFactionGroup("player")
--- Ace3v: the faction key may error when in GM mode
+local factionKey = UnitFactionGroup("player")
 factionKey = factionKey or "Others"
-local localeKey = lower(GetLocale())
+local factionrealmKey = factionKey .. " - " .. realmKey
+local factionrealmregionKey = factionrealmKey .. " - " .. string.upper(string.sub(GetCVar("realmList"), 1, 2))
+local localeKey = string.lower(GetLocale())
 
 -- Actual database initialization function
 local function initdb(sv, defaults, defaultProfile, olddb, parent)
@@ -312,7 +304,8 @@ local function initdb(sv, defaults, defaultProfile, olddb, parent)
 		["class"] = classKey,
 		["race"] = raceKey,
 		["faction"] = factionKey,
-		["factionrealm"] = factionKey .. " - " .. realmKey,
+		["factionrealm"] = factionrealmKey,
+		["factionrealmregion"] = factionrealmregionKey,
 		["profile"] = profileKey,
 		["locale"] = localeKey,
 		["global"] = true,
@@ -369,7 +362,7 @@ end
 local function logoutHandler()
 	if event == "PLAYER_LOGOUT" then
 		for db in pairs(AceDB.db_registry) do
-			db.callbacks:Fire("OnDatabaseShutdown", 1, db)
+			db.callbacks:Fire("OnDatabaseShutdown", db)
 			db:RegisterDefaults(nil)
 
 			-- cleanup sections that are empty without defaults
@@ -449,7 +442,7 @@ function DBObjectLib:SetProfile(name)
 	local defaults = self.defaults and self.defaults.profile
 
 	-- Callback: OnProfileShutdown, database
-	self.callbacks:Fire("OnProfileShutdown", 1, self)
+	self.callbacks:Fire("OnProfileShutdown", self)
 
 	if oldProfile and defaults then
 		-- Remove the defaults from the old profile
@@ -473,7 +466,7 @@ function DBObjectLib:SetProfile(name)
 	end
 
 	-- Callback: OnProfileChanged, database, newProfileKey
-	self.callbacks:Fire("OnProfileChanged", 2, self, name)
+	self.callbacks:Fire("OnProfileChanged", self, name)
 end
 
 --- Returns a table with the names of the existing profiles in the database.
@@ -549,7 +542,7 @@ function DBObjectLib:DeleteProfile(name, silent)
 	end
 
 	-- Callback: OnProfileDeleted, database, profileKey
-	self.callbacks:Fire("OnProfileDeleted", 2, self, name)
+	self.callbacks:Fire("OnProfileDeleted", self, name)
 end
 
 --- Copies a named profile into the current profile, overwriting any conflicting
@@ -585,7 +578,7 @@ function DBObjectLib:CopyProfile(name, silent)
 	end
 
 	-- Callback: OnProfileCopied, database, sourceProfileKey
-	self.callbacks:Fire("OnProfileCopied", 2, self, name)
+	self.callbacks:Fire("OnProfileCopied", self, name)
 end
 
 --- Resets the current profile to the default values (if specified).
@@ -612,7 +605,7 @@ function DBObjectLib:ResetProfile(noChildren, noCallbacks)
 
 	-- Callback: OnProfileReset, database
 	if not noCallbacks then
-		self.callbacks:Fire("OnProfileReset", 2, self, self.keys["profile"])
+		self.callbacks:Fire("OnProfileReset", self)
 	end
 end
 
@@ -643,9 +636,9 @@ function DBObjectLib:ResetDB(defaultProfile)
 	end
 
 	-- Callback: OnDatabaseReset, database
-	self.callbacks:Fire("OnDatabaseReset", 1, self)
+	self.callbacks:Fire("OnDatabaseReset", self)
 	-- Callback: OnProfileChanged, database, profileKey
-	self.callbacks:Fire("OnProfileChanged", 2, self, self.keys["profile"])
+	self.callbacks:Fire("OnProfileChanged", self, self.keys["profile"])
 
 	return self
 end

@@ -14,37 +14,30 @@ REQUIRES: AceConsole-3.0 for command registration (loaded on demand)
 
 -- TODO: plugin args
 
+local cfgreg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigCmd-3.0", 13
+local MAJOR, MINOR = "AceConfigCmd-3.0", 14
 local AceConfigCmd = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigCmd then return end
 
-local AceCore = LibStub("AceCore-3.0")
-local Dispatchers = AceCore.Dispatchers
-local strtrim = AceCore.strtrim
---local strsplit = AceCore.strsplit
-local new, del = AceCore.new, AceCore.del
-local wipe = AceCore.wipe
-
 AceConfigCmd.commands = AceConfigCmd.commands or {}
-AceConfigCmd.embeds = AceConfigCmd.embeds or {}
 local commands = AceConfigCmd.commands
 
-local cfgreg = LibStub("AceConfigRegistry-3.0")
 local AceConsole -- LoD
 local AceConsoleName = "AceConsole-3.0"
 
 -- Lua APIs
-local strbyte, strsub = string.byte, string.sub
-local strlen, strupper, strlower = string.len, string.upper, string.lower
-local strfind, strgfind, strgsub = string.find, string.gfind, string.gsub
-
-local format = string.format
-local tsort, tinsert, tgetn, tremove = table.sort, table.insert, table.getn, table.remove
+local strsub, strsplit, strlower, strmatch, strtrim = string.sub, string.split, string.lower, string.match, string.trim
+local strgsub, strupper, strfind, strlen, strbyte, strgmatch = string.gsub, string.upper, string.find, string.len, string.byte, string.gmatch
+local format, tonumber, tostring = string.format, tonumber, tostring
+local tsort, tinsert, getn = table.sort, table.insert, table.getn
+local fmod = math.fmod
+local select, pairs, next, type = select, pairs, next, type
+local error, assert = error, assert
 
 -- WoW APIs
-local _G = AceCore._G
+local _G = _G
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -69,7 +62,17 @@ local handlermsg = "expected a table"
 local functypes = {["function"]=true, ["string"]=true}
 local funcmsg = "expected function or member name"
 
-local pickfirstset = AceCore.pickfirstset
+
+-- pickfirstset() - picks the first non-nil value and returns it
+
+local function pickfirstset(...)
+	for i=1,arg.n do
+		if arg[i]~=nil then
+			return arg[i]
+		end
+	end
+end
+
 
 -- err() - produce real error() regarding malformed options tables etc
 
@@ -89,26 +92,23 @@ end
 
 -- callmethod() - call a given named method (e.g. "get", "set") with given arguments
 
-
-
-local function callmethod(info, inputpos, tab, methodtype, argc, a1, a2, a3, a4)
+local function callmethod(info, inputpos, tab, methodtype, ...)
 	local method = info[methodtype]
 	if not method then
 		err(info, inputpos, "'"..methodtype.."': not set")
 	end
 
-	argc = argc or 0
 	info.arg = tab.arg
 	info.option = tab
 	info.type = tab.type
 
 	if type(method)=="function" then
-		return Dispatchers[argc+1](method, info, a1, a2, a3, a4)
+		return method(info, unpack(arg))
 	elseif type(method)=="string" then
 		if type(info.handler[method])~="function" then
 			err(info, inputpos, "'"..methodtype.."': '"..method.."' is not a member function of "..tostring(info.handler))
 		end
-		return Dispatchers[argc+2](info.handler[method], info.handler, info, a1, a2, a3, a4)
+		return info.handler[method](info.handler, info, unpack(arg))
 	else
 		assert(false)	-- type should have already been checked on read
 	end
@@ -116,8 +116,7 @@ end
 
 -- callfunction() - call a given named function (e.g. "name", "desc") with given arguments
 
--- Ace3v: the variable arguments are currently unused, so we removed it
-local function callfunction(info, tab, methodtype)
+local function callfunction(info, tab, methodtype, ...)
 	local method = tab[methodtype]
 
 	info.arg = tab.arg
@@ -125,18 +124,21 @@ local function callfunction(info, tab, methodtype)
 	info.type = tab.type
 
 	if type(method)=="function" then
-		return method(info)
+		if arg.n > 0 then
+			return method(info, unpack(arg))
+		else
+			return method(info)
+		end
 	else
 		assert(false) -- type should have already been checked on read
 	end
 end
 
 -- do_final() - do the final step (set/execute) along with validation and confirmation
--- Ace3v: experimental
--- @param argc	number of variable arguments
-local function do_final(info, inputpos, tab, methodtype, argc, a1, a2, a3, a4)	-- currently maximum 4 arguments
+
+local function do_final(info, inputpos, tab, methodtype, ...)
 	if info.validate then
-		local res = callmethod(info,inputpos,tab,"validate",argc,a1,a2,a3,a4)
+		local res = callmethod(info,inputpos,tab,"validate",unpack(arg))
 		if type(res)=="string" then
 			usererr(info, inputpos, "'"..strsub(info.input, inputpos).."' - "..res)
 			return
@@ -144,7 +146,7 @@ local function do_final(info, inputpos, tab, methodtype, argc, a1, a2, a3, a4)	-
 	end
 	-- console ignores .confirm
 
-	callmethod(info,inputpos,tab,methodtype,argc,a1,a2,a3,a4)
+	callmethod(info,inputpos,tab,methodtype, unpack(arg))
 end
 
 
@@ -167,6 +169,8 @@ end
 
 
 -- iterateargs(tab) - custom iterator that iterates both t.args and t.plugins.*
+local dummytable={}
+
 local function iterateargs(tab)
 	if not tab.plugins then
 		return pairs(tab.args)
@@ -191,21 +195,17 @@ local function iterateargs(tab)
 	end
 end
 
-local function getValueFromTab(info, inputpos, tab, key)
-	local v = tab[key]
-	if type(v) == "function" or type(v) == "string" then
-		info[key] = v
-		v = callmethod(info, inputpos, tab, key)
-		info[key] = nil
-	end
-	return v
-end
-
 local function checkhidden(info, inputpos, tab)
 	if tab.cmdHidden~=nil then
 		return tab.cmdHidden
 	end
-	return getValueFromTab(info, inputpos, tab, "hidden")
+	local hidden = tab.hidden
+	if type(hidden) == "function" or type(hidden) == "string" then
+		info.hidden = hidden
+		hidden = callmethod(info, inputpos, tab, 'hidden')
+		info.hidden = nil
+	end
+	return hidden
 end
 
 local function showhelp(info, inputpos, tab, depth, noHead)
@@ -213,8 +213,8 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 		print("|cff33ff99"..info.appName.."|r: Arguments to |cffffff78/"..info[0].."|r "..strsub(info.input,1,inputpos-1)..":")
 	end
 
-	local sortTbl = new()	-- [1..n]=name
-	local refTbl = new()	-- [name]=tableref
+	local sortTbl = {}	-- [1..n]=name
+	local refTbl = {}   -- [name]=tableref
 
 	for k,v in iterateargs(tab) do
 		if not refTbl[k] then	-- a plugin overriding something in .args
@@ -247,7 +247,7 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 		return o1<o2
 	end)
 
-	for i = 1, tgetn(sortTbl) do
+	for i = 1, getn(sortTbl) do
 		local k = sortTbl[i]
 		local v = refTbl[k]
 		if not checkhidden(info, inputpos, v) then
@@ -260,7 +260,7 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 				if type(desc) == "function" then
 					desc = callfunction(info, v, 'desc')
 				end
-				if v.type == "group" and pickfirstset(3, v.cmdInline, v.inline, false) then
+				if v.type == "group" and pickfirstset(v.cmdInline, v.inline, false) then
 					print("  "..(desc or name)..":")
 					local oldhandler,oldhandler_at = getparam(info, inputpos, v, depth, "handler", handlertypes, handlermsg)
 					showhelp(info, inputpos, v, depth, true)
@@ -272,9 +272,8 @@ local function showhelp(info, inputpos, tab, depth, noHead)
 			end
 		end
 	end
-	del(sortTbl)	-- Ace3v: release the tables
-	del(refTbl)
 end
+
 
 local function keybindingValidateFunc(text)
 	if text == nil or text == "NONE" then
@@ -376,7 +375,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			if not(type(k)=="string" and type(v)=="table" and type(v.type)=="string") then err(info,inputpos, "options table child '"..tostring(k).."' is malformed") end
 
 			-- is this child an inline group? if so, traverse into it
-			if v.type=="group" and pickfirstset(3, v.cmdInline, v.inline, false) then
+			if v.type=="group" and pickfirstset(v.cmdInline, v.inline, false) then
 				tinsert(info,k)
 				if handle(info, inputpos, v, depth+1, true)==false then
 					tremove(info)
@@ -419,21 +418,16 @@ local function handle(info, inputpos, tab, depth, retfalse)
 	elseif tab.type=="input" then
 		------------ input --------------------------------------------
 
-		if str=="" and tab.nullable == false then
-			usererr(info, inputpos, "'"..str.."' - " .. L["invalid input"])
-			return
-		end
-
 		local res = true
 		if tab.pattern then
 			if not(type(tab.pattern)=="string") then err(info, inputpos, "'pattern' - expected a string") end
-			if not strfind(str, tab.pattern) then
+			if not strmatch(str, tab.pattern) then
 				usererr(info, inputpos, "'"..str.."' - " .. L["invalid input"])
 				return
 			end
 		end
 
-		do_final(info, inputpos, tab, "set", 1, str)
+		do_final(info, inputpos, tab, "set", str)
 
 
 
@@ -472,63 +466,47 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			return
 		end
 
-		do_final(info, inputpos, tab, "set", 1, b)
+		do_final(info, inputpos, tab, "set", b)
 
 
 	elseif tab.type=="range" then
 		------------ range --------------------------------------------
-		local str = strtrim(strlower(str))
-		if str == "" then
-			-- TODO: Show current value
-			return
-		end
-
 		local val = tonumber(str)
 		if not val then
 			usererr(info, inputpos, "'"..str.."' - "..L["expected number"])
 			return
 		end
-
-		local step = getValueFromTab(info, inputpos, tab, "step")
-		local min = getValueFromTab(info, inputpos, tab, "min")
-
-		if type(step)=="number" then
-			val = min + math.floor((val-min)/step) * step
+		if type(info.step)=="number" then
+			val = val- fmod(val, info.step)
 		end
-
-		if type(min)=="number" and val<min then
-			usererr(info, inputpos, val.." - "..format(L["must be equal to or higher than %s"], tostring(min)) )
+		if type(info.min)=="number" and val<info.min then
+			usererr(info, inputpos, val.." - "..format(L["must be equal to or higher than %s"], tostring(info.min)) )
+			return
+		end
+		if type(info.max)=="number" and val>info.max then
+			usererr(info, inputpos, val.." - "..format(L["must be equal to or lower than %s"], tostring(info.max)) )
 			return
 		end
 
-		local max = getValueFromTab(info, inputpos, tab, "max")
-		if type(max)=="number" and val>max then
-			usererr(info, inputpos, val.." - "..format(L["must be equal to or lower than %s"], tostring(max)) )
-			return
-		end
-
-		do_final(info, inputpos, tab, "set", 1, val)
+		do_final(info, inputpos, tab, "set", val)
 
 
 	elseif tab.type=="select" then
 		------------ select ------------------------------------
 		local str = strtrim(strlower(str))
 
-		local values = getValueFromTab(info, inputpos, tab, "values")
+		local values = tab.values
+		if type(values) == "function" or type(values) == "string" then
+			info.values = values
+			values = callmethod(info, inputpos, tab, "values")
+			info.values = nil
+		end
 
 		if str == "" then
-			-- Ace3v: it is possbile to not have a current value
-			--        we do this only for select but not for multiselect
-			local b = tab.get
-			if type(b) == "function" or type(b) == "string" then
-				b = callmethod(info, inputpos, tab, "get")
-			else
-				b = nil
-			end
-
+			local b = callmethod(info, inputpos, tab, "get")
 			local fmt = "|cffffff78- [%s]|r %s"
 			local fmt_sel = "|cffffff78- [%s]|r %s |cffff0000*|r"
-			print(L["Options for |cffffff78"..info[tgetn(info)].."|r:"])
+			print(L["Options for |cffffff78"..info[getn(info)].."|r:"])
 			for k, v in pairs(values) do
 				if b == k then
 					print(format(fmt_sel, k, v))
@@ -536,7 +514,6 @@ local function handle(info, inputpos, tab, depth, retfalse)
 					print(format(fmt, k, v))
 				end
 			end
-			if tab.valuesTableDestroyable then del(values) end
 			return
 		end
 
@@ -548,39 +525,42 @@ local function handle(info, inputpos, tab, depth, retfalse)
 				break
 			end
 		end
-		if tab.valuesTableDestroyable then del(values) end
 		if not ok then
 			usererr(info, inputpos, "'"..str.."' - "..L["unknown selection"])
 			return
 		end
 
-		do_final(info, inputpos, tab, "set", 1, str)
+		do_final(info, inputpos, tab, "set", str)
 
 	elseif tab.type=="multiselect" then
 		------------ multiselect -------------------------------------------
 		local str = strtrim(strlower(str))
 
-		local values = getValueFromTab(info, inputpos, tab, "values")
+		local values = tab.values
+		if type(values) == "function" or type(values) == "string" then
+			info.values = values
+			values = callmethod(info, inputpos, tab, "values")
+			info.values = nil
+		end
 
 		if str == "" then
 			local fmt = "|cffffff78- [%s]|r %s"
 			local fmt_sel = "|cffffff78- [%s]|r %s |cffff0000*|r"
-			print(L["Options for |cffffff78"..info[tgetn(info)].."|r (multiple possible):"])
+			print(L["Options for |cffffff78"..info[getn(info)].."|r (multiple possible):"])
 			for k, v in pairs(values) do
-				if callmethod(info, inputpos, tab, "get", 1, k) then
+				if callmethod(info, inputpos, tab, "get", k) then
 					print(format(fmt_sel, k, v))
 				else
 					print(format(fmt, k, v))
 				end
 			end
-			if tab.valuesTableDestroyable then del(values) end
 			return
 		end
 
 		--build a table of the selections, checking that they exist
 		--parse for =on =off =default in the process
 		--table will be key = true for options that should toggle, key = [on|off|default] for options to be set
-		local sels = new()
+		local sels = {}
 		for v in strgfind(str, "[^ ]+") do
 			--parse option=on etc
 			local _, _, opt, val = strfind(v, '(.+)=(.+)')
@@ -598,7 +578,6 @@ local function handle(info, inputpos, tab, depth, retfalse)
 					break
 				end
 			end
-			if tab.valuesTableDestroyable then del(values) end
 
 			if not ok then
 				usererr(info, inputpos, "'"..opt.."' - "..L["unknown selection"])
@@ -616,7 +595,6 @@ local function handle(info, inputpos, tab, depth, retfalse)
 					else
 						usererr(info, inputpos, format(L["'%s' '%s' - expected 'on' or 'off', or no argument to toggle."], v, val))
 					end
-					del(sels)
 					return
 				end
 			else
@@ -630,7 +608,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 
 			if (val == true) then
 				--toggle the option
-				local b = callmethod(info, inputpos, tab, "get", 1, opt)
+				local b = callmethod(info, inputpos, tab, "get", opt)
 
 				if tab.tristate then
 					--cycle in true, nil, false order
@@ -656,9 +634,8 @@ local function handle(info, inputpos, tab, depth, retfalse)
 				end
 			end
 
-			do_final(info, inputpos, tab, "set", 2, opt, newval)
+			do_final(info, inputpos, tab, "set", opt, newval)
 		end
-		del(sels)
 
 
 	elseif tab.type=="color" then
@@ -671,7 +648,12 @@ local function handle(info, inputpos, tab, depth, retfalse)
 
 		local _, r, g, b, a
 
-		local hasAlpha = getValueFromTab(info, inputpos, tab, 'hasAlpha')
+		local hasAlpha = tab.hasAlpha
+		if type(hasAlpha) == "function" or type(hasAlpha) == "string" then
+			info.hasAlpha = hasAlpha
+			hasAlpha = callmethod(info, inputpos, tab, 'hasAlpha')
+			info.hasAlpha = nil
+		end
 
 		if hasAlpha then
 			if strlen(str) == 8 and strfind(str, "^%x*$")  then
@@ -726,7 +708,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			end
 		end
 
-		do_final(info, inputpos, tab, "set", 4, r,g,b,a)
+		do_final(info, inputpos, tab, "set", r,g,b,a)
 
 	elseif tab.type=="keybinding" then
 		------------ keybinding --------------------------------------------
@@ -741,7 +723,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 			return
 		end
 
-		do_final(info, inputpos, tab, "set", 1, value)
+		do_final(info, inputpos, tab, "set", value)
 
 	elseif tab.type=="description" then
 		------------ description --------------------
@@ -765,15 +747,12 @@ end
 -- -- Show the GUI if no input is supplied, otherwise handle the chat input.
 -- function MyAddon:ChatCommand(input)
 --   -- Assuming "MyOptions" is the appName of a valid options table
---   if not input or input:trim() == "" then
+--   if not input or trim(input) == "" then
 --     LibStub("AceConfigDialog-3.0"):Open("MyOptions")
 --   else
 --     LibStub("AceConfigCmd-3.0").HandleCommand(MyAddon, "mychat", "MyOptions", input)
 --   end
 -- end
--- Ace3v: experimental, user should copy info table if he wanna reuse it outside
---        then handler
-local info_ = {}
 function AceConfigCmd:HandleCommand(slashcmd, appName, input)
 
 	local optgetter = cfgreg:GetOptionsTable(appName)
@@ -782,65 +761,32 @@ function AceConfigCmd:HandleCommand(slashcmd, appName, input)
 	end
 	local options = assert( optgetter("cmd", MAJOR) )
 
-	-- Ace3v: prevent user from using AceConfigCmd as self
-	if self == AceConfigCmd then
-		error([[Usage: HandleCommand("slashcmd", "appName", "input"): 'self' - use your own 'self']], 2)
-	end
+	local info = {   -- Don't try to recycle this, it gets handed off to callbacks and whatnot
+		[0] = slashcmd,
+		appName = appName,
+		options = options,
+		input = input,
+		self = self,
+		handler = self,
+		uiType = "cmd",
+		uiName = MAJOR,
+	}
 
-	--local info = {   -- Don't try to recycle this, it gets handed off to callbacks and whatnot
-	--	[0] = slashcmd,
-	--	appName = appName,
-	--	options = options,
-	--	input = input,
-	--	self = self,
-	--	handler = self,
-	--	uiType = "cmd",
-	--	uiName = MAJOR,
-	--}
-
-	wipe(info_)
-	info_[0] = slashcmd
-	info_.appName = appName
-	info_.options = options
-	info_.input = input
-	info_.self = self
-	info_.handler = self
-	info_.uiType = "cmd"
-	info_.uiName = MAJOR
-
-	handle(info_, 1, options, 0)  -- (info, inputpos, table, depth)
+	handle(info, 1, options, 0)  -- (info, inputpos, table, depth)
 end
 
 --- Utility function to create a slash command handler.
 -- Also registers tab completion with AceTab
 -- @param slashcmd The slash command WITHOUT leading slash (only used for error output)
 -- @param appName The application name as given to `:RegisterOptionsTable()`
-function AceConfigCmd:CreateChatCommand(slashcmd, appName, func)
+function AceConfigCmd:CreateChatCommand(slashcmd, appName)
 	if not AceConsole then
 		AceConsole = LibStub(AceConsoleName)
 	end
-
-	-- Ace3v: prevent user from using AceConfigCmd as self
-	if self == AceConfigCmd then
-		error([[Usage: CreateChatCommand("slashcmd", "appName"[, "func"]): 'self' - use your own 'self']], 2)
-	end
-
-	local t = type(func)
-
-	-- Ace3v: make it possible to call another function
-	local handler
-	if t == "string" then
-		handler = function(input) self[func](self, input, slashcmd, appName) end
-	elseif t ~= "function" then
-		handler = function(input)
-			AceConfigCmd.HandleCommand(self, slashcmd, appName, input)	-- upgradable
-		end
-	else
-		handler = func
-	end
-
-	if AceConsole.RegisterChatCommand(self, slashcmd, handler, true) then
-		-- succesfully registered so lets get the command -> app table in
+	if AceConsole.RegisterChatCommand(self, slashcmd, function(input)
+				AceConfigCmd.HandleCommand(self, slashcmd, appName, input)	-- upgradable
+		end,
+	true) then -- succesfully registered so lets get the command -> app table in
 		commands[slashcmd] = appName
 	end
 end
@@ -851,13 +797,4 @@ end
 -- @return The options table associated with the slash command (or nil if the slash command was not registered)
 function AceConfigCmd:GetChatCommandOptions(slashcmd)
 	return commands[slashcmd]
-end
-
-function AceConfigCmd:Embed(target)
-	target["HandleCommand"] = self["HandleCommand"]
-	target["CreateChatCommand"] = self["CreateChatCommand"]
-end
-
-for addon in pairs(AceConfigCmd.embeds) do
-	AceConfigCmd:Embed(addon)
 end

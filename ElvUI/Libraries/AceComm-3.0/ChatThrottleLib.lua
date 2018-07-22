@@ -20,15 +20,10 @@
 --
 -- Can run as a standalone addon also, but, really, just embed it! :-)
 --
--- LICENSE: ChatThrottleLib is released into the Public Domain
---
 
-local CTL_VERSION = 23
+local CTL_VERSION = 21
 
-local AceCore = LibStub("AceCore-3.0")
-local _G = AceCore._G
-local hooksecurefunc = AceCore.hooksecurefunc
-local wipe = AceCore.wipe
+local _G = _G
 
 if _G.ChatThrottleLib then
 	if _G.ChatThrottleLib.version >= CTL_VERSION then
@@ -69,8 +64,8 @@ ChatThrottleLib.MIN_FPS = 20				-- Reduce output CPS to half (and don't burst) i
 
 
 local setmetatable = setmetatable
+local table_insert = table.insert
 local table_remove = table.remove
-local tinsert = table.insert
 local tostring = tostring
 local GetTime = GetTime
 local math_min = math.min
@@ -78,9 +73,7 @@ local math_max = math.max
 local next = next
 local strlen = string.len
 local GetFramerate = GetFramerate
-local strlower = string.lower
-local unpack,type,pairs,wipe = unpack,type,pairs,wipe
-local UnitInRaid,UnitInParty = UnitInRaid,UnitInParty
+
 
 
 -----------------------------------------------------------------------
@@ -123,20 +116,24 @@ end
 
 -----------------------------------------------------------------------
 -- Recycling bin for pipes
--- A pipe is a plain integer-indexed queue of messages
--- Pipes normally live in Rings of pipes  (3 rings total, one per priority)
+-- A pipe is a plain integer-indexed queue, which also happens to be a ring member
 
 ChatThrottleLib.PipeBin = nil -- pre-v19, drastically different
 local PipeBin = setmetatable({}, {__mode="k"})
 
 local function DelPipe(pipe)
+	for i = getn(pipe), 1, -1 do
+		pipe[i] = nil
+	end
+	pipe.prev = nil
+	pipe.next = nil
+
 	PipeBin[pipe] = true
 end
 
 local function NewPipe()
 	local pipe = next(PipeBin)
 	if pipe then
-		wipe(pipe)
 		PipeBin[pipe] = nil
 		return pipe
 	end
@@ -230,7 +227,7 @@ end
 
 local bMyTraffic = false
 
-function ChatThrottleLib.Hook_SendChatMessage(text, chattype, language, destination)
+function ChatThrottleLib.Hook_SendChatMessage(text, chattype, language, destination, ...)
 	if bMyTraffic then
 		return
 	end
@@ -239,7 +236,7 @@ function ChatThrottleLib.Hook_SendChatMessage(text, chattype, language, destinat
 	self.avail = self.avail - size
 	self.nBypass = self.nBypass + size	-- just a statistic
 end
-function ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destination)
+function ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destination, ...)
 	if bMyTraffic then
 		return
 	end
@@ -266,7 +263,7 @@ function ChatThrottleLib:UpdateAvail()
 		-- First 5 seconds after startup/zoning: VERY hard clamping to avoid irritating the server rate limiter, it seems very cranky then
 		avail = math_min(avail + (newavail*0.1), MAX_CPS*0.5)
 		self.bChoking = true
-	elseif GetFramerate() < self.MIN_FPS then		-- GetFrameRate call takes ~0.002 secs
+	elseif GetFramerate() < self.MIN_FPS then		-- GetFramerate call takes ~0.002 secs
 		avail = math_min(MAX_CPS, avail + newavail*0.5)
 		self.bChoking = true		-- just a statistic
 	else
@@ -285,16 +282,12 @@ end
 
 -----------------------------------------------------------------------
 -- Despooling logic
--- Reminder:
--- - We have 3 Priorities, each containing a "Ring" construct ...
--- - ... made up of N "Pipe"s (1 for each destination/pipename)
--- - and each pipe contains messages
 
 function ChatThrottleLib:Despool(Prio)
 	local ring = Prio.Ring
 	while ring.pos and Prio.avail > ring.pos[1].nSize do
-		local msg = table_remove(ring.pos, 1)
-		if not ring.pos[1] then  -- did we remove last msg in this pipe?
+		local msg = table_remove(Prio.Ring.pos, 1)
+		if not Prio.Ring.pos[1] then
 			local pipe = Prio.Ring.pos
 			Prio.Ring:Remove(pipe)
 			Prio.ByName[pipe.name] = nil
@@ -302,26 +295,15 @@ function ChatThrottleLib:Despool(Prio)
 		else
 			Prio.Ring.pos = Prio.Ring.pos.next
 		end
-		local didSend=false
-		local lowerDest = strlower(msg[3] or "")
-		if lowerDest == "raid" and not UnitInRaid("player") then
-			-- do nothing
-		elseif lowerDest == "party" and not UnitInParty("player") then
-			-- do nothing
-		else
-			Prio.avail = Prio.avail - msg.nSize
-			bMyTraffic = true
-			msg.f(unpack(msg, 1, msg.n))
-			bMyTraffic = false
-			Prio.nTotalSent = Prio.nTotalSent + msg.nSize
-			DelMsg(msg)
-			didSend = true
-		end
-		-- notify caller of delivery (even if we didn't send it)
+		Prio.avail = Prio.avail - msg.nSize
+		bMyTraffic = true
+		msg.f(unpack(msg, 1, msg.n))
+		bMyTraffic = false
+		Prio.nTotalSent = Prio.nTotalSent + msg.nSize
+		DelMsg(msg)
 		if msg.callbackFn then
-			msg.callbackFn (msg.callbackArg, didSend)
+			msg.callbackFn (msg.callbackArg)
 		end
-		-- USER CALLBACK MAY ERROR
 	end
 end
 
@@ -393,6 +375,7 @@ end
 -----------------------------------------------------------------------
 -- Spooling logic
 
+
 function ChatThrottleLib:Enqueue(prioname, pipename, msg)
 	local Prio = self.Prio[prioname]
 	local pipe = Prio.ByName[pipename]
@@ -404,10 +387,12 @@ function ChatThrottleLib:Enqueue(prioname, pipename, msg)
 		Prio.Ring:Add(pipe)
 	end
 
-	tinsert(pipe,msg)
+	table_insert(pipe, msg)
 
 	self.bQueueing = true
 end
+
+
 
 function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, language, destination, queueName, callbackFn, callbackArg)
 	if not self or not prio or not prefix or not text or not self.Prio[prio] then
@@ -433,9 +418,8 @@ function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, languag
 		bMyTraffic = false
 		self.Prio[prio].nTotalSent = self.Prio[prio].nTotalSent + nSize
 		if callbackFn then
-			callbackFn (callbackArg, true)
+			callbackFn (callbackArg)
 		end
-		-- USER CALLBACK MAY ERROR
 		return
 	end
 
@@ -463,17 +447,10 @@ function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, 
 		error('ChatThrottleLib:SendAddonMessage(): callbackFn: expected function, got '..type(callbackFn), 2)
 	end
 
-	local nSize = strlen(text);
+	local nSize = strlen(prefix) + 1 + strlen(text);
 
-	if RegisterAddonMessagePrefix then
-		if nSize>255 then
-			error("ChatThrottleLib:SendAddonMessage(): message length cannot exceed 255 bytes", 2)
-		end
-	else
-		nSize = nSize + strlen(prefix) + 1
-		if nSize>255 then
-			error("ChatThrottleLib:SendAddonMessage(): prefix + message length cannot exceed 254 bytes", 2)
-		end
+	if nSize>255 then
+		error("ChatThrottleLib:SendAddonMessage(): prefix + message length cannot exceed 254 bytes", 2)
 	end
 
 	nSize = nSize + self.MSG_OVERHEAD;
@@ -486,9 +463,8 @@ function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, 
 		bMyTraffic = false
 		self.Prio[prio].nTotalSent = self.Prio[prio].nTotalSent + nSize
 		if callbackFn then
-			callbackFn (callbackArg, true)
+			callbackFn (callbackArg)
 		end
-		-- USER CALLBACK MAY ERROR
 		return
 	end
 
@@ -524,4 +500,5 @@ if(WOWB_VER) then
 	ChatThrottleLib.Frame:RegisterEvent("CHAT_MSG_SAY")
 end
 ]]
+
 

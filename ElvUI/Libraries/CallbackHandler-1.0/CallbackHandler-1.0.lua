@@ -1,4 +1,4 @@
---[[ $Id: CallbackHandler-1.0.lua 18 2014-10-16 02:52:20Z mikk $ ]]
+--[[ $Id: CallbackHandler-1.0.lua 1131 2015-06-04 07:29:24Z nevcairiel $ ]]
 local MAJOR, MINOR = "CallbackHandler-1.0", 6
 local CallbackHandler = LibStub:NewLibrary(MAJOR, MINOR)
 
@@ -7,7 +7,7 @@ if not CallbackHandler then return end -- No upgrade needed
 local meta = {__index = function(tbl, key) tbl[key] = {} return tbl[key] end}
 
 -- Lua APIs
-local tconcat = table.concat
+local tconcat, getn = table.concat, table.getn
 local assert, error, loadstring = assert, error, loadstring
 local setmetatable, rawset, rawget = setmetatable, rawset, rawget
 local next, pairs, type, tostring = next, pairs, type, tostring
@@ -24,6 +24,8 @@ end
 
 local function CreateDispatcher(argCount)
 	local code = [[
+	local next, xpcall, eh = next, xpcall, function(err) return geterrorhandler()(err) end
+
 	local method, ARGS
 	local function call() method(ARGS) end
 
@@ -34,7 +36,7 @@ local function CreateDispatcher(argCount)
 		local OLD_ARGS = ARGS
 		ARGS = unpack(arg)
 		repeat
-			xpcall(call, function(err) return geterrorhandler()(err) end)
+			xpcall(call, eh)
 			index, method = next(handlers, index)
 		until not method
 		ARGS = OLD_ARGS
@@ -137,7 +139,8 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 			end
 
 			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
-				regfunc = function(...) self[method](self,arg1,unpack(arg)) end
+				local a1=arg[1]
+				regfunc = function(...) self[method](self,a1,unpack(arg)) end
 			else
 				regfunc = function(...) self[method](self,unpack(arg)) end
 			end
@@ -148,7 +151,8 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 			end
 
 			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
-				regfunc = function(...) method(arg1,unpack(arg)) end
+				local a1=arg[1]
+				regfunc = function(...) method(arg,unpack(arg)) end
 			else
 				regfunc = method
 			end
@@ -197,7 +201,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 			if getn(arg)<1 then
 				error("Usage: "..UnregisterAllName.."([whatFor]): missing 'self' or \"addonId\" to unregister events for.", 2)
 			end
-			if getn(arg)==1 and arg1==target then
+			if getn(arg)==1 and arg[1]==target then
 				error("Usage: "..UnregisterAllName.."([whatFor]): supply a meaningful 'self' or \"addonId\"", 2)
 			end
 

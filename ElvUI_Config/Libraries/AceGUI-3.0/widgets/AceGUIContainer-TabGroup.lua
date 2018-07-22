@@ -2,14 +2,14 @@
 TabGroup Container
 Container that uses tabs on top to switch between groups.
 -------------------------------------------------------------------------------]]
-local Type, Version = "TabGroup-ElvUI", 31
+local Type, Version = "TabGroup", 31
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local pairs, ipairs, assert, type, wipe = pairs, ipairs, assert, type, wipe
-local getn = table.getn
 local format = string.format
+local getn = table.getn
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -72,12 +72,12 @@ end
 
 local function Tab_OnEnter()
 	local self = this.obj
-	self:Fire("OnTabEnter", 2, self.tabs[this.id].value, this)
+	self:Fire("OnTabEnter", self.tabs[this.id].value, this)
 end
 
 local function Tab_OnLeave()
 	local self = this.obj
-	self:Fire("OnTabLeave", 2, self.tabs[this.id].value, this)
+	self:Fire("OnTabLeave", self.tabs[this.id].value, this)
 end
 
 local function Tab_OnShow()
@@ -109,6 +109,21 @@ local methods = {
 		tab.obj = self
 		tab.id = id
 		tab:SetHeight(24)
+
+		-- Normal texture
+		local texture = _G[tabname.."Left"]
+		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
+		texture = _G[tabname.."Middle"]
+		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
+		texture = _G[tabname.."Right"]
+		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
+		-- Disabled texture
+		texture = _G[tabname.."LeftDisabled"]
+		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
+		texture = _G[tabname.."MiddleDisabled"]
+		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
+		texture = _G[tabname.."RightDisabled"]
+		texture:SetTexture("Interface\\ChatFrame\\ChatFrameTab")
 
 		tab.text = _G[tabname .. "Text"]
 		tab.text:ClearAllPoints()
@@ -156,7 +171,7 @@ local methods = {
 		end
 		status.selected = value
 		if found then
-			self:Fire("OnGroupSelected",1,value)
+			self:Fire("OnGroupSelected",value)
 		end
 	end,
 
@@ -189,19 +204,24 @@ local methods = {
 			end
 
 			tab:Show()
-			tab:SetText(v.text)
-			tab:SetDisabled(v.disabled)
-			tab.value = v.value
+			if type(v) == "table" then
+				tab:SetText(v.text)
+				tab:SetDisabled(v.disabled)
+				tab.value = v.value
+			elseif type(v) == "string" then
+				tab:SetText(v)
+				tab.value = v
+			end
 
 			widths[i] = tab:GetWidth() - 6 --tabs are anchored 10 pixels from the right side of the previous one to reduce spacing, but add a fixed 4px padding for the text
 		end
 
-		local numtabs = getn(tablist)
-		for i = numtabs+1, numtabs, 1 do
+		for i = getn(tablist)+1, getn(tabs), 1 do
 			tabs[i]:Hide()
 		end
 
 		--First pass, find the minimum number of rows needed to hold all tabs and the initial tab layout
+		local numtabs = getn(tablist)
 		local numrows = 1
 		local usedwidth = 0
 
@@ -281,6 +301,14 @@ local methods = {
 	end,
 
 	["OnHeightSet"] = function(self, height)
+		local parent = self.parent
+		if parent and height then
+			local _, _, _, _, offset = self:GetPoint()
+			height = (parent.content.height or 0) + (offset or 0) or height
+			self.frame.height = (parent.content.height or 0) + (offset or 0)
+		end
+		--self.frame:SetHeight(height)
+
 		local content = self.content
 		local contentheight = height - (self.borderoffset + 23)
 		if contentheight < 0 then
