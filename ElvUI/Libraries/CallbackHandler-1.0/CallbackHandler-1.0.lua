@@ -7,7 +7,7 @@ if not CallbackHandler then return end -- No upgrade needed
 local meta = {__index = function(tbl, key) tbl[key] = {} return tbl[key] end}
 
 -- Lua APIs
-local tconcat, getn = table.concat, table.getn
+local tconcat = table.concat
 local assert, error, loadstring = assert, error, loadstring
 local setmetatable, rawset, rawget = setmetatable, rawset, rawget
 local next, pairs, type, tostring = next, pairs, type, tostring
@@ -87,7 +87,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 		local oldrecurse = registry.recurse
 		registry.recurse = oldrecurse + 1
 
-		Dispatchers[getn(arg) + 1](events[eventname], eventname, unpack(arg))
+		Dispatchers[arg.n + 1](events[eventname], eventname, unpack(arg))
 
 		registry.recurse = oldrecurse
 
@@ -138,7 +138,7 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 				error("Usage: "..RegisterName.."(\"eventname\", \"methodname\"): 'methodname' - method '"..tostring(method).."' not found on self.", 2)
 			end
 
-			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
+			if arg.n>=1 then	-- this is not the same as testing for arg==nil!
 				local a1=arg[1]
 				regfunc = function(...) self[method](self,a1,unpack(arg)) end
 			else
@@ -150,9 +150,9 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 				error("Usage: "..RegisterName.."(self or \"addonId\", eventname, method): 'self or addonId': table or string or thread expected.", 2)
 			end
 
-			if getn(arg)>=1 then	-- this is not the same as testing for arg==nil!
+			if arg.n>=1 then	-- this is not the same as testing for arg==nil!
 				local a1=arg[1]
-				regfunc = function(...) method(arg,unpack(arg)) end
+				regfunc = function(...) method(a1,unpack(arg)) end
 			else
 				regfunc = method
 			end
@@ -198,15 +198,15 @@ function CallbackHandler:New(target, RegisterName, UnregisterName, UnregisterAll
 	-- OPTIONAL: Unregister all callbacks for given selfs/addonIds
 	if UnregisterAllName then
 		target[UnregisterAllName] = function(...)
-			if getn(arg)<1 then
+			if arg.n<1 then
 				error("Usage: "..UnregisterAllName.."([whatFor]): missing 'self' or \"addonId\" to unregister events for.", 2)
 			end
-			if getn(arg)==1 and arg[1]==target then
+			if arg.n==1 and arg[1]==target then
 				error("Usage: "..UnregisterAllName.."([whatFor]): supply a meaningful 'self' or \"addonId\"", 2)
 			end
 
 
-			for i=1,getn(arg) do
+			for i=1,arg.n do
 				local self = arg[i]
 				if registry.insertQueue then
 					for eventname, callbacks in pairs(registry.insertQueue) do
