@@ -628,7 +628,7 @@ end
 function B:StopStacking(message)
 	twipe(moves)
 	twipe(moveTracker)
-	moveRetries, lastItemID, currentItemID, lockStop, lastDestination, lastMove = 0, nil, nil, nil, nil, nil
+	moveRetries, lastItemID, lockStop, lastDestination, lastMove = 0, nil, nil, nil, nil, nil
 
 	self.SortUpdateTimer:Hide()
 	if message then
@@ -717,6 +717,7 @@ function B:DoMoves()
 						lastDestination = moveTarget
 						lastMove = moves[i]
 						lastItemID = moveID
+						currentItemID = nil
 						tremove(moves, i)
 						return
 					end
@@ -747,6 +748,7 @@ function B:DoMoves()
 			lastDestination = moveTarget
 			lastMove = moves[i]
 			lastItemID = moveID
+			currentItemID = nil
 			tremove(moves, i)
 
 			if moves[i-1] then
