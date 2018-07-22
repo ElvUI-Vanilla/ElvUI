@@ -255,7 +255,7 @@ end
 
 local function OnEvent()
 	if event == "CHAT_MSG_ADDON" then
-		local prefix,message,distribution,sender = unpack(arg)
+		local prefix,message,distribution,sender = arg1, arg2, arg3, arg4
 		local reassemblername = AceComm.multipart_reassemblers[prefix]
 		if reassemblername then
 			-- multipart: reassemble
