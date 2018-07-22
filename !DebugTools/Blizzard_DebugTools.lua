@@ -1,4 +1,4 @@
-local modulo = math.modulo
+local fmod = math.fmod
 local getn = table.getn
 
 local LUA_ERROR = "Lua Error"
@@ -102,7 +102,7 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			local hours = math.floor(minutes / 60);
 			seconds = seconds - 60 * minutes;
 			minutes = minutes - 60 * hours;
-			hours = modulo(hours, 1000)
+			hours = fmod(hours, 1000)
 			self.times[nextIndex] = string.format("%.2d:%.2d:%06.3f", hours, minutes, seconds);
 			self.timeSinceLast[nextIndex] = 0;
 			self.framesSinceLast[nextIndex] = 0;
