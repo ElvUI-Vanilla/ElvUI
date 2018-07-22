@@ -104,7 +104,6 @@ do
 		end
 		child:ClearAllPoints()
 		child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
---		child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", self.slider:IsShown() and -12 or 0, offset)
 		status.offset = offset
 		status.scrollvalue = value
 	end
@@ -148,7 +147,6 @@ do
 			if value < 1000 then
 				child:ClearAllPoints()
 				child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
---				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, offset)
 				status.offset = offset
 			end
 		end
@@ -324,7 +322,6 @@ do
 		scrollFrame:SetWidth(defaultWidth - 12)
 		scrollFrame:SetHeight(self.maxHeight - 24)
 		scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -12)
---		scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 12)
 		scrollFrame:EnableMouseWheel(true)
 		scrollFrame:SetScript("OnMouseWheel", OnMouseWheel)
 		scrollFrame:SetScript("OnSizeChanged", OnSizeChanged)
@@ -333,7 +330,6 @@ do
 
 		itemFrame:SetWidth(defaultWidth - 12)
 		itemFrame:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 0, 0)
---		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -12, 0)
 		itemFrame:SetHeight(400)
 		itemFrame:SetToplevel(true)
 		itemFrame:SetFrameStrata("FULLSCREEN_DIALOG")

@@ -307,7 +307,6 @@ local methods = {
 			height = (parent.content.height or 0) + (offset or 0) or height
 			self.frame.height = (parent.content.height or 0) + (offset or 0)
 		end
-		--self.frame:SetHeight(height)
 
 		local content = self.content
 		local contentheight = height - (self.borderoffset + 23)

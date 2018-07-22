@@ -1956,6 +1956,8 @@ end
 -- @param ... The path in the options table to feed into the interface options panel.
 -- @return The reference to the frame registered into the Interface Options.
 function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
+	error("Blizzard InterfaceOptions not available", 2)
+--[[
 	local BlizOptions = AceConfigDialog.BlizOptions
 
 	local key = appName
@@ -1988,4 +1990,5 @@ function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
 	else
 		error(format("%s has already been added to the Blizzard Options Window with the given path", appName), 2)
 	end
+]]
 end

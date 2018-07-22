@@ -16,32 +16,32 @@ local CreateFrame = CreateFrame
 Scripts
 -------------------------------------------------------------------------------]]
 
-local function OnShow(frame)
-	frame.obj:Fire("OnShow")
+local function OnShow()
+	this.obj:Fire("OnShow")
 end
 
-local function OnHide(frame)
-	frame.obj:Fire("OnHide")
+local function OnHide()
+	this.obj:Fire("OnHide")
 end
 
 --[[-----------------------------------------------------------------------------
 Support functions
 -------------------------------------------------------------------------------]]
 
-local function okay(frame)
-	frame.obj:Fire("okay")
+local function okay()
+	this.obj:Fire("okay")
 end
 
-local function cancel(frame)
-	frame.obj:Fire("cancel")
+local function cancel()
+	this.obj:Fire("cancel")
 end
 
-local function default(frame)
-	frame.obj:Fire("default")
+local function default()
+	this.obj:Fire("default")
 end
 
-local function refresh(frame)
-	frame.obj:Fire("refresh")
+local function refresh()
+	this.obj:Fire("refresh")
 end
 
 --[[-----------------------------------------------------------------------------
