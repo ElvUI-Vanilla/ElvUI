@@ -173,7 +173,7 @@ function lib:Register(mediatype, key, data, langmask)
 	mediatype = lower(mediatype)
 	if mediatype == lib.MediaType.FONT and ((langmask and band(langmask, LOCALE_MASK) == 0) or not (langmask or locale_is_western)) then return false end
 	if mediatype == lib.MediaType.SOUND and type(data) == "string" then
-		local path = data
+		local path = lower(data)
 		-- Only wav, ogg and mp3 are valid sounds.
 		if not find(path, ".ogg", nil, true) and not find(path, ".mp3", nil, true) and not find(path, ".wav", nil, true) then
 			return false

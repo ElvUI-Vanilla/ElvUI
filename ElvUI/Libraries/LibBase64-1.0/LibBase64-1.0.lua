@@ -14,14 +14,13 @@ end
 
 local error = error
 local type = type
-local mod = math.mod
+local fmod = math.fmod
 local byte, char, format, len, sub = string.byte, string.char, string.format, string.len, string.sub
-local concat = table.concat
-
+local concat, getn, tinsert, wipe = table.concat, table.getn, table.insert, table.wipe
+ 
 local _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 local byteToNum = {}
 local numToChar = {}
-
 for i = 1, len(_chars) do
 	numToChar[i - 1] = sub(_chars, i, i)
 	byteToNum[byte(_chars, i)] = i - 1
@@ -60,7 +59,7 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 		-- do nothing
 	elseif type(maxLineLength) ~= "number" then
 		error(format("Bad argument #2 to `Encode'. Expected %q or %q, got %q", "number", "nil", type(maxLineLength)), 2)
-	elseif mod(maxLineLength, 4) ~= 0 then
+	elseif fmod(maxLineLength, 4) ~= 0 then
 		error(format("Bad argument #2 to `Encode'. Expected a multiple of 4, got %s", maxLineLength), 2)
 	elseif maxLineLength <= 0 then
 		error(format("Bad argument #2 to `Encode'. Expected a number > 0, got %s", maxLineLength), 2)
@@ -89,35 +88,33 @@ function LibBase64:Encode(text, maxLineLength, lineEnding)
 		end
 		local num = a * 2^16 + b * 2^8 + c
 
-		local d = mod(num, 2^6)
+		local d = fmod(num, 2^6)
 		num = (num - d) / 2^6
 
-		local c = mod(num, 2^6)
+		local c = fmod(num, 2^6)
 		num = (num - c) / 2^6
 
-		local b = mod(num, 2^6)
+		local b = fmod(num, 2^6)
 		num = (num - b) / 2^6
 
-		local a = mod(num, 2^6)
+		local a = fmod(num, 2^6)
 
-		t[getn(t)+1] = numToChar[a]
+		tinsert(t, numToChar[a])
 
-		t[getn(t)+1] = numToChar[b]
+		tinsert(t, numToChar[b])
 
-		t[getn(t)+1] = (nilNum >= 2) and "=" or numToChar[c]
+		tinsert(t, ((nilNum >= 2) and "=" or numToChar[c]))
 
-		t[getn(t)+1] = (nilNum >= 1) and "=" or numToChar[d]
+		tinsert(t, ((nilNum >= 1) and "=" or numToChar[d]))
 
 		currentLength = currentLength + 4
-		if maxLineLength and mod(currentLength, maxLineLength) == 0 then
-			t[getn(t)+1] = lineEnding
+		if maxLineLength and fmod(currentLength, maxLineLength) == 0 then
+			tinsert(t, lineEnding)
 		end
 	end
 
 	local s = concat(t)
-	for i = 1, getn(t) do
-		t[i] = nil
-	end
+	wipe(t)
 	return s
 end
 
@@ -141,13 +138,11 @@ function LibBase64:Decode(text)
 		else
 			local num = byteToNum[byte]
 			if not num then
-				for i = 1, getn(t2) do
-					t2[k] = nil
-				end
+				wipe(t2)
 
 				error(format("Bad argument #1 to `Decode'. Received an invalid char: %q", sub(text, i, i)), 2)
 			end
-			t2[getn(t2)+1] = num
+			tinsert(t2, num)
 		end
 	end
 
@@ -166,32 +161,28 @@ function LibBase64:Decode(text)
 
 		local num = a * 2^18 + b * 2^12 + c * 2^6 + d
 
-		local c = mod(num, 2^8)
+		local c = fmod(num, 2^8)
 		num = (num - c) / 2^8
 
-		local b = mod(num, 2^8)
+		local b = fmod(num, 2^8)
 		num = (num - b) / 2^8
 
-		local a = mod(num, 2^8)
+		local a = fmod(num, 2^8)
 
-		t[getn(t)+1] = char(a)
+		tinsert(t, char(a))
 		if nilNum < 2 then
-			t[getn(t)+1] = char(b)
+			tinsert(t, char(b))
 		end
 		if nilNum < 1 then
-			t[getn(t)+1] = char(c)
+			tinsert(t, char(c))
 		end
 	end
 
-	for i = 1, getn(t2) do
-		t2[i] = nil
-	end
+	wipe(t2)
 
 	local s = concat(t)
 
-	for i = 1, getn(t) do
-		t[i] = nil
-	end
+	wipe(t)
 
 	return s
 end
@@ -201,7 +192,7 @@ function LibBase64:IsBase64(text)
 		error(format("Bad argument #1 to `IsBase64'. Expected %q, got %q", "string", type(text)), 2)
 	end
 
-	if mod(len(text), 4) ~= 0 then
+	if fmod(len(text), 4) ~= 0 then
 		return false
 	end
 

@@ -34,6 +34,7 @@ local assert = assert
 local table_insert = table.insert
 local table_remove = table.remove
 local table_concat = table.concat
+local table_wipe = table.wipe
 local string_char = string.char
 local string_byte = string.byte
 local string_len = string.len
@@ -41,7 +42,7 @@ local string_gsub = string.gsub
 local string_sub = string.sub
 local unpack = unpack
 local pairs = pairs
-local math_mod = math.mod
+local math_fmod = math.fmod
 local bit_band = bit.band
 local bit_bor = bit.bor
 local bit_bxor = bit.bxor
@@ -99,15 +100,13 @@ end
 -- the bytes returned by this do not contain "\000"
 local bytes = {}
 local function encode(x)
-	for k = 1, getn(bytes) do
-		bytes[k] = nil
-	end
+	table_wipe(bytes)
 
-	bytes[getn(bytes) + 1] = math_mod(x, 255)
+	table_insert(bytes, math_fmod(x, 255))
 	x=math.floor(x/255)
 
 	while x > 0 do
-		bytes[getn(bytes) + 1] = math_mod(x, 255)
+		table_insert(bytes, math_fmod(x, 255))
 		x=math.floor(x/255)
 	end
 	if getn(bytes) == 1 and bytes[1] > 0 and bytes[1] < 250 then
@@ -168,7 +167,7 @@ function LibCompress:CompressLZW(uncompressed)
 				dict_size = dict_size + 1
 				local r = encode(dict[w])
 				ressize = ressize + string_len(r)
-				result[getn(result) + 1] = r
+				table_insert(result, r)
 				w = c
 			end
 		end
@@ -176,7 +175,7 @@ function LibCompress:CompressLZW(uncompressed)
 		if w then
 			local r = encode(dict[w])
 			ressize = ressize + string_len(r)
-			result[getn(result) + 1] = r
+			table_insert(result, r)
 		end
 
 		if (string_len(uncompressed) + 1) > ressize then
@@ -214,15 +213,15 @@ function LibCompress:DecompressLZW(compressed)
 		local delta, k
 		k, delta = decode(compressed, t)
 		t = t + delta
-		result[getn(result) + 1] = dict[k]
+		table_insert(result, dict[k])
 
 		local w = dict[k]
 		local entry
-		while t <= getn(compressed) do
+		while t <= string_len(compressed) do
 			k, delta = decode(compressed, t)
 			t = t + delta
 			entry = dict[k] or (w..string_sub(w, 1, 1))
-			result[getn(result) + 1] = entry
+			table_insert(result, entry)
 			dict[dict_size] = w..string_sub(entry, 1, 1)
 			dict_size = dict_size + 1
 			w = entry
@@ -881,7 +880,7 @@ function LibCompress:GetEncodeTable(reservedChars, escapeChars, mapChars)
 		return nil, "No escape characters supplied"
 	end
 
-	if getn(reservedChars) < getn(mapChars) then
+	if string_len(reservedChars) < string_len(mapChars) then
 		return nil, "Number of reserved characters must be at least as many as the number of mapped chars"
 	end
 
@@ -914,8 +913,8 @@ function LibCompress:GetEncodeTable(reservedChars, escapeChars, mapChars)
 	local escapeCharIndex, escapeChar = 0
 
 	-- map single byte to single byte
-	if getn(mapChars) > 0 then
-		for i = 1, getn(mapChars) do
+	if string_len(mapChars) > 0 then
+		for i = 1, string_len(mapChars) do
 			from = string_sub(reservedChars, i, i)
 			to = string_sub(mapChars, i, i)
 			encode_translate[from] = to

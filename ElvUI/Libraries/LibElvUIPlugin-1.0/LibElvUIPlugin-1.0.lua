@@ -152,7 +152,7 @@ function lib:VersionCheck()
 
 	local E = ElvUI[1]
 	if event == "CHAT_MSG_ADDON" then
-		if not (arg1 == lib.prefix and arg4 and arg1 and not strmatch(arg1, "^%s-$")) then return end
+		if not (arg1 == lib.prefix and arg4 and arg2 and not strmatch(arg2, "^%s-$")) then return end
 		if arg4 == E.myname then return end
 
 		if not E["pluginRecievedOutOfDateMessage"] then
