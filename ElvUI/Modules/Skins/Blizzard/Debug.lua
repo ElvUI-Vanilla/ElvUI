@@ -45,8 +45,19 @@ local function LoadSkin()
 	S:HandleNextPrevButton(ScriptErrorsFrame.next)
 	S:HandleButton(ScriptErrorsFrame.close)
 
-	S:HandleButton(ScriptErrorsFrame.close)
+	local function SkinFirstLast()
+		S:HandleButton(ScriptErrorsFrame.firstButton)
+		S:HandleButton(ScriptErrorsFrame.lastButton)
+	end
 
+	local DT = E:GetModule("DebugTools")
+	if DT.HideFrame then
+		SkinFirstLast()
+	else
+		hooksecurefunc(DT, "ModifyErrorFrame", SkinFirstLast)
+	end
+
+	-- TODO FIX HandleNextPrevButton button size
 	E:Point(ScriptErrorsFrame.reload, "BOTTOMLEFT", 12, 8)
 	E:Point(ScriptErrorsFrame.previous, "BOTTOM", ScriptErrorsFrame, "BOTTOM", -50, 7)
 	E:Point(ScriptErrorsFrame.next, "BOTTOM", ScriptErrorsFrame, "BOTTOM", 50, 7)
