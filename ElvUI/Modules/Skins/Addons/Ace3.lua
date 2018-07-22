@@ -311,7 +311,7 @@ function S:SkinAce3()
 		if TYPE == "ScrollFrame" then
 			local frame = widget.scrollbar
 			SkinScrollBar(frame)
-		elseif TYPE == "InlineGroup" or TYPE == "TreeGroup" or TYPE == "TabGroup-ElvUI" or TYPE == "Frame" or TYPE == "DropdownGroup" or TYPE == "Window" then
+		elseif TYPE == "InlineGroup" or TYPE == "TreeGroup" or TYPE == "TabGroup" or TYPE == "Frame" or TYPE == "DropdownGroup" or TYPE == "Window" then
 			local frame = widget.content:GetParent()
 			if TYPE == "Frame" then
 				E:StripTextures(frame)
@@ -378,16 +378,16 @@ function S:SkinAce3()
 				end
 			end
 
-			if TYPE == "TabGroup-ElvUI" then
+			if TYPE == "TabGroup" then
 				local oldCreateTab = widget.CreateTab
 				widget.CreateTab = function(self, id)
 					local tab = oldCreateTab(self, id)
 					E:StripTextures(tab)
-					tab.backdrop = CreateFrame("Frame", nil, tab)
+					--[[tab.backdrop = CreateFrame("Frame", nil, tab)
 					E:SetTemplate(tab.backdrop, "Transparent")
 					tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
 					E:Point(tab.backdrop, "TOPLEFT", 10, -3)
-					E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)
+					E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)]]
 					return tab
 				end
 			end
