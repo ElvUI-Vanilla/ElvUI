@@ -18,6 +18,18 @@ math.huge = 1/0
 string.gmatch = string.gfind
 gmatch = string.gfind
 
+local MAXN = 2147483647
+local function toInt(x)
+	if x == floor(x) then return x end
+
+	if x > 0 then
+		x = floor(x + 0.5)
+	else
+		x = ceil(x - 0.5)
+	end
+
+	return x
+end
 function select(n, ...)
 	if not (type(n) == "number" or (type(n) == "string" and n == "#")) then
 		error(format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"), 2)
@@ -25,18 +37,22 @@ function select(n, ...)
 
 	if n == "#" then
 		return arg.n
+	elseif n == 0 or n > MAXN then
+		error("bad argument #1 to 'select' (index out of range)", 2)
 	elseif n == 1 then
 		return unpack(arg)
 	end
 
-	local args = {}
-	args.n = arg.n - n + 1
+	if n < 0 then
+		n = arg.n + n + 1
+	end
+	n = toInt(n)
 
 	for i = n, arg.n do
-		args[i-n+1] = arg[i]
+		tremove(arg, 1)
 	end
 
-	return unpack(args)
+	return unpack(arg)
 end
 
 local huge = math.huge
@@ -53,7 +69,7 @@ function math.modf(i)
 		return i, i > 0 and 0 or -0
 	end
 
-	local int = i >= 0 and floor(i) or ceil(i)
+	local int = i > 0 and floor(i) or ceil(i)
 
 	return int, i - int
 end
