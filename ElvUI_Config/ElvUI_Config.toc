@@ -15,7 +15,6 @@ Auras.lua
 Bags.lua
 Chat.lua
 DataTexts.lua
-Filters.lua
 NamePlates.lua
 Skins.lua
 Tooltip.lua
