@@ -1727,7 +1727,7 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 	end
 end
 
-local old_CloseSpecialWindows
+local old_CloseWindows
 
 
 local function RefreshOnUpdate()
@@ -1825,10 +1825,10 @@ end
 -- @param container An optional container frame to feed the options into
 -- @param ... The path to open after creating the options window (see `:SelectGroup` for details)
 function AceConfigDialog:Open(appName, container, ...)
-	if not old_CloseSpecialWindows then
-		old_CloseSpecialWindows = CloseSpecialWindows
-		CloseSpecialWindows = function()
-			local found = old_CloseSpecialWindows()
+	if not old_CloseWindows then
+		old_CloseWindows = CloseWindows
+		CloseWindows = function(ignoreCenter)
+			local found = old_CloseWindows(ignoreCenter)
 			return self:CloseAll() or found
 		end
 	end
