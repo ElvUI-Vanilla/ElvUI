@@ -115,16 +115,17 @@ function E:OnSetCooldown(start, duration, enable)
 	end
 end
 
+local cooldownHooked
 local oldCooldownFrame_SetTimer = CooldownFrame_SetTimer
 function E:RegisterCooldown(cooldown)
-	if not E.private.cooldown.enable or cooldown.isHooked then return end
+	if not E.private.cooldown.enable or cooldownHooked then return end
 
 	function CooldownFrame_SetTimer(this, start, duration, enable)
 		oldCooldownFrame_SetTimer(this, start, duration, enable)
 		E.OnSetCooldown(this, start, duration, enable)
 	end
 
-	cooldown.isHooked = true
+	cooldownHooked = true
 end
 
 function E:UpdateCooldownSettings()
