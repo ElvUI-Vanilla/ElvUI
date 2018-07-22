@@ -242,7 +242,9 @@ local function OnReceiveDrag()                                               -- 
 end
 
 local function OnSizeChanged()                                -- ScrollFrame
-	this.obj.editBox:SetWidth(this.obj.editBox:GetWidth())
+	this:UpdateScrollChildRect()
+	this:SetVerticalScroll(this:GetHeight())
+	this.obj.editBox:SetWidth(arg1)
 end
 
 local function OnTextChanged()                                               -- EditBox
@@ -268,6 +270,10 @@ end
 local function OnVerticalScroll()                                    -- ScrollFrame
 	local editBox = this.obj.editBox
 	editBox:SetHitRectInsets(0, 0, arg1, editBox:GetHeight() - arg1 - this:GetHeight())
+
+	this.obj.scrollFrame:SetScrollChild(editBox)
+	editBox:SetPoint("TOPLEFT",0,arg1)
+	editBox:SetPoint("TOPRIGHT",0,arg1)
 end
 
 local function OnShowFocus()
