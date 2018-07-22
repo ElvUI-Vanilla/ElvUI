@@ -22,7 +22,6 @@ local GetContainerNumSlots = GetContainerNumSlots
 local ContainerIDToInventoryID = ContainerIDToInventoryID
 local GetInventoryItemLink = GetInventoryItemLink
 local CursorHasItem = CursorHasItem
-local ARMOR = ARMOR
 
 local bankBags = {BANK_CONTAINER}
 local MAX_MOVE_TIME = 1.25
@@ -57,7 +56,7 @@ local bagStacks = {}
 local bagMaxStacks = {}
 local bagGroups = {}
 local initialOrder = {}
-local itemTypes, itemSubTypes
+
 local bagSorted, bagLocked = {}, {}
 local moves = {}
 local targetItems = {}
@@ -116,9 +115,8 @@ end)
 frame:Hide()
 B.SortUpdateTimer = frame
 
+local itemTypes, itemSubTypes = {}, {}
 local function BuildSortOrder()
-	itemTypes = {}
-	itemSubTypes = {}
 	for i, iType in ipairs({GetAuctionItemClasses()}) do
 		itemTypes[iType] = i
 		itemSubTypes[iType] = {}
@@ -127,6 +125,7 @@ local function BuildSortOrder()
 		end
 	end
 end
+BuildSortOrder()
 
 local function UpdateLocation(from, to)
 	if (bagIDs[from] == bagIDs[to]) and (bagStacks[to] < bagMaxStacks[to]) then
@@ -180,21 +179,23 @@ local function DefaultSort(a, b)
 		end
 	end
 
-	local _, _, aRarity, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
-	local _, _, bRarity, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
-
-	aRarity = bagQualities[a]
-	bRarity = bagQualities[b]
+	local _, _, _, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
+	local _, _, _, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
+	
+	local aRarity, bRarity = bagQualities[a], bagQualities[b]
 
 	if aRarity ~= bRarity and aRarity and bRarity then
 		return aRarity > bRarity
 	end
 
-	if itemTypes[aType] ~= itemTypes[bType] then
-		return (itemTypes[aType] or 99) < (itemTypes[bType] or 99)
+	local aItemClassId, aItemSubClassId = itemTypes[aType] or 99, itemSubTypes[aType] and itemSubTypes[aType][aSubType] or 99
+	local bItemClassId, bItemSubClassId = itemTypes[bType] or 99, itemSubTypes[bType] and itemSubTypes[bType][bSubType] or 99
+
+	if aItemClassId ~= bItemClassId then
+		return aItemClassId < bItemClassId
 	end
 
-	if aType == ARMOR then
+	if aItemClassId == 1 or aItemClassId == 2 then
 		local aEquipLoc = inventorySlots[aEquipLoc] or -1
 		local bEquipLoc = inventorySlots[bEquipLoc] or -1
 		if aEquipLoc == bEquipLoc then
@@ -205,12 +206,11 @@ local function DefaultSort(a, b)
 			return aEquipLoc < bEquipLoc
 		end
 	end
-
-	if aSubType == bSubType then
+	if (aItemClassId == bItemClassId) and (aItemSubClassId == bItemSubClassId) then
 		return PrimarySort(a, b)
 	end
 
-	return ((itemSubTypes[aType] or {})[aSubType] or 99) < ((itemSubTypes[bType] or {})[bSubType] or 99)
+	return (aItemSubClassId or 99) < (bItemSubClassId or 99)
 end
 
 local function ReverseSort(a, b)
@@ -239,7 +239,7 @@ end
 local function IterateForwards(bagList, i)
 	i = i + 1
 	local step = 1
-	for _, bag in bagList do
+	for _, bag in ipairs(bagList) do
 		local slots = B:GetNumSlots(bag)
 		if i > slots + step then
 			step = step + slots
@@ -273,7 +273,7 @@ local function IterateBackwards(bagList, i)
 	end
 end
 
-function B.IterateBags(bagList, reverse, role)
+function B.IterateBags(bagList, reverse)
 	return (reverse and IterateBackwards or IterateForwards), bagList, 0
 end
 
@@ -456,6 +456,7 @@ local function buildBlacklist(arg)
 			blackList[itemName] = true
 		elseif entry ~= "" then
 			if find(entry, "%[") and find(entry, "%]") then
+				--For some reason the entry was not treated as a valid item. Extract the item name.
 				entry = match(entry, "%[(.*)%]")
 			end
 			tinsert(blackListQueries, entry)
@@ -465,12 +466,13 @@ end
 
 function B.Sort(bags, sorter, invertDirection)
 	if not sorter then sorter = invertDirection and ReverseSort or DefaultSort end
-	if not itemTypes then BuildSortOrder() end
 
+	--Wipe tables before we begin
 	twipe(blackList)
 	twipe(blackListQueries)
 	twipe(blackListedSlots)
 
+	--Build blacklist of items based on the profile and global list
 	buildBlacklist(B.db.ignoredItems)
 	buildBlacklist(E.global.bags.ignoredItems)
 
@@ -551,9 +553,11 @@ end
 function B.Fill(sourceBags, targetBags, reverse, canMove)
 	if not canMove then canMove = DefaultCanMove end
 
+	--Wipe tables before we begin
 	twipe(blackList)
 	twipe(blackListedSlots)
 
+	--Build blacklist of items based on the profile and global list
 	buildBlacklist(B.db.ignoredItems)
 	buildBlacklist(E.global.bags.ignoredItems)
 
@@ -584,13 +588,13 @@ end
 function B.SortBags(...)
 	for i = 1, arg.n do
 		local bags = arg[i]
-		for i, slotNum in ipairs(bags) do
+		for _, slotNum in ipairs(bags) do
 			local bagType = B:IsSpecialtyBag(slotNum)
 			if bagType == false then bagType = "Normal" end
 			if not bagCache[bagType] then bagCache[bagType] = {} end
-			--bagCache[bagType][i] = slotNum
 			tinsert(bagCache[bagType], slotNum)
 		end
+
 		for bagType, sortedBags in pairs(bagCache) do
 			if bagType ~= "Normal" then
 				B.Stack(sortedBags, sortedBags, B.IsPartial)
@@ -631,6 +635,7 @@ function B:StopStacking(message)
 	moveRetries, lastItemID, lockStop, lastDestination, lastMove = 0, nil, nil, nil, nil, nil
 
 	self.SortUpdateTimer:Hide()
+
 	if message then
 		E:Print(message)
 	end
@@ -715,10 +720,9 @@ function B:DoMoves()
 						moveTracker[moveSource] = targetID
 						moveTracker[moveTarget] = moveID
 						lastDestination = moveTarget
-						lastMove = moves[i]
+						-- lastMove = moves[i] --Where does "i" come from???
 						lastItemID = moveID
-						currentItemID = nil
-						tremove(moves, i)
+						-- tremove(moves, i) --Where does "i" come from???
 						return
 					end
 
@@ -748,7 +752,6 @@ function B:DoMoves()
 			lastDestination = moveTarget
 			lastMove = moves[i]
 			lastItemID = moveID
-			currentItemID = nil
 			tremove(moves, i)
 
 			if moves[i-1] then
@@ -774,8 +777,7 @@ end
 function B:CommandDecorator(func, groupsDefaults)
 	return function(groups)
 		if self.SortUpdateTimer:IsShown() then
-			E:Print(L["Already Running.. Bailing Out!"])
-			B:StopStacking()
+			B:StopStacking(L["Already Running.. Bailing Out!"])
 			return
 		end
 
@@ -783,7 +785,7 @@ function B:CommandDecorator(func, groupsDefaults)
 		if not groups or getn(groups) == 0 then
 			groups = groupsDefaults
 		end
-		for bags in gmatch(groups or "", "[^%s]+") do
+		for bags in gmatch(groups or "", "%S+") do
 			bags = B:GetGroup(bags)
 			if bags then
 				tinsert(bagGroups, bags)
