@@ -366,6 +366,61 @@ function B:ResetSlotAlphaForBags(f)
 	end
 end
 
+local function buttonOnClick(button, ignoreModifiers)
+	if not button then button = arg1 end
+
+	--KeyRing special case code
+	if this:GetParent():GetID() == KEYRING_CONTAINER then
+		KeyRingItemButton_OnClick(button, ignoreModifiers)
+		return
+	end
+
+	if button == "LeftButton" then
+		if IsControlKeyDown() and not ignoreModifiers then
+			DressUpItemLink(GetContainerItemLink(this:GetParent():GetID(), this:GetID()))
+		elseif IsShiftKeyDown() and not ignoreModifiers then
+			if ChatFrameEditBox:IsShown() then
+				ChatFrameEditBox:Insert(GetContainerItemLink(this:GetParent():GetID(), this:GetID()))
+			else
+				local texture, itemCount, locked = GetContainerItemInfo(this:GetParent():GetID(), this:GetID())
+				if not locked then
+					this.SplitStack = function(button, split)
+						SplitContainerItem(button:GetParent():GetID(), button:GetID(), split)
+					end
+					OpenStackSplitFrame(this.count, this, "BOTTOMRIGHT", "TOPRIGHT")
+				end
+			end
+		else
+			PickupContainerItem(this:GetParent():GetID(), this:GetID())
+			StackSplitFrame:Hide()
+		end
+	else
+		if IsControlKeyDown() and not ignoreModifiers then
+			return
+		elseif IsShiftKeyDown() and MerchantFrame:IsShown() and not ignoreModifiers then
+			this.SplitStack = function(button, split)
+				SplitContainerItem(button:GetParent():GetID(), button:GetID(), split)
+				MerchantItemButton_OnClick("LeftButton")
+			end
+			OpenStackSplitFrame(this.count, this, "BOTTOMRIGHT", "TOPRIGHT")
+		elseif MerchantFrame:IsShown() and MerchantFrame.selectedTab == 2 then
+			-- Don't sell the item if the buyback tab is selected
+			return
+		else
+			UseContainerItem(this:GetParent():GetID(), this:GetID())
+			StackSplitFrame:Hide()
+		end
+	end
+end
+
+local function buttonOnDragStart()
+	buttonOnClick("LeftButton", 1)
+end
+
+local function buttonOnReceiveDrag()
+	buttonOnClick("LeftButton", 1)
+end
+
 function B:Layout(isBank)
 	if E.private.bags.enable ~= true then return end
 	local f = self:GetContainerFrame(isBank)
@@ -471,6 +526,10 @@ function B:Layout(isBank)
 					E:SetTemplate(f.Bags[bagID][slotID], "Default", true)
 					f.Bags[bagID][slotID]:SetNormalTexture("")
 					f.Bags[bagID][slotID]:SetCheckedTexture("")
+					
+					f.Bags[bagID][slotID]:SetScript("OnClick", buttonOnClick)
+					f.Bags[bagID][slotID]:SetScript("OnDragStart", buttonOnDragStart)
+					f.Bags[bagID][slotID]:SetScript("OnReceiveDrag", buttonOnReceiveDrag)
 
 					f.Bags[bagID][slotID].Count = _G[f.Bags[bagID][slotID]:GetName().."Count"]
 					f.Bags[bagID][slotID].Count:ClearAllPoints()
