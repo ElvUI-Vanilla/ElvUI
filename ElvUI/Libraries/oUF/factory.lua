@@ -7,7 +7,7 @@ local argcheck = Private.argcheck
 local queue = {}
 local factory = CreateFrame('Frame')
 factory:SetScript('OnEvent', function()
-	return this[event](this, event, arg and unpack(arg))
+	return this[event](this)
 end)
 
 factory:RegisterEvent('PLAYER_LOGIN')

@@ -272,8 +272,8 @@ local function OnVerticalScroll()                                    -- ScrollFr
 	editBox:SetHitRectInsets(0, 0, arg1, editBox:GetHeight() - arg1 - this:GetHeight())
 
 	this.obj.scrollFrame:SetScrollChild(editBox)
-	editBox:SetPoint("TOPLEFT",0,arg1)
-	editBox:SetPoint("TOPRIGHT",0,arg1)
+	editBox:SetPoint("TOPLEFT", 0, arg1)
+	editBox:SetPoint("TOPRIGHT", 0, arg1)
 end
 
 local function OnShowFocus()

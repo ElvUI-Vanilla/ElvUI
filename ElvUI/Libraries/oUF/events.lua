@@ -17,9 +17,6 @@ end
 
 local function onEvent()
 	if(this:IsVisible() or event == 'UNIT_COMBO_POINTS') then
-		--print(this, event, arg and unpack(arg))
-		--print(this, event, arg1, arg2, arg3, arg4, arg5)
-
 		return this[event](this, event, arg1, arg2, arg3, arg4, arg5)
 	end
 end
