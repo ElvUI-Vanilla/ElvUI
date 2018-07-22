@@ -24,10 +24,10 @@ local function enableTargetUpdate(object)
 
 	local total = 0
 	object:SetScript('OnUpdate', function()
-		if(not self.unit) then
+		if(not this.unit) then
 			return
-		elseif(total > self.onUpdateFrequency) then
-			self:UpdateAllElements('OnUpdate')
+		elseif(total > this.onUpdateFrequency) then
+			this:UpdateAllElements('OnUpdate')
 			total = 0
 		end
 
