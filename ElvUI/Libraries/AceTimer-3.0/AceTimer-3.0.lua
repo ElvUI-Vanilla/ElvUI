@@ -52,7 +52,7 @@ local setmetatable, rawset, rawget = setmetatable, rawset, rawget
 local pairs, type, next, tostring, unpack = pairs, type, next, tostring, unpack
 local gsub = string.gsub
 local floor, max, min, fmod = math.floor, math.max, math.min, math.fmod
-local tconcat, getn = table.concat, table.getn
+local tconcat = table.concat
 
 -- WoW APIs
 local GetTime = GetTime
@@ -126,7 +126,7 @@ Dispatchers[0] = function(func)
 end
 
 local function safecall(func, ...)
-	return Dispatchers[getn(arg)](func, unpack(arg))
+	return Dispatchers[arg.n](func, unpack(arg))
 end
 
 local lastint = floor(GetTime() * HZ)

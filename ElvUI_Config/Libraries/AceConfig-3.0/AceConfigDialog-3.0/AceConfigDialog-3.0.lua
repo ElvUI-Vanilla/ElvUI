@@ -77,7 +77,7 @@ Dispatchers[0] = function(func)
 end
 
 local function safecall(func, ...)
-	return Dispatchers[getn(arg)](func, unpack(arg))
+	return Dispatchers[arg.n](func, unpack(arg))
 end
 
 local width_multiplier = 170
@@ -140,7 +140,7 @@ end
 
 -- picks the first non-nil value and returns it
 local function pickfirstset(...)
-	for i=1,getn(arg) do
+	for i=1,arg.n do
 		if arg[i]~=nil then
 			return arg[i]
 		end
@@ -483,7 +483,7 @@ function AceConfigDialog:SelectGroup(appName, ...)
 	local treevalue
 	local treestatus
 
-	for n = 1, getn(arg) do
+	for n = 1, arg.n do
 		local key = arg[n]
 
 		if group.childGroups == "tab" or group.childGroups == "select" then
@@ -600,7 +600,7 @@ local function confirmPopup(appName, rootframe, basepath, info, message, func, .
 		AceConfigDialog:Open(appName, rootframe, unpack(basepath or emptyTbl))
 		del(info)
 	end
-	local x = getn(arg)
+	local x = arg.n
 	for i = 1, x do
 		t[i] = arg[i] or false
 	end
@@ -1442,7 +1442,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 end
 
 local function BuildPath(path, ...)
-	for i = 1, getn(arg)  do
+	for i = 1, arg.n  do
 		tinsert(path, arg[i])
 	end
 end
@@ -1849,7 +1849,7 @@ function AceConfigDialog:Open(appName, container, ...)
 		tinsert(path, container)
 		container = nil
 	end
-	for n = 1, getn(arg) do
+	for n = 1, arg.n do
 		tinsert(path, arg[n])
 	end
 
@@ -1959,7 +1959,7 @@ function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
 	local BlizOptions = AceConfigDialog.BlizOptions
 
 	local key = appName
-	for n = 1, getn(arg) do
+	for n = 1, arg.n do
 		key = key.."\001"..arg[n]
 	end
 
@@ -1974,9 +1974,9 @@ function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
 
 		group:SetTitle(name or appName)
 		group:SetUserData("appName", appName)
-		if getn(arg) > 0 then
+		if arg.n > 0 then
 			local path = {}
-			for n = 1, getn(arg) do
+			for n = 1, arg.n do
 				tinsert(path, arg[n])
 			end
 			group:SetUserData("path", path)

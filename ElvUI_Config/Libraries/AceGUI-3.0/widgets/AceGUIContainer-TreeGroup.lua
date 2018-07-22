@@ -167,7 +167,7 @@ local function FirstFrameUpdate()
 end
 
 local function BuildUniqueValue(...)
-	return tconcat(arg, "\001", 1, getn(arg))
+	return tconcat(arg, "\001", 1, arg.n)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -539,7 +539,7 @@ local methods = {
 		self.filter = false
 		local status = self.status or self.localstatus
 		local groups = status.groups
-		for i = 1, getn(arg) do
+		for i = 1, arg.n do
 			groups[tconcat(arg, "\001", 1, i)] = true
 		end
 		status.selected = uniquevalue

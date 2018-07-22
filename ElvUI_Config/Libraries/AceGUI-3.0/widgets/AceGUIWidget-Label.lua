@@ -8,7 +8,6 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local max, pairs, unpack = math.max, pairs, unpack
-local getn = table.getn
 
 -- WoW APIs
 local CreateFrame, UIParent = CreateFrame, UIParent
@@ -112,7 +111,7 @@ local methods = {
 
 		if image:GetTexture() then
 			self.imageshown = true
-			local n = getn(arg)
+			local n = arg.n
 			if n == 4 or n == 8 then
 				image:SetTexCoord(unpack(arg))
 			else

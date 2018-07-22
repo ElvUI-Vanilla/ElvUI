@@ -7,7 +7,6 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 -- Lua APIs
 local pairs, unpack = pairs, unpack
-local getn = table.getn
 
 -- WoW APIs
 local CreateFrame, UIParent = CreateFrame, UIParent
@@ -50,7 +49,7 @@ local methods = {
 	end,
 
 	["SetHighlightTexCoord"] = function(self, ...)
-		local c = getn(arg)
+		local c = arg.n
 		if c == 4 or c == 8 then
 			self.highlight:SetTexCoord(unpack(arg))
 		else

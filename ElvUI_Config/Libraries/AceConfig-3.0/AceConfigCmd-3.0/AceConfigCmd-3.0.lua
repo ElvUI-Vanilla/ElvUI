@@ -66,7 +66,7 @@ local funcmsg = "expected function or member name"
 -- pickfirstset() - picks the first non-nil value and returns it
 
 local function pickfirstset(...)
-	for i=1,getn(arg) do
+	for i=1,arg.n do
 		if arg[i]~=nil then
 			return arg[i]
 		end
@@ -124,7 +124,7 @@ local function callfunction(info, tab, methodtype, ...)
 	info.type = tab.type
 
 	if type(method)=="function" then
-		if getn(arg) > 0 then
+		if arg.n > 0 then
 			return method(info, unpack(arg))
 		else
 			return method(info)

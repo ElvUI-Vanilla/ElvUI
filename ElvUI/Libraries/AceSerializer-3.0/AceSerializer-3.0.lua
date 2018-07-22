@@ -21,7 +21,7 @@ local strbyte, strchar, gsub, gmatch, format = string.byte, string.char, string.
 local assert, error, pcall = assert, error, pcall
 local type, tostring, tonumber = type, tostring, tonumber
 local pairs, frexp = pairs, math.frexp
-local tconcat, getn = table.concat, table.getn
+local tconcat = table.concat
 
 -- quick copies of string representations of wonky numbers
 local serNaN = tostring(0/0)
@@ -116,7 +116,7 @@ local serializeTbl = { "^1" }	-- "^1" = Hi, I'm data serialized by AceSerializer
 function AceSerializer:Serialize(...)
 	local nres = 1
 
-	for i=1,getn(arg) do
+	for i=1,arg.n do
 		local v = arg[i]
 		nres = SerializeValue(v, serializeTbl, nres)
 	end

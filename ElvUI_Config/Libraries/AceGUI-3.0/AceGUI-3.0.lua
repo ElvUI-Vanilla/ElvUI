@@ -99,7 +99,7 @@ Dispatchers[0] = function(func)
 end
 
 local function safecall(func, ...)
-	return Dispatchers[getn(arg)](func, unpack(arg))
+	return Dispatchers[arg.n](func, unpack(arg))
 end
 
 -- Recycling functions
@@ -477,7 +477,7 @@ do
 	end
 
 	WidgetContainerBase.AddChildren = function(self, ...)
-		for i = 1, getn(arg) do
+		for i = 1, arg.n do
 			local child = arg[i]
 			tinsert(self.children, child)
 			child:SetParent(self)

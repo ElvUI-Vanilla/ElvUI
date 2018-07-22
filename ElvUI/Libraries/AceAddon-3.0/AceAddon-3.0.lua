@@ -98,7 +98,7 @@ local function safecall(func, ...)
 	-- this safecall is used for optional functions like OnInitialize OnEnable etc. When they are not
 	-- present execution should continue without hinderance
 	if type(func) == "function" then
-		return Dispatchers[getn(arg)](func, unpack(arg))
+		return Dispatchers[arg.n](func, unpack(arg))
 	end
 end
 
@@ -203,7 +203,7 @@ end
 -- @param addon addon object to embed the libs in
 -- @param lib List of libraries to embed into the addon
 function AceAddon:EmbedLibraries(addon, ...)
-	for i=1,getn(arg) do
+	for i=1,arg.n do
 		local libname = arg[i]
 		self:EmbedLibrary(addon, libname, false, 4)
 	end

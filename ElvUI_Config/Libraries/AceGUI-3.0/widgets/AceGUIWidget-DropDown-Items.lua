@@ -4,7 +4,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
 local assert, unpack = assert, unpack
-local getn = table.getn
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -14,7 +13,7 @@ local function fixlevels(parent, ...)
 	local child
 	local level = parent:GetFrameLevel() + 1
 
-	for i = 1, getn(arg) do
+	for i = 1, arg.n do
 		child = arg[i]
 		child:SetFrameLevel(level)
 		fixlevels(child)
@@ -25,7 +24,7 @@ local function fixstrata(strata, parent, ...)
 	local child
 	parent:SetFrameStrata(strata)
 
-	for i = 1, getn(arg) do
+	for i = 1, arg.n do
 		child = arg[i]
 		fixstrata(strata, child)
 	end

@@ -23,7 +23,7 @@ if not AceConfigRegistry.callbacks then
 end
 
 -- Lua APIs
-local tinsert, tconcat, getn = table.insert, table.concat, table.getn
+local tinsert, tconcat = table.insert, table.concat
 local strfind, strmatch = string.find, string.match
 local type, tostring, pairs, unpack = type, tostring, pairs, unpack
 local error, assert = error, assert
@@ -44,7 +44,7 @@ AceConfigRegistry.validated = {
 
 local function err(msg, errlvl, ...)
 	local t = {}
-	for i=getn(arg),1,-1 do
+	for i=arg.n,1,-1 do
 		tinsert(t, arg[i])
 	end
 	error(MAJOR..":ValidateOptionsTable(): "..tconcat(t,".")..msg, errlvl+2)

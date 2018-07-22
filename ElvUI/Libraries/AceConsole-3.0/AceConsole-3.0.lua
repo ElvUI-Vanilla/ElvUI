@@ -21,7 +21,7 @@ AceConsole.commands = AceConsole.commands or {} -- table containing commands reg
 AceConsole.weakcommands = AceConsole.weakcommands or {} -- table containing self, command => func references for weak commands that don't persist through enable/disable
 
 -- Lua APIs
-local tconcat, getn, tostring = table.concat, table.getn, tostring
+local tconcat, tostring = table.concat, tostring
 local type, pairs, error = type, pairs, error
 local format, strfind, strsub, upper, lower = string.format, string.find, string.sub, string.upper, string.lower
 local max = math.max
@@ -40,7 +40,7 @@ local function Print(self,frame,...)
 		n=n+1
 		tmp[n] = "|cff33ff99"..tostring( self ).."|r:"
 	end
-	for i=1, getn(arg) do
+	for i=1, arg.n do
 		n=n+1
 		tmp[n] = tostring(arg[i])
 	end
