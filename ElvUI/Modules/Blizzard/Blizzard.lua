@@ -13,6 +13,8 @@ function B:Initialize()
 end
 
 local function InitializeCallback()
+	FCF_SelectDockFrame(DEFAULT_CHAT_FRAME)
+
 	B:Initialize()
 end
 
