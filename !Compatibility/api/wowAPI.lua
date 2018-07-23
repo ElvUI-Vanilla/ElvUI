@@ -82,21 +82,19 @@ QuestDifficultyColors = {
 	["header"] = {r = 0.70, g = 0.70, b = 0.70}
 }
 
-function HookScript(frame, scriptType, handler)
-	if not (type(frame) == "table" and frame.GetScript and type(scriptType) == "string" and type(handler) == "function") then
+function HookScript(frame, scriptName, handler)
+	if not (type(frame) == "table" and frame.GetScript and type(scriptName) == "string" and type(handler) == "function") then
 		error("Usage: HookScript(frame, \"type\", function)", 2)
 	end
 
-	local original_scipt = frame:GetScript(scriptType)
+	local original_scipt = frame:GetScript(scriptName)
 	if original_scipt then
-		frame:SetScript(scriptType, function(...)
-			local original_return = {original_scipt(unpack(arg))}
-			handler(unpack(arg))
-
-			return unpack(original_return)
+		frame:SetScript(scriptName, function()
+			original_scipt(this)
+			handler(this)
 		end)
 	else
-		frame:SetScript(scriptType, handler)
+		frame:SetScript(scriptName, handler)
 	end
 end
 
