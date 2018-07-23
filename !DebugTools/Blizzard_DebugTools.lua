@@ -108,8 +108,7 @@ function EventTraceFrame_OnEvent (self, event, ...)
 			self.framesSinceLast[nextIndex] = 0;
 			self.eventids[nextIndex] = GetCurrentEventID();
 
-			local numArgs = getn(arg);
-			for i = 1, numArgs do
+			for i = 1, arg.n do
 				if (not self.args[i]) then
 					self.args[i] = {};
 				end
