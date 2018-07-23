@@ -17,7 +17,7 @@ end
 
 local function onEvent()
 	if(this:IsVisible() or event == 'UNIT_COMBO_POINTS') then
-		return this[event](this, event, arg1, arg2, arg3, arg4, arg5)
+		return this[event](this, event, arg1, arg2, arg3)
 	end
 end
 
