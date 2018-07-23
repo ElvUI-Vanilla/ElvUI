@@ -196,7 +196,7 @@ function DT:AssignPanelToDataText(panel, data)
 
 	if data["eventFunc"] then
 		panel:SetScript("OnEvent", function()
-			data["eventFunc"](this, event, arg1, arg2, arg3)
+			data["eventFunc"](this, event)
 		end)
 		data["eventFunc"](panel, "ELVUI_FORCE_RUN")
 	end
@@ -210,7 +210,7 @@ function DT:AssignPanelToDataText(panel, data)
 
 	if data["onClick"] then
 		panel:SetScript("OnClick", function()
-			data["onClick"](this, arg1)
+			data["onClick"](this)
 		end)
 	end
 

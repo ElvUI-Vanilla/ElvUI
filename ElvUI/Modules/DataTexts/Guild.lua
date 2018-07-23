@@ -103,20 +103,20 @@ local eventHandlers = {
 	end,
 	["PLAYER_GUILD_UPDATE"] = GuildRoster,
 	-- our guild message of the day changed
-	["GUILD_MOTD"] = function(self, arg1)
+	["GUILD_MOTD"] = function(self)
 		guildMotD = arg1
 	end,
-	["ELVUI_FORCE_RUN"] = function()
-		GuildRoster()
-	end, -- Temporarily
+	["ELVUI_FORCE_RUN"] = E.noop,
 	["ELVUI_COLOR_UPDATE"] = E.noop,
+
+	["PLAYER_LOGIN"] = GuildRoster, -- Temporarily
 }
 
-local function OnEvent(self, event, arg1)
+local function OnEvent(self, event)
 	lastPanel = self
 
 	if IsInGuild() then
-		eventHandlers[event](self, arg1)
+		eventHandlers[event](self, event)
 
 		self.text:SetText(format(displayString, getn(guildTable)))
 	else

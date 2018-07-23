@@ -98,11 +98,11 @@ local function BuildFriendTable(total)
 	end
 end
 
-local function OnEvent(self, event, message)
+local function OnEvent(self, event)
 	local _, onlineFriends = GetNumberFriends()
 
 	if event == "CHAT_MSG_SYSTEM" then
-		if not (find(message, friendOnline) or find(message, friendOffline)) then return end
+		if not (find(arg1, friendOnline) or find(arg1, friendOffline)) then return end
 	end
 
 	dataValid = false

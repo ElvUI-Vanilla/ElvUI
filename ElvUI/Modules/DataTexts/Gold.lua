@@ -34,8 +34,8 @@ local function OnEvent(self)
 	ElvDB["gold"][E.myrealm][E.myname] = NewMoney
 end
 
-local function OnClick(self, btn)
-	if btn == "RightButton" and IsShiftKeyDown() then
+local function OnClick(self)
+	if arg1 == "RightButton" and IsShiftKeyDown() then
 		ElvDB.gold = nil
 		OnEvent(self)
 		DT.tooltip:Hide()

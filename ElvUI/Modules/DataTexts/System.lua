@@ -45,10 +45,10 @@ local function ToggleGameMenuFrame()
 	end
 end
 
-local function OnClick(_, btn)
-	if btn == "RightButton" then
+local function OnClick()
+	if arg1 == "RightButton" then
 		collectgarbage()
-	elseif btn == "LeftButton" then
+	elseif arg1 == "LeftButton" then
 		ToggleGameMenuFrame()
 	end
 end
