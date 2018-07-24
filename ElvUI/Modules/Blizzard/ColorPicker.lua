@@ -255,15 +255,15 @@ function B:EnhanceColorPicker()
 
 		-- set up scripts to handle event appropriately
 		if i == 5 then
-			box:SetScript("OnEscapePressed", function()	this:ClearFocus() UpdateAlphaText() end)
+			box:SetScript("OnEscapePressed", function() this:ClearFocus() UpdateAlphaText() end)
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateAlphaText() end)
 		else
-			box:SetScript("OnEscapePressed", function()	this:ClearFocus() UpdateColorTexts() end)
+			box:SetScript("OnEscapePressed", function() this:ClearFocus() UpdateColorTexts() end)
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateColorTexts() end)
 		end
 
 		box:SetScript("OnEditFocusGained", function() this:HighlightText() end)
-		box:SetScript("OnEditFocusLost", function()	this:HighlightText(0,0) end)
+		box:SetScript("OnEditFocusLost", function() this:HighlightText(0,0) end)
 		box:SetScript("OnTextSet", function() this:ClearFocus() end)
 		box:Show()
 	end

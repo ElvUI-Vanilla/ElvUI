@@ -122,7 +122,7 @@ function AB:BindUpdate(button, spellmacro)
 		GameTooltip:AddLine(bind.button.name, 1, 1, 1)
 
 		bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
-			if getn(bind.button.bindings == 0) then
+			if getn(bind.button.bindings) == 0 then
 				GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
 			else
 				GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
@@ -226,7 +226,7 @@ function AB:RegisterMacro(addon)
 	if addon == "Blizzard_MacroUI" then
 		for i = 1, MAX_MACROS do
 			local b = _G["MacroButton"..i]
-			HookScript(b, "OnEnter", function() AB:BindUpdate(this, "MACRO") end)
+			HookScript(b, "OnEnter", function() self:BindUpdate(b, "MACRO") end)
 		end
 	end
 end
