@@ -12,6 +12,7 @@ local pairs = pairs
 -- WoW APIs
 local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown
 local CreateFrame, UIParent = CreateFrame, UIParent
+local MouseIsOver = MouseIsOver
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
@@ -29,17 +30,8 @@ local function Control_OnLeave()
 	this.obj:Fire("OnLeave")
 end
 
-local function Keybinding_OnHide()
-	local self = this.obj
-	this:EnableKeyboard(false)
-	this:EnableMouseWheel(false)
-	self.msgframe:Hide()
-	this:UnlockHighlight()
-	self.waitingForKey = nil
-end
-
-local function Keybinding_OnClick()
-	if arg1 == "LeftButton" or arg1 == "RightButton" then
+local function Keybinding_OnMouseUp()
+	if (arg1 == "LeftButton" or arg1 == "RightButton") and MouseIsOver(this) and not this.disabled then
 		local self = this.obj
 		if self.waitingForKey then
 			this:EnableKeyboard(false)
@@ -61,13 +53,15 @@ end
 local ignoreKeys = {
 	["BUTTON1"] = true, ["BUTTON2"] = true,
 	["UNKNOWN"] = true,
-	["LSHIFT"] = true, ["LCTRL"] = true, ["LALT"] = true,
-	["RSHIFT"] = true, ["RCTRL"] = true, ["RALT"] = true,
+	["SHIFT"] = true, ["CTRL"] = true, ["ALT"] = true,
 }
-local function Keybinding_OnKeyDown()
-	local self = this.obj
+local function Keybinding_OnKeyDown(frame, key)
+	local frame = this or frame
+	local key = key or arg1
+
+	local self = frame.obj
 	if self.waitingForKey then
-		local keyPressed = arg1
+		local keyPressed = key
 		if keyPressed == "ESCAPE" then
 			keyPressed = ""
 		else
@@ -83,62 +77,41 @@ local function Keybinding_OnKeyDown()
 			end
 		end
 
-		this:EnableKeyboard(false)
-		this:EnableMouseWheel(false)
+		frame:EnableKeyboard(false)
+		frame:EnableMouseWheel(false)
 		self.msgframe:Hide()
-		this:UnlockHighlight()
+		frame:UnlockHighlight()
 		self.waitingForKey = nil
 
-		if not self.disabled then
+		if not frame.disabled then
 			self:SetKey(keyPressed)
 			self:Fire("OnKeyChanged", keyPressed)
 		end
 	end
 end
 
-local function Keybinding_OnMouseUp()
-	if MouseIsOver(this) and not self.disabled then
-		local self = this.obj
-		if self.waitingForKey then
-			if arg1 ~= "LeftButton" and arg1 ~= "RightButton" then
-				Keybinding_OnKeyDown()
-			end
-			this:EnableKeyboard(false)
-			this:EnableMouseWheel(false)
-			self.msgframe:Hide()
-			this:UnlockHighlight()
-			self.waitingForKey = nil
-		else
-			this:EnableKeyboard(true)
-			this:EnableMouseWheel(true)
-			self.msgframe:Show()
-			this:LockHighlight()
-			self.waitingForKey = true
-		end
-	end
-	AceGUI:ClearFocus()
-end
-
 local function Keybinding_OnMouseDown()
-	if arg1 == "LeftButton" or arg1 == "RightButton" then
+	local button = arg1
+	if button == "LeftButton" or button == "RightButton" then
 		return
-	elseif arg1 == "MiddleButton" then
-		arg1 = "BUTTON3"
-	elseif arg1 == "Button4" then
-		arg1 = "BUTTON4"
-	elseif arg1 == "Button5" then
-		arg1 = "BUTTON5"
+	elseif button == "MiddleButton" then
+		button = "BUTTON3"
+	elseif button == "Button4" then
+		button = "BUTTON4"
+	elseif button == "Button5" then
+		button = "BUTTON5"
 	end
-	Keybinding_OnKeyDown()
+	Keybinding_OnKeyDown(this, button)
 end
 
 local function Keybinding_OnMouseWheel()
+	local button
 	if arg1 >= 0 then
-		arg1 = "MOUSEWHEELUP"
+		button = "MOUSEWHEELUP"
 	else
-		arg1 = "MOUSEWHEELDOWN"
+		button = "MOUSEWHEELDOWN"
 	end
-	Keybinding_OnKeyDown()
+	Keybinding_OnKeyDown(this, button)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -172,10 +145,10 @@ local methods = {
 	["SetKey"] = function(self, key)
 		if (key or "") == "" then
 			self.button:SetText(NOT_BOUND)
-			self.text:SetFontObject("GameFontNormal")
+			self.button:SetTextFontObject("GameFontNormal")
 		else
 			self.button:SetText(key)
-			self.text:SetFontObject("GameFontHighlight")
+			self.button:SetTextFontObject("GameFontHighlight")
 		end
 	end,
 
@@ -226,12 +199,10 @@ local function Constructor()
 	button:RegisterForClicks("AnyDown")
 	button:SetScript("OnEnter", Control_OnEnter)
 	button:SetScript("OnLeave", Control_OnLeave)
---	button:SetScript("OnClick", Keybinding_OnClick)
 	button:SetScript("OnMouseUp", Keybinding_OnMouseUp)
 	button:SetScript("OnKeyDown", Keybinding_OnKeyDown)
 	button:SetScript("OnMouseDown", Keybinding_OnMouseDown)
 	button:SetScript("OnMouseWheel", Keybinding_OnMouseWheel)
-	button:SetScript("OnHide", Keybinding_OnHide)
 	button:SetPoint("BOTTOMLEFT", 0, 0)
 	button:SetPoint("BOTTOMRIGHT", 0, 0)
 	button:SetHeight(24)
@@ -269,8 +240,7 @@ local function Constructor()
 		msgframe    = msgframe,
 		frame       = frame,
 		alignoffset = 30,
-		type        = Type,
-		text        = text
+		type        = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

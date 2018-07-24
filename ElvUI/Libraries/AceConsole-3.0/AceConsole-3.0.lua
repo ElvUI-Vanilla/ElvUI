@@ -114,7 +114,6 @@ function AceConsole:UnregisterChatCommand( command )
 	if name then
 		SlashCmdList[name] = nil
 		_G["SLASH_" .. name .. "1"] = nil
-		hash_SlashCmdList["/" .. upper(command)] = nil
 		AceConsole.commands[command] = nil
 	end
 end

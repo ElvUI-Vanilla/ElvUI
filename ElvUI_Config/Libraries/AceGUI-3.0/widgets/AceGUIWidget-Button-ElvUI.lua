@@ -24,29 +24,29 @@ local function lockTooltip()
 	GameTooltip:SetText(" ")
 	GameTooltip:Show()
 end
-local function dragdrop_OnMouseDown(...)
+local function dragdrop_OnMouseDown()
 	if this.obj.dragOnMouseDown then
 		dragdropButton.mouseDownFrame = this
 		dragdropButton:SetText(this.obj.value or "Unknown")
 		dragdropButton:SetWidth(this:GetWidth())
 		dragdropButton:SetHeight(this:SetHeight())
-		this.obj.dragOnMouseDown(this, unpack(arg))
+		this.obj.dragOnMouseDown(this, arg1)
 	end
 end
-local function dragdrop_OnMouseUp(...)
+local function dragdrop_OnMouseUp()
 	if this.obj.dragOnMouseUp then
 		this:SetAlpha(1)
 		GameTooltip:Hide()
 		dragdropButton:Hide()
 		if dragdropButton.enteredFrame and dragdropButton.enteredFrame ~= this and dragdropButton.enteredFrame:IsMouseOver() then
-			this.obj.dragOnMouseUp(this, unpack(arg))
-			this.obj.ActivateMultiControl(this.obj, unpack(arg))
+			this.obj.dragOnMouseUp(this, arg1)
+			this.obj.ActivateMultiControl(this.obj, arg1)
 		end
 		dragdropButton.enteredFrame = nil
 		dragdropButton.mouseDownFrame = nil
 	end
 end
-local function dragdrop_OnLeave(...)
+local function dragdrop_OnLeave()
 	if this.obj.dragOnLeave then
 		if dragdropButton.mouseDownFrame then
 			lockTooltip()
@@ -54,15 +54,15 @@ local function dragdrop_OnLeave(...)
 		if this == dragdropButton.mouseDownFrame then
 			this:SetAlpha(0)
 			dragdropButton:Show()
-			this.obj.dragOnLeave(this, unpack(arg))
+			this.obj.dragOnLeave(this)
 		end
 	end
 end
-local function dragdrop_OnEnter(...)
+local function dragdrop_OnEnter()
 	if this.obj.dragOnEnter and dragdropButton:IsShown() then
 		dragdropButton.enteredFrame = this
 		lockTooltip()
-		this.obj.dragOnEnter(this, unpack(arg))
+		this.obj.dragOnEnter(this)
 	end
 end
 local function dragdrop_OnClick()

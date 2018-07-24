@@ -81,11 +81,11 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	local line = button.line
 	button.level = level
 	if ( level == 1 ) then
-		button.text:SetFontObject("GameFontNormal")
+		button:SetTextFontObject("GameFontNormal")
 		button:SetHighlightFontObject("GameFontHighlight")
 		button.text:SetPoint("LEFT", (icon and 16 or 0) + 8, 2)
 	else
-		button.text:SetFontObject("GameFontHighlightSmall")
+		button:SetTextFontObject("GameFontHighlightSmall")
 		button:SetHighlightFontObject("GameFontHighlightSmall")
 		button.text:SetPoint("LEFT", (icon and 16 or 0) + 8 * level, 2)
 	end

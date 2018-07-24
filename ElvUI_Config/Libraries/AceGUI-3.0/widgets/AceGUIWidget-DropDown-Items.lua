@@ -3,7 +3,7 @@
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
-local assert, unpack = assert, unpack
+local assert = assert
 
 -- WoW APIs
 local PlaySound = PlaySound
@@ -107,7 +107,7 @@ end
 
 -- exported
 function ItemBase.SetPoint(self, ...)
-	self.frame:SetPoint(unpack(arg))
+	self.frame:SetPoint(arg[1], arg[2], arg[3], arg[4], arg[5])
 end
 
 -- exported

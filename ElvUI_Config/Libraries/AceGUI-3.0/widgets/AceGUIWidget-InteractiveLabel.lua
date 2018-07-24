@@ -45,12 +45,14 @@ local methods = {
 	-- ["OnRelease"] = nil,
 
 	["SetHighlight"] = function(self, ...)
-		self.highlight:SetTexture(unpack(arg))
+		self.highlight:SetTexture(arg[1], arg[2], arg[3], arg[4])
 	end,
 
 	["SetHighlightTexCoord"] = function(self, ...)
 		local c = arg.n
-		if c == 4 or c == 8 then
+		if c == 4 then
+			self.highlight:SetTexCoord(arg[1], arg[2], arg[3], arg[4])
+		elseif c == 8 then
 			self.highlight:SetTexCoord(unpack(arg))
 		else
 			self.highlight:SetTexCoord(0, 1, 0, 1)

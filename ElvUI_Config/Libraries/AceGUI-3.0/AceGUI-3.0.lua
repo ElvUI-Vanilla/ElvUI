@@ -377,7 +377,7 @@ do
 	end
 
 	WidgetBase.SetPoint = function(self, ...)
-		return self.frame:SetPoint(unpack(arg))
+		return self.frame:SetPoint(arg[1], arg[2], arg[3], arg[4], arg[5])
 	end
 
 	WidgetBase.ClearAllPoints = function(self)
@@ -389,7 +389,7 @@ do
 	end
 
 	WidgetBase.GetPoint = function(self, ...)
-		return self.frame:GetPoint(unpack(arg))
+		return self.frame:GetPoint(arg[1])
 	end
 
 	WidgetBase.GetUserDataTable = function(self)

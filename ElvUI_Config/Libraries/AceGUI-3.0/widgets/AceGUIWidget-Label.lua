@@ -112,7 +112,9 @@ local methods = {
 		if image:GetTexture() then
 			self.imageshown = true
 			local n = arg.n
-			if n == 4 or n == 8 then
+			if n == 4 then
+				image:SetTexCoord(arg[1], arg[2], arg[3], arg[4])
+			elseif n == 8 then
 				image:SetTexCoord(unpack(arg))
 			else
 				image:SetTexCoord(0, 1, 0, 1)

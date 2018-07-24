@@ -561,7 +561,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 		--parse for =on =off =default in the process
 		--table will be key = true for options that should toggle, key = [on|off|default] for options to be set
 		local sels = {}
-		for v in strgfind(str, "[^ ]+") do
+		for v in strgmatch(str, "[^ ]+") do
 			--parse option=on etc
 			local _, _, opt, val = strfind(v, '(.+)=(.+)')
 			--get option if toggling
