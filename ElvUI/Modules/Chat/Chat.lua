@@ -505,9 +505,7 @@ function CH:PrintURL(url)
 	return "|cFFFFFFFF[|Hurl:"..url.."|h"..url.."|h]|r "
 end
 
-function CH:FindURL(event, msg)
-	if not arg1 then arg1 = msg end
-
+function CH:FindURL(event, msg, ...)
 	if event and event == "CHAT_MSG_WHISPER" and CH.db.whisperSound ~= "None" and not CH.SoundPlayed then
 		PlaySoundFile(LSM:Fetch("sound", CH.db.whisperSound), "Master")
 		CH.SoundPlayed = true
@@ -515,34 +513,34 @@ function CH:FindURL(event, msg)
 	end
 
 	if not CH.db.url then
-		arg1 = CH:CheckKeyword(arg1)
-		return false
+		msg = CH:CheckKeyword(msg)
+		return false, msg, unpack(arg)
 	end
 
-	arg1 = gsub(gsub(arg1, "(%S)(|c.-|H.-|h.-|h|r)", '%1 %2'), "(|c.-|H.-|h.-|h|r)(%S)", "%1 %2")
+	msg = gsub(gsub(msg, "(%S)(|c.-|H.-|h.-|h|r)", '%1 %2'), "(|c.-|H.-|h.-|h|r)(%S)", "%1 %2")
 	-- http://example.com
-	local newMsg, found = gsub(arg1, "(%a+)://(%S+)%s?", CH:PrintURL("%1://%2"))
-	if found > 0 then return false, CH:CheckKeyword(newMsg) end
+	local newMsg, found = gsub(msg, "(%a+)://(%S+)%s?", CH:PrintURL("%1://%2"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- www.example.com
-	newMsg, found = gsub(arg1, "www%.([_A-Za-z0-9-]+)%.(%S+)%s?", CH:PrintURL("www.%1.%2"))
-	if found > 0 then return false, CH:CheckKeyword(newMsg) end
+	newMsg, found = gsub(msg, "www%.([_A-Za-z0-9-]+)%.(%S+)%s?", CH:PrintURL("www.%1.%2"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- example@example.com
-	newMsg, found = gsub(arg1, "([_A-Za-z0-9-%.]+)@([_A-Za-z0-9-]+)(%.+)([_A-Za-z0-9-%.]+)%s?", CH:PrintURL("%1@%2%3%4"))
-	if found > 0 then return false, CH:CheckKeyword(newMsg) end
+	newMsg, found = gsub(msg, "([_A-Za-z0-9-%.]+)@([_A-Za-z0-9-]+)(%.+)([_A-Za-z0-9-%.]+)%s?", CH:PrintURL("%1@%2%3%4"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- IP address with port 1.1.1.1:1
-	newMsg, found = gsub(arg1, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)(:%d+)%s?", CH:PrintURL("%1.%2.%3.%4%5"))
-	if found > 0 then return false, CH:CheckKeyword(newMsg)end
+	newMsg, found = gsub(msg, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)(:%d+)%s?", CH:PrintURL("%1.%2.%3.%4%5"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 	-- IP address 1.1.1.1
-	newMsg, found = gsub(arg1, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%s?", CH:PrintURL("%1.%2.%3.%4"))
-	if found > 0 then return false, CH:CheckKeyword(newMsg) end
+	newMsg, found = gsub(msg, "(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%s?", CH:PrintURL("%1.%2.%3.%4"))
+	if found > 0 then return false, CH:CheckKeyword(newMsg), unpack(arg) end
 
-	arg1 = CH:CheckKeyword(arg1)
+	msg = CH:CheckKeyword(msg)
 
-	return false
+	return false, msg, unpack(arg)
 end
 
 local SetHyperlink = ItemRefTooltip.SetHyperlink
-function ItemRefTooltip:SetHyperlink(data)
+function ItemRefTooltip:SetHyperlink(data, ...)
 	if strsub(data, 1, 3) == "url" then
 		local currentLink = strsub(data, 5)
 		if not ChatFrameEditBox:IsShown() then
@@ -552,7 +550,7 @@ function ItemRefTooltip:SetHyperlink(data)
 		ChatFrameEditBox:Insert(currentLink)
 		ChatFrameEditBox:HighlightText()
 	else
-		SetHyperlink(self, data)
+		SetHyperlink(self, data, unpack(arg))
 	end
 end
 
@@ -665,7 +663,7 @@ function CH:GetColoredName(event, _, arg2)
 	return arg2
 end
 
-function CH:ChatFrame_OnEvent(self, event)
+function CH:ChatFrame_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
 	if event == "UPDATE_CHAT_WINDOWS" then
 		local _, fontSize, _, _, _, _, shown = GetChatWindowInfo(self:GetID())
 		if fontSize > 0 then
@@ -949,7 +947,7 @@ function CH:ChatFrame_OnEvent(self, event)
 end
 
 function CH:FloatingChatFrame_OnEvent()
-	if CH:ChatFrame_OnEvent(this, event) then return end
+	if CH:ChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) then return end
 	FloatingChatFrame_OnEvent(event)
 end
 
@@ -1077,12 +1075,12 @@ function CH:ChatThrottleHandler(author, message)
 	end
 end
 
-function CH:CHAT_MSG_CHANNEL(event)
+function CH:CHAT_MSG_CHANNEL(event, message, author, ...)
 	local blockFlag = false
-	local msg = PrepareMessage(arg2, arg1)
+	local msg = PrepareMessage(author, message)
 
 	-- ignore player messages
-	if arg2 == E.myname then return CH.FindURL(self, event) end
+	if author == E.myname then return CH.FindURL(self, event, message, author, unpack(arg)) end
 	if msgList[msg] and CH.db.throttleInterval ~= 0 then
 		if difftime(time(), msgTime[msg]) <= CH.db.throttleInterval then
 			blockFlag = true
@@ -1096,18 +1094,18 @@ function CH:CHAT_MSG_CHANNEL(event)
 			msgTime[msg] = time()
 		end
 
-		return CH.FindURL(self, event)
+		return CH.FindURL(self, event, message, author, unpack(arg))
 	end
 end
 
-function CH:CHAT_MSG_YELL(event)
+function CH:CHAT_MSG_YELL(event, message, author, ...)
 	local blockFlag = false
-	local msg = PrepareMessage(arg2, arg1)
+	local msg = PrepareMessage(author, message)
 
-	if msg == nil then return CH.FindURL(self, event) end
+	if msg == nil then return CH.FindURL(self, event, message, author, unpack(arg)) end
 
 	-- ignore player messages
-	if arg2 == E.myname then return CH.FindURL(self, event) end
+	if author == E.myname then return CH.FindURL(self, event, message, author, unpack(arg)) end
 	if msgList[msg] and msgCount[msg] > 1 and CH.db.throttleInterval ~= 0 then
 		if difftime(time(), msgTime[msg]) <= CH.db.throttleInterval then
 			blockFlag = true
@@ -1121,12 +1119,12 @@ function CH:CHAT_MSG_YELL(event)
 			msgTime[msg] = time()
 		end
 
-		return CH.FindURL(self, event)
+		return CH.FindURL(self, event, message, author, unpack(arg))
 	end
 end
 
-function CH:CHAT_MSG_SAY(event)
-	return CH.FindURL(self, event)
+function CH:CHAT_MSG_SAY(event, message, author, ...)
+	return CH.FindURL(self, event, message, author, unpack(arg))
 end
 
 function CH:ThrottleSound()
@@ -1198,7 +1196,7 @@ end
 
 function CH:AddLines(lines, ...)
 	for i = arg.n, 1, -1 do
-		local x = arg[i]
+		local x = select(i, unpack(arg))
 		if	x:GetObjectType() == "FontString" and not x:GetName() then
 			tinsert(lines, x:GetText())
 		end
