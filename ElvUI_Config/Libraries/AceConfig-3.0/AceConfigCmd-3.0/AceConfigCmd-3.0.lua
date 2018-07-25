@@ -29,7 +29,7 @@ local AceConsoleName = "AceConsole-3.0"
 
 -- Lua APIs
 local strsub, strsplit, strlower, strmatch, strtrim = string.sub, string.split, string.lower, string.match, string.trim
-local strgsub, strupper, strfind, strlen, strbyte, strgmatch = string.gsub, string.upper, string.find, string.len, string.byte, string.gmatch
+local strgsub, strupper, strfind, strlen, strbyte = string.gsub, string.upper, string.find, string.len, string.byte
 local format, tonumber, tostring = string.format, tonumber, tostring
 local tsort, tinsert, getn = table.sort, table.insert, table.getn
 local fmod = math.fmod
@@ -561,7 +561,7 @@ local function handle(info, inputpos, tab, depth, retfalse)
 		--parse for =on =off =default in the process
 		--table will be key = true for options that should toggle, key = [on|off|default] for options to be set
 		local sels = {}
-		for v in strgmatch(str, "[^ ]+") do
+		for v in string.gmatch(str, "[^ ]+") do
 			--parse option=on etc
 			local _, _, opt, val = strfind(v, '(.+)=(.+)')
 			--get option if toggling
