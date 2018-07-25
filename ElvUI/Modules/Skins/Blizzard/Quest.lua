@@ -15,6 +15,8 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.quest ~= true then return end
 
+	UIPanelWindows["QuestFrame"] = {area = "doublewide", pushable = 0, whileDead = 1}
+
 	local QuestStrip = {
 		"QuestFrame",
 		"QuestLogFrame",
@@ -251,8 +253,6 @@ local function LoadSkin()
 	end)
 
 	QuestLogTimerText:SetTextColor(1, 1, 1)
-
-	UIPanelWindows["QuestLogFrame"] = {area = "doublewide", pushable = 0, whileDead = 1}
 
 	E:CreateBackdrop(QuestFrame, "Transparent")
 	QuestFrame.backdrop:SetPoint("TOPLEFT", 15, -11)

@@ -10,6 +10,8 @@ local unpack = unpack
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.talent ~= true then return end
 
+	UIPanelWindows["TalentFrame"] = {area = "left", pushable = 0, whileDead = 1}
+
 	E:StripTextures(TalentFrame)
 	E:CreateBackdrop(TalentFrame, "Transparent")
 	E:Point(TalentFrame.backdrop, "TOPLEFT", 13, -12)
