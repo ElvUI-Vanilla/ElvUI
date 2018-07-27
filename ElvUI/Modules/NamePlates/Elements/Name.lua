@@ -36,6 +36,12 @@ function mod:UpdateElement_Name(frame)
 	else
 		frame.Name:SetTextColor(1, 1, 1)
 	end
+
+	if self.db.nameColoredGlow then
+		frame.Name.NameOnlyGlow:SetVertexColor(r - 0.1, g - 0.1, b - 0.1, 1)
+	else
+		frame.Name.NameOnlyGlow:SetVertexColor(self.db.glowColor.r, self.db.glowColor.g, self.db.glowColor.b, self.db.glowColor.a)
+	end
 end
 
 function mod:ConfigureElement_Name(frame)
@@ -44,7 +50,7 @@ function mod:ConfigureElement_Name(frame)
 	name:SetJustifyH("LEFT")
 	name:SetJustifyV("BOTTOM")
 	name:ClearAllPoints()
-	if self.db.units[frame.UnitType].healthbar.enable or frame.isTarget then
+	if(self.db.units[frame.UnitType].healthbar.enable or (self.db.alwaysShowTargetHealth and frame.isTarget)) then
 		name:SetJustifyH("LEFT")
 		name:SetPoint("BOTTOMLEFT", frame.HealthBar, "TOPLEFT", 0, E.Border*2)
 		name:SetPoint("BOTTOMRIGHT", frame.Level, "BOTTOMLEFT")
@@ -58,6 +64,15 @@ end
 
 function mod:ConstructElement_Name(frame)
 	local name = frame:CreateFontString(nil, "OVERLAY")
+	name:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+
+	local g = frame:CreateTexture(nil, "BACKGROUND")
+	g:SetTexture([[Interface\AddOns\ElvUI\media\textures\spark.tga]])
+	g:Hide()
+	g:SetPoint("TOPLEFT", name, -20, 8)
+	g:SetPoint("BOTTOMRIGHT", name, 20, -8)
+
+	name.NameOnlyGlow = g
 
 	return name
 end

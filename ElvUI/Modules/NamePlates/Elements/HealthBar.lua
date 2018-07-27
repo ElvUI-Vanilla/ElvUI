@@ -165,7 +165,15 @@ end
 function mod:ConstructElement_HealthBar(parent)
 	local frame = CreateFrame("StatusBar", nil, parent)
 	self:StyleFrame(frame)
-	frame:SetFrameLevel(parent:GetFrameLevel())
+
+	frame:SetScript("OnSizeChanged", function()
+		parent:SetWidth(this:GetWidth())
+		parent:SetHeight(this:GetHeight())
+
+		local health = this:GetValue()
+		local _, maxHealth = this:GetMinMaxValues()
+		this:GetStatusBarTexture():SetPoint("TOPRIGHT", -(this:GetWidth() * ((maxHealth - health) / maxHealth)), 0)
+	end)
 
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
 	frame.scale = CreateAnimationGroup(frame)

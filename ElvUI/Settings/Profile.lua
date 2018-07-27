@@ -99,23 +99,42 @@ P["databars"] = {
 
 P["nameplates"] = {
 	["statusbar"] = "ElvUI Norm",
-	["font"] = "Homespun",
-	["fontSize"] = 8,
-	["fontOutline"] = "MONOCHROMEOUTLINE",
+	["font"] = "PT Sans Narrow",
+	["fontSize"] = 11,
+	["fontOutline"] = "OUTLINE",
+	["healthFont"] = "PT Sans Narrow",
+	["healthFontSize"] = 11,
+	["healthFontOutline"] = "OUTLINE",
+	["durationFont"] = "PT Sans Narrow",
+	["durationFontSize"] = 10,
+	["durationFontOutline"] = "OUTLINE",
+	["durationPosition"] = "CENTER",
+	["stackFont"] = "PT Sans Narrow",
+	["stackFontSize"] = 8,
+	["stackFontOutline"] = "OUTLINE",
 	["useTargetScale"] = true,
 	["targetScale"] = 1.15,
 	["nonTargetTransparency"] = 0.35,
 	["motionType"] = "OVERLAP",
 	["lowHealthThreshold"] = 0.4,
-
 	["showFriendlyCombat"] = "DISABLED",
 	["showEnemyCombat"] = "DISABLED",
-
-	["clampToScreen"] = false,
-	["useTargetGlow"] = true,
-
+	["targetGlow"] = "style2",
+	["glowColor"] = {r = 77/255, g = 179/255, b = 255/255, a = 1},
+	["nameColoredGlow"] = false,
+	["alwaysShowTargetHealth"] = true,
 	["castColor"] = {r = 1, g = 208/255, b = 0},
+	["castNoInterruptColor"] = {r = 0.78, g = 0.25, b = 0.25},
 	["comboPoints"] = true,
+	["cooldown"] = {
+		["threshold"] = 4,
+		["override"] = true,
+		["expiringColor"] = {r = 1, g = 0, b = 0},
+		["secondsColor"] = {r = 1, g = 1, b = 1},
+		["minutesColor"] = {r = 1, g = 1, b = 1},
+		["hoursColor"] = {r = 1, g = 1, b = 1},
+		["daysColor"] = {r = 1, g = 1, b = 1},
+	},
 	["reactions"] = {
 		["friendlyPlayer"] = {r = 0.31, g = 0.45, b = 0.63},
 		["tapped"] = {r = 0.6, g = 0.6, b = 0.6},
@@ -128,11 +147,18 @@ P["nameplates"] = {
 		["badColor"] = {r = 0.78, g = 0.25, b = 0.25},
 		["goodTransition"] = {r = 218/255, g = 197/255, b = 92/255},
 		["badTransition"] = {r = 235/255, g = 163/255, b = 40/255},
-		["beingTankedByTankColor"] = {r = .8, g = 0.1,b = 1},
+		["beingTankedByTankColor"] = {r = .8, g = 0.1, b = 1},
 		["beingTankedByTank"] = true,
 		["goodScale"] = 0.8,
 		["badScale"] = 1.2,
 		["useThreatColor"] = true,
+	},
+	["filters"] = {
+		["Boss"] = {
+			["triggers"] = {
+				["enable"] = true,
+			},
+		},
 	},
 
 	["units"] = {
@@ -158,15 +184,16 @@ P["nameplates"] = {
 				["hideTime"] = false,
 				["castTimeFormat"] = "CURRENT",
 				["channelTimeFormat"] = "CURRENT",
-				["timeToHold"] = 0
+				["timeToHold"] = 0,
+				["iconPosition"] = "RIGHT",
 			},
 			["buffs"] = {
 				["enable"] = true,
 				["numAuras"] = 4,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "TurtleBuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,blockNoDuration,Personal,TurtleBuffs" --NamePlate FriendlyPlayer Buffs
 				},
 			},
 			["debuffs"] = {
@@ -174,9 +201,9 @@ P["nameplates"] = {
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "CCDebuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,blockNoDuration,Personal,CCDebuffs" --NamePlate FriendlyPlayer Debuffs
 				},
 			},
 			["name"] = {
@@ -206,16 +233,17 @@ P["nameplates"] = {
 				["hideTime"] = false,
 				["castTimeFormat"] = "CURRENT",
 				["channelTimeFormat"] = "CURRENT",
-				["timeToHold"] = 0
+				["timeToHold"] = 0,
+				["iconPosition"] = "RIGHT",
 			},
 			["buffs"] = {
 				["enable"] = true,
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "TurtleBuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,PlayerBuffs,TurtleBuffs" --NamePlate EnemyPlayer Buffs
 				},
 			},
 			["debuffs"] = {
@@ -223,9 +251,9 @@ P["nameplates"] = {
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "CCDebuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,blockNoDuration,Personal,CCDebuffs,RaidDebuffs" --NamePlate EnemyPlayer Debuffs
 				},
 			},
 			["name"] = {
@@ -253,16 +281,17 @@ P["nameplates"] = {
 				["hideTime"] = false,
 				["castTimeFormat"] = "CURRENT",
 				["channelTimeFormat"] = "CURRENT",
-				["timeToHold"] = 0
+				["timeToHold"] = 0,
+				["iconPosition"] = "RIGHT",
 			},
 			["buffs"] = {
 				["enable"] = true,
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "TurtleBuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,blockNoDuration,Personal,TurtleBuffs" --NamePlate FriendlyNPC Buffs
 				},
 			},
 			["debuffs"] = {
@@ -270,9 +299,9 @@ P["nameplates"] = {
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "CCDebuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,CCDebuffs,RaidDebuffs" --NamePlate FriendlyNPC Debuffs
 				},
 			},
 			["eliteIcon"] = {
@@ -304,16 +333,17 @@ P["nameplates"] = {
 				["hideTime"] = false,
 				["castTimeFormat"] = "CURRENT",
 				["channelTimeFormat"] = "CURRENT",
-				["timeToHold"] = 0
+				["timeToHold"] = 0,
+				["iconPosition"] = "RIGHT",
 			},
 			["buffs"] = {
 				["enable"] = true,
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "TurtleBuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,blockNoDuration,PlayerBuffs,TurtleBuffs" --NamePlate EnemyNPC Buffs
 				},
 			},
 			["debuffs"] = {
@@ -321,9 +351,9 @@ P["nameplates"] = {
 				["numAuras"] = 4,
 				["baseHeight"] = 18,
 				["filters"] = {
-					["personal"] = true,
-					["maxDuration"] = 120,
-					["filter"] = "CCDebuffs"
+					["minDuration"] = 0,
+					["maxDuration"] = 0,
+					["priority"] = "Blacklist,Personal,CCDebuffs" --NamePlate EnemyNPC Debuffs
 				},
 			},
 			["eliteIcon"] = {
@@ -333,11 +363,8 @@ P["nameplates"] = {
 				["xOffset"] = 15,
 				["yOffset"] = 0,
 			},
-			["detection"] = {
-				["enable"] = true,
-			}
-		}
-	}
+		},
+	},
 };
 
 --Auras

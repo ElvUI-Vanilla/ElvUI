@@ -8,4 +8,5 @@
 	<Script file="Name.lua"/>
 	<Script file="RaidIcon.lua"/>
 	<Script file="HealerIcon.lua"/>
+	<Script file="Highlight.lua"/>
 </Ui>
