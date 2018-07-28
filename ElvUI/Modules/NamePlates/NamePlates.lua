@@ -1,6 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local mod = E:NewModule("NamePlates", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
---local CC = E:GetModule("ClassCache");
+local CC = E:GetModule("ClassCache");
 
 --Cache global variables
 --Lua functions
@@ -325,21 +325,9 @@ function mod:RoundColors(r, g, b)
 end
 
 function mod:UnitClass(name, type)
-	--[[if E.private.general.classCache then
-		if type == "FRIENDLY_PLAYER" then
-			local _, class = UnitClass(name)
-			if class then
-				return class
-			else
-				local name, realm = split("-", name)
-				return CC:GetClassByName(name, realm)
-			end
-		end
-	else
-		if type == "FRIENDLY_PLAYER" then
-			return select(2, UnitClass(name))
-		end
-	end--]]
+	if E.private.general.classCache then
+		return CC:GetClassByName(name)
+	end
 end
 
 function mod:UnitDetailedThreatSituation(frame)
@@ -386,9 +374,15 @@ function mod:GetUnitInfo(frame)
 	end
 end
 
-function mod:OnShow(self)
-	self:SetWidth(0.01)
-	self:SetHeight(0.01)
+function mod:OnShow(self, isUpdate)
+	if mod.db.motionType == "OVERLAP" then
+		self:SetWidth(0.001)
+		self:SetHeight(0.001)
+	end
+
+	if not isUpdate then
+		self.UnitFrame.moveUp:Play()
+	end
 
 	mod.VisiblePlates[self.UnitFrame] = true
 
@@ -498,7 +492,7 @@ end
 
 function mod:UpdateAllFrame(frame)
 	mod:OnHide(frame:GetParent())
-	mod:OnShow(frame:GetParent())
+	mod:OnShow(frame:GetParent(), true)
 end
 
 function mod:ConfigureAll()
@@ -556,20 +550,49 @@ function mod:UpdateElement_All(frame, noTargetFrame, filterIgnore)
 	end
 end
 
+function mod:AnimatedHide()
+	local num = 0
+	for frame in pairs(mod.VisiblePlates) do
+		frame.moveDown:Play()
+		num = num + 1
+	end
+	if num < 1 then
+		
+	end
+end
+
 local plateID = 0
 function mod:OnCreated(frame)
 	plateID = plateID + 1
 	local HealthBar = frame:GetChildren()
 	local Border, Highlight, Name, Level, BossIcon, RaidIcon = frame:GetRegions()
-
 	frame.UnitFrame = CreateFrame("Button", format("ElvUI_NamePlate%d", plateID), frame)
-	E:Size(frame.UnitFrame, 100, 20)
 	frame.UnitFrame:SetPoint("CENTER", 0, 0)
 	frame.UnitFrame.plateID = plateID
 
 	frame.UnitFrame:SetScript("OnEvent", self.OnEvent)
 	frame.UnitFrame:SetScript("OnClick", function()
 		frame:Click()
+	end)
+
+	frame.UnitFrame.moveUp = CreateAnimationGroup(frame.UnitFrame)
+	local moveUp = frame.UnitFrame.moveUp:CreateAnimation("Move")
+	moveUp:SetDuration(0)
+	moveUp:SetOffset(0, -35)
+	moveUp:SetOrder(1)
+	moveUp = frame.UnitFrame.moveUp:CreateAnimation("Move")
+	moveUp:SetDuration(0.5)
+	moveUp:SetOffset(0, 35)
+	moveUp:SetSmoothing("Out")
+	moveUp:SetOrder(2)
+
+	frame.UnitFrame.moveDown = CreateAnimationGroup(frame.UnitFrame)
+	local moveDown = frame.UnitFrame.moveDown:CreateAnimation("Move")
+	moveDown:SetDuration(0.1)
+	moveDown:SetOffset(0, -35)
+	moveDown:SetSmoothing("In")
+	moveDown:SetScript("OnFinished", function(self)
+		self:Reset()
 	end)
 
 	frame.UnitFrame.HealthBar = self:ConstructElement_HealthBar(frame.UnitFrame)
@@ -602,8 +625,8 @@ function mod:OnCreated(frame)
 
 	self:OnShow(frame)
 
-	HookScript(frame, "OnShow", function() self:OnShow(this) end)
-	HookScript(frame, "OnHide", function() self:OnHide(this) end)
+	frame:SetScript("OnShow", function() self:OnShow(this) end)
+	frame:SetScript("OnHide", function() self:OnHide(this) end)
 
 	HookScript(HealthBar, "OnValueChanged", self.UpdateElement_HealthOnValueChanged)
 
@@ -628,21 +651,6 @@ function mod:QueueObject(object)
 		object:SetStatusBarTexture("")
 	end
 	object:Hide()
-end
-
-function mod:GetChildren(...)
-	local count = WorldGetNumChildren(WorldFrame)
-	if count ~= numChildren then
-		local frame, region
-		for i = numChildren + 1, count do
-			frame = arg[i]
-			region = frame:GetRegions()
-			if not mod.CreatedPlates[frame] and region and region:GetObjectType() == "Texture" and region:GetTexture() == BORDER then
-				mod:OnCreated(frame)
-			end
-			numChildren = count
-		end
-	end
 end
 
 function mod:OnUpdate()

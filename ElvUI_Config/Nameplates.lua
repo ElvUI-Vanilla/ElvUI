@@ -533,8 +533,79 @@ E.Options.args.nameplate = {
 			type = "header",
 			name = L["Shortcuts"]
 		},
+		spacer1 = {
+			order = 4,
+			type = "description",
+			name = " ",
+		},
+		generalShortcut = {
+			order = 5,
+			type = "execute",
+			name = L["General"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "generalGroup", "general") end,
+			disabled = function() return not E.NamePlates; end,
+		},
+		fontsShortcut = {
+			order = 6,
+			type = "execute",
+			name = L["Fonts"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "generalGroup", "fontGroup") end,
+			disabled = function() return not E.NamePlates; end,
+		},
+		spacer2 = {
+			order = 7,
+			type = "description",
+			name = " ",
+		},
+		friendlyPlayerShortcut = {
+			order = 8,
+			type = "execute",
+			name = L["Friendly Player Frames"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "friendlyPlayerGroup") end,
+			disabled = function() return not E.NamePlates; end,
+		},
+		enemyPlayerShortcut = {
+			order = 9,
+			type = "execute",
+			name = L["Enemy Player Frames"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "enemyPlayerGroup") end,
+			disabled = function() return not E.NamePlates; end,
+		},
+		spacer5 = {
+			order = 10,
+			type = "description",
+			name = " ",
+		},
+		friendlyNPCShortcut = {
+			order = 11,
+			type = "execute",
+			name = L["Friendly NPC Frames"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "friendlyNPCGroup") end,
+			disabled = function() return not E.NamePlates; end,
+		},
+		enemyNPCShortcut = {
+			order = 12,
+			type = "execute",
+			name = L["Enemy NPC Frames"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "enemyNPCGroup") end,
+			disabled = function() return not E.NamePlates; end,
+		},
+--[[		filtersShortcut = {
+			order = 13,
+			type = "execute",
+			name = L["Style Filter"],
+			buttonElvUI = true,
+			func = function() ACD:SelectGroup("ElvUI", "nameplate", "filters") end,
+			disabled = function() return not E.NamePlates; end,
+		},]]
 		generalGroup = {
-			order = 20,
+			order = 14,
 			type = "group",
 			name = GENERAL,
 			childGroups = "tab",
@@ -550,43 +621,26 @@ E.Options.args.nameplate = {
 							type = "select",
 							dialogControl = "LSM30_Statusbar",
 							name = L["StatusBar Texture"],
-							values = AceGUIWidgetLSMlists.statusbar,
+							values = AceGUIWidgetLSMlists.statusbar
 						},
-						useTargetGlow = {
-							order = 2,
-							type = "toggle",
-							name = L["Use Target Glow"],
-						},
-						useTargetScale = {
-							order = 3,
-							type = "toggle",
-							name = L["Use Target Scale"],
-							desc = L["Enable/Disable the scaling of targetted nameplates."],
-						},
-						targetScale = {
-							order = 4,
-							type = "range",
-							name = L["Target Scale"],
-							desc = L["Scale of the nameplate that is targetted."],
-							min = 0.3, max = 2, step = 0.01,
-							isPercent = true,
-							disabled = function() return E.db.nameplates.useTargetScale ~= true end,
-						},
-						nonTargetTransparency = {
-							name = L["Non-Target Transparency"],
-							desc = L["Set the transparency level of nameplates that are not the target nameplate."],
-							type = "range",
-							min = 0, max = 1, step = 0.01,
-							isPercent = true,
-							order = 8,
+						motionType = {
+							order = 1,
+							type = "select",
+							name = "UNIT_NAMEPLATES_TYPES",
+							desc = L["Set to either stack nameplates vertically or allow them to overlap."],
+							values = {
+								["STACKED"] = "STACKED",
+								["OVERLAP"] = "OVERLAP"
+							},
+							set = function(info, value) E.db.nameplates.motionType = value; E:StaticPopup_Show("CONFIG_RL") end,
 						},
 						lowHealthThreshold = {
-							order = 9,
+							order = 2,
 							name = L["Low Health Threshold"],
 							desc = L["Make the unitframe glow yellow when it is below this percent of health, it will glow red when the health value is half of this value."],
 							type = "range",
 							isPercent = true,
-							min = 0, max = 1, step = 0.01,
+							min = 0, max = 1, step = 0.01
 						},
 						showEnemyCombat = {
 							order = 10,
@@ -618,12 +672,142 @@ E.Options.args.nameplate = {
 								NP:PLAYER_REGEN_ENABLED()
 							end
 						},
+						clickableWidth = {
+							order = 10,
+							type = "range",
+							name = L["Clickable Width"],
+							desc = L["Controls how big of an area on the screen will accept clicks to target unit."],
+							min = 50, max = 200, step = 1,
+							set = function(info, value) E.db.nameplates.clickableWidth = value; E:StaticPopup_Show("CONFIG_RL") end,
+						},
+						clickableHeight = {
+							order = 11,
+							type = "range",
+							name = L["Clickable Height"],
+							desc = L["Controls how big of an area on the screen will accept clicks to target unit."],
+							min = 10, max = 75, step = 1,
+							set = function(info, value) E.db.nameplates.clickableHeight = value; E:StaticPopup_Show("CONFIG_RL") end,
+						},
+						resetFilters = {
+							order = 12,
+							name = L["Reset Aura Filters"],
+							type = "execute",
+							func = function(info)
+								E:StaticPopup_Show("RESET_NP_AF") --reset nameplate aurafilters
+							end,
+						},
+						nameColoredGlow = {
+							order = 13,
+							type = "toggle",
+							name = L["Name Colored Glow"],
+							desc = L["Use the Name Color of the unit for the Name Glow."],
+						},
 						comboPoints = {
   							order = 12,
 							type = "toggle",
 							name = L["Combobar"]
-						}
-					}
+						},
+						targetedNamePlate = {
+							order = 14,
+							type = "group",
+							guiInline = true,
+							name = L["Targeted Nameplate"],
+							get = function(info) return E.db.nameplates[ info[getn(info)] ] end,
+							set = function(info, value) E.db.nameplates[ info[getn(info)] ] = value; NP:ConfigureAll() end,
+							args = {
+								useTargetScale = {
+									order = 1,
+									type = "toggle",
+									name = L["Use Target Scale"],
+									desc = L["Enable/Disable the scaling of targetted nameplates."],
+								},
+								targetScale = {
+									order = 2,
+									type = "range",
+									isPercent = true,
+									name = L["Target Scale"],
+									desc = L["Scale of the nameplate that is targetted."],
+									min = 0.3, max = 2, step = 0.01,
+									disabled = function() return E.db.nameplates.useTargetScale ~= true end,
+								},
+								nonTargetTransparency = {
+									order = 3,
+									type = "range",
+									isPercent = true,
+									name = L["Non-Target Transparency"],
+									desc = L["Set the transparency level of nameplates that are not the target nameplate."],
+									min = 0, max = 1, step = 0.01,
+								},
+								spacer1 = {
+									order = 4,
+									type = 'description',
+									name = ' ',
+								},
+								glowColor = {
+									name = L["Target Indicator Color"],
+									type = 'color',
+									order = 5,
+									hasAlpha = true,
+									get = function(info)
+										local t = E.db.nameplates.glowColor
+										local d = P.nameplates.glowColor
+										return t.r, t.g, t.b, t.a, d.r, d.g, d.b, d.a
+									end,
+									set = function(info, r, g, b, a)
+										local t = E.db.nameplates.glowColor
+										t.r, t.g, t.b, t.a = r, g, b, a
+										NP:ConfigureAll()
+									end,
+								},
+								targetGlow = {
+									order = 6,
+									type = "select",
+									--customWidth = 225,
+									name = L["Target Indicator"],
+									get = function(info) return E.db.nameplates.targetGlow end,
+									set = function(info, value) E.db.nameplates.targetGlow = value; NP:ConfigureAll() end,
+									values = {
+										['none'] = NONE,
+										['style1'] = L["Border Glow"],
+										['style2'] = L["Background Glow"],
+										['style3'] = L["Top Arrow"],
+										['style4'] = L["Side Arrows"],
+										['style5'] = L["Border Glow"].." + "..L["Top Arrow"],
+										['style6'] = L["Background Glow"].." + "..L["Top Arrow"],
+										['style7'] = L["Border Glow"].." + "..L["Side Arrows"],
+										['style8'] = L["Background Glow"].." + "..L["Side Arrows"],
+									},
+								},
+								alwaysShowTargetHealth = {
+									order = 7,
+									type = "toggle",
+									name = L["Always Show Target Health"],
+								--	customWidth = 200,
+								},
+							},
+						},
+						clickThrough = {
+							order = 15,
+							type = "group",
+							guiInline = true,
+							name = L["Click Through"],
+							get = function(info) return E.db.nameplates.clickThrough[ info[getn(info)] ] end,
+							args = {
+								friendly = {
+									order = 2,
+									type = "toggle",
+									name = L["Friendly"],
+									--set = function(info, value) E.db.nameplates.clickThrough.friendly = value; NP:SetNamePlateFriendlyClickThrough() end,
+								},
+								enemy = {
+									order = 3,
+									type = "toggle",
+									name = L["Enemy"],
+									--set = function(info, value) E.db.nameplates.clickThrough.enemy = value; NP:SetNamePlateEnemyClickThrough() end,
+								},
+							},
+						},
+					},
 				},
 				fontGroup = {
 					order = 100,

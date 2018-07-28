@@ -102,40 +102,13 @@ end
 function mod:UpdateElement_Health(frame)
 	local health = frame.oldHealthBar:GetValue()
 	local _, maxHealth = frame.oldHealthBar:GetMinMaxValues()
-
 	frame.HealthBar:SetMinMaxValues(0, maxHealth)
+
 	frame.HealthBar:SetValue(health)
+	--frame:GetParent().UnitFrame.FlashTexture:Point("TOPRIGHT", frame.HealthBar:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
 
 	if self.db.units[frame.UnitType].healthbar.text.enable then
-		if maxHealth ~= 100 then
-			frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
-		else
-			local newMaxHealth
-
-			if frame.unit == "target" then
-				--health, maxHealth = LMH:GetUnitHealth("target")
-			else
-				local level = self:UnitLevel(frame)
-				if level == "??" then
-					level = UnitLevel("player") + 3
-				end
-
-				if frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "ENEMY_PLAYER" then
-				--	newMaxHealth = LMH:GetMaxHP(frame.UnitName, tonumber(level), "pc")
-				elseif frame.UnitType == "FRIENDLY_NPC" or frame.UnitType == "ENEMY_NPC" then
-				--	newMaxHealth = LMH:GetMaxHP(frame.UnitName, tonumber(level), "npc", GetInstanceDifficulty())
-				else
-				--	newMaxHealth = LMH:GetMaxHP(frame.UnitName, tonumber(level))
-				end
-
-				if newMaxHealth then
-					health = newMaxHealth / 100 * health
-					maxHealth = newMaxHealth
-				end
-			end
-
-			frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
-		end
+		frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
 	else
 		frame.HealthBar.text:SetText("")
 	end
@@ -145,6 +118,9 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 	local healthBar = frame.HealthBar
 
 	healthBar:SetPoint("TOP", frame, "CENTER", 0, self.db.units[frame.UnitType].castbar.height + 3)
+	frame:SetWidth(self.db.clickableWidth + ((E.PixelMode and 2) or 6))
+	frame:SetHeight(self.db.clickableHeight + self.db.units[frame.UnitType].castbar.height + 3)
+
 	if frame.isTarget and self.db.useTargetScale then
 		healthBar:SetHeight(self.db.units[frame.UnitType].healthbar.height * ((frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale))
 		healthBar:SetWidth(self.db.units[frame.UnitType].healthbar.width * ((frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale))
@@ -165,16 +141,15 @@ end
 function mod:ConstructElement_HealthBar(parent)
 	local frame = CreateFrame("StatusBar", nil, parent)
 	self:StyleFrame(frame)
-
+--[[
 	frame:SetScript("OnSizeChanged", function()
-		parent:SetWidth(this:GetWidth())
-		parent:SetHeight(this:GetHeight())
-
 		local health = this:GetValue()
 		local _, maxHealth = this:GetMinMaxValues()
+		if health > maxHealth or health < 0 then return end
+
 		this:GetStatusBarTexture():SetPoint("TOPRIGHT", -(this:GetWidth() * ((maxHealth - health) / maxHealth)), 0)
 	end)
-
+]]
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
 	frame.scale = CreateAnimationGroup(frame)
 

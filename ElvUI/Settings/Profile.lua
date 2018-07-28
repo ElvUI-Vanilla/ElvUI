@@ -161,6 +161,13 @@ P["nameplates"] = {
 		},
 	},
 
+	["clickableWidth"] = 150,
+	["clickableHeight"] = 12,
+	["clickThrough"] = {
+		["friendly"] = false,
+		["enemy"] = false,
+	},
+
 	["units"] = {
 		["FRIENDLY_PLAYER"] = {
 			["healthbar"] = {
