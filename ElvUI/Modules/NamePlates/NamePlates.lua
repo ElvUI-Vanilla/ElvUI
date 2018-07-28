@@ -31,50 +31,8 @@ local RaidIconCoordinate = {
 	[0.75] = {[0] = "TRIANGLE", [0.25] = "SKULL"}
 }
 
-local healClasses = {
-	["DRUID"] = true,
-	["HUNTER"] = false,
-	["MAGE"] = false,
-	["PALADIN"] = true,
-	["PRIEST"] = true,
-	["ROGUE"] = false,
-	["SHAMAN"] = true,
-	["WARLOCK"] = false,
-	["WARRIOR"] = false
-}
-
 mod.CreatedPlates = {}
 mod.VisiblePlates = {}
-
-function mod:CheckFilter(frame)
-	--[[local db = E.global.nameplates["filter"][frame.UnitName]
-	if db and db.enable then
-		if db.hide then
-			frame:Hide()
-			return
-		else
-			if not frame:IsShown() then
-				frame:Show()
-			end
-
-			if db.customColor then
-				frame.CustomColor = db.color
-				frame.HealthBar:SetStatusBarColor(db.color.r, db.color.g, db.color.b)
-			else
-				frame.CustomColor = nil
-			end
-
-			if db.customScale and db.customScale ~= 1 then
-				frame.CustomScale = db.customScale
-			else
-				frame.CustomScale = nil
-			end
-		end
-	elseif not frame:IsShown() then
-		frame:Show()
-	end]]
-	return true
-end
 
 function mod:GetPlateFrameLevel(frame)
 	local plateLevel
@@ -97,7 +55,7 @@ function mod:SetPlateFrameLevel(frame, level, isTarget)
 		end
 
 		frame:SetFrameLevel(level+1)
-		frame.HealthBar:SetFrameLevel(level+3)
+		frame.HealthBar:SetFrameLevel(level+1)
 		frame.Glow:SetFrameLevel(frame:GetFrameLevel()-1)
 		frame.Buffs:SetFrameLevel(level+1)
 		frame.Debuffs:SetFrameLevel(level+1)
@@ -151,7 +109,6 @@ function mod:SetTargetFrame(frame)
 				self:ConfigureElement_HealthBar(frame)
 			--	self:ConfigureElement_CastBar(frame)
 				self:ConfigureElement_Glow(frame)
-			--	self:ConfigureElement_Elite(frame)
 				self:ConfigureElement_Highlight(frame)
 				self:ConfigureElement_Level(frame)
 				self:ConfigureElement_Name(frame)
@@ -166,8 +123,8 @@ function mod:SetTargetFrame(frame)
 			-- TEST
 			mod:UpdateElement_Highlight(frame)
 		--	mod:UpdateElement_CPoints(frame)
-		--	mod:UpdateElement_Filters(frame, "PLAYER_TARGET_CHANGED")
-		--	mod:ForEachPlate("ResetNameplateFrameLevel") --keep this after `UpdateElement_Filters`
+			mod:UpdateElement_Filters(frame, "PLAYER_TARGET_CHANGED")
+			mod:ForEachPlate("ResetNameplateFrameLevel") --keep this after `UpdateElement_Filters`
 		end
 	elseif frame.isTargetChanged then
 		frame.isTargetChanged = false
@@ -197,8 +154,8 @@ function mod:SetTargetFrame(frame)
 
 		-- TEST
 	--	mod:UpdateElement_CPoints(frame)
-	--	mod:UpdateElement_Filters(frame, "PLAYER_TARGET_CHANGED")
-	--	mod:ForEachPlate("ResetNameplateFrameLevel") --keep this after `UpdateElement_Filters`
+		mod:UpdateElement_Filters(frame, "PLAYER_TARGET_CHANGED")
+		mod:ForEachPlate("ResetNameplateFrameLevel") --keep this after `UpdateElement_Filters`
 	elseif frame.oldHighlight:IsShown() then
 		if not frame.isMouseover then
 			frame.isMouseover = true
@@ -325,6 +282,8 @@ function mod:RoundColors(r, g, b)
 end
 
 function mod:UnitClass(name, type)
+	if type == "FRIENDLY_NPC" then return end
+
 	if E.private.general.classCache then
 		return CC:GetClassByName(name)
 	end
@@ -358,8 +317,8 @@ end
 
 function mod:OnShow(self, isUpdate)
 	if mod.db.motionType == "OVERLAP" then
-		self:SetWidth(0.001)
-		self:SetHeight(0.001)
+		self:SetWidth(0.01)
+		self:SetHeight(0.01)
 	end
 
 	if not isUpdate then
@@ -383,8 +342,6 @@ function mod:OnShow(self, isUpdate)
 		self.UnitFrame.UnitType = unitType
 	end
 
-	--if not mod:CheckFilter(self.UnitFrame) then return end
-
 	self.UnitFrame.Level:ClearAllPoints()
 	self.UnitFrame.Name:ClearAllPoints()
 
@@ -404,13 +361,9 @@ function mod:OnShow(self, isUpdate)
 		end
 	end
 
-	if mod.db.units[unitType].healthbar.enable then
-		mod:ConfigureElement_Name(self.UnitFrame)
-		mod:ConfigureElement_Level(self.UnitFrame)
-	else
-		mod:ConfigureElement_Level(self.UnitFrame)
-		mod:ConfigureElement_Name(self.UnitFrame)
-	end
+	mod:ConfigureElement_Level(self.UnitFrame)
+	mod:ConfigureElement_Name(self.UnitFrame)
+	mod:ConfigureElement_Highlight(self.UnitFrame)
 
 	--[[if(mod.db.units[unitType].castbar.enable) then
 		self.UnitFrame:RegisterEvent("UNIT_SPELLCAST_START")
@@ -528,7 +481,7 @@ function mod:UpdateElement_All(frame, noTargetFrame, filterIgnore)
 	end
 
 	if not filterIgnore then
-	--	mod:UpdateElement_Filters(frame, "UpdateElement_All")
+		mod:UpdateElement_Filters(frame, "UpdateElement_All")
 	end
 end
 
@@ -806,6 +759,13 @@ function mod:Initialize()
 	if E.private["nameplates"].enable ~= true then return end
 
 	self.hasTarget = false
+
+	--Add metatable to all our StyleFilters so they can grab default values if missing
+	for _, filterTable in pairs(E.global.nameplates.filters) do
+		self:StyleFilterInitializeFilter(filterTable);
+	end
+
+	self:StyleFilterConfigureEvents()
 
 	self.levelStep = 2
 
