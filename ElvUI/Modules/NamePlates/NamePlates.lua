@@ -344,24 +344,6 @@ function mod:UnitLevel(frame)
 end
 
 function mod:GetUnitInfo(frame)
-	if UnitExists("target") == 1 and frame:GetParent():IsShown() and frame:GetParent():GetAlpha() == 1 then
-		if UnitIsPlayer("target") then
-			if UnitIsEnemy("target", "player") then
-				return 2, "ENEMY_PLAYER"
-			else
-				return 5, "FRIENDLY_PLAYER"
-			end
-		else
-			if UnitIsEnemy("target", "player") then
-				return 2, "ENEMY_NPC"
-			elseif UnitReaction("target", "player") == 4 then
-				return 4, "ENEMY_NPC"
-			else
-				return 5, "FRIENDLY_NPC"
-			end
-		end
-	end
-
 	local r, g, b = mod:RoundColors(frame.oldHealthBar:GetStatusBarColor())
 	if r == 1 and g == 0 and b == 0 then
 		return 2, "ENEMY_NPC"
