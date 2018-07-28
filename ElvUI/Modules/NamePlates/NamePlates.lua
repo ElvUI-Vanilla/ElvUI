@@ -316,6 +316,7 @@ function mod:GetUnitInfo(frame)
 end
 
 function mod:OnShow(self, isUpdate)
+	self = self or this
 	if mod.db.motionType == "OVERLAP" then
 		self:SetWidth(0.01)
 		self:SetHeight(0.01)
@@ -382,7 +383,7 @@ function mod:OnShow(self, isUpdate)
 end
 
 function mod:OnHide(self)
-	--local self = this
+	self = self or this
 	mod.VisiblePlates[self.UnitFrame] = nil
 
 	self.UnitFrame.unit = nil
@@ -390,7 +391,7 @@ function mod:OnHide(self)
 
 	mod:HideAuraIcons(self.UnitFrame.Buffs)
 	mod:HideAuraIcons(self.UnitFrame.Debuffs)
-	--mod:ClearStyledPlate(self.UnitFrame)
+	mod:ClearStyledPlate(self.UnitFrame)
 	self.UnitFrame:UnregisterAllEvents()
 	self.UnitFrame.Glow.r, self.UnitFrame.Glow.g, self.UnitFrame.Glow.b = nil, nil, nil
 	self.UnitFrame.Glow:Hide()
@@ -514,9 +515,8 @@ function mod:OnCreated(frame)
 	local moveUp = frame.UnitFrame.moveUp:CreateAnimation("Move")
 	moveUp:SetDuration(0)
 	moveUp:SetOffset(0, -35)
-	moveUp:SetOrder(1)
 	moveUp = frame.UnitFrame.moveUp:CreateAnimation("Move")
-	moveUp:SetDuration(0.5)
+	moveUp:SetDuration(0.3)
 	moveUp:SetOffset(0, 35)
 	moveUp:SetSmoothing("Out")
 	moveUp:SetOrder(2)
@@ -560,8 +560,8 @@ function mod:OnCreated(frame)
 
 	self:OnShow(frame)
 
-	frame:SetScript("OnShow", function() self:OnShow(this) end)
-	frame:SetScript("OnHide", function() self:OnHide(this) end)
+	frame:SetScript("OnShow", self.OnShow)
+	frame:SetScript("OnHide", self.OnHide)
 
 	HookScript(HealthBar, "OnValueChanged", self.UpdateElement_HealthOnValueChanged)
 
