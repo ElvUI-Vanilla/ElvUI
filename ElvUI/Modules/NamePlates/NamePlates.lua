@@ -55,8 +55,8 @@ function mod:SetPlateFrameLevel(frame, level, isTarget)
 		end
 
 		frame:SetFrameLevel(level+1)
-		frame.HealthBar:SetFrameLevel(level+1)
-		frame.Glow:SetFrameLevel(frame:GetFrameLevel()-1)
+		frame.HealthBar:SetFrameLevel(level+2)
+		frame.Glow:SetFrameLevel(frame.HealthBar:GetFrameLevel()-1)
 		frame.Buffs:SetFrameLevel(level+1)
 		frame.Debuffs:SetFrameLevel(level+1)
 	end
@@ -334,6 +334,12 @@ function mod:OnShow(self, isUpdate)
 	self.UnitFrame.UnitClass = mod:UnitClass(self.UnitFrame.oldName:GetText(), unitType)
 	self.UnitFrame.UnitReaction = unitReaction
 
+	if unitType == "FRIENDLY_PLAYER" or unitType == "FRIENDLY_NPC" then
+		self.UnitFrame:EnableMouse(not mod.db.clickThrough.friendly)
+	else
+		self.UnitFrame:EnableMouse(not mod.db.clickThrough.enemy)
+	end
+
 	if not self.UnitFrame.UnitClass then
 		queryList[self.UnitFrame.UnitName] = self.UnitFrame
 	end
@@ -380,6 +386,9 @@ function mod:OnShow(self, isUpdate)
 	mod:UpdateElement_All(self.UnitFrame)
 
 	self.UnitFrame:Show()
+
+	mod:UpdateElement_Filters(self.UnitFrame, "NAME_PLATE_UNIT_ADDED")
+	mod:ForEachPlate("ResetNameplateFrameLevel") --keep this after `UpdateElement_Filters`
 end
 
 function mod:OnHide(self)
@@ -434,21 +443,26 @@ end
 function mod:ConfigureAll()
 	if E.private.nameplates.enable ~= true then return end
 
+	self:StyleFilterConfigureEvents()
 	self:ForEachPlate("UpdateAllFrame")
 	self:UpdateCVars()
 end
 
-function mod:ForEachPlate(functionToRun, ...)
+function mod:ForEachPlate(functionToRun)
 	for frame in pairs(self.CreatedPlates) do
 		if frame and frame.UnitFrame then
-			self[functionToRun](self, frame.UnitFrame, unpack(arg))
+			self[functionToRun](self, frame.UnitFrame)
 		end
+	end
+
+	if functionToRun == "ResetNameplateFrameLevel" then
+		mod.CollectedFrameLevelCount = 1
 	end
 end
 
-function mod:ForEachVisiblePlate(functionToRun, ...)
+function mod:ForEachVisiblePlate(functionToRun, a1, a2)
 	for frame in pairs(self.VisiblePlates) do
-		self[functionToRun](self, frame, unpack(arg))
+		self[functionToRun](self, frame, a1, a2)
 	end
 end
 
@@ -507,6 +521,16 @@ function mod:OnCreated(frame)
 	frame.UnitFrame.plateID = plateID
 
 	frame.UnitFrame:SetScript("OnEvent", self.OnEvent)
+--[[
+	frame.UnitFrame:SetScript("OnEnter", function()
+
+	end)
+]]
+	frame.UnitFrame:SetScript("OnMouseDown", function()
+		if arg1 == "RightButton" then
+			MouselookStart()
+		end
+	end)
 	frame.UnitFrame:SetScript("OnClick", function()
 		frame:Click()
 	end)
@@ -569,10 +593,21 @@ function mod:OnCreated(frame)
 	self.VisiblePlates[frame.UnitFrame] = true
 end
 
-function mod:OnEvent(event, unit, ...)
-	if not self.unit then return end
+function mod:OnEvent()
+	if not arg1 and not this.unit then return end
+	if this.unit ~= arg1 then return end
 
-	mod:UpdateElement_Cast(self, event, unit, unpack(arg))
+	if event == "UPDATE_MOUSEOVER_UNIT" then
+		mod:UpdateElement_Highlight(this)
+	else
+		mod:UpdateElement_Cast(this, event, arg1, arg2)
+	end
+end
+
+function mod:RegisterEvents(frame)
+	if not frame.unit then return end
+
+	frame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 end
 
 function mod:QueueObject(object)
@@ -609,7 +644,7 @@ function mod:OnUpdate()
 			frame.alpha = 1
 		end
 
-		frame:GetParent():SetAlpha(1)
+		--frame:GetParent():SetAlpha(1)
 
 		frame.isTarget = mod.hasTarget and frame.alpha == 1
 	end

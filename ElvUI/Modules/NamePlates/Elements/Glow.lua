@@ -127,8 +127,7 @@ function mod:ConfigureElement_Glow(frame)
 end
 
 function mod:ConstructElement_Glow(frame)
-	local f = CreateFrame("Frame", nil, frame)
-	f:SetFrameLevel(frame.HealthBar:GetFrameLevel() - 1)
+	local f = CreateFrame("Frame", "$parentGlow", frame)
 	f:SetBackdrop({edgeFile = LSM:Fetch("border", "ElvUI GlowBorder"), edgeSize = E:Scale(6)})
 	f:Hide()
 

@@ -29,7 +29,7 @@ function mod:ConfigureElement_Highlight(frame)
 end
 
 function mod:ConstructElement_Highlight(frame)
-	local f = CreateFrame("Frame", nil, frame)
+	local f = CreateFrame("Frame", "$parentHighlight", frame)
 	f.texture = frame.HealthBar:CreateTexture(nil, "ARTWORK")
 	f.texture:SetVertexColor(1, 1, 1, 0.3)
 	f.texture:Hide()

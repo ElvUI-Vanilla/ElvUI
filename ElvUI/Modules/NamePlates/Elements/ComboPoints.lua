@@ -44,7 +44,7 @@ function mod:ConfigureElement_CPoints(frame)
 end
 
 function mod:ConstructElement_CPoints(parent)
-	local frame = CreateFrame("Frame", nil, parent.HealthBar)
+	local frame = CreateFrame("Frame", "$parentComboPoints", parent.HealthBar)
 	frame:SetPoint("CENTER", parent.HealthBar, "BOTTOM")
 	frame:SetWidth(68)
 	frame:SetHeight(1)

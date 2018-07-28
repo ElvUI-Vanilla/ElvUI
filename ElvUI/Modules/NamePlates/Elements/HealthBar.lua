@@ -139,7 +139,7 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 end
 
 function mod:ConstructElement_HealthBar(parent)
-	local frame = CreateFrame("StatusBar", nil, parent)
+	local frame = CreateFrame("StatusBar", "$parentHealthBar", parent)
 	self:StyleFrame(frame)
 --[[
 	frame:SetScript("OnSizeChanged", function()

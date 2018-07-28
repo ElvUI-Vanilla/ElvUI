@@ -792,18 +792,17 @@ E.Options.args.nameplate = {
 							guiInline = true,
 							name = L["Click Through"],
 							get = function(info) return E.db.nameplates.clickThrough[ info[getn(info)] ] end,
+							set = function(info, value) E.db.nameplates.clickThrough[ info[getn(info)] ] = value; NP:ConfigureAll() end,
 							args = {
 								friendly = {
 									order = 2,
 									type = "toggle",
 									name = L["Friendly"],
-									--set = function(info, value) E.db.nameplates.clickThrough.friendly = value; NP:SetNamePlateFriendlyClickThrough() end,
 								},
 								enemy = {
 									order = 3,
 									type = "toggle",
 									name = L["Enemy"],
-									--set = function(info, value) E.db.nameplates.clickThrough.enemy = value; NP:SetNamePlateEnemyClickThrough() end,
 								},
 							},
 						},
