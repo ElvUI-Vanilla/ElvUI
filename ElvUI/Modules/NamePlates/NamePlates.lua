@@ -150,9 +150,9 @@ function mod:SetTargetFrame(frame)
 				frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b = nil, nil, nil
 				self:ConfigureElement_HealthBar(frame)
 			--	self:ConfigureElement_CastBar(frame)
-			--	self:ConfigureElement_Glow(frame)
+				self:ConfigureElement_Glow(frame)
 			--	self:ConfigureElement_Elite(frame)
-			--	self:ConfigureElement_Highlight(frame)
+				self:ConfigureElement_Highlight(frame)
 				self:ConfigureElement_Level(frame)
 				self:ConfigureElement_Name(frame)
 			--	self:RegisterEvents(frame)
@@ -164,7 +164,7 @@ function mod:SetTargetFrame(frame)
 			end
 
 			-- TEST
-		--	mod:UpdateElement_Highlight(frame)
+			mod:UpdateElement_Highlight(frame)
 		--	mod:UpdateElement_CPoints(frame)
 		--	mod:UpdateElement_Filters(frame, "PLAYER_TARGET_CHANGED")
 		--	mod:ForEachPlate("ResetNameplateFrameLevel") --keep this after `UpdateElement_Filters`
@@ -207,7 +207,7 @@ function mod:SetTargetFrame(frame)
 				frame.unit = "mouseover"
 
 	--			mod:UpdateElement_AurasByGUID(frame.guid)
-	--			mod:UpdateElement_Highlight(frame)
+				mod:UpdateElement_Highlight(frame)
 			end
 		end
 	--	mod:UpdateElement_Cast(frame, nil, frame.unit)
@@ -218,7 +218,7 @@ function mod:SetTargetFrame(frame)
 			frame.unit = nil
 		--	frame.CastBar:Hide()
 		end
-		--mod:UpdateElement_Highlight(frame)
+		mod:UpdateElement_Highlight(frame)
 	else
 		if not frame.AlphaChanged then
 			if self.hasTarget then
@@ -229,8 +229,8 @@ function mod:SetTargetFrame(frame)
 		end
 	end
 
-	--self:UpdateElement_Glow(frame)
-	--self:UpdateElement_HealthColor(frame)
+	self:UpdateElement_Glow(frame)
+	self:UpdateElement_HealthColor(frame)
 end
 
 function mod:StyleFrame(parent, noBackdrop, point)
