@@ -59,6 +59,7 @@ function mod:SetPlateFrameLevel(frame, level, isTarget)
 		frame.Glow:SetFrameLevel(frame.HealthBar:GetFrameLevel()-1)
 		frame.Buffs:SetFrameLevel(level+1)
 		frame.Debuffs:SetFrameLevel(level+1)
+		frame:GetParent():SetFrameLevel(level+3)
 	end
 end
 
@@ -335,8 +336,10 @@ function mod:OnShow(self, isUpdate)
 	self.UnitFrame.UnitReaction = unitReaction
 
 	if unitType == "FRIENDLY_PLAYER" or unitType == "FRIENDLY_NPC" then
+		self:EnableMouse(not mod.db.clickThrough.friendly)
 		self.UnitFrame:EnableMouse(not mod.db.clickThrough.friendly)
 	else
+		self:EnableMouse(not mod.db.clickThrough.enemy)
 		self.UnitFrame:EnableMouse(not mod.db.clickThrough.enemy)
 	end
 

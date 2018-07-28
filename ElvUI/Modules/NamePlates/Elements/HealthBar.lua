@@ -118,6 +118,10 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 	local healthBar = frame.HealthBar
 
 	healthBar:SetPoint("TOP", frame, "CENTER", 0, self.db.units[frame.UnitType].castbar.height + 3)
+	if self.db.motionType ~= "OVERLAP" then
+		frame:GetParent():SetWidth(self.db.clickableWidth + ((E.PixelMode and 2) or 6))
+		frame:GetParent():SetHeight(self.db.clickableHeight + self.db.units[frame.UnitType].castbar.height + 3)
+	end
 	frame:SetWidth(self.db.clickableWidth + ((E.PixelMode and 2) or 6))
 	frame:SetHeight(self.db.clickableHeight + self.db.units[frame.UnitType].castbar.height + 3)
 
