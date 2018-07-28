@@ -277,7 +277,6 @@ local function LoadSkin()
 		E:SetTemplate(options, "Transparent")
 	end
 
-	BasicOptions:EnableMouse(true)
 	BasicOptions.backdrop = CreateFrame("Frame", nil, BasicOptions)
 	E:Point(BasicOptions.backdrop, "TOPLEFT", BasicOptionsGeneral, -20, 35)
 	E:Point(BasicOptions.backdrop, "BOTTOMRIGHT", BasicOptionsHelp, 20, -130)
