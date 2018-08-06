@@ -1,7 +1,7 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:NewModule("Bags", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0");
 local Search = LibStub("LibItemSearch-1.2");
-local LIP = LibStub("ItemPrice-1.1", true);
+local LIP = LibStub("ItemPrice-1.1");
 
 --Cache global variables
 --Lua functions
@@ -526,7 +526,7 @@ function B:Layout(isBank)
 					E:SetTemplate(f.Bags[bagID][slotID], "Default", true)
 					f.Bags[bagID][slotID]:SetNormalTexture("")
 					f.Bags[bagID][slotID]:SetCheckedTexture("")
-					
+
 					f.Bags[bagID][slotID]:SetScript("OnClick", buttonOnClick)
 					f.Bags[bagID][slotID]:SetScript("OnDragStart", buttonOnDragStart)
 					f.Bags[bagID][slotID]:SetScript("OnReceiveDrag", buttonOnReceiveDrag)

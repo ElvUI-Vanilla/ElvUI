@@ -1,6 +1,7 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local B = E:GetModule("Bags");
 local Search = LibStub("LibItemSearch-1.2");
+local LIP = LibStub("ItemPrice-1.1");
 
 --Cache global variables
 --Lua functions
@@ -149,11 +150,18 @@ local function UpdateLocation(from, to)
 end
 
 local function PrimarySort(a, b)
-	local aName, _, _, aLvl = GetItemInfo(bagIDs[a])
-	local bName, _, _, bLvl = GetItemInfo(bagIDs[b])
+	local aName, aLink, _, aLvl = GetItemInfo(bagIDs[a])
+	local bName, bLink, _, bLvl = GetItemInfo(bagIDs[b])
+
+	local aPrice = LIP:GetSellValue(aLink)
+	local bPrice = LIP:GetSellValue(bLink)
 
 	if aLvl ~= bLvl and aLvl and bLvl then
 		return aLvl > bLvl
+	end
+
+	if aPrice ~= bPrice and aPrice and bPrice then
+		return aPrice > bPrice
 	end
 
 	if aName and bName then
@@ -181,7 +189,7 @@ local function DefaultSort(a, b)
 
 	local _, _, _, _, aType, aSubType, _, aEquipLoc = GetItemInfo(aID)
 	local _, _, _, _, bType, bSubType, _, bEquipLoc = GetItemInfo(bID)
-	
+
 	local aRarity, bRarity = bagQualities[a], bagQualities[b]
 
 	if aRarity ~= bRarity and aRarity and bRarity then
