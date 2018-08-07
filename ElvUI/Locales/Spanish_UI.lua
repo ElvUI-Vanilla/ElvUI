@@ -38,7 +38,7 @@ L["Reset Position"] = "Reestablecer Posición"
 L["Sort Bags"] = "Ordenar Bolsas"
 L["Temporary Move"] = "Movimiento Temporal"
 L["Toggle Bags"] = "Mostrar/Ocultar Bolsas"
-L["Vendor Grays"] = "Vender Objetos Grises"
+L["Vendor / Delete Grays"] = true
 
 --Chat
 L["AFK"] = "Ausente"
@@ -290,12 +290,12 @@ L["A setting you have changed will change an option for this character only. Thi
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
 L["Are you sure you want to apply this font to all ElvUI elements?"] = true;
-L["Are you sure you want to delete all your gray items?"] = "¿Estás seguro que quieres eliminar todos tus objetos grises?"
 L["Are you sure you want to disband the group?"] = "¿Estás seguro que quieres deshacer el grupo?"
 L["Are you sure you want to reset all the settings on this profile?"] = "¿Estás seguro que deseas restablecer todos los ajustes de este perfil?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "¿Estás seguro que quieres resetear cada fijador a su posición por defecto?"
 L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "Debido a la gran confusión causada por el nuevo sistema de auras he implementado un nuevo paso en el proceso de instalación, esto es opcional. Si quieres conservar la configuración actual de tus auras ve al último paso de la instalación y haz clic en terminar para que este mensaje no vuelva a ser mostrado. Si por alguna razón se vuelve a mostrar por favor reinicia el juego."
 L["Can't buy anymore slots!"] = "¡No puedes comprar más huecos!"
+L["Delete gray items?"] = true
 L["Disable Warning"] = "Deshabilitar Advertencia"
 L["Discard"] = "Descartar"
 L["Do you enjoy the new ElvUI?"] = "¿Disfrutas del nuevo ElvUI?"

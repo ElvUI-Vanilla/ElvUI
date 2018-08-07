@@ -38,7 +38,7 @@ L["Reset Position"] = "위치 초기화"
 L["Sort Bags"] = "가방 정렬"
 L["Temporary Move"] = "임시 이동"
 L["Toggle Bags"] = "가방슬롯 보기"
-L["Vendor Grays"] = "잡동사니 자동판매"
+L["Vendor / Delete Grays"] = "잡템 자동판매/삭제"
 
 --Chat
 L["AFK"] = "자리비움"
@@ -290,12 +290,12 @@ L["A setting you have changed will change an option for this character only. Thi
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
 L["Are you sure you want to apply this font to all ElvUI elements?"] = true;
-L["Are you sure you want to delete all your gray items?"] = "모든 잡동사니를 버리겠습니까?"
 L["Are you sure you want to disband the group?"] = "현재 그룹을 해산하시겠습니까?"
 L["Are you sure you want to reset all the settings on this profile?"] = "현재 사용중인 프로필을 초기화 하시겠습니까?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "모든 프레임을 기본 위치로 초기화 하시겠습니까?"
 L["Because of the mass confusion caused by the new aura system I've implemented a new step to the installation process. This is optional. If you like how your auras are setup go to the last step and click finished to not be prompted again. If for some reason you are prompted repeatedly please restart your game."] = "새로운 오라시스템을 혼란스러워 하는 분들이 많아 설치과정에 관련 페이지를 추가했습니다. 해도 되고 안해도 됩니다. 이미 스스로 오라시스템을 구축했으면 그냥 설치를 마지막까지 넘겨 종료하세요."
 L["Can't buy anymore slots!"] = "더 이상 가방 칸을 늘릴 수 없습니다."
+L["Delete gray items?"] = "잡템을 삭제하시겠습니까?"
 L["Disable Warning"] = "비활성화 경고"
 L["Discard"] = "작업 취소"
 L["Do you enjoy the new ElvUI?"] = "만우절 기능이었습니다! 이대로 쓰실래요?"

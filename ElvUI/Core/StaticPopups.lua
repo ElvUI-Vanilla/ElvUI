@@ -198,7 +198,7 @@ E.PopupDialogs["KEYBIND_MODE"] = {
 }
 
 E.PopupDialogs["DELETE_GRAYS"] = {
-	text = L["Are you sure you want to delete all your gray items?"],
+	text = format("|cffff0000%s|r", L["Delete gray items?"]),
 	button1 = YES,
 	button2 = NO,
 	OnAccept = function() E:GetModule("Bags"):VendorGrays(true) end,
