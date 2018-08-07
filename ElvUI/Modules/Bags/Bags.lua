@@ -9,7 +9,7 @@ local _G = _G
 local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
 local floor = math.floor
-local len, gsub, sub, find, match = string.len, string.gsub, string.sub, string.find, string.match
+local len, gsub, sub, match = string.len, string.gsub, string.sub, string.match
 --WoW API / Variables
 local BankFrameItemButton_OnUpdate = BankFrameItemButton_OnUpdate
 local BankFrameItemButton_UpdateLock = BankFrameItemButton_UpdateLock
@@ -751,69 +751,92 @@ function B:UpdateGoldText()
 	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db["bags"].moneyFormat))
 end
 
-function B:GetGraysValue()
-	local c = 0
+function B:FormatMoney(amount)
+	local coppername = "|cffeda55fc|r"
+	local silvername = "|cffc7c7cfs|r"
+	local goldname = "|cffffd700g|r"
+	local value = abs(amount)
+	local gold = floor(value / 10000)
+	local silver = floor(mod(value / 100, 100))
+	local copper = floor(mod(value, 100))
 
-	for b = 0, NUM_BAG_FRAMES do
-		for s = 1, GetContainerNumSlots(b) do
-			local l = GetContainerItemLink(b, s)
-			if l and find(l,"ff9d9d9d") then
-				local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
-				if select(3, GetItemInfo(match(l, "item:(%d+)"))) == 0 and p > 0 then
-					c = c + p
+	local str = ""
+	if gold > 0 then
+		str = format("%d%s%s", gold, goldname, (silver > 0 or copper > 0) and " " or "")
+	end
+	if silver > 0 then
+		str = format("%s%d%s%s", str, silver, silvername, copper > 0 and " " or "")
+	end
+	if copper > 0 or value == 0 then
+		str = format("%s%d%s", str, copper, coppername)
+	end
+
+	return str
+end
+
+function B:GetGraysValue()
+	local value, itemLink, rarity, itype, stackCount, stackPrice, _ = 0
+
+	for bag = 0, NUM_BAG_FRAMES do
+		for slot = 1, GetContainerNumSlots(bag) do
+			itemLink = GetContainerItemLink(bag, slot)
+			if itemLink then
+				_, _, rarity, _, _, itype = GetItemInfo(match(itemLink, "item:(%d+)"))
+
+				stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
+				stackPrice = LIP:GetSellValue(itemLink) * stackCount
+				if (rarity and rarity == 0) and (itype and itype ~= "Quest") and (stackPrice > 0) then
+					value = value + stackPrice
 				end
 			end
 		end
 	end
 
-	return c
+	return value
 end
 
-function B:VendorGrays(delete, _, getValue)
-	if (not MerchantFrame or not MerchantFrame:IsShown()) and not delete and not getValue then
+function B:VendorGrays(delete)
+	if (not MerchantFrame or not MerchantFrame:IsShown()) and not delete then
 		E:Print(L["You must be at a vendor."])
 		return
 	end
 
-	local c = 0
+	local goldGained, itemLink, itype, rarity, stackCount, stackPrice, _ = 0
+	for bag = 0, NUM_BAG_FRAMES, 1 do
+		for slot = 1, GetContainerNumSlots(bag), 1 do
+			itemLink = GetContainerItemLink(bag, slot)
+			if itemLink then
+				_, _, rarity, _, _, itype = GetItemInfo(match(itemLink, "item:(%d+)"))
+				stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
 
-	for b = 0, NUM_BAG_FRAMES do
-		for s = 1, GetContainerNumSlots(b) do
-			local l = GetContainerItemLink(b, s)
-			if l and find(l,"ff9d9d9d") then
-				local p = LIP:GetSellValue(l) * select(2, GetContainerItemInfo(b, s))
-				if delete then
-					if not getValue then
-						PickupContainerItem(b, s)
+				if (rarity and rarity == 0) and (itype and itype ~= "Quest") then
+					if delete then
+						PickupContainerItem(bag, slot)
 						DeleteCursorItem()
+					else
+						stackPrice = (LIP:GetSellValue(itemLink) or 0) * stackCount
+						goldGained = goldGained + stackPrice
+						if E.db.general.vendorGraysDetails and itemLink then
+							E:Print(format("%s|cFF00DDDDx%d|r %s", itemLink, stackCount, B:FormatMoney(stackPrice)))
+						end
+						UseContainerItem(bag, slot)
 					end
-					c = c + p
-				else
-					if not getValue then
-						UseContainerItem(b, s)
-						PickupMerchantItem()
-					end
-					c = c + p
 				end
 			end
 		end
 	end
 
-	if getValue then
-		return c
-	end
-
-	if c > 0 and not delete then
-		local g, s, c = floor(c / 10000) or 0, floor(mod(c, 10000) / 100) or 0, mod(c, 100)
-		E:Print(L["Vendored gray items for:"].." |cffffffff"..g..L.goldabbrev.." |cffffffff"..s..L.silverabbrev.." |cffffffff"..c..L.copperabbrev..".")
+	if goldGained > 0 then
+		E:Print(format(L["Vendored gray items for: %s"], B:FormatMoney(goldGained)))
 	end
 end
 
 function B:VendorGrayCheck()
 	local value = B:GetGraysValue()
+
 	if value == 0 then
 		E:Print(L["No gray items to delete."])
-	elseif not MerchantFrame or not MerchantFrame:IsShown() then
+	elseif (not MerchantFrame or not MerchantFrame:IsShown()) then
 		E.PopupDialogs["DELETE_GRAYS"].Money = value
 		E:StaticPopup_Show("DELETE_GRAYS")
 	else
