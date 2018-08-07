@@ -445,16 +445,16 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.unitframe.units.party.name.position = "TOP"
 			E.db.unitframe.units.party.power.text_format = ""
 
-			E.db.unitframe.units.raid40.height = 30
-			E.db.unitframe.units.raid40.growthDirection = "LEFT_UP"
+			-- E.db.unitframe.units.raid40.height = 30
+			-- E.db.unitframe.units.raid40.growthDirection = "LEFT_UP"
 
 			E.db.unitframe.units.party.health.frequentUpdates = true
 			E.db.unitframe.units.raid.health.frequentUpdates = true
-			E.db.unitframe.units.raid40.health.frequentUpdates = true
+			-- E.db.unitframe.units.raid40.health.frequentUpdates = true
 
 			E.db.unitframe.units.party.healPrediction = true
 			E.db.unitframe.units.raid.healPrediction = true
-			E.db.unitframe.units.raid40.healPrediction = true
+			-- E.db.unitframe.units.raid40.healPrediction = true
 
 			E.db.unitframe.units.player.castbar.insideInfoPanel = false
 			E.db.actionbar.bar2.enabled = true
@@ -645,7 +645,7 @@ local function SetupAuras(style)
 	if frame then
 		UF:Configure_Auras(frame, "Buffs")
 		UF:Configure_Auras(frame, "Debuffs")
-		UF:Configure_AuraBars(frame)
+		-- UF:Configure_AuraBars(frame)
 	end
 
 	frame = UF["target"]
@@ -657,7 +657,7 @@ local function SetupAuras(style)
 	if frame then
 		UF:Configure_Auras(frame, "Buffs")
 		UF:Configure_Auras(frame, "Debuffs")
-		UF:Configure_AuraBars(frame)
+		-- UF:Configure_AuraBars(frame)
 	end
 
 	if not style then
@@ -812,10 +812,10 @@ local function SetPage(PageNum)
 		f.Desc2:SetText(L["If you have an icon or aurabar that you don't want to display simply hold down shift and right click the icon for it to disapear."])
 		f.Desc3:SetText(L["Importance: |cffD3CF00Medium|r"])
 		InstallOption1Button:Show()
-		InstallOption1Button:SetScript("OnClick", function() SetupAuras(true) end)
+		InstallOption1Button:SetScript("OnClick", function() --[[SetupAuras(true)--]] end)
 		InstallOption1Button:SetText(L["Aura Bars & Icons"])
 		InstallOption2Button:Show()
-		InstallOption2Button:SetScript("OnClick", function() SetupAuras() end)
+		InstallOption2Button:SetScript("OnClick", function() --[[SetupAuras()--]] end)
 		InstallOption2Button:SetText(L["Icons Only"])
 	elseif PageNum == 8 then
 		f.SubTitle:SetText(L["Installation Complete"])
