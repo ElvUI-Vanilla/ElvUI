@@ -247,6 +247,7 @@ function B:UpdateSlot(bagID, slotID)
 
 	if B.ProfessionColors[bagType] then
 		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
+		slot.ignoreBorderColors = true
 	elseif clink then
 		local _, iLvl, itemEquipLoc
 		slot.name, _, slot.rarity, iLvl, _, _, _, itemEquipLoc = GetItemInfo(match(clink, "item:(%d+)"))
@@ -266,13 +267,16 @@ function B:UpdateSlot(bagID, slotID)
 		end
 
 		-- color slot according to item quality
-		if slot.rarity then
+		if slot.rarity and slot.rarity > 1 then
 			slot:SetBackdropBorderColor(r, g, b)
+			slot.ignoreBorderColors = true
 		else
 			slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			slot.ignoreBorderColors = true
 		end
 	else
 		slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		slot.ignoreBorderColors = true
 	end
 
 	if texture then
@@ -674,11 +678,14 @@ function B:UpdateKeySlot(slotID)
 
 		if slot.rarity and slot.rarity > 1 then
 			slot:SetBackdropBorderColor(r, g, b)
+			slot.ignoreBorderColors = true
 		else
 			slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			slot.ignoreBorderColors = true
 		end
 	else
 		slot:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		slot.ignoreBorderColors = true
 	end
 
 	if texture then
@@ -709,15 +716,14 @@ function B:UpdateAll()
 end
 
 function B:OnEvent()
+	local bag, slot = arg1, arg2
 	if event == "ITEM_LOCK_CHANGED" or event == "ITEM_UNLOCKED" then
-		local bag, slot = arg1, arg2
 		if bag == KEYRING_CONTAINER then
 			B:UpdateKeySlot(slot)
 		else
 			this:UpdateSlot(bag, slot)
 		end
 	elseif event == "BAG_UPDATE" then
-		local bag = arg1
 		if bag == KEYRING_CONTAINER then
 			if not _G["ElvUIKeyFrameItem"..GetKeyRingSize()] then
 				B:Layout(false)
@@ -735,7 +741,9 @@ function B:OnEvent()
 			end
 		end
 
-		this:UpdateBagSlots(arg1, arg2)
+		this:UpdateBagSlots(bag, slot)
+
+		--Refresh search in case we moved items around
 		if B:IsSearching() then
 			B:SetSearch(SEARCH_STRING)
 		end
@@ -915,13 +923,13 @@ function B:ContructContainerFrame(name, isBank)
 		E:Size(f.sortButton, 16 + E.Border)
 		E:SetTemplate(f.sortButton)
 		E:Point(f.sortButton, "RIGHT", f.bagText, "LEFT", -5, E.Border * 2)
-		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
+		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_Broom")
 		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetNormalTexture())
-		f.sortButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
+		f.sortButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_Broom")
 		f.sortButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetPushedTexture())
-		f.sortButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
+		f.sortButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_Broom")
 		f.sortButton:GetDisabledTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetDisabledTexture())
 		f.sortButton:GetDisabledTexture():SetDesaturated(true)
@@ -1026,13 +1034,13 @@ function B:ContructContainerFrame(name, isBank)
 		E:Size(f.sortButton, 16 + E.Border)
 		E:SetTemplate(f.sortButton)
 		E:Point(f.sortButton, "RIGHT", f.goldText, "LEFT", -5, E.Border * 2)
-		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
+		f.sortButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_Broom")
 		f.sortButton:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetNormalTexture())
-		f.sortButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
+		f.sortButton:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_Broom")
 		f.sortButton:GetPushedTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetPushedTexture())
-		f.sortButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_RatCage")
+		f.sortButton:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\INV_Pet_Broom")
 		f.sortButton:GetDisabledTexture():SetTexCoord(unpack(E.TexCoords))
 		E:SetInside(f.sortButton:GetDisabledTexture())
 		f.sortButton:GetDisabledTexture():SetDesaturated(true)
@@ -1371,11 +1379,10 @@ function B:Initialize()
 	self.BagFrame = self:ContructContainerFrame("ElvUI_ContainerFrame")
 
 	--Hook onto Blizzard Functions
-	self:RawHook("ToggleBag", "ToggleBags")
-	self:RawHook("OpenBackpack", "OpenBags")
-	self:RawHook("CloseAllBags", "CloseBags")
-	self:RawHook("CloseBackpack", "CloseBags")
-	self:RawHook("ToggleBackpack", "ToggleBags")
+	self:RawHook("ToggleBag", "ToggleBags", true)
+	self:RawHook("OpenBackpack", "OpenBags", true)
+	self:RawHook("CloseAllBags", "CloseBags", true)
+	self:RawHook("CloseBackpack", "CloseBags", true)
 	self:RawHook("OpenAllBags", "OpenAllBags", true)
 
 	self:Layout()

@@ -23,13 +23,16 @@ function S:ContainerFrame_Update()
 		itemLink = GetContainerItemLink(id, itemButton:GetID())
 		if itemLink then
 			_, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
-			if quality then
+			if quality and quality > 1 then
 				itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
+				itemButton.ignoreBorderColors = true
 			else
 				itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				itemButton.ignoreBorderColors = true
 			end
 		else
 			itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			itemButton.ignoreBorderColors = true
 		end
 	end
 end
@@ -39,13 +42,16 @@ function S:BankFrameItemButton_OnUpdate()
 		local itemLink = GetContainerItemLink(BANK_CONTAINER, this:GetID())
 		if itemLink then
 			local _, _, quality = GetItemInfo(match(itemLink, "item:(%d+)"))
-			if quality then
+			if quality and quality > 1 then
 				this:SetBackdropBorderColor(GetItemQualityColor(quality))
+				this.ignoreBorderColors = true
 			else
 				this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				this.ignoreBorderColors = true
 			end
 		else
 			this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			this.ignoreBorderColors = true
 		end
 	end
 end
@@ -97,7 +103,7 @@ local function LoadSkin()
 
 	E:StripTextures(BankFrame, true)
 
-	S:HandleCloseButton(BankCloseButton)
+	S:HandleCloseButton(BankCloseButton, BankFrame.backdrop)
 
 	local button, buttonIcon
 	for i = 1, NUM_BANKGENERIC_SLOTS, 1 do
