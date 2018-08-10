@@ -716,14 +716,15 @@ function B:UpdateAll()
 end
 
 function B:OnEvent()
-	local bag, slot = arg1, arg2
 	if event == "ITEM_LOCK_CHANGED" or event == "ITEM_UNLOCKED" then
+		local bag, slot = arg1, arg2
 		if bag == KEYRING_CONTAINER then
 			B:UpdateKeySlot(slot)
 		else
 			this:UpdateSlot(bag, slot)
 		end
 	elseif event == "BAG_UPDATE" then
+		local bag = arg1
 		if bag == KEYRING_CONTAINER then
 			if not _G["ElvUIKeyFrameItem"..GetKeyRingSize()] then
 				B:Layout(false)
