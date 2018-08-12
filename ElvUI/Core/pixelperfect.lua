@@ -12,10 +12,10 @@ local GetScreenHeight, GetScreenWidth = GetScreenHeight, GetScreenWidth
 local scale
 
 function E:UIScale(event)
-	if IsMacClient() and self.global.screenheight and self.global.screenwidth and (self.screenheight ~= self.global.screenheight or self.screenwidth ~= self.global.screenwidth) then
-		self.screenheight = self.global.screenheight
-		self.screenwidth = self.global.screenwidth
-	end
+	-- if IsMacClient() and self.global.screenheight and self.global.screenwidth and (self.screenheight ~= self.global.screenheight or self.screenwidth ~= self.global.screenwidth) then
+	-- 	self.screenheight = self.global.screenheight
+	-- 	self.screenwidth = self.global.screenwidth
+	-- end
 
 	if GetCVar("UIScale") then
 		self.global.uiScale = GetCVar("UIScale")
