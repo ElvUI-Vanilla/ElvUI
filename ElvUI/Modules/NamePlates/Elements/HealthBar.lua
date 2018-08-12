@@ -119,16 +119,6 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 
 	healthBar:SetPoint("TOP", frame, "CENTER", 0, self.db.units[frame.UnitType].castbar.height + 3)
 
-	local width, height = self.db.clickableWidth + ((E.PixelMode and 2) or 6), self.db.clickableHeight + self.db.units[frame.UnitType].castbar.height + 3
-	if self.db.motionType ~= "OVERLAP" then
-		frame:GetParent():SetWidth(width)
-		frame:GetParent():SetHeight(height)
-	else
-		frame:GetParent():SetHitRectInsets(-.5*width, -.5*width, -.5*height, -.5*height)
-	end
-	frame:SetWidth(width)
-	frame:SetHeight(height)
-
 	if frame.isTarget and self.db.useTargetScale then
 		healthBar:SetHeight(self.db.units[frame.UnitType].healthbar.height * ((frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale))
 		healthBar:SetWidth(self.db.units[frame.UnitType].healthbar.width * ((frame.CustomScale and frame.CustomScale * self.db.targetScale) or self.db.targetScale))

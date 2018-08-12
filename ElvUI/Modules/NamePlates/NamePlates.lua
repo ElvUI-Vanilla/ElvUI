@@ -318,10 +318,6 @@ end
 
 function mod:OnShow(self, isUpdate)
 	self = self or this
-	if mod.db.motionType == "OVERLAP" then
-		self:SetWidth(0.01)
-		self:SetHeight(0.01)
-	end
 
 	if not isUpdate then
 		self.UnitFrame.moveUp:Play()
@@ -334,6 +330,21 @@ function mod:OnShow(self, isUpdate)
 	self.UnitFrame.UnitType = unitType
 	self.UnitFrame.UnitClass = mod:UnitClass(self.UnitFrame.oldName:GetText(), unitType)
 	self.UnitFrame.UnitReaction = unitReaction
+
+	local width, height = mod.db.clickableWidth + ((E.PixelMode and 2) or 6), mod.db.clickableHeight + mod.db.units[unitType].castbar.height + 3
+	self.UnitFrame:SetWidth(width)
+	self.UnitFrame:SetHeight(height)
+
+	if mod.db.motionType == "OVERLAP" then
+		width, height = .5*width, .5*height
+		self:SetWidth(0.01)
+		self:SetHeight(0.01)
+		self:SetHitRectInsets(-width, -width, -height, -height)
+	else
+		self:SetWidth(width)
+		self:SetHeight(height)
+		self:SetHitRectInsets(0, 0, 0, 0)
+	end
 
 	if unitType == "FRIENDLY_PLAYER" or unitType == "FRIENDLY_NPC" then
 		self:EnableMouse(not mod.db.clickThrough.friendly)
