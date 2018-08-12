@@ -529,13 +529,10 @@ function mod:OnCreated(frame)
 
 	end)
 ]]
-	frame.UnitFrame:SetScript("OnMouseDown", function()
+	frame:SetScript("OnMouseDown", function()
 		if arg1 == "RightButton" then
 			MouselookStart()
 		end
-	end)
-	frame.UnitFrame:SetScript("OnClick", function()
-		frame:Click()
 	end)
 
 	frame.UnitFrame.moveUp = CreateAnimationGroup(frame.UnitFrame)
@@ -772,7 +769,7 @@ function mod:PLAYER_REGEN_ENABLED()
 	end
 end
 
-function mod:ClassCacheQueryResult(_, name, class)
+function mod:ClassCache_ClassUpdated(_, name, class)
 	if queryList[name] then
 		local frame = queryList[name]
 
@@ -819,7 +816,7 @@ function mod:Initialize()
 	--self:RegisterEvent("UNIT_AURA")
 	--self:RegisterEvent("PLAYER_COMBO_POINTS")
 
-	self:RegisterMessage("ClassCacheQueryResult")
+	self:RegisterMessage("ClassCache_ClassUpdated")
 
 	self:ScheduleRepeatingTimer("ForEachVisiblePlate", 0.1, "SetTargetFrame")
 
