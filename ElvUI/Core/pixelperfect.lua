@@ -5,40 +5,34 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 local abs, floor, min, max = math.abs, math.floor, math.min, math.max
 local match = string.match
 --WoW API / Variables
-local IsMacClient = IsMacClient
 local GetCVar, SetCVar = GetCVar, SetCVar
-local GetScreenHeight, GetScreenWidth = GetScreenHeight, GetScreenWidth
 
 local scale
 
 function E:UIScale(event)
-	-- if IsMacClient() and self.global.screenheight and self.global.screenwidth and (self.screenheight ~= self.global.screenheight or self.screenwidth ~= self.global.screenwidth) then
-	-- 	self.screenheight = self.global.screenheight
-	-- 	self.screenwidth = self.global.screenwidth
-	-- end
+	local width = E.screenwidth
+	local height = E.screenheight
 
-	if GetCVar("UIScale") then
-		self.global.uiScale = GetCVar("UIScale")
+	local uiScaleCVar = GetCVar("uiScale")
+	if uiScaleCVar then
+		E.global.uiScale = uiScaleCVar
 	end
 
-	local minScale = self.global.general.minUiScale or 0.64
-	if self.global.general.autoScale then
-		scale = max(minScale, min(1.00, 768/self.screenheight))
+	local minScale = E.global.general.minUiScale or 0.64
+	if E.global.general.autoScale then
+		scale = max(minScale, min(1.15, 768/height))
 	else
-		scale = max(minScale, min(1.00, self.global.uiScale or (self.screenheight > 0 and (768/self.screenheight)) or UIParent:GetScale()))
+		scale = max(minScale, min(1.15, E.global.uiScale or (height > 0 and (768/height)) or UIParent:GetScale()))
 	end
 
-	if self.screenwidth < 1600 then
-			self.lowversion = true
-	elseif self.screenwidth >= 3840 and self.global.general.eyefinity then
-		local width = self.screenwidth
-		local height = self.screenheight
-
+	if width < 1600 then
+			E.lowversion = true
+	elseif width >= 3840 and E.global.general.eyefinity then
 		-- because some user enable bezel compensation, we need to find the real width of a single monitor.
 		-- I don't know how it really work, but i'm assuming they add pixel to width to compensate the bezel. :P
 
 		-- HQ resolution
-		if width >= 9840 then width = 3280; end										-- WQSXGA
+		if width >= 9840 then width = 3280 end										-- WQSXGA
 		if width >= 7680 and width < 9840 then width = 2560 end					-- WQXGA
 		if width >= 5760 and width < 7680 then width = 1920 end					-- WUXGA & HDTV
 		if width >= 5040 and width < 5760 then width = 1680 end					-- WSXGA+
@@ -53,16 +47,16 @@ function E:UIScale(event)
 
 		-- yep, now set ElvUI to lower resolution if screen #1 width < 1600
 		if width < 1600 then
-			self.lowversion = true
+			E.lowversion = true
 		end
 
 		-- register a constant, we will need it later for launch.lua
-		self.eyefinity = width
+		E.eyefinity = width
 	end
 
-	self.mult = 768/self.screenheight/scale
-	self.Spacing = self.PixelMode and 0 or self.mult
-	self.Border = (self.PixelMode and self.mult or self.mult*2)
+	E.mult = 768/height/scale
+	E.Spacing = E.PixelMode and 0 or E.mult
+	E.Border = (E.PixelMode and E.mult or E.mult*2)
 
 	if E.global.general.autoScale then
 		--Set UIScale, NOTE: SetCVar for UIScale can cause taints so only do this when we need to..
@@ -78,44 +72,35 @@ function E:UIScale(event)
 	end
 
 	if event == "PLAYER_LOGIN" or (event == "CVAR_UPDATE" and arg1 == "USE_UISCALE") then
-		if IsMacClient() then
-			self.global.screenheight = floor(GetScreenHeight()*100+.5)/100
-			self.global.screenwidth = floor(GetScreenWidth()*100+.5)/100
-		end
-
-		self.UIParent:ClearAllPoints()
-		--Resize self.UIParent if Eyefinity is on.
-		if self.eyefinity then
-			local width = self.eyefinity
-			local height = self.screenheight
-
-			-- if autoscale is off, find a new width value of self.UIParent for screen #1.
-			if not self.global.general.autoScale or height > 1200 then
+		--Resize E.UIParent if Eyefinity is on.
+		if E.eyefinity then
+			-- if autoscale is off, find a new width value of E.UIParent for screen #1.
+			if not E.global.general.autoScale or height > 1200 then
 				local h = UIParent:GetHeight()
-				local ratio = self.screenheight / h
-				local w = self.eyefinity / ratio
+				local ratio = height / h
+				local w = width / ratio
 
 				width = w
 				height = h
 			end
-
-			self.UIParent:SetPoint("CENTER", UIParent)
-			E:Size(self.UIParent, width, height)
-		else
 			--[[Eyefinity Test mode
 				Resize the E.UIParent to be smaller than it should be, all objects inside should relocate.
 				Dragging moveable frames outside the box and reloading the UI ensures that they are saving position correctly.
 			]]
-			--self.UIParent:SetSize(UIParent:GetWidth() - 250, UIParent:GetHeight() - 250);
-
-			--E:Size(self.UIParent, GetScreenWidth(), GetScreenHeight())
-			self.UIParent:SetAllPoints(UIParent)
+		else
+			width = UIParent:GetWidth()
+			height = UIParent:GetHeight()
 		end
 
-		self.diffGetLeft = E:Round(abs(UIParent:GetLeft() - self.UIParent:GetLeft()))
-		self.diffGetRight = E:Round(abs(UIParent:GetRight() - self.UIParent:GetRight()))
-		self.diffGetTop = E:Round(abs(UIParent:GetTop() - self.UIParent:GetTop()))
-		self.diffGetBottom = E:Round(abs(UIParent:GetBottom() - self.UIParent:GetBottom()))
+		E.UIParent:SetWidth(width)
+		E.UIParent:SetHeight(height)
+		E.UIParent:ClearAllPoints()
+		E.UIParent:SetAllPoints(UIParent)
+
+		E.diffGetLeft = E:Round(abs(UIParent:GetLeft() - E.UIParent:GetLeft()))
+		E.diffGetRight = E:Round(abs(UIParent:GetRight() - E.UIParent:GetRight()))
+		E.diffGetTop = E:Round(abs(UIParent:GetTop() - E.UIParent:GetTop()))
+		E.diffGetBottom = E:Round(abs(UIParent:GetBottom() - E.UIParent:GetBottom()))
 
 		local change
 		if E.Round then
@@ -136,5 +121,5 @@ end
 
 -- pixel perfect script of custom ui scale.
 function E:Scale(x)
-	return self.mult*floor(x/self.mult+.5)
+	return E.mult*floor(x/E.mult+.5)
 end
