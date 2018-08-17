@@ -350,7 +350,7 @@ end
 function AB:Bar_OnEnter()
 	if this:GetParent() == self.fadeParent then
 		if not self.fadeParent.mouseLock then
-			E:UIFrameFadeIn(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1)
+			UIFrameFadeIn(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1)
 		end
 	end
 
@@ -362,7 +362,7 @@ end
 function AB:Bar_OnLeave()
 	if this:GetParent() == self.fadeParent then
 		if not self.fadeParent.mouseLock then
-			E:UIFrameFadeOut(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1 - self.db.globalFadeAlpha)
+			UIFrameFadeOut(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1 - self.db.globalFadeAlpha)
 		end
 	end
 
