@@ -159,6 +159,12 @@ function AB:PositionAndSizeBar(barName)
 			button:SetAlpha(self.db[barName].alpha)
 		end
 
+		if self.db[barName].inheritGlobalFade then
+			bar:SetParent(self.fadeParent)
+		else
+			bar:SetParent(E.UIParent)
+		end
+
 		self:StyleButton(button)
 	end
 
@@ -257,6 +263,8 @@ function AB:CreateBar(id)
 end
 
 function AB:UpdateButtonSettings()
+	if E.private.actionbar.enable ~= true then return end
+
 	for button, _ in pairs(self["handledButtons"]) do
 		if button then
 			self:StyleButton(button, button.noBackdrop)
@@ -340,12 +348,24 @@ function AB:StyleButton(button, noBackdrop)
 end
 
 function AB:Bar_OnEnter()
+	if this:GetParent() == self.fadeParent then
+		if not self.fadeParent.mouseLock then
+			E:UIFrameFadeIn(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1)
+		end
+	end
+
 	if this.mouseover then
 		UIFrameFadeIn(this, 0.2, this:GetAlpha(), this.db.alpha)
 	end
 end
 
 function AB:Bar_OnLeave()
+	if this:GetParent() == self.fadeParent then
+		if not self.fadeParent.mouseLock then
+			E:UIFrameFadeOut(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1 - self.db.globalFadeAlpha)
+		end
+	end
+
 	if this.mouseover then
 		UIFrameFadeOut(this, 0.2, this:GetAlpha(), 0)
 	end
@@ -353,6 +373,12 @@ end
 
 function AB:Button_OnEnter()
 	local bar = (this:GetParent() == BonusActionBarFrame or this:GetParent() == MainMenuBarArtFrame) and ElvUI_Bar1 or this:GetParent()
+	if bar:GetParent() == self.fadeParent then
+		if not self.fadeParent.mouseLock then
+			UIFrameFadeIn(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1)
+		end
+	end
+
 	if bar.mouseover then
 		UIFrameFadeIn(bar, 0.2, bar:GetAlpha(), bar.db.alpha)
 	end
@@ -360,8 +386,31 @@ end
 
 function AB:Button_OnLeave()
 	local bar = (this:GetParent() == BonusActionBarFrame or this:GetParent() == MainMenuBarArtFrame) and ElvUI_Bar1 or this:GetParent()
+	if bar:GetParent() == self.fadeParent then
+		if not self.fadeParent.mouseLock then
+			UIFrameFadeOut(self.fadeParent, 0.2, self.fadeParent:GetAlpha(), 1 - self.db.globalFadeAlpha)
+		end
+	end
+
 	if bar.mouseover then
 		UIFrameFadeOut(bar, 0.2, bar:GetAlpha(), 0)
+	end
+end
+
+function AB:FadeParent_OnEvent()
+	if (event == "SPELLCAST_START"
+	or event == "SPELLCAST_STOP"
+	or event == "UNIT_HEALTH") and arg1 ~= "player" then return end
+
+	local cur, max = UnitHealth("player"), UnitHealthMax("player")
+	local target = UnitExists("target")
+	local combat = UnitAffectingCombat("player")
+	if (cur ~= max) or target or combat then
+		this.mouseLock = true
+		UIFrameFadeIn(this, 0.2, this:GetAlpha(), 1)
+	else
+		this.mouseLock = false
+		UIFrameFadeOut(this, 0.2, this:GetAlpha(), 1 - AB.db.globalFadeAlpha)
 	end
 end
 
@@ -453,6 +502,16 @@ function AB:Initialize()
 	self.db = E.db.actionbar
 
 	if E.private.actionbar.enable ~= true then return end
+
+	self.fadeParent = CreateFrame("Frame", "Elv_ABFade", UIParent)
+	self.fadeParent:SetAlpha(1 - self.db.globalFadeAlpha)
+	self.fadeParent:RegisterEvent("PLAYER_REGEN_DISABLED")
+	self.fadeParent:RegisterEvent("PLAYER_REGEN_ENABLED")
+	self.fadeParent:RegisterEvent("PLAYER_TARGET_CHANGED")
+	self.fadeParent:RegisterEvent("SPELLCAST_START")
+	self.fadeParent:RegisterEvent("SPELLCAST_STOP")
+	self.fadeParent:RegisterEvent("UNIT_HEALTH")
+	self.fadeParent:SetScript("OnEvent", self.FadeParent_OnEvent)
 
 	self:DisableBlizzard()
 
