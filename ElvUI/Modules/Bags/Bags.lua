@@ -232,6 +232,16 @@ function B:UpdateCountDisplay()
 	end
 end
 
+function B:UpdateBagTypes(isBank)
+	local f = self:GetContainerFrame(isBank);
+	for _, bagID in ipairs(f.BagIDs) do
+		if f.Bags[bagID] then
+			f.Bags[bagID].type = GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)), true)
+		end
+	end
+end
+
+
 function B:UpdateSlot(bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return end
 
@@ -1237,6 +1247,14 @@ function B:CloseBank()
 	self.BankFrame:Hide()
 end
 
+function B:PLAYER_ENTERING_WORLD()
+    self:UpdateGoldText()
+
+    E:Delay(1, function()
+        B:UpdateBagTypes()
+    end)
+end
+
 function B:updateContainerFrameAnchors()
 	local frame, xOffset, yOffset, screenHeight, freeScreenHeight, leftMostPoint, column
 	local screenWidth = GetScreenWidth()
@@ -1391,8 +1409,8 @@ function B:Initialize()
 	E.Bags = self
 
 	self:DisableBlizzard()
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_MONEY", "UpdateGoldText")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateGoldText")
 	self:RegisterEvent("PLAYER_TRADE_MONEY", "UpdateGoldText")
 	self:RegisterEvent("TRADE_MONEY_CHANGED", "UpdateGoldText")
 	self:RegisterEvent("BANKFRAME_OPENED", "OpenBank")
