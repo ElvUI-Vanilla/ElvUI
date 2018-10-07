@@ -178,12 +178,12 @@ function E:GetPlayerRole()
 end
 
 function E:CheckClassColor(r, g, b)
-	r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
+	r, g, b = floor(r*100 + .5) / 100, floor(g*100 + .5) / 100, floor(b*100 + .5) / 100
 	local matchFound = false
 	for class, _ in pairs(RAID_CLASS_COLORS) do
-		if(class ~= E.myclass) then
+		if class ~= E.myclass then
 			local colorTable = class == "PRIEST" and E.PriestColors or (CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class])
-			if(colorTable.r == r and colorTable.g == g and colorTable.b == b) then
+			if colorTable.r == r and colorTable.g == g and colorTable.b == b then
 				matchFound = true
 			end
 		end
@@ -193,7 +193,7 @@ function E:CheckClassColor(r, g, b)
 end
 
 function E:GetColorTable(data)
-	if (not data.r or not data.g or not data.b) then
+	if not data.r or not data.g or not data.b then
 		error("Could not unpack color values.")
 	end
 
@@ -324,7 +324,7 @@ end
 
 function E:UpdateFrameTemplates()
 	for frame in pairs(self["frames"]) do
-		if(frame and frame.template) then
+		if frame and frame.template then
 			E:SetTemplate(frame, frame.template, frame.glossTex)
 		else
 			self["frames"][frame] = nil
@@ -412,9 +412,9 @@ end
 
 function E:UpdateStatusBars()
 	for _, statusBar in pairs(self.statusBars) do
-		if (statusBar and statusBar:GetObjectType() == "StatusBar") then
+		if statusBar and statusBar:GetObjectType() == "StatusBar" then
 			statusBar:SetStatusBarTexture(self.media.normTex)
-		elseif (statusBar and statusBar:GetObjectType() == "Texture") then
+		elseif statusBar and statusBar:GetObjectType() == "Texture" then
 			statusBar:SetTexture(self.media.normTex)
 		end
 	end
@@ -481,7 +481,7 @@ function E:CheckRole()
 
 	if type(self.ClassRole[self.myclass]) == "string" then
 		role = self.ClassRole[self.myclass]
-	elseif(talentTree) then
+	elseif talentTree then
 		if self.myclass == "DRUID" and talentTree == 2 then
 			role = select(5, GetTalentInfo(talentTree, 22)) > 0 and "Tank" or "Melee"
 		else
@@ -672,7 +672,7 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 	local function buildLineStructure()
 		local str = profileText
 		for _, v in ipairs(lineStructureTable) do
-			if(type(v) == "string") then
+			if type(v) == "string" then
 				str = str .. "[\"" .. v .. "\"]"
 			else
 				str = str .. "[" .. v .. "]"
@@ -786,7 +786,7 @@ local function SendRecieve()
 		if arg2 and arg2 > tonumber(E.version) then
 			E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"])
 
-			if (arg2 - tonumber(E.version)) >= 0.05 then
+			if arg2 - tonumber(E.version) >= 0.05 then
 				E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
 			end
 
@@ -863,11 +863,11 @@ function E:UpdateAll(ignoreInstall)
 	self:GetModule("Auras").db = self.db.auras
 	self:GetModule("Tooltip").db = self.db.tooltip
 
-	if(ElvUIPlayerBuffs) then
+	if ElvUIPlayerBuffs then
 		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerBuffs)
 	end
 
-	if(ElvUIPlayerDebuffs) then
+	if ElvUIPlayerDebuffs then
 		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerDebuffs)
 	end
 
@@ -896,17 +896,17 @@ end
 function E:ResetAllUI()
 	self:ResetMovers()
 
-	if(E.db.lowresolutionset) then
+	if E.db.lowresolutionset then
 		E:SetupResolution(true)
 	end
 
-	if(E.db.layoutSet) then
+	if E.db.layoutSet then
 		E:SetupLayout(E.db.layoutSet, true)
 	end
 end
 
 function E:ResetUI(name)
-	if(name == "" or name == " " or name == nil) then
+	if name == "" or name == " " or name == nil then
 		E:StaticPopup_Show("RESETUI_CHECK")
 		return
 	end
@@ -916,7 +916,7 @@ end
 
 function E:RegisterModule(name, loadFunc)
 	--New method using callbacks
-	if (loadFunc and type(loadFunc) == "function") then
+	if loadFunc and type(loadFunc) == "function" then
 		if self.initialized then
 			loadFunc()
 		else
