@@ -1,7 +1,7 @@
 ﻿## Interface: 11200
 ## Author: Elv, Bunny
 ## Version: 0.50
-## Title: |cffA11313E|r|cffC4C4C4lvUI|r
+## Title: |cff175581E|r|cffC4C4C4lvUI|r
 ## Notes: User Interface replacement AddOn for World of Warcraft.
 ## SavedVariables: ElvDB, ElvPrivateDB
 ## SavedVariablesPerCharacter: ElvCharacterDB

@@ -140,11 +140,11 @@ function E:ColorizedName(name, colon)
 	for i = 1, length do
 		local letter = sub(name, i, i)
 		if i == 1 then
-			colorizedName = format("|cffA11313%s", letter)
+			colorizedName = format("|cff175581%s", letter)
 		elseif i == 2 then
 			colorizedName = format("%s|r|cffC4C4C4%s", colorizedName, letter)
 		elseif i == length and colon then
-			colorizedName = format("%s%s|r|cffA11313:|r", colorizedName, letter)
+			colorizedName = format("%s%s|r|cff175581:|r", colorizedName, letter)
 		else
 			colorizedName = colorizedName..letter
 		end
