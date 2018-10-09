@@ -169,17 +169,21 @@ local function SetupChat()
 	ChatFrame_AddMessageGroup(ChatFrame1, "IGNORED")
 	ChatFrame_AddMessageGroup(ChatFrame1, "CHANNEL")
 
+	ChatFrame_AddChannel(ChatFrame1, GENERAL)
+	ChatFrame_RemoveMessageGroup(ChatFrame1, "SKILL")
+	ChatFrame_RemoveMessageGroup(ChatFrame1, "LOOT")
+	ChatFrame_RemoveMessageGroup(ChatFrame1, "MONEY")
+	ChatFrame_RemoveMessageGroup(ChatFrame1, "COMBAT_FACTION_CHANGE")
+	ChatFrame_RemoveChannel(ChatFrame1, TRADE)
+
 	ChatFrame_RemoveAllMessageGroups(ChatFrame3)
-	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_FACTION_CHANGE")
 	ChatFrame_AddMessageGroup(ChatFrame3, "SKILL")
 	ChatFrame_AddMessageGroup(ChatFrame3, "LOOT")
 	ChatFrame_AddMessageGroup(ChatFrame3, "MONEY")
 	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_XP_GAIN")
 	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_HONOR_GAIN")
-	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_GUILD_XP_GAIN")
-	ChatFrame_AddChannel(ChatFrame1, GENERAL)
-	ChatFrame_RemoveChannel(ChatFrame1, L["Trade"])
-	ChatFrame_AddChannel(ChatFrame3, L["Trade"])
+	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_FACTION_CHANGE")
+	ChatFrame_AddChannel(ChatFrame3, TRADE)
 
 	--Adjust Chat Colors
 	--General
@@ -216,7 +220,7 @@ local function SetupCVars()
 end
 
 function E:GetColor(r, b, g, a)
-	return { r = r, b = b, g = g, a = a }
+	return {r = r, b = b, g = g, a = a}
 end
 
 function E:SetupTheme(theme, noDisplayMsg)
@@ -689,18 +693,23 @@ end
 local function ResetAll()
 	InstallNextButton:Disable()
 	InstallPrevButton:Disable()
+
 	InstallOption1Button:Hide()
 	InstallOption1Button:SetScript("OnClick", nil)
 	InstallOption1Button:SetText("")
+
 	InstallOption2Button:Hide()
 	InstallOption2Button:SetScript("OnClick", nil)
 	InstallOption2Button:SetText("")
+
 	InstallOption3Button:Hide()
 	InstallOption3Button:SetScript("OnClick", nil)
 	InstallOption3Button:SetText("")
+
 	InstallOption4Button:Hide()
 	InstallOption4Button:SetScript("OnClick", nil)
 	InstallOption4Button:SetText("")
+
 	ElvUIInstallFrame.SubTitle:SetText("")
 	ElvUIInstallFrame.Desc1:SetText("")
 	ElvUIInstallFrame.Desc2:SetText("")
