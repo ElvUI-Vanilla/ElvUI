@@ -1112,11 +1112,11 @@ function E:Initialize()
 		self:Install()
 	end
 
-	if not find(date(), "04/01/") then
-		E.global.aprilFools = nil
-	end
+	-- if not find(date(), "04/01/") then
+	-- 	E.global.aprilFools = nil
+	-- end
 
-	--if(self:HelloKittyFixCheck()) then
+	--if self:HelloKittyFixCheck() then
 	--	self:HelloKittyFix()
 	--end
 

@@ -5,24 +5,24 @@ local LIP = LibStub("ItemPrice-1.1");
 
 --Cache global variables
 --Lua functions
-local ipairs, pairs, pcall, tonumber, select, unpack, pcall = ipairs, pairs, pcall, tonumber, select, unpack, pcall
+local ipairs, pairs, tonumber, select, unpack, pcall = ipairs, pairs, tonumber, select, unpack, pcall
 local getn, tinsert, tremove, tsort, twipe = table.getn, table.insert, table.remove, table.sort, table.wipe
 local floor, mod = math.floor, math.mod
 local band = bit.band
 local match, gmatch, find = string.match, string.gmatch, string.find
 --WoW API / Variables
-local GetTime = GetTime
-local GetItemInfo = GetItemInfo
+local ContainerIDToInventoryID = ContainerIDToInventoryID
+local CursorHasItem = CursorHasItem
 local GetAuctionItemClasses = GetAuctionItemClasses
 local GetAuctionItemSubClasses = GetAuctionItemSubClasses
 local GetContainerItemInfo = GetContainerItemInfo
 local GetContainerItemLink = GetContainerItemLink
+local GetContainerNumSlots = GetContainerNumSlots
+local GetInventoryItemLink = GetInventoryItemLink
+local GetItemInfo = GetItemInfo
+local GetTime = GetTime
 local PickupContainerItem = PickupContainerItem
 local SplitContainerItem = SplitContainerItem
-local GetContainerNumSlots = GetContainerNumSlots
-local ContainerIDToInventoryID = ContainerIDToInventoryID
-local GetInventoryItemLink = GetInventoryItemLink
-local CursorHasItem = CursorHasItem
 
 local bankBags = {BANK_CONTAINER}
 local MAX_MOVE_TIME = 1.25
@@ -57,7 +57,7 @@ local bagStacks = {}
 local bagMaxStacks = {}
 local bagGroups = {}
 local initialOrder = {}
-
+local itemTypes, itemSubTypes = {}, {}
 local bagSorted, bagLocked = {}, {}
 local moves = {}
 local targetItems = {}
@@ -116,7 +116,6 @@ end)
 frame:Hide()
 B.SortUpdateTimer = frame
 
-local itemTypes, itemSubTypes = {}, {}
 local function BuildSortOrder()
 	for i, iType in ipairs({GetAuctionItemClasses()}) do
 		itemTypes[iType] = i
@@ -126,7 +125,6 @@ local function BuildSortOrder()
 		end
 	end
 end
-BuildSortOrder()
 
 local function UpdateLocation(from, to)
 	if (bagIDs[from] == bagIDs[to]) and (bagStacks[to] < bagMaxStacks[to]) then
@@ -475,6 +473,7 @@ end
 
 function B.Sort(bags, sorter, invertDirection)
 	if not sorter then sorter = invertDirection and ReverseSort or DefaultSort end
+	if not itemTypes then BuildSortOrder() end
 
 	--Wipe tables before we begin
 	twipe(blackList)
