@@ -34,7 +34,7 @@ local function LoadSkin()
 		else
 			if InboxNextPageButton:IsEnabled() == 1 then
 				InboxNextPage()
-			end	
+			end
 		end
 	end)
 
@@ -88,7 +88,10 @@ local function LoadSkin()
 	end)
 
 	S:HandleNextPrevButton(InboxPrevPageButton)
+	E:Point(InboxPrevPageButton, "CENTER", InboxFrame, "BOTTOMLEFT", 42, 104)
+
 	S:HandleNextPrevButton(InboxNextPageButton)
+	E:Point(InboxNextPageButton, "CENTER", InboxFrame, "BOTTOMLEFT", 318, 104)
 
 	S:HandleCloseButton(InboxCloseButton)
 
