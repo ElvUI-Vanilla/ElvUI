@@ -75,7 +75,7 @@ function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceName, _, _, destNam
 end
 
 function M:MERCHANT_SHOW()
-	if E.db.general.vendorGrays then
+	if E.db.bags.vendorGrays.enable then
 		E:GetModule("Bags"):VendorGrays(nil, true)
 	end
 
@@ -173,6 +173,9 @@ function M:ForceCVars()
 end
 
 function M:Initialize()
+	--DB conversion
+	if E.db.general.vendorGrays then E.db.bags.vendorGrays.enable = E.db.general.vendorGrays end
+
 	self:LoadRaidMarker()
 	self:LoadLoot()
 	self:LoadLootRoll()

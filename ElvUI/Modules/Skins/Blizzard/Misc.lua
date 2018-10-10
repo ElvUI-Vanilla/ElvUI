@@ -238,7 +238,9 @@ local function LoadSkin()
 	S:HandleButton(CoinPickupCancelButton)
 
 	-- Stack Split Frame
+	E:SetTemplate(StackSplitFrame, "Transparent")
 	StackSplitFrame:GetRegions():Hide()
+	StackSplitFrame:SetFrameStrata("DIALOG")
 
 	StackSplitFrame.bg1 = CreateFrame("Frame", nil, StackSplitFrame)
 	E:SetTemplate(StackSplitFrame.bg1, "Transparent")
