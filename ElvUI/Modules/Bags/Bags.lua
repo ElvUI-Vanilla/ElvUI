@@ -495,14 +495,14 @@ function B:Layout(isBank)
 			if not f.ContainerHolder[i] then
 				if isBank then
 					f.ContainerHolder[i] = CreateFrame("CheckButton", "ElvUIBankBag"..bagID - 4, f.ContainerHolder, "BankItemButtonBagTemplate")
-					f.ContainerHolder[i]:SetScript("OnClick", function(holder)
-						local inventoryID = holder:GetInventorySlot()
+					f.ContainerHolder[i]:SetScript("OnClick", function()
+						local inventoryID = this:GetInventorySlot()
 						PutItemInBag(inventoryID) --Put bag on empty slot, or drop item in this bag
 					end)
 				else
 					f.ContainerHolder[i] = CreateFrame("CheckButton", "ElvUIMainBag"..bagID.."Slot", f.ContainerHolder, "BagSlotButtonTemplate")
-					f.ContainerHolder[i]:SetScript("OnClick", function(holder)
-						local id = holder:GetID()
+					f.ContainerHolder[i]:SetScript("OnClick", function()
+						local id = this:GetID()
 						PutItemInBag(id) --Put bag on empty slot, or drop item in this bag
 					end)
 				end
@@ -813,14 +813,7 @@ function B:OnEvent()
 		if not this:IsShown() then return end
 		this:UpdateCooldowns()
 	elseif event == "PLAYERBANKSLOTS_CHANGED" then
-		local slot = unpack(arg)
-		print(event, slot)
-		local bagID = (slot <= NUM_BANKGENERIC_SLOTS) and -1 or (slot - NUM_BANKGENERIC_SLOTS)
-		if bagID > -1 then
-			B:Layout(true)
-		else
-			this:UpdateBagSlots(-1)
-		end
+		this:UpdateBagSlots(-1)
 	end
 end
 
