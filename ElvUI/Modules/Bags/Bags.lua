@@ -238,7 +238,7 @@ function B:UpdateCountDisplay()
 end
 
 function B:UpdateBagTypes(isBank)
-	local f = self:GetContainerFrame(isBank);
+	local f = self:GetContainerFrame(isBank)
 	for _, bagID in ipairs(f.BagIDs) do
 		if f.Bags[bagID] then
 			f.Bags[bagID].type = GetItemFamily(GetInventoryItemLink("player", ContainerIDToInventoryID(bagID)), true)
@@ -298,11 +298,6 @@ function B:UpdateSlot(bagID, slotID)
 		if bagID ~= BANK_CONTAINER then
 			local start, duration, enable = GetContainerItemCooldown(bagID, slotID)
 			CooldownFrame_SetTimer(slot.cooldown, start, duration, enable)
-			if duration > 0 and enable == 0 then
-				SetItemButtonTextureVertexColor(slot, 0.4, 0.4, 0.4)
-			else
-				SetItemButtonTextureVertexColor(slot, 1, 1, 1)
-			end
 		end
 		slot.hasItem = 1
 	else
@@ -855,7 +850,7 @@ function B:GetGraysValue()
 
 				stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
 				stackPrice = LIP:GetSellValue(itemLink) * stackCount
-				if (rarity and rarity == 0) and (itype and itype ~= "Quest") and (stackPrice > 0) then
+				if (rarity and rarity == 0) and (itype and itype ~= "Quest") and (stackPrice and stackPrice > 0) then
 					value = value + stackPrice
 				end
 			end
@@ -881,7 +876,7 @@ function B:VendorGrays(delete)
 				itemPrice = LIP:GetSellValue(itemLink) or 0
 
 				if (rarity and rarity == 0) and (itype and itype ~= "Quest") and (itemPrice and itemPrice > 0) then
-					tinsert(B.SellFrame.Info.itemList, {bag, slot, itemLink, itemPrice})
+					tinsert(B.SellFrame.Info.itemList, {bag, slot, itemPrice, itemLink})
 				end
 			end
 		end
@@ -1043,6 +1038,7 @@ function B:ContructContainerFrame(name, isBank)
 			end
 		end)
 
+		--Purchase Bags Button
 		f.purchaseBagButton = CreateFrame("Button", nil, f.holderFrame)
 		E:Size(f.purchaseBagButton, 16 + E.Border)
 		E:SetTemplate(f.purchaseBagButton)
@@ -1096,6 +1092,7 @@ function B:ContructContainerFrame(name, isBank)
 		E:Point(f.editBox.searchIcon, "LEFT", f.editBox.backdrop, "LEFT", E.Border + 1, -1)
 		E:Size(f.editBox.searchIcon, 15)
 	else
+		--Keyring Frame
 		f.keyFrame = CreateFrame("Frame", name.."KeyFrame", f)
 		E:Point(f.keyFrame, "TOPRIGHT", f, "TOPLEFT", -(E.PixelMode and 1 or 3), 0)
 		E:SetTemplate(f.keyFrame, "Transparent")
@@ -1106,7 +1103,7 @@ function B:ContructContainerFrame(name, isBank)
 		--Gold Text
 		f.goldText = f:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(f.goldText)
-		E:Point(f.goldText, "BOTTOMRIGHT", f.holderFrame, "TOPRIGHT", -2, 4)
+		E:Point(f.goldText, "BOTTOMRIGHT", f.holderFrame, "TOPRIGHT", -10, 4)
 		f.goldText:SetJustifyH("RIGHT")
 
 		--Sort Button
@@ -1293,6 +1290,7 @@ end
 
 function B:OpenBags()
 	self.BagFrame:Show()
+	self.BagFrame:UpdateAllSlots()
 
 	E:GetModule("Tooltip"):GameTooltip_SetDefaultAnchor(GameTooltip)
 end
@@ -1316,6 +1314,7 @@ function B:OpenBank()
 	self:Layout(true)
 
 	self.BankFrame:Show()
+	self.BankFrame:UpdateAllSlots()
 
 	self:OpenBags()
 end
@@ -1329,12 +1328,11 @@ function B:CloseBank()
 	self.BankFrame:Hide()
 end
 
+local playerEnteringWorldFunc = function() B:UpdateBagTypes() B:Layout() end
 function B:PLAYER_ENTERING_WORLD()
-    self:UpdateGoldText()
+	self:UpdateGoldText()
 
-    E:Delay(1, function()
-        B:UpdateBagTypes()
-    end)
+	E:Delay(2, playerEnteringWorldFunc) -- Update bag types for bagslot coloring
 end
 
 function B:updateContainerFrameAnchors()
@@ -1430,10 +1428,10 @@ function B:PostBagMove()
 
 	if y > (screenHeight / 2) then
 		self:SetText(self.textGrowDown)
-		self.POINT = ((x > (screenWidth/2)) and "TOPRIGHT" or "TOPLEFT")
+		self.POINT = ((x > (screenWidth / 2)) and "TOPRIGHT" or "TOPLEFT")
 	else
 		self:SetText(self.textGrowUp)
-		self.POINT = ((x > (screenWidth/2)) and "BOTTOMRIGHT" or "BOTTOMLEFT")
+		self.POINT = ((x > (screenWidth / 2)) and "BOTTOMRIGHT" or "BOTTOMLEFT")
 	end
 
 	local bagFrame
@@ -1462,7 +1460,7 @@ end
  function B:ProgressQuickVendor()
 	local item = B.SellFrame.Info.itemList[1]
 	if not item then return nil, true end --No more to sell
-	local bag, slot, itemLink, itemPrice = unpack(item)
+	local bag, slot, itemPrice, itemLink = unpack(item)
 
 	local stackPrice
 	local stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
@@ -1483,7 +1481,7 @@ end
 	B.SellFrame.Info.ProgressTimer = B.SellFrame.Info.ProgressTimer - arg1
 	if B.SellFrame.Info.ProgressTimer > 0 then return end
 	B.SellFrame.Info.ProgressTimer = B.SellFrame.Info.SellInterval
- 	local goldGained, lastItem = B:ProgressQuickVendor();
+ 	local goldGained, lastItem = B:ProgressQuickVendor()
 	if goldGained then
 		B.SellFrame.Info.goldGained = B.SellFrame.Info.goldGained + goldGained
 		B.SellFrame.Info.itemsSold = B.SellFrame.Info.itemsSold + 1

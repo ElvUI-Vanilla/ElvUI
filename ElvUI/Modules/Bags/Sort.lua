@@ -23,6 +23,7 @@ local GetItemInfo = GetItemInfo
 local GetTime = GetTime
 local PickupContainerItem = PickupContainerItem
 local SplitContainerItem = SplitContainerItem
+local ARMOR, EN = ARMOR
 
 local bankBags = {BANK_CONTAINER}
 local MAX_MOVE_TIME = 1.25
@@ -390,7 +391,7 @@ function B:CanItemGoInBag(bag, slot, targetBag)
 	local itemFamily = GetItemFamily(item)
 	if itemFamily and itemFamily > 0 then
 		local equipSlot = select(8, GetItemInfo(item))
-		if equipSlot == "INVTYPE_BAG" then
+		if equipSlot == "INVTYPE_QUIVER" then
 			itemFamily = 1
 		end
 	end
