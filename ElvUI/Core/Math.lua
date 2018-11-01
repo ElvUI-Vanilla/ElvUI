@@ -11,56 +11,63 @@ local GetScreenWidth, GetScreenHeight = GetScreenWidth, GetScreenHeight
 local CreateFrame = CreateFrame
 
 --Return short value of a number
-local shortValueDec
+local shortValueDec, value
 function E:ShortValue(v)
 	shortValueDec = format("%%.%df", E.db.general.decimalLength or 1)
+	value = abs(v)
 	if E.db.general.numberPrefixStyle == "METRIC" then
-		if abs(v) >= 1e9 then
+		if value >= 1e12 then
+			return format(shortValueDec.."T", v / 1e12)
+		elseif value >= 1e9 then
 			return format(shortValueDec.."G", v / 1e9)
-		elseif abs(v) >= 1e6 then
+		elseif value >= 1e6 then
 			return format(shortValueDec.."M", v / 1e6)
-		elseif abs(v) >= 1e3 then
+		elseif value >= 1e3 then
 			return format(shortValueDec.."k", v / 1e3)
 		else
-			return format("%s", v)
+			return format("%.0f", v)
 		end
 	elseif E.db.general.numberPrefixStyle == "CHINESE" then
-		if abs(v) >= 1e8 then
+		if value >= 1e8 then
 			return format(shortValueDec.."Y", v / 1e8)
-		elseif abs(v) >= 1e4 then
+		elseif value >= 1e4 then
 			return format(shortValueDec.."W", v / 1e4)
 		else
-			return format("%s", v)
+			return format("%.0f", v)
 		end
 	elseif E.db.general.numberPrefixStyle == "KOREAN" then
-		if abs(v) >= 1e8 then
+		if value >= 1e8 then
 			return format(shortValueDec.."억", v / 1e8)
-		elseif abs(v) >= 1e4 then
+		elseif value >= 1e4 then
 			return format(shortValueDec.."만", v / 1e4)
-		elseif abs(v) >= 1e3 then
+		elseif value >= 1e3 then
 			return format(shortValueDec.."천", v / 1e3)
 		else
-			return format("%s", v)
+			return format("%.0f", v)
 		end
 	elseif E.db.general.numberPrefixStyle == "GERMAN" then
-		if abs(v) >= 1e9 then
+		if value >= 1e12 then
+			return format(shortValueDec.."Bio", v / 1e12)
+		elseif value >= 1e9 then
 			return format(shortValueDec.."Mrd", v / 1e9)
-		elseif abs(v) >= 1e6 then
+		elseif value >= 1e6 then
 			return format(shortValueDec.."Mio", v / 1e6)
-		elseif abs(v) >= 1e3 then
+		elseif value >= 1e3 then
 			return format(shortValueDec.."Tsd", v / 1e3)
 		else
-			return format("%s", v)
+			return format("%.0f", v)
 		end
 	else
-		if abs(v) >= 1e9 then
+		if value >= 1e12 then
+			return format(shortValueDec.."T", v / 1e12)
+		elseif value >= 1e9 then
 			return format(shortValueDec.."B", v / 1e9)
-		elseif abs(v) >= 1e6 then
+		elseif value >= 1e6 then
 			return format(shortValueDec.."M", v / 1e6)
-		elseif abs(v) >= 1e3 then
+		elseif value >= 1e3 then
 			return format(shortValueDec.."K", v / 1e3)
 		else
-			return format("%s", v)
+			return format("%.0f", v)
 		end
 	end
 end
@@ -97,9 +104,9 @@ function E:Truncate(v, decimals)
 end
 
 function E:RGBToHex(r, g, b)
-	r = r <= 1 and r >= 0 and r or 0
-	g = g <= 1 and g >= 0 and g or 0
-	b = b <= 1 and b >= 0 and b or 0
+	r = r <= 1 and r >= 0 and r or 1
+	g = g <= 1 and g >= 0 and g or 1
+	b = b <= 1 and b >= 0 and b or 1
 	return format("|cff%02x%02x%02x", r*255, g*255, b*255)
 end
 
@@ -162,6 +169,7 @@ function E:GetScreenQuadrant(frame)
 	else
 		point = "CENTER"
 	end
+
 	return point
 end
 
@@ -177,7 +185,7 @@ function E:GetXYOffset(position, override)
 		return -x, y
 	elseif position == "BOTTOM" then
 		return 0, -y
-	elseif(position == "BOTTOMLEFT") then
+	elseif position == "BOTTOMLEFT" then
 		return x, -y
 	elseif position == "BOTTOMRIGHT" then
 		return -x, -y
@@ -201,6 +209,7 @@ local styles = {
 	["DEFICIT"] = "-%s"
 }
 
+local gftDec, gftUseStyle, gftDeficit
 function E:GetFormattedText(style, min, max)
 	assert(styles[style], "Invalid format style: "..style)
 	assert(min, "You need to provide a current value. Usage: E:GetFormattedText(style, min, max)")
@@ -208,16 +217,15 @@ function E:GetFormattedText(style, min, max)
 
 	if max == 0 then max = 1 end
 
-	local gftUseStyle
-	local gftDec = E.db.general.decimalLength or 1
-	if gftDec ~= 1 and find(style, "PERCENT") then
+	gftDec = (E.db.general.decimalLength or 1)
+	if (gftDec ~= 1) and find(style, "PERCENT") then
 		gftUseStyle = gsub(styles[style], "%%%.1f%%%%", "%%."..gftDec.."f%%%%")
 	else
 		gftUseStyle = styles[style]
 	end
 
 	if style == "DEFICIT" then
-		local gftDeficit = max - min
+		gftDeficit = max - min
 		return ((gftDeficit > 0) and format(gftUseStyle, E:ShortValue(gftDeficit))) or ""
 	elseif style == "PERCENT" then
 		return format(gftUseStyle, min / max * 100)
@@ -237,7 +245,7 @@ function E:AbbreviateString(string, allUpper)
 	local words = {split(" ", string)}
 	for _, word in pairs(words) do
 		word = utf8sub(word, 1, 1)
-		if(allUpper) then
+		if allUpper then
 			word = upper(word)
 		end
 		newString = newString..word
@@ -309,12 +317,16 @@ function E:StringTitle(str)
 	return gsub(str, "(.)", upper, 1)
 end
 
+E.TimeThreshold = 3
+
 E.TimeColors = {
 	[0] = "|cffeeeeee",
 	[1] = "|cffeeeeee",
 	[2] = "|cffeeeeee",
 	[3] = "|cffeeeeee",
-	[4] = "|cfffe0000"
+	[4] = "|cfffe0000",
+	[5] = "|cff909090", --mmss
+	[6] = "|cff707070", --hhmm
 }
 
 E.TimeFormats = {
@@ -322,14 +334,16 @@ E.TimeFormats = {
 	[1] = {"%dh", "%dh"},
 	[2] = {"%dm", "%dm"},
 	[3] = {"%ds", "%d"},
-	[4] = {"%.1fs", "%.1f"}
+	[4] = {"%.1fs", "%.1f"},
+	[5] = {"%d:%02d", "%d:%02d"}, --mmss
+	[6] = {"%d:%02d", "%d:%02d"}, --hhmm
 }
 
 local DAY, HOUR, MINUTE = 86400, 3600, 60
 local DAYISH, HOURISH, MINUTEISH = HOUR * 23.5, MINUTE * 59.5, 59.5
 local HALFDAYISH, HALFHOURISH, HALFMINUTEISH = DAY/2 + 0.5, HOUR/2 + 0.5, MINUTE/2 + 0.5
 
-function E:GetTimeInfo(s, threshhold)
+function E:GetTimeInfo(s, threshhold, hhmm, mmss)
 	if s < MINUTE then
 		if s >= threshhold then
 			return floor(s), 3, 0.51
@@ -337,11 +351,26 @@ function E:GetTimeInfo(s, threshhold)
 			return s, 4, 0.051
 		end
 	elseif s < HOUR then
-		local minutes = floor((s/MINUTE)+.5)
-		return ceil(s / MINUTE), 2, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH)
+		if mmss and s < mmss then
+			return s/MINUTE, 5, 0.51, mod(s, MINUTE)
+		else
+			local minutes = floor((s/MINUTE)+.5)
+			if hhmm and s < (hhmm * MINUTE) then
+				return s/HOUR, 6, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH), mod(minutes, MINUTE)
+			else
+				return ceil(s / MINUTE), 2, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH)
+			end
+		end
 	elseif s < DAY then
-		local hours = floor((s/HOUR)+.5)
-		return ceil(s / HOUR), 1, hours > 1 and (s - (hours*HOUR - HALFHOURISH)) or (s - HOURISH)
+		if mmss and s < mmss then
+			return s/MINUTE, 5, 0.51, mod(s, MINUTE)
+		elseif hhmm and s < (hhmm * MINUTE) then
+			local minutes = floor((s/MINUTE)+.5)
+			return s/HOUR, 6, minutes > 1 and (s - (minutes*MINUTE - HALFMINUTEISH)) or (s - MINUTEISH), mod(minutes, MINUTE)
+		else
+			local hours = floor((s/HOUR)+.5)
+			return ceil(s / HOUR), 1, hours > 1 and (s - (hours*HOUR - HALFHOURISH)) or (s - HOURISH)
+		end
 	else
 		local days = floor((s/DAY)+.5)
 		return ceil(s / DAY), 0, days > 1 and (s - (days*DAY - HALFDAYISH)) or (s - DAYISH)

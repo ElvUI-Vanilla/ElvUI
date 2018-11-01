@@ -68,7 +68,7 @@ function E:ToggleConfigMode(override, configType)
 		end
 
 		ElvUIMoverPopupWindow:Show()
-		if(IsAddOnLoaded("ElvUI_Config")) then
+		if IsAddOnLoaded("ElvUI_Config") then
 			LibStub("AceConfigDialog-3.0"):Close("ElvUI")
 			GameTooltip:Hide()
 		end
@@ -162,18 +162,18 @@ end
 
 function E:NudgeMover(nudgeX, nudgeY)
 	local mover = ElvUIMoverNudgeWindow.child
-
 	local x, y, point = E:CalculateMoverPoints(mover, nudgeX, nudgeY)
 
 	mover:ClearAllPoints()
 	E:Point(mover, mover.positionOverride or point, E.UIParent, mover.positionOverride and "BOTTOMLEFT" or point, x, y)
 	E:SaveMoverPosition(mover.name)
 
+	--Update coordinates in Nudge Window
 	E:UpdateNudgeFrame(mover, x, y)
 end
 
 function E:UpdateNudgeFrame(mover, x, y)
-	if not(x and y) then
+	if not (x and y) then
 		x, y = E:CalculateMoverPoints(mover)
 	end
 
@@ -200,7 +200,8 @@ function E:CreateMoverPopup()
 	f:SetMovable(true)
 	f:SetFrameLevel(99)
 	f:SetClampedToScreen(true)
-	E:Size(f, 360, 170)
+	E:Width(f, 360)
+	E:Height(f, 185)
 	E:SetTemplate(f, "Transparent")
 	E:Point(f, "BOTTOM", UIParent, "CENTER", 0, 100)
 	f:SetScript("OnHide", function()
@@ -214,8 +215,9 @@ function E:CreateMoverPopup()
 
 	local header = CreateFrame("Button", nil, f)
 	E:SetTemplate(header, "Default", true)
-	E:Size(header, 100, 25)
-	header:SetPoint("CENTER", f, "TOP")
+	E:Width(header, 100)
+	E:Height(header, 25)
+	E:Point(header, "CENTER", f, "TOP")
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
 	header:EnableMouse(true)
 	header:RegisterForClicks("AnyUp", "AnyDown")
@@ -224,7 +226,7 @@ function E:CreateMoverPopup()
 
 	local title = header:CreateFontString("OVERLAY")
 	E:FontTemplate(title)
-	title:SetPoint("CENTER", header, "CENTER")
+	E:Point(title, "CENTER", header, "CENTER")
 	title:SetText("ElvUI")
 
 	local desc = f:CreateFontString("ARTWORK")
@@ -252,7 +254,7 @@ function E:CreateMoverPopup()
 	lock:SetScript("OnClick", function()
 		E:ToggleConfigMode(true)
 
-		if(IsAddOnLoaded("ElvUI_Config")) then
+		if IsAddOnLoaded("ElvUI_Config") then
 			LibStub("AceConfigDialog-3.0"):Open("ElvUI")
 		end
 
@@ -261,7 +263,8 @@ function E:CreateMoverPopup()
 	end)
 
 	local align = CreateFrame("EditBox", f:GetName().."EditBox", f, "InputBoxTemplate")
-	E:Size(align, 32, 17)
+	E:Width(align, 24)
+	E:Height(align, 17)
 	align:SetAutoFocus(false)
 	align:SetScript("OnEscapePressed", function()
 		this:SetText(E.db.gridSize)
@@ -284,6 +287,7 @@ function E:CreateMoverPopup()
 	align:SetScript("OnEditFocusLost", function()
 		this:SetText(E.db.gridSize)
 	end)
+	align:SetScript("OnEditFocusGained", align.HighlightText)
 	align:SetScript("OnShow", function()
 		this:ClearFocus()
 		this:SetText(E.db.gridSize)
@@ -322,7 +326,8 @@ function E:CreateMoverPopup()
 
 	local nudgeFrame = CreateFrame("Frame", "ElvUIMoverNudgeWindow", E.UIParent)
 	nudgeFrame:SetFrameStrata("DIALOG")
-	E:Size(nudgeFrame, 200, 110)
+	E:Width(nudgeFrame, 200)
+	E:Height(nudgeFrame, 110)
 	E:SetTemplate(nudgeFrame, "Transparent")
 	E:Point(nudgeFrame, "TOP", ElvUIMoverPopupWindow, "BOTTOM", 0, -15)
 	nudgeFrame:SetFrameLevel(100)
@@ -333,18 +338,20 @@ function E:CreateMoverPopup()
 
 	header = CreateFrame("Button", "ElvUIMoverNudgeWindowHeader", nudgeFrame)
 	E:SetTemplate(header, "Default", true)
-	E:Size(header, 100, 25)
-	header:SetPoint("CENTER", nudgeFrame, "TOP")
+	E:Width(header, 100)
+	E:Height(header, 25)
+	E:Point(header, "CENTER", nudgeFrame, "TOP")
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
 
 	title = header:CreateFontString("OVERLAY")
 	E:FontTemplate(title)
-	title:SetPoint("CENTER", header, "CENTER")
+	E:Point(title, "CENTER", header, "CENTER")
 	title:SetText(L["Nudge"])
 	header.title = title
 
 	local xOffset = CreateFrame("EditBox", nudgeFrame:GetName().."XEditBox", nudgeFrame, "InputBoxTemplate")
-	E:Size(xOffset, 50, 17)
+	E:Width(xOffset, 50)
+	E:Height(xOffset, 17)
 	xOffset:SetAutoFocus(false)
 	xOffset.currentValue = 0
 	xOffset:SetScript("OnEscapePressed", function()
@@ -353,7 +360,7 @@ function E:CreateMoverPopup()
 	end)
 	xOffset:SetScript("OnEnterPressed", function()
 		local num = this:GetText()
-		if(tonumber(num)) then
+		if tonumber(num) then
 			local diff = num - xOffset.currentValue
 			xOffset.currentValue = num
 			E:NudgeMover(diff)
@@ -364,6 +371,7 @@ function E:CreateMoverPopup()
 	xOffset:SetScript("OnEditFocusLost", function()
 		this:SetText(E:Round(xOffset.currentValue))
 	end)
+	xOffset:SetScript("OnEditFocusGained", xOffset.HighlightText)
 	xOffset:SetScript("OnShow", function()
 		this:ClearFocus()
 		this:SetText(E:Round(xOffset.currentValue))
@@ -377,7 +385,8 @@ function E:CreateMoverPopup()
 	S:HandleEditBox(xOffset)
 
 	local yOffset = CreateFrame("EditBox", nudgeFrame:GetName().."YEditBox", nudgeFrame, "InputBoxTemplate")
-	E:Size(yOffset, 50, 17)
+	E:Width(yOffset, 50)
+	E:Height(yOffset, 17)
 	yOffset:SetAutoFocus(false)
 	yOffset.currentValue = 0
 	yOffset:SetScript("OnEscapePressed", function()
@@ -386,7 +395,7 @@ function E:CreateMoverPopup()
 	end)
 	yOffset:SetScript("OnEnterPressed", function()
 		local num = this:GetText()
-		if(tonumber(num)) then
+		if tonumber(num) then
 			local diff = num - yOffset.currentValue
 			yOffset.currentValue = num
 			E:NudgeMover(nil, diff)
@@ -397,6 +406,7 @@ function E:CreateMoverPopup()
 	yOffset:SetScript("OnEditFocusLost", function()
 		this:SetText(E:Round(yOffset.currentValue))
 	end)
+	yOffset:SetScript("OnEditFocusGained", yOffset.HighlightText)
 	yOffset:SetScript("OnShow", function()
 		this:ClearFocus()
 		this:SetText(E:Round(yOffset.currentValue))
@@ -429,7 +439,7 @@ function E:CreateMoverPopup()
 	end)
 	upButton.icon = upButton:CreateTexture(nil, "ARTWORK")
 	E:Size(upButton.icon, 13)
-	upButton.icon:SetPoint("CENTER", 0, 0)
+	E:Point(upButton.icon, "CENTER", 0)
 	upButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
 	upButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
@@ -444,7 +454,7 @@ function E:CreateMoverPopup()
 	end)
 	downButton.icon = downButton:CreateTexture(nil, "ARTWORK")
 	E:Size(downButton.icon, 13)
-	downButton.icon:SetPoint("CENTER", 0, 0)
+	E:Point(downButton.icon, "CENTER", 0)
 	downButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
 	downButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
@@ -459,7 +469,7 @@ function E:CreateMoverPopup()
 	end)
 	leftButton.icon = leftButton:CreateTexture(nil, "ARTWORK")
 	E:Size(leftButton.icon, 13)
-	leftButton.icon:SetPoint("CENTER", 0, 0)
+	E:Point(leftButton.icon, "CENTER", 0)
 	leftButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
 	leftButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
@@ -474,7 +484,7 @@ function E:CreateMoverPopup()
 	end)
 	rightButton.icon = rightButton:CreateTexture(nil, "ARTWORK")
 	E:Size(rightButton.icon, 13)
-	rightButton.icon:SetPoint("CENTER", 0, 0)
+	E:Point(rightButton.icon, "CENTER", 0)
 	rightButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
 	rightButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
