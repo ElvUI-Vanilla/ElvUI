@@ -21,3 +21,4 @@ Tooltip.lua
 Unitframes.lua
 DataBars.lua
 Maps.lua
+ModuleControl.lua

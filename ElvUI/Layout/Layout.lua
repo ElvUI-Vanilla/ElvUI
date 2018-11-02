@@ -44,7 +44,7 @@ function LO:Initialize()
 end
 
 function LO:BottomPanelVisibility()
-	if(E.db.general.bottomPanel) then
+	if E.db.general.bottomPanel then
 		self.BottomPanel:Show()
 	else
 		self.BottomPanel:Hide()
@@ -163,6 +163,7 @@ function LO:SetDataPanelStyle()
 
 		E:SetTemplate(LeftMiniPanel, "Transparent")
 		E:SetTemplate(RightMiniPanel, "Transparent")
+		E:SetTemplate(ElvConfigToggle, "Transparent")
 	else
 		if not E.db.datatexts.panelBackdrop then
 			E:SetTemplate(LeftChatDataPanel, "NoBackdrop")

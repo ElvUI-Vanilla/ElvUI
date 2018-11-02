@@ -18,24 +18,24 @@ local IsAddOnLoaded = IsAddOnLoaded
 local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNumPartyMembers, GetNumRaidMembers
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local SendAddonMessage = SendAddonMessage
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
+local NONE = NONE
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
-local _
-_, E.myclass = UnitClass("player") -- Constants
-_, E.myrace = UnitRace("player")
-_, E.myfaction = UnitFactionGroup("player")
--- The E.myfaction may error when in GM mode
-E.myfaction = E.myfaction or "Others"
-E.myname = UnitName("player")
-E.version = GetAddOnMetadata("ElvUI", "Version")
-E.myrealm = GetRealmName()
-_, E.wowbuild = GetBuildInfo() E.wowbuild = tonumber(E.wowbuild)
-E.resolution = GetCVar("gxResolution")
-E.screenheight = tonumber(match(E.resolution, "%d+x(%d+)"));
-E.screenwidth = tonumber(match(E.resolution, "(%d+)x+%d"));
-E.isMacClient = IsMacClient()
+-- Constants
 E.LSM = LSM
+E.noop = function() end
+E.title = format("|cff175581E|r|cffC4C4C4lvUI|r")
+E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
+E.myLocalizedClass, E.myclass, E.myClassID = UnitClass("player")
+E.myLocalizedRace, E.myrace = UnitRace("player")
+E.myname = UnitName("player")
+E.myrealm = GetRealmName()
+E.version = GetAddOnMetadata("ElvUI", "Version")
+E.wowpatch, E.wowbuild = GetBuildInfo() E.wowbuild = tonumber(E.wowbuild)
+E.resolution = GetCVar("gxResolution")
+E.screenheight = tonumber(match(E.resolution, "%d+x(%d+)"))
+E.screenwidth = tonumber(match(E.resolution, "(%d+)x+%d"))
+E.isMacClient = IsMacClient()
 
 E["media"] = {}
 E["frames"] = {}
@@ -85,14 +85,7 @@ E.DispelClasses = {
 	["DRUID"] = {
 		["Curse"] = true,
 		["Poison"] = true
-	},
-}
-
-E.HealingClasses = {
-	PALADIN = 1,
-	SHAMAN = 3,
-	DRUID = 3,
-	PRIEST = {1, 2}
+	}
 }
 
 E.ClassRole = {
@@ -123,19 +116,13 @@ E.ClassRole = {
 	}
 }
 
-E.DEFAULT_FILTER = {
-	["CCDebuffs"] = "Whitelist",
-	["TurtleBuffs"] = "Whitelist",
-	["PlayerBuffs"] = "Whitelist",
-	["Blacklist"] = "Blacklist",
-	["Whitelist"] = "Whitelist",
-	["RaidDebuffs"] = "Whitelist",
-}
-
-E.noop = function() end
+E.DEFAULT_FILTER = {}
+for filter, tbl in pairs(G.unitframe.aurafilters) do
+	E.DEFAULT_FILTER[filter] = tbl.type
+end
 
 local colorizedName
-function E:ColorizedName(name, colon)
+function E:ColorizedName(name, arg2)
 	local length = len(name)
 	for i = 1, length do
 		local letter = sub(name, i, i)
@@ -143,7 +130,7 @@ function E:ColorizedName(name, colon)
 			colorizedName = format("|cff175581%s", letter)
 		elseif i == 2 then
 			colorizedName = format("%s|r|cffC4C4C4%s", colorizedName, letter)
-		elseif i == length and colon then
+		elseif i == length and arg2 then
 			colorizedName = format("%s%s|r|cff175581:|r", colorizedName, letter)
 		else
 			colorizedName = colorizedName..letter
@@ -153,7 +140,7 @@ function E:ColorizedName(name, colon)
 end
 
 function E:Print(msg)
-	print(self:ColorizedName("ElvUI", true), msg)
+	print(_G[self.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", self:ColorizedName("ElvUI", true), msg)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
 end
 
 E.PriestColors = {
@@ -162,19 +149,21 @@ E.PriestColors = {
 	b = 0.99
 }
 
-function E:GetPlayerRole()
-	local assignedRole = UnitGroupRolesAssigned("player")
-	if assignedRole == "NONE" or not assignedRole then
-		if self.HealingClasses[self.myclass] ~= nil and self:CheckTalentTree(self.HealingClasses[E.myclass]) then
-			return "HEALER"
-		elseif E.Role == "Tank" then
-			return "TANK"
-		else
-			return "DAMAGER"
+local delayedTimer
+local delayedFuncs = {}
+function E:ShapeshiftDelayedUpdate(func, ...)
+	delayedFuncs[func] = {unpack(arg)}
+
+	if delayedTimer then return end
+
+	delayedTimer = E:ScheduleTimer(function()
+		for func in pairs(delayedFuncs) do
+			func(unpack(delayedFuncs[func]))
 		end
-	else
-		return assignedRole
-	end
+
+		twipe(delayedFuncs)
+		delayedTimer = nil
+	end, 0.05)
 end
 
 function E:CheckClassColor(r, g, b)
@@ -205,7 +194,7 @@ function E:GetColorTable(data)
 end
 
 function E:UpdateMedia()
-	if (not self.db["general"] or not self.private["general"]) then return end
+	if not (self.db and self.db["general"] and self.private["general"]) then return end
 
 	-- Fonts
 	self["media"].normFont = LSM:Fetch("font", self.db["general"].font)
@@ -271,7 +260,7 @@ end
 local function LSMCallback()
 	E:UpdateMedia()
 end
-E.LSM.RegisterCallback(E, "LibSharedMedia_Registered", LSMCallback)
+LSM.RegisterCallback(E, "LibSharedMedia_Registered", LSMCallback)
 
 local LBF = LibStub("LibButtonFacade", true)
 
@@ -282,6 +271,7 @@ local LBFGroupToTableElement = {
 
 function E:LBFCallback(SkinID, _, _, Group)
 	if not E.private then return end
+
 	local element = LBFGroupToTableElement[Group]
 	if element then
 		if E.private[element].lbf.enable then
@@ -299,11 +289,11 @@ function E:RequestBGInfo()
 end
 
 function E:PLAYER_ENTERING_WORLD()
+	-- self:ScheduleTimer("CheckRole", 0.01)
+
 	if not self.MediaUpdated then
 		self:UpdateMedia()
 		self.MediaUpdated = true
-	-- else
-		-- self:ScheduleTimer("CheckRole", 0.01)
 	end
 
 	local _, instanceType = IsInInstance()
@@ -426,7 +416,7 @@ E.UIParent:SetFrameLevel(UIParent:GetFrameLevel())
 E.UIParent:SetPoint("CENTER", UIParent, "CENTER")
 E.UIParent:SetHeight(GetScreenHeight())
 E.UIParent:SetWidth(GetScreenWidth())
-tinsert(E["snapBars"], E.UIParent)
+E["snapBars"][getn(E["snapBars"]) + 1] = E.UIParent
 
 E.HiddenFrame = CreateFrame("Frame")
 E.HiddenFrame:Hide()
@@ -439,11 +429,11 @@ function E:IsDispellableByMe(debuffType)
 	end
 end
 
-function E:GetTalentSpecInfo()
+function E:GetTalentSpecInfo(isInspect)
 	local maxPoints, specIdx, specName, specIcon = 0, 0
 
 	for i = 1, 3 do
-		local name, icon, pointsSpent = GetTalentTabInfo(i)
+		local name, icon, pointsSpent = GetTalentTabInfo(i, isInspect)
 		if maxPoints < pointsSpent then
 			maxPoints = pointsSpent
 			specIdx = i
@@ -453,26 +443,13 @@ function E:GetTalentSpecInfo()
 	end
 
 	if not specName then
-		specName = "None"
+		specName = NONE
 	end
 	if not specIcon then
 		specIcon = "Interface\\Icons\\INV_Misc_QuestionMark"
 	end
 
 	return specIdx, specName, specIcon
-end
-
-function E:CheckTalentTree(tree)
-	local talentTree = self.TalentTree
-	if not talentTree then return false end
-
-	if type(tree) == "number" then
-		return tree == talentTree
-	elseif type(tree) == "table" then
-		for _, index in pairs(tree) do
-			return index == talentTree
-		end
-	end
 end
 
 function E:CheckRole()
@@ -602,6 +579,38 @@ function E:RemoveTableDuplicates(cleanTable, checkTable)
 	return cleaned
 end
 
+--Compare 2 tables and remove blacklisted key/value pairs
+--param cleanTable : table you want cleaned
+--param blacklistTable : table you want to check against.
+--return : a copy of cleanTable with blacklisted key/value pairs removed
+function E:FilterTableFromBlacklist(cleanTable, blacklistTable)
+	if type(cleanTable) ~= "table" then
+		E:Print("Bad argument #1 to 'FilterTableFromBlacklist' (table expected)")
+		return
+	end
+	if type(blacklistTable) ~=  "table" then
+		E:Print("Bad argument #2 to 'FilterTableFromBlacklist' (table expected)")
+		return
+	end
+
+	local cleaned = {}
+	for option, value in pairs(cleanTable) do
+		if type(value) == "table" and blacklistTable[option] and type(blacklistTable[option]) == "table" then
+			cleaned[option] = self:FilterTableFromBlacklist(value, blacklistTable[option])
+		else
+			-- Filter out blacklisted keys
+			if blacklistTable[option] ~= true then
+				cleaned[option] = value
+			end
+		end
+	end
+
+	--Clean out empty sub-tables
+	self:RemoveEmptySubTables(cleaned)
+
+	return cleaned
+end
+
 function E:TableToLuaString(inTable)
 	if type(inTable) ~= "table" then
 		E:Print("Invalid argument #1 to E:TableToLuaString (table expected)")
@@ -611,30 +620,30 @@ function E:TableToLuaString(inTable)
 	local ret = "{\n"
 	local function recurse(table, level)
 		for i, v in pairs(table) do
-			ret = ret .. strrep("    ", level).."["
+			ret = ret..strrep("    ", level).."["
 			if type(i) == "string" then
-				ret = ret .. "\"" .. i .. "\""
+				ret = ret.."\""..i.."\""
 			else
-				ret = ret .. i
+				ret = ret..i
 			end
-			ret = ret .. "] = "
+			ret = ret.."] = "
 
 			if type(v) == "number" then
-				ret = ret .. v .. ",\n"
+				ret = ret..v..",\n"
 			elseif type(v) == "string" then
-				ret = ret .. "\"" .. gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"") .. "\",\n"
+				ret = ret.."\""..gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"").."\",\n"
 			elseif type(v) == "boolean" then
 				if v then
-					ret = ret .. "true,\n"
+					ret = ret.."true,\n"
 				else
-					ret = ret .. "false,\n"
+					ret = ret.."false,\n"
 				end
 			elseif type(v) == "table" then
-				ret = ret .. "{\n"
+				ret = ret.."{\n"
 				recurse(v, level + 1)
-				ret = ret .. strrep("    ", level) .. "},\n"
+				ret = ret..strrep("    ", level).."},\n"
 			else
-				ret = ret .. "\""..tostring(v) .. "\",\n"
+				ret = ret.."\""..tostring(v).."\",\n"
 			end
 		end
 	end
@@ -651,18 +660,15 @@ local profileFormat = {
 	["profile"] = "E.db",
 	["private"] = "E.private",
 	["global"] = "E.global",
-	["filtersNP"] = "E.global",
-	["filtersUF"] = "E.global",
-	["filtersAll"] = "E.global"
+	["filters"] = "E.global",
+	["styleFilters"] = "E.global"
 }
 
 local lineStructureTable = {}
 
 function E:ProfileTableToPluginFormat(inTable, profileType)
 	local profileText = profileFormat[profileType]
-	if not profileText then
-		return
-	end
+	if not profileText then return end
 
 	twipe(lineStructureTable)
 	local returnString = ""
@@ -673,9 +679,9 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 		local str = profileText
 		for _, v in ipairs(lineStructureTable) do
 			if type(v) == "string" then
-				str = str .. "[\"" .. v .. "\"]"
+				str = str.."[\""..v.."\"]"
 			else
-				str = str .. "[" .. v .. "]"
+				str = str.."["..v.."]"
 			end
 		end
 
@@ -686,38 +692,38 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 		lineStructure = buildLineStructure()
 		for k, v in pairs(tbl) do
 			if not sameLine then
-				returnString = returnString .. lineStructure
+				returnString = returnString..lineStructure
 			end
 
-			returnString = returnString .. "["
+			returnString = returnString.."["
 
 			if type(k) == "string" then
-				returnString = returnString.."\"" .. k .. "\""
+				returnString = returnString.."\""..k.."\""
 			else
-				returnString = returnString .. k
+				returnString = returnString..k
 			end
 
 			if type(v) == "table" then
 				tinsert(lineStructureTable, k)
 				sameLine = true
-				returnString = returnString .. "]"
+				returnString = returnString.."]"
 				recurse(v)
 			else
 				sameLine = false
-				returnString = returnString .. "] = "
+				returnString = returnString.."] = "
 
 				if type(v) == "number" then
-					returnString = returnString .. v .. "\n"
+					returnString = returnString..v.."\n"
 				elseif type(v) == "string" then
-					returnString = returnString .. "\"" .. gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"") .. "\"\n"
+					returnString = returnString.."\""..gsub(gsub(gsub(v, "\\", "\\\\"), "\n", "\\n"), "\"", "\\\"").."\"\n"
 				elseif type(v) == "boolean" then
 					if v then
-						returnString = returnString .. "true\n"
+						returnString = returnString.."true\n"
 					else
-						returnString = returnString .. "false\n"
+						returnString = returnString.."false\n"
 					end
 				else
-					returnString = returnString .. "\"" .. tostring(v) .. "\"\n"
+					returnString = returnString.."\""..tostring(v).."\"\n"
 				end
 			end
 		end
@@ -739,7 +745,7 @@ function E:StringSplitMultiDelim(s, delim)
 	local start = 1
 	local t = {}
 
-	while true do
+	while(true) do
 		local pos = find(s, delim, start, true)
 		if not pos then
 			break
@@ -754,53 +760,61 @@ function E:StringSplitMultiDelim(s, delim)
 	return unpack(t)
 end
 
+local SendMessageTimer -- prevent setting multiple timers at once
 function E:SendMessage()
-	local numParty, numRaid = GetNumPartyMembers(), GetNumRaidMembers()
-	local inInstance, instanceType = IsInInstance()
-	if inInstance and (instanceType == "pvp") then
-		SendAddonMessage("ELVUI_VERSIONCHK", E.version, "BATTLEGROUND")
-	else
-		if numRaid > 0 then
+	local numRaid, numParty = GetNumRaidMembers(), GetNumPartyMembers()
+	if numRaid > 1 then
+		local _, instanceType = IsInInstance()
+		if instanceType == "pvp" then
+			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "BATTLEGROUND")
+		else
 			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "RAID")
-		elseif numParty > 0 then
-			SendAddonMessage("ELVUI_VERSIONCHK", E.version, "PARTY")
 		end
+	elseif numParty > 0 then
+		SendAddonMessage("ELVUI_VERSIONCHK", E.version, "PARTY")
+	elseif IsInGuild() then
+		SendAddonMessage("ELVUI_VERSIONCHK", E.version, "GUILD")
 	end
 
-	if E.SendMSGTimer then
-		self:CancelTimer(E.SendMSGTimer)
-		E.SendMSGTimer = nil
-	end
+	SendMessageTimer = nil
 end
 
-local SendRecieveGroupSize
+local SendRecieveGroupSize = 0
 local function SendRecieve()
-	if not E.global.general.versionCheck then return end
-
 	if event == "CHAT_MSG_ADDON" then
-		if arg1 ~= "ELVUI_VERSIONCHK" then return end
-		if not arg4 or arg4 == E.myname or E.recievedOutOfDateMessage then return end
+		if sender == E.myname then return end
 
-		arg2 = tonumber(arg2)
+		if prefix == "ELVUI_VERSIONCHK" then
+			local msg, ver = tonumber(message), tonumber(E.version)
+			if msg and (msg > ver) then -- you're outdated D:
+				if not E.recievedOutOfDateMessage then
+					E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-TBC/ElvUI/"])
 
-		if arg2 and arg2 > tonumber(E.version) then
-			E:Print(L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"])
+					if msg and ((msg - ver) >= 0.01) then
+						E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
+					end
 
-			if arg2 - tonumber(E.version) >= 0.05 then
-				E:StaticPopup_Show("ELVUI_UPDATE_AVAILABLE")
+					E.recievedOutOfDateMessage = true
+				end
+			elseif msg and (msg < ver) then -- Send Message Back if you intercept and are higher revision
+				if not SendMessageTimer then
+					SendMessageTimer = E:ScheduleTimer("SendMessage", 10)
+				end
 			end
-
-			E.recievedOutOfDateMessage = true
 		end
-	else
+	elseif event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" then
 		local numRaid, numParty = GetNumRaidMembers(), GetNumPartyMembers() + 1
 		local num = numRaid > 0 and numRaid or numParty
 		if num ~= SendRecieveGroupSize then
-			if num > 1 and SendRecieveGroupSize and num > SendRecieveGroupSize then
-				E.SendMSGTimer = E:ScheduleTimer("SendMessage", 12)
+			if num > 1 and num > SendRecieveGroupSize then
+				if not SendMessageTimer then
+					SendMessageTimer = E:ScheduleTimer("SendMessage", 10)
+				end
 			end
 			SendRecieveGroupSize = num
 		end
+	elseif not SendMessageTimer then
+		SendMessageTimer = E:ScheduleTimer("SendMessage", 10)
 	end
 end
 
@@ -808,6 +822,7 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("RAID_ROSTER_UPDATE")
 f:RegisterEvent("PARTY_MEMBERS_CHANGED")
 f:RegisterEvent("CHAT_MSG_ADDON")
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", SendRecieve)
 
 function E:UpdateAll(ignoreInstall)
@@ -819,7 +834,7 @@ function E:UpdateAll(ignoreInstall)
 
 	self:SetMoversPositions()
 	self:UpdateMedia()
-	self:UpdateCooldownSettings()
+	self:UpdateCooldownSettings("all")
 
 	local UF = self:GetModule("UnitFrames")
 	UF.db = self.db.unitframe
@@ -835,6 +850,7 @@ function E:UpdateAll(ignoreInstall)
 	AB.db = self.db.actionbar
 	AB:UpdateButtonSettings()
 	AB:UpdateMicroPositionDimensions()
+	AB:ToggleDesaturation()
 
 	local bags = E:GetModule("Bags")
 	bags.db = self.db.bags
@@ -844,6 +860,11 @@ function E:UpdateAll(ignoreInstall)
 	bags:UpdateItemLevelDisplay()
 	bags:UpdateCountDisplay()
 
+	local totems = E:GetModule("Totems")
+	totems.db = self.db.general.totems
+	totems:PositionAndSize()
+	totems:ToggleEnable()
+
 	self:GetModule("Layout"):ToggleChatPanels()
 
 	local DT = self:GetModule("DataTexts")
@@ -852,6 +873,7 @@ function E:UpdateAll(ignoreInstall)
 
 	local NP = self:GetModule("NamePlates")
 	NP.db = self.db.nameplates
+	NP:StyleFilterInitializeAllFilters()
 	NP:ConfigureAll()
 
 	local DataBars = self:GetModule("DataBars")
@@ -860,16 +882,21 @@ function E:UpdateAll(ignoreInstall)
 	DataBars:EnableDisable_ExperienceBar()
 	DataBars:EnableDisable_ReputationBar()
 
+	local T = self:GetModule("Threat")
+	T.db = self.db.general.threat
+	T:UpdatePosition()
+	T:ToggleEnable()
+
 	self:GetModule("Auras").db = self.db.auras
 	self:GetModule("Tooltip").db = self.db.tooltip
 
-	if ElvUIPlayerBuffs then
-		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerBuffs)
-	end
+	-- if ElvUIPlayerBuffs then
+	-- 	E:GetModule("Auras"):UpdateHeader(ElvUIPlayerBuffs)
+	-- end
 
-	if ElvUIPlayerDebuffs then
-		E:GetModule("Auras"):UpdateHeader(ElvUIPlayerDebuffs)
-	end
+	-- if ElvUIPlayerDebuffs then
+	-- 	E:GetModule("Auras"):UpdateHeader(ElvUIPlayerDebuffs)
+	-- end
 
 	if not (self.private.install_complete or ignoreInstall) then
 		self:Install()
@@ -890,7 +917,7 @@ function E:UpdateAll(ignoreInstall)
 	LO:TopPanelVisibility()
 	LO:SetDataPanelStyle()
 
-	self:GetModule("Blizzard"):SetWatchFrameHeight()
+	collectgarbage("collect")
 end
 
 function E:ResetAllUI()
@@ -1056,6 +1083,9 @@ function E:GetTopCPUFunc(msg)
 		E:Print("cpuusage: module (arg1) is required! This can be set as 'all' too.")
 		return
 	end
+	local module, showall, delay, minCalls = msg:match("^(%S+)%s*(%S*)%s*(%S*)%s*(.*)$")
+	local checkCore, mod = (not module or module == "") and "E"
+
 	showall = (showall == "true" and true) or false
 	delay = (delay == "nil" and nil) or tonumber(delay) or 5
 	minCalls = (minCalls == "nil" and nil) or tonumber(minCalls) or 15
@@ -1092,6 +1122,7 @@ function E:Initialize()
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
+
 	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateDB", self.privateVars)
 	self.private = self.charSettings.profile
 	self.db = self.data.profile
@@ -1105,24 +1136,27 @@ function E:Initialize()
 	self:LoadCommands()
 	self:InitializeModules()
 	self:LoadMovers()
-	self:UpdateCooldownSettings()
+	self:UpdateCooldownSettings("all")
 	self.initialized = true
 
 	if self.private.install_complete == nil then
 		self:Install()
 	end
 
-	-- if not find(date(), "04/01/") then
-	-- 	E.global.aprilFools = nil
-	-- end
+--	if not find(date(), "04/01/") then
+--		E.global.aprilFools = nil
+--	end
 
-	--if self:HelloKittyFixCheck() then
-	--	self:HelloKittyFix()
-	--end
+--	if self:HelloKittyFixCheck() then
+--		self:HelloKittyFix()
+--	end
 
 	self:UpdateMedia()
 	self:UpdateFrameTemplates()
-	--self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole")
+	self:UpdateBorderColors()
+	self:UpdateBackdropColors()
+	self:UpdateStatusBars()
+	-- self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole")
 	-- self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole")
 	self:RegisterEvent("CVAR_UPDATE", "UIScale")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")

@@ -15,4 +15,6 @@
 	<Script file="Cooldowns.lua"/>
 	<Script file="pluginInstaller.lua"/>
 	<Script file="ClassCache.lua"/>
+	<Script file="StatusReport.lua"/>
+	<Script file="modulecopy.lua"/>
 </Ui>

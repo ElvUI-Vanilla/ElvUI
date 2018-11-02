@@ -217,6 +217,7 @@ end
 
 local function OnKeyDown()
 	if ignoreKeys[arg1] then return end
+
 	if printKeys[arg1] then
 		Screenshot()
 	else
@@ -244,8 +245,7 @@ function AFK:Initialize()
 		E.global.afkEnabled = nil
 	end
 
-	local _, class = UnitClass("player")
-	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[E.myclass] or RAID_CLASS_COLORS[E.myclass]
 
 	self.AFKMode = CreateFrame("Frame", "ElvUIAFKFrame")
 	self.AFKMode:SetFrameLevel(1)
@@ -278,12 +278,14 @@ function AFK:Initialize()
 	self.AFKMode.bottom:SetFrameLevel(0)
 	E:SetTemplate(self.AFKMode.bottom, "Transparent")
 	E:Point(self.AFKMode.bottom, "BOTTOM", self.AFKMode, "BOTTOM", 0, -E.Border)
-	E:Size(self.AFKMode.bottom, GetScreenWidth() + (E.Border*2), GetScreenHeight() * 0.1)
+	E:Width(self.AFKMode.bottom, GetScreenWidth() + (E.Border*2))
+	E:Height(self.AFKMode.bottom, GetScreenHeight() * 0.1)
 
 	self.AFKMode.bottom.logo = self.AFKMode:CreateTexture(nil, "OVERLAY")
 	E:Size(self.AFKMode.bottom.logo, 320, 150)
 	E:Point(self.AFKMode.bottom.logo, "CENTER", self.AFKMode.bottom, "CENTER", 0, 50)
 	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo")
+
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY")
 	E:Point(self.AFKMode.bottom.faction, "BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", -20, -16)
 	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..E.myfaction.."-Logo")
