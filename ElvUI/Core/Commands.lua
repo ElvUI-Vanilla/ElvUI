@@ -136,17 +136,13 @@ local BLIZZARD_ADDONS = {
 	"Blizzard_AuctionUI",
 	"Blizzard_BattlefieldMinimap",
 	"Blizzard_BindingUI",
-	"Blizzard_CombatLog",
 	"Blizzard_CombatText",
 	"Blizzard_CraftUI",
 	"Blizzard_GMSurveyUI",
-	"Blizzard_GuildBankUI",
 	"Blizzard_InspectUI",
-	"Blizzard_ItemSocketingUI",
 	"Blizzard_MacroUI",
 	"Blizzard_RaidUI",
 	"Blizzard_TalentUI",
-	"Blizzard_TimeManager",
 	"Blizzard_TradeSkillUI",
 	"Blizzard_TrainerUI"
 }
