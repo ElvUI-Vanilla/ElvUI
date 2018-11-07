@@ -18,6 +18,7 @@ local IsAddOnLoaded = IsAddOnLoaded
 local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNumPartyMembers, GetNumRaidMembers
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local SendAddonMessage = SendAddonMessage
+local UnitFactionGroup = UnitFactionGroup
 local NONE = NONE
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
@@ -26,7 +27,7 @@ E.LSM = LSM
 E.noop = function() end
 E.title = format("|cff175581E|r|cffC4C4C4lvUI|r")
 E.myfaction, E.myLocalizedFaction = UnitFactionGroup("player")
-E.myLocalizedClass, E.myclass, E.myClassID = UnitClass("player")
+E.myLocalizedClass, E.myclass = UnitClass("player")
 E.myLocalizedRace, E.myrace = UnitRace("player")
 E.myname = UnitName("player")
 E.myrealm = GetRealmName()
@@ -1114,6 +1115,8 @@ function E:GetTopCPUFunc(msg)
 end
 
 function E:Initialize()
+	self.myfaction, self.myLocalizedFaction = UnitFactionGroup("player")
+
 	twipe(self.db)
 	twipe(self.global)
 	twipe(self.private)

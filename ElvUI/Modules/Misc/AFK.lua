@@ -284,11 +284,11 @@ function AFK:Initialize()
 	self.AFKMode.bottom.logo = self.AFKMode:CreateTexture(nil, "OVERLAY")
 	E:Size(self.AFKMode.bottom.logo, 320, 150)
 	E:Point(self.AFKMode.bottom.logo, "CENTER", self.AFKMode.bottom, "CENTER", 0, 50)
-	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo")
+	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\logo")
 
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY")
 	E:Point(self.AFKMode.bottom.faction, "BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", -20, -16)
-	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..E.myfaction.."-Logo")
+	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\"..E.myfaction.."-Logo")
 	E:Size(self.AFKMode.bottom.faction, 140)
 
 	self.AFKMode.bottom.name = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY")
