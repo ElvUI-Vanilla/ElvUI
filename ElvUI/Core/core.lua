@@ -6,7 +6,7 @@ local LSM = LibStub("LibSharedMedia-3.0");
 local _G = _G
 local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring
 local assert, print, type, collectgarbage, pcall, date = assert, print, type, collectgarbage, pcall, date
-local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
+local getn, twipe, tinsert, tremove, next = table.getn, table.wipe, tinsert, tremove, next
 local floor = floor
 local format, find, match, strrep, len, sub, gsub = string.format, string.find, string.match, strrep, string.len, string.sub, string.gsub
 --WoW API / Variables
@@ -15,6 +15,7 @@ local GetCVar = GetCVar
 local GetFunctionCPUUsage = GetFunctionCPUUsage
 local GetTalentTabInfo = GetTalentTabInfo
 local IsAddOnLoaded = IsAddOnLoaded
+local IsInGuild = IsInGuild
 local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNumPartyMembers, GetNumRaidMembers
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local SendAddonMessage = SendAddonMessage
@@ -414,8 +415,8 @@ end
 E.UIParent = CreateFrame("Frame", "ElvUIParent", UIParent)
 E.UIParent:SetFrameLevel(UIParent:GetFrameLevel())
 E.UIParent:SetPoint("CENTER", UIParent, "CENTER")
-E.UIParent:SetHeight(GetScreenHeight())
 E.UIParent:SetWidth(GetScreenWidth())
+E.UIParent:SetHeight(GetScreenHeight())
 E["snapBars"][getn(E["snapBars"]) + 1] = E.UIParent
 
 E.HiddenFrame = CreateFrame("Frame")
@@ -850,7 +851,6 @@ function E:UpdateAll(ignoreInstall)
 	AB.db = self.db.actionbar
 	AB:UpdateButtonSettings()
 	AB:UpdateMicroPositionDimensions()
-	AB:ToggleDesaturation()
 
 	local bags = E:GetModule("Bags")
 	bags.db = self.db.bags
@@ -860,10 +860,10 @@ function E:UpdateAll(ignoreInstall)
 	bags:UpdateItemLevelDisplay()
 	bags:UpdateCountDisplay()
 
-	local totems = E:GetModule("Totems")
-	totems.db = self.db.general.totems
-	totems:PositionAndSize()
-	totems:ToggleEnable()
+	-- local totems = E:GetModule("Totems")
+	-- totems.db = self.db.general.totems
+	-- totems:PositionAndSize()
+	-- totems:ToggleEnable()
 
 	self:GetModule("Layout"):ToggleChatPanels()
 
@@ -871,10 +871,10 @@ function E:UpdateAll(ignoreInstall)
 	DT.db = self.db.datatexts
 	DT:LoadDataTexts()
 
-	local NP = self:GetModule("NamePlates")
-	NP.db = self.db.nameplates
-	NP:StyleFilterInitializeAllFilters()
-	NP:ConfigureAll()
+	-- local NP = self:GetModule("NamePlates")
+	-- NP.db = self.db.nameplates
+	-- NP:StyleFilterInitializeAllFilters()
+	-- NP:ConfigureAll()
 
 	local DataBars = self:GetModule("DataBars")
 	DataBars.db = E.db.databars
@@ -882,10 +882,10 @@ function E:UpdateAll(ignoreInstall)
 	DataBars:EnableDisable_ExperienceBar()
 	DataBars:EnableDisable_ReputationBar()
 
-	local T = self:GetModule("Threat")
-	T.db = self.db.general.threat
-	T:UpdatePosition()
-	T:ToggleEnable()
+	-- local T = self:GetModule("Threat")
+	-- T.db = self.db.general.threat
+	-- T:UpdatePosition()
+	-- T:ToggleEnable()
 
 	self:GetModule("Auras").db = self.db.auras
 	self:GetModule("Tooltip").db = self.db.tooltip
@@ -917,7 +917,7 @@ function E:UpdateAll(ignoreInstall)
 	LO:TopPanelVisibility()
 	LO:SetDataPanelStyle()
 
-	collectgarbage("collect")
+	collectgarbage()
 end
 
 function E:ResetAllUI()
