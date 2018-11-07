@@ -141,7 +141,7 @@ function E:ColorizedName(name, arg2)
 end
 
 function E:Print(msg)
-	print(_G[self.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", self:ColorizedName("ElvUI", true), msg)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
+	print(self:ColorizedName("ElvUI", true), msg)
 end
 
 E.PriestColors = {
@@ -782,10 +782,12 @@ end
 
 local SendRecieveGroupSize = 0
 local function SendRecieve()
+	local prefix, message, sender = arg1, arg2, arg4
+
 	if event == "CHAT_MSG_ADDON" then
 		if sender == E.myname then return end
 
-		if prefix == "ELVUI_VERSIONCHK" then
+		if arg1 == "ELVUI_VERSIONCHK" then
 			local msg, ver = tonumber(message), tonumber(E.version)
 			if msg and (msg > ver) then -- you're outdated D:
 				if not E.recievedOutOfDateMessage then
