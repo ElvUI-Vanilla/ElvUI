@@ -10,7 +10,7 @@ local getn = table.getn
 local XPBAR_LABEL = XPBAR_LABEL
 local REPUTATION = REPUTATION
 local MINIMAP_LABEL = MINIMAP_LABEL
-local COLORS = COLORS
+local COLOR = COLOR
 
 --Actionbars
 local function CreateActionbarsConfig()
@@ -269,7 +269,7 @@ local function CreateUnitframesConfig()
 		order = 3,
 		type = "group",
 		guiInline = true,
-		name = COLORS,
+		name = COLOR,
 		get = function(info) return E.global.profileCopy.unitframes[info[getn(info) - 1]][ info[getn(info)] ] end,
 		set = function(info, value) E.global.profileCopy.unitframes[info[getn(info) - 1]][ info[getn(info)] ] = value end,
 		args = {
