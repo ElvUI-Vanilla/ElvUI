@@ -78,7 +78,7 @@ function D:Distribute(target, otherServer, isGlobal)
 			return
 		end
 	else
-		self:SendCommMessage(REQUEST_PREFIX, message, "WHISPER", target)
+		self:SendCommMessage(REQUEST_PREFIX, message, "PARTY", target)
 	end
 	self:RegisterComm(REPLY_PREFIX)
 	E:StaticPopup_Show("DISTRIBUTOR_WAITING")
@@ -248,6 +248,7 @@ local function GetProfileData(profileType)
 			profileKey = ElvDB.profileKeys[E.myname.." - "..E.myrealm]
 		end
 
+		--Copy current profile data
 		profileData = E:CopyTable(profileData , ElvDB.profiles[profileKey])
 		profileData = E:RemoveTableDuplicates(profileData, P)
 	elseif profileType == "private" then
@@ -338,7 +339,7 @@ function D:GetImportStringType(dataString)
 
 	if LibBase64:IsBase64(dataString) then
 		stringType = "Base64"
-	elseif find(dataString, "{") then
+	elseif find(dataString, "{") then --Basic check to weed out obviously wrong strings
 		stringType = "Table"
 	end
 
@@ -359,14 +360,14 @@ function D:Decode(dataString)
 		end
 
 		local serializedData, success
-		serializedData, profileInfo = E:StringSplitMultiDelim(decompressedData, "^^::")
+		serializedData, profileInfo = E:StringSplitMultiDelim(decompressedData, "^^::") -- "^^" indicates the end of the AceSerializer string
 
 		if not profileInfo then
 			E:Print("Error importing profile. String is invalid or corrupted!")
 			return
 		end
 
-		serializedData = format("%s%s", serializedData, "^^")
+		serializedData = format("%s%s", serializedData, "^^") --Add back the AceSerializer terminator
 		profileType, profileKey = E:StringSplitMultiDelim(profileInfo, "::")
 		success, profileData = D:Deserialize(serializedData)
 
@@ -376,7 +377,7 @@ function D:Decode(dataString)
 		end
 	elseif stringType == "Table" then
 		local profileDataAsString
-		profileDataAsString, profileInfo = E:StringSplitMultiDelim(dataString, "}::")
+		profileDataAsString, profileInfo = E:StringSplitMultiDelim(dataString, "}::") -- "}::" indicates the end of the table
 
 		if not profileInfo then
 			E:Print("Error extracting profile info. Invalid import string!")
@@ -388,7 +389,8 @@ function D:Decode(dataString)
 			return
 		end
 
-		profileDataAsString = format("%s%s", profileDataAsString, "}")
+		profileDataAsString = format("%s%s", profileDataAsString, "}") --Add back the missing "}"
+		profileDataAsString = gsub(profileDataAsString, "\124\124", "\124") --Remove escape pipe characters
 		profileType, profileKey = E:StringSplitMultiDelim(profileInfo, "::")
 
 		local profileToTable = loadstring(format("%s %s", "return", profileDataAsString))
@@ -413,10 +415,13 @@ local function SetImportedProfile(profileType, profileKey, profileData, force)
 	if profileType == "profile" then
 		if not ElvDB.profiles[profileKey] or force then
 			if force and E.data.keys.profile == profileKey then
+				--Overwriting an active profile doesn't update when calling SetProfile
+				--So make it look like we use a different profile
 				local tempKey = profileKey.."_Temp"
 				E.data.keys.profile = tempKey
 			end
 			ElvDB.profiles[profileKey] = profileData
+			--Calling SetProfile will now update all settings correctly
 			E.data:SetProfile(profileKey)
 		else
 			D.profileType = profileType
@@ -443,6 +448,7 @@ local function SetImportedProfile(profileType, profileKey, profileData, force)
 		E:CopyTable(ElvDB.global.unitframe, profileData.unitframe)
 	end
 
+	--Update all ElvUI modules
 	E:UpdateAll(true)
 end
 
@@ -453,6 +459,7 @@ function D:ExportProfile(profileType, exportFormat)
 	end
 
 	local profileKey, profileExport = GetProfileExport(profileType, exportFormat)
+
 	return profileKey, profileExport
 end
 
@@ -475,28 +482,28 @@ E.PopupDialogs["DISTRIBUTOR_SUCCESS"] = {
 	text = L["Your profile was successfully recieved by the player."],
 	whileDead = 1,
 	hideOnEscape = 1,
-	button1 = OKAY,
+	button1 = OKAY
 }
 
 E.PopupDialogs["DISTRIBUTOR_WAITING"] = {
 	text = L["Profile request sent. Waiting for response from player."],
 	whileDead = 1,
 	hideOnEscape = 1,
-	timeout = 35,
+	timeout = 35
 }
 
 E.PopupDialogs["DISTRIBUTOR_REQUEST_DENIED"] = {
 	text = L["Request was denied by user."],
 	whileDead = 1,
 	hideOnEscape = 1,
-	button1 = OKAY,
+	button1 = OKAY
 }
 
 E.PopupDialogs["DISTRIBUTOR_FAILED"] = {
 	text = L["Lord! It's a miracle! The download up and vanished like a fart in the wind! Try Again!"],
 	whileDead = 1,
 	hideOnEscape = 1,
-	button1 = OKAY,
+	button1 = OKAY
 }
 
 E.PopupDialogs["DISTRIBUTOR_RESPONSE"] = {}
