@@ -30,7 +30,7 @@ function D:Initialize()
 	self:RegisterComm(REQUEST_PREFIX)
 	self:RegisterEvent("CHAT_MSG_ADDON")
 
-	self.statusBar = CreateFrame("StatusBar", "ElvUI_Download", UIParent)
+	self.statusBar = CreateFrame("StatusBar", "ElvUI_Download", E.UIParent)
 	E:RegisterStatusBar(self.statusBar)
 	E:CreateBackdrop(self.statusBar, "Default")
 	self.statusBar:SetStatusBarTexture(E.media.normTex)
@@ -38,7 +38,7 @@ function D:Initialize()
 	E:Size(self.statusBar, 250, 18)
 	self.statusBar.text = self.statusBar:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(self.statusBar.text)
-	self.statusBar.text:SetPoint("CENTER", 0, 0)
+	E:Point(self.statusBar.text, "CENTER", 0, 0)
 	self.statusBar:Hide()
 end
 
@@ -85,16 +85,19 @@ function D:Distribute(target, otherServer, isGlobal)
 end
 
 function D:CHAT_MSG_ADDON()
-	if not Downloads[arg4] then return end
-	local cur = len(arg2)
-	local max = Downloads[arg4].length
-	Downloads[arg4].current = Downloads[arg4].current + cur
+	local prefix, message, sender = arg1, arg2, arg4
 
-	if Downloads[arg4].current > max then
-		Downloads[arg4].current = max
+	if prefix ~= TRANSFER_PREFIX or not Downloads[sender] then return end
+
+	local cur = len(message)
+	local max = Downloads[sender].length
+	Downloads[sender].current = Downloads[sender].current + cur
+
+	if Downloads[sender].current > max then
+		Downloads[sender].current = max
 	end
 
-	self.statusBar:SetValue(Downloads[arg4].current)
+	self.statusBar:SetValue(Downloads[sender].current)
 end
 
 function D:OnCommReceived(prefix, msg, dist, sender)
@@ -131,14 +134,14 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 			button2 = CANCEL,
 			timeout = 32,
 			whileDead = 1,
-			hideOnEscape = 1,
+			hideOnEscape = 1
 		}
 		E:StaticPopup_Show("DISTRIBUTOR_RESPONSE")
 
 		Downloads[sender] = {
 			current = 0,
 			length = tonumber(length),
-			profile = profile,
+			profile = profile
 		}
 
 		self:RegisterComm(TRANSFER_PREFIX)
@@ -184,7 +187,7 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 							E:UpdateAll(true)
 							Downloads[sender] = nil
 						end,
-						OnShow = function(self) self.editBox:SetText(profileKey) self.editBox:SetFocus() end,
+						OnShow = function() this.editBox:SetText(profileKey) this.editBox:SetFocus() end,
 						timeout = 0,
 						exclusive = 1,
 						whileDead = 1,
@@ -215,7 +218,7 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 				button1 = YES,
 				button2 = NO,
 				whileDead = 1,
-				hideOnEscape = 1,
+				hideOnEscape = 1
 			}
 
 			E:StaticPopup_Show("DISTRIBUTOR_CONFIRM")
@@ -250,6 +253,9 @@ local function GetProfileData(profileType)
 
 		--Copy current profile data
 		profileData = E:CopyTable(profileData , ElvDB.profiles[profileKey])
+		--This table will also hold all default values, not just the changed settings.
+		--This makes the table huge, and will cause the WoW client to lock up for several seconds.
+		--We compare against the default table and remove all duplicates from our table. The table is now much smaller.
 		profileData = E:RemoveTableDuplicates(profileData, P)
 	elseif profileType == "private" then
 		local privateProfileKey = E.myname.." - "..E.myrealm
@@ -306,9 +312,7 @@ local function GetProfileExport(profileType, exportFormat)
 
 	if exportFormat == "text" then
 		local serialData = D:Serialize(profileData)
-
 		exportString = D:CreateProfileExport(serialData, profileType, profileKey)
-
 		local compressedData = LibCompress:Compress(exportString)
 		local encodedData = LibBase64:Encode(compressedData)
 		profileExport = encodedData
@@ -522,11 +526,11 @@ E.PopupDialogs["IMPORT_PROFILE_EXISTS"] = {
 		local profileData = D.profileData
 		SetImportedProfile(profileType, profileKey, profileData, true)
 	end,
-	EditBoxOnTextChanged = function(self)
-		if self:GetText() == "" then
-			self:GetParent().button1:Disable()
+	EditBoxOnTextChanged = function()
+		if this:GetText() == "" then
+			this:GetParent().button1:Disable()
 		else
-			self:GetParent().button1:Enable()
+			this:GetParent().button1:Enable()
 		end
 	end,
 	OnShow = function() this.editBox:SetText(D.profileKey) this.editBox:SetFocus() end,

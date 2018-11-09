@@ -1,29 +1,34 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local D = E:GetModule("Distributor");
 local AceGUI = LibStub("AceGUI-3.0");
 
-local pairs = pairs;
-local tsort, tinsert = table.sort, table.insert;
-local format = string.format;
+--Cache global variables
+--Lua functions
+local pairs = pairs
+local tsort, tinsert = table.sort, table.insert
+local format = string.format
+--WoW API / Variables
+local GetNumPartyMembers = GetNumPartyMembers
+local GetNumRaidMembers = GetNumRaidMembers
+local UnitExists = UnitExists
+local UnitIsFriend = UnitIsFriend
+local UnitIsPlayer = UnitIsPlayer
+local UnitIsUnit = UnitIsUnit
+local UnitName = UnitName
+local UnitInParty = UnitInParty
 
-local UnitExists = UnitExists;
-local UnitIsFriend = UnitIsFriend;
-local UnitIsPlayer = UnitIsPlayer;
-local UnitIsUnit = UnitIsUnit;
-local UnitName = UnitName;
+local DEFAULT_WIDTH = 890
+local DEFAULT_HEIGHT = 651
+local AC = LibStub("AceConfig-3.0")
+local ACD = LibStub("AceConfigDialog-3.0")
+local ACR = LibStub("AceConfigRegistry-3.0")
 
-local DEFAULT_WIDTH = 890;
-local DEFAULT_HEIGHT = 651;
-local AC = LibStub("AceConfig-3.0");
-local ACD = LibStub("AceConfigDialog-3.0");
-local ACR = LibStub("AceConfigRegistry-3.0");
-
-AC.RegisterOptionsTable(E, "ElvUI", E.Options);
-ACD:SetDefaultSize("ElvUI", DEFAULT_WIDTH, DEFAULT_HEIGHT);
+AC.RegisterOptionsTable(E, "ElvUI", E.Options)
+ACD:SetDefaultSize("ElvUI", DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
 function E:RefreshGUI()
-	self:RefreshCustomTextsConfigs();
-	ACR:NotifyChange("ElvUI");
+	self:RefreshCustomTextsConfigs()
+	ACR:NotifyChange("ElvUI")
 end
 
 E.Options.args = {
@@ -37,42 +42,42 @@ E.Options.args = {
 		order = 2,
 		type = "toggle",
 		name = L["Login Message"],
-		get = function(info) return E.db.general.loginmessage; end,
-		set = function(info, value) E.db.general.loginmessage = value; end
+		get = function(info) return E.db.general.loginmessage end,
+		set = function(info, value) E.db.general.loginmessage = value end
 	},
 	ToggleTutorial = {
 		order = 3,
 		type = "execute",
 		name = L["Toggle Tutorials"],
-		func = function() E:Tutorials(true); E:ToggleConfig(); end
+		func = function() E:Tutorials(true) E:ToggleConfig() end
 	},
 	Install = {
 		order = 4,
 		type = "execute",
 		name = L["Install"],
 		desc = L["Run the installation process."],
-		func = function() E:Install(); E:ToggleConfig(); end
+		func = function() E:Install() E:ToggleConfig() end
 	},
 	ToggleAnchors = {
 		order = 5,
 		type = "execute",
 		name = L["Toggle Anchors"],
 		desc = L["Unlock various elements of the UI to be repositioned."],
-		func = function() E:ToggleConfigMode(); end
+		func = function() E:ToggleConfigMode() end
 	},
 	ResetAllMovers = {
 		order = 6,
 		type = "execute",
 		name = L["Reset Anchors"],
 		desc = L["Reset all frames to their original positions."],
-		func = function() E:ResetUI(); end
+		func = function() E:ResetUI() end
 	}
-};
+}
 
-local DONATOR_STRING = "";
-local DEVELOPER_STRING = "";
-local TESTER_STRING = "";
-local LINE_BREAK = "\n";
+local DONATOR_STRING = ""
+local DEVELOPER_STRING = ""
+local TESTER_STRING = ""
+local LINE_BREAK = "\n"
 local DONATORS = {
 	"Dandruff",
 	"Tobur/Tarilya",
@@ -113,7 +118,7 @@ local DONATORS = {
 	"Pyrokee",
 	"Portable",
 	"Ithilyn"
-};
+}
 
 local DEVELOPERS = {
 	"Tukz",
@@ -121,7 +126,7 @@ local DEVELOPERS = {
 	"Nightcracker",
 	"Omega1970",
 	"Hydrazine"
-};
+}
 
 local TESTERS = {
 	"Tukui Community",
@@ -143,22 +148,22 @@ local TESTERS = {
 	"Catok"
 }
 
-tsort(DONATORS, function(a, b) return a < b end);
+tsort(DONATORS, function(a, b) return a < b end)
 for _, donatorName in pairs(DONATORS) do
-	tinsert(E.CreditsList, donatorName);
-	DONATOR_STRING = DONATOR_STRING .. LINE_BREAK .. donatorName;
+	tinsert(E.CreditsList, donatorName)
+	DONATOR_STRING = DONATOR_STRING .. LINE_BREAK .. donatorName
 end
 
-tsort(DEVELOPERS, function(a,b) return a < b end);
+tsort(DEVELOPERS, function(a,b) return a < b end)
 for _, devName in pairs(DEVELOPERS) do
-	tinsert(E.CreditsList, devName);
-	DEVELOPER_STRING = DEVELOPER_STRING .. LINE_BREAK .. devName;
+	tinsert(E.CreditsList, devName)
+	DEVELOPER_STRING = DEVELOPER_STRING .. LINE_BREAK .. devName
 end
 
 tsort(TESTERS, function(a, b) return a < b end)
 for _, testerName in pairs(TESTERS) do
-	tinsert(E.CreditsList, testerName);
-	TESTER_STRING = TESTER_STRING .. LINE_BREAK .. testerName;
+	tinsert(E.CreditsList, testerName)
+	TESTER_STRING = TESTER_STRING .. LINE_BREAK .. testerName
 end
 
 E.Options.args.credits = {
@@ -417,10 +422,21 @@ E.Options.args.profiles.plugins["ElvUI"] = {
 		desc = L["Sends your current profile to your target."],
 		type = "execute",
 		func = function()
+			if (GetNumPartyMembers() <= 0 or GetNumPartyMembers() <= 0) then
+				E:Print(L["You must be in a group."])
+				return
+			end
+
 			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
 				E:Print(L["You must be targeting a player."])
 				return
 			end
+
+			if not (UnitInParty("target") or UnitInRaid("target")) then
+				E:Print(L["You must be targeting a player within your group."])
+				return
+			end
+
 			local name, server = UnitName("target")
 			if name and not server or server == "" then
 				D:Distribute(name)
@@ -435,10 +451,21 @@ E.Options.args.profiles.plugins["ElvUI"] = {
 		name = L["Share Filters"],
 		desc = L["Sends your filter settings to your target."],
 		func = function()
+			if (GetNumPartyMembers() <= 0 or GetNumPartyMembers() <= 0) then
+				E:Print(L["You must be in a group."])
+				return
+			end
+
 			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
 				E:Print(L["You must be targeting a player."])
 				return
 			end
+
+			if not (UnitInParty("target") or UnitInRaid("target")) then
+				E:Print(L["You must be targeting a player within your group."])
+				return
+			end
+
 			local name, server = UnitName("target")
 			if name and not server or server == "" then
 				D:Distribute(name, false, true)
