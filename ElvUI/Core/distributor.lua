@@ -87,7 +87,7 @@ end
 function D:CHAT_MSG_ADDON()
 	local prefix, message, sender = arg1, arg2, arg4
 
-	if prefix ~= TRANSFER_PREFIX or not Downloads[sender] then return end
+	if --[[prefix ~= TRANSFER_PREFIX or --]] not Downloads[sender] then return end
 
 	local cur = len(message)
 	local max = Downloads[sender].length
