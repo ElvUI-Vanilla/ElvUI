@@ -38,7 +38,7 @@ function D:Initialize()
 	E:Size(self.statusBar, 250, 18)
 	self.statusBar.text = self.statusBar:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(self.statusBar.text)
-	E:Point(self.statusBar.text, "CENTER", 0, 0)
+	self.statusBar.text:SetPoint("CENTER", 0, 0)
 	self.statusBar:Hide()
 end
 
