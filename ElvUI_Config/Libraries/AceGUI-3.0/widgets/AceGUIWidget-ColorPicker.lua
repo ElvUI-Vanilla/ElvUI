@@ -51,7 +51,7 @@ local function ColorSwatch_OnClick()
 	local self = this.obj
 	if not self.disabled then
 		ColorPickerFrame:SetFrameStrata("FULLSCREEN_DIALOG")
-		ColorPickerFrame:SetFrameLevel(this:GetFrameLevel() + 10)
+		ColorPickerFrame:SetFrameLevel(this:GetFrameLevel() + 2)
 		ColorPickerFrame:SetClampedToScreen(true)
 
 		ColorPickerFrame.func = function()

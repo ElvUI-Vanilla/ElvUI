@@ -170,7 +170,6 @@ local function SetupChat()
 	ChatFrame_AddMessageGroup(ChatFrame1, "IGNORED")
 	ChatFrame_AddMessageGroup(ChatFrame1, "CHANNEL")
 
-	ChatFrame_RemoveAllMessageGroups(ChatFrame2)
 	ChatFrame_ActivateCombatMessages(ChatFrame2)
 
 	ChatFrame_AddChannel(ChatFrame1, GENERAL)
