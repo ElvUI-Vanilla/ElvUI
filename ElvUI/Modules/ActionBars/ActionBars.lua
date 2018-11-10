@@ -529,6 +529,8 @@ function AB:Initialize()
 
 	self:SecureHook("PetActionBar_Update", "UpdatePet")
 
+	LOCK_ACTIONBAR = (self.db.lockActionBars == true and "1" or "0")
+
 	function _G.ActionButton_OnUpdate(elapsed)
 		if not this.updateTooltip then return end
 
