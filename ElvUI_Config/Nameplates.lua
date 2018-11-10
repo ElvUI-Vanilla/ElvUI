@@ -1,5 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local NP = E:GetModule("NamePlates");
+local ACD = LibStub("AceConfigDialog-3.0");
 
 --Cache global variables
 --Lua functions
@@ -626,7 +627,7 @@ E.Options.args.nameplate = {
 						motionType = {
 							order = 1,
 							type = "select",
-							name = "UNIT_NAMEPLATES_TYPES",
+							name = L["Nameplate Motion Type"],
 							desc = L["Set to either stack nameplates vertically or allow them to overlap."],
 							values = {
 								["STACKED"] = "STACKED",
