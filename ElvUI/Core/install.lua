@@ -3,25 +3,26 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 --Cache global variables
 --Lua functions
 local _G = _G
-local format = format
+local format = string.format
 --WoW API / Variables
-local CreateFrame = CreateFrame
-local IsAddOnLoaded = IsAddOnLoaded
-local GetScreenWidth = GetScreenWidth
-local SetCVar = SetCVar
-local PlaySoundFile = PlaySoundFile
-local ReloadUI = ReloadUI
-local UIFrameFadeOut = UIFrameFadeOut
+local ChangeChatColor = ChangeChatColor
+local ChatFrame_ActivateCombatMessages = ChatFrame_ActivateCombatMessages
+local ChatFrame_AddChannel = ChatFrame_AddChannel
 local ChatFrame_AddMessageGroup = ChatFrame_AddMessageGroup
 local ChatFrame_RemoveAllMessageGroups = ChatFrame_RemoveAllMessageGroups
-local ChatFrame_AddChannel = ChatFrame_AddChannel
 local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
-local ChangeChatColor = ChangeChatColor
-local FCF_SetLocked = FCF_SetLocked
+local CreateFrame = CreateFrame
 local FCF_DockFrame, FCF_UnDockFrame = FCF_DockFrame, FCF_UnDockFrame
 local FCF_OpenNewWindow = FCF_OpenNewWindow
-local FCF_SetWindowName = FCF_SetWindowName
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
+local FCF_SetLocked = FCF_SetLocked
+local FCF_SetWindowName = FCF_SetWindowName
+local GetScreenWidth = GetScreenWidth
+local IsAddOnLoaded = IsAddOnLoaded
+local PlaySoundFile = PlaySoundFile
+local ReloadUI = ReloadUI
+local SetCVar = SetCVar
+local UIFrameFadeOut = UIFrameFadeOut
 
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
@@ -168,6 +169,9 @@ local function SetupChat()
 	ChatFrame_AddMessageGroup(ChatFrame1, "DND")
 	ChatFrame_AddMessageGroup(ChatFrame1, "IGNORED")
 	ChatFrame_AddMessageGroup(ChatFrame1, "CHANNEL")
+
+	ChatFrame_RemoveAllMessageGroups(ChatFrame2)
+	ChatFrame_ActivateCombatMessages(ChatFrame2)
 
 	ChatFrame_AddChannel(ChatFrame1, GENERAL)
 	ChatFrame_RemoveMessageGroup(ChatFrame1, "SKILL")
