@@ -44,7 +44,7 @@ function LO:Initialize()
 end
 
 function LO:BottomPanelVisibility()
-	if(E.db.general.bottomPanel) then
+	if E.db.general.bottomPanel then
 		self.BottomPanel:Show()
 	else
 		self.BottomPanel:Hide()

@@ -73,10 +73,13 @@ local function LoadSkin()
 			for j = 1, UIDROPDOWNMENU_MAXBUTTONS do
 				local button = _G["DropDownList"..i.."Button"..j]
 				local buttonHighlight = _G["DropDownList"..i.."Button"..j.."Highlight"]
+				local colorSwatch = _G["DropDownList"..i.."Button"..j.."ColorSwatch"]
+
 
 				button:SetFrameLevel(buttonBackdrop:GetFrameLevel() + 1)
 				buttonHighlight:SetTexture(1, 1, 1, 0.3)
 				buttonHighlight:SetAllPoints(button)
+				colorSwatch:SetFrameLevel(button:GetFrameLevel() + 2)
 
 				if i == 1 then
 					E:Point(buttonHighlight, "TOPLEFT", button, "TOPLEFT", -8, 0)

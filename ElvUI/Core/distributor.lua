@@ -30,7 +30,7 @@ function D:Initialize()
 	self:RegisterComm(REQUEST_PREFIX)
 	self:RegisterEvent("CHAT_MSG_ADDON")
 
-	self.statusBar = CreateFrame("StatusBar", "ElvUI_Download", UIParent)
+	self.statusBar = CreateFrame("StatusBar", "ElvUI_Download", E.UIParent)
 	E:RegisterStatusBar(self.statusBar)
 	E:CreateBackdrop(self.statusBar, "Default")
 	self.statusBar:SetStatusBarTexture(E.media.normTex)
@@ -78,23 +78,26 @@ function D:Distribute(target, otherServer, isGlobal)
 			return
 		end
 	else
-		self:SendCommMessage(REQUEST_PREFIX, message, "WHISPER", target)
+		self:SendCommMessage(REQUEST_PREFIX, message, "PARTY", target)
 	end
 	self:RegisterComm(REPLY_PREFIX)
 	E:StaticPopup_Show("DISTRIBUTOR_WAITING")
 end
 
 function D:CHAT_MSG_ADDON()
-	if not Downloads[arg4] then return end
-	local cur = len(arg2)
-	local max = Downloads[arg4].length
-	Downloads[arg4].current = Downloads[arg4].current + cur
+	local prefix, message, sender = arg1, arg2, arg4
 
-	if Downloads[arg4].current > max then
-		Downloads[arg4].current = max
+	if --[[prefix ~= TRANSFER_PREFIX or --]] not Downloads[sender] then return end
+
+	local cur = len(message)
+	local max = Downloads[sender].length
+	Downloads[sender].current = Downloads[sender].current + cur
+
+	if Downloads[sender].current > max then
+		Downloads[sender].current = max
 	end
 
-	self.statusBar:SetValue(Downloads[arg4].current)
+	self.statusBar:SetValue(Downloads[sender].current)
 end
 
 function D:OnCommReceived(prefix, msg, dist, sender)
@@ -131,14 +134,14 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 			button2 = CANCEL,
 			timeout = 32,
 			whileDead = 1,
-			hideOnEscape = 1,
+			hideOnEscape = 1
 		}
 		E:StaticPopup_Show("DISTRIBUTOR_RESPONSE")
 
 		Downloads[sender] = {
 			current = 0,
 			length = tonumber(length),
-			profile = profile,
+			profile = profile
 		}
 
 		self:RegisterComm(TRANSFER_PREFIX)
@@ -184,7 +187,7 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 							E:UpdateAll(true)
 							Downloads[sender] = nil
 						end,
-						OnShow = function(self) self.editBox:SetText(profileKey) self.editBox:SetFocus() end,
+						OnShow = function() this.editBox:SetText(profileKey) this.editBox:SetFocus() end,
 						timeout = 0,
 						exclusive = 1,
 						whileDead = 1,
@@ -215,7 +218,7 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 				button1 = YES,
 				button2 = NO,
 				whileDead = 1,
-				hideOnEscape = 1,
+				hideOnEscape = 1
 			}
 
 			E:StaticPopup_Show("DISTRIBUTOR_CONFIRM")
@@ -248,7 +251,11 @@ local function GetProfileData(profileType)
 			profileKey = ElvDB.profileKeys[E.myname.." - "..E.myrealm]
 		end
 
+		--Copy current profile data
 		profileData = E:CopyTable(profileData , ElvDB.profiles[profileKey])
+		--This table will also hold all default values, not just the changed settings.
+		--This makes the table huge, and will cause the WoW client to lock up for several seconds.
+		--We compare against the default table and remove all duplicates from our table. The table is now much smaller.
 		profileData = E:RemoveTableDuplicates(profileData, P)
 	elseif profileType == "private" then
 		local privateProfileKey = E.myname.." - "..E.myrealm
@@ -305,9 +312,7 @@ local function GetProfileExport(profileType, exportFormat)
 
 	if exportFormat == "text" then
 		local serialData = D:Serialize(profileData)
-
 		exportString = D:CreateProfileExport(serialData, profileType, profileKey)
-
 		local compressedData = LibCompress:Compress(exportString)
 		local encodedData = LibBase64:Encode(compressedData)
 		profileExport = encodedData
@@ -338,7 +343,7 @@ function D:GetImportStringType(dataString)
 
 	if LibBase64:IsBase64(dataString) then
 		stringType = "Base64"
-	elseif find(dataString, "{") then
+	elseif find(dataString, "{") then --Basic check to weed out obviously wrong strings
 		stringType = "Table"
 	end
 
@@ -359,14 +364,14 @@ function D:Decode(dataString)
 		end
 
 		local serializedData, success
-		serializedData, profileInfo = E:StringSplitMultiDelim(decompressedData, "^^::")
+		serializedData, profileInfo = E:StringSplitMultiDelim(decompressedData, "^^::") -- "^^" indicates the end of the AceSerializer string
 
 		if not profileInfo then
 			E:Print("Error importing profile. String is invalid or corrupted!")
 			return
 		end
 
-		serializedData = format("%s%s", serializedData, "^^")
+		serializedData = format("%s%s", serializedData, "^^") --Add back the AceSerializer terminator
 		profileType, profileKey = E:StringSplitMultiDelim(profileInfo, "::")
 		success, profileData = D:Deserialize(serializedData)
 
@@ -376,7 +381,7 @@ function D:Decode(dataString)
 		end
 	elseif stringType == "Table" then
 		local profileDataAsString
-		profileDataAsString, profileInfo = E:StringSplitMultiDelim(dataString, "}::")
+		profileDataAsString, profileInfo = E:StringSplitMultiDelim(dataString, "}::") -- "}::" indicates the end of the table
 
 		if not profileInfo then
 			E:Print("Error extracting profile info. Invalid import string!")
@@ -388,7 +393,8 @@ function D:Decode(dataString)
 			return
 		end
 
-		profileDataAsString = format("%s%s", profileDataAsString, "}")
+		profileDataAsString = format("%s%s", profileDataAsString, "}") --Add back the missing "}"
+		profileDataAsString = gsub(profileDataAsString, "\124\124", "\124") --Remove escape pipe characters
 		profileType, profileKey = E:StringSplitMultiDelim(profileInfo, "::")
 
 		local profileToTable = loadstring(format("%s %s", "return", profileDataAsString))
@@ -413,10 +419,13 @@ local function SetImportedProfile(profileType, profileKey, profileData, force)
 	if profileType == "profile" then
 		if not ElvDB.profiles[profileKey] or force then
 			if force and E.data.keys.profile == profileKey then
+				--Overwriting an active profile doesn't update when calling SetProfile
+				--So make it look like we use a different profile
 				local tempKey = profileKey.."_Temp"
 				E.data.keys.profile = tempKey
 			end
 			ElvDB.profiles[profileKey] = profileData
+			--Calling SetProfile will now update all settings correctly
 			E.data:SetProfile(profileKey)
 		else
 			D.profileType = profileType
@@ -443,6 +452,7 @@ local function SetImportedProfile(profileType, profileKey, profileData, force)
 		E:CopyTable(ElvDB.global.unitframe, profileData.unitframe)
 	end
 
+	--Update all ElvUI modules
 	E:UpdateAll(true)
 end
 
@@ -453,6 +463,7 @@ function D:ExportProfile(profileType, exportFormat)
 	end
 
 	local profileKey, profileExport = GetProfileExport(profileType, exportFormat)
+
 	return profileKey, profileExport
 end
 
@@ -475,28 +486,28 @@ E.PopupDialogs["DISTRIBUTOR_SUCCESS"] = {
 	text = L["Your profile was successfully recieved by the player."],
 	whileDead = 1,
 	hideOnEscape = 1,
-	button1 = OKAY,
+	button1 = OKAY
 }
 
 E.PopupDialogs["DISTRIBUTOR_WAITING"] = {
 	text = L["Profile request sent. Waiting for response from player."],
 	whileDead = 1,
 	hideOnEscape = 1,
-	timeout = 35,
+	timeout = 35
 }
 
 E.PopupDialogs["DISTRIBUTOR_REQUEST_DENIED"] = {
 	text = L["Request was denied by user."],
 	whileDead = 1,
 	hideOnEscape = 1,
-	button1 = OKAY,
+	button1 = OKAY
 }
 
 E.PopupDialogs["DISTRIBUTOR_FAILED"] = {
 	text = L["Lord! It's a miracle! The download up and vanished like a fart in the wind! Try Again!"],
 	whileDead = 1,
 	hideOnEscape = 1,
-	button1 = OKAY,
+	button1 = OKAY
 }
 
 E.PopupDialogs["DISTRIBUTOR_RESPONSE"] = {}
@@ -515,11 +526,11 @@ E.PopupDialogs["IMPORT_PROFILE_EXISTS"] = {
 		local profileData = D.profileData
 		SetImportedProfile(profileType, profileKey, profileData, true)
 	end,
-	EditBoxOnTextChanged = function(self)
-		if self:GetText() == "" then
-			self:GetParent().button1:Disable()
+	EditBoxOnTextChanged = function()
+		if this:GetText() == "" then
+			this:GetParent().button1:Disable()
 		else
-			self:GetParent().button1:Enable()
+			this:GetParent().button1:Enable()
 		end
 	end,
 	OnShow = function() this.editBox:SetText(D.profileKey) this.editBox:SetFocus() end,

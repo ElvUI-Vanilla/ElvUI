@@ -80,6 +80,7 @@ local function BuildABConfig()
 					E.db.actionbar[ info[getn(info)] ] = value
 					AB:UpdateButtonSettings()
 					LOCK_ACTIONBAR = (value == true and 1 or 0)
+					E:StaticPopup_Show("CONFIG_RL")
 				end
 			},
 			movementModifier = {

@@ -38,12 +38,24 @@ function FarmMode()
 	if Minimap:IsShown() then
 		UIFrameFadeOut(Minimap, 0.3)
 		UIFrameFadeIn(FarmModeMap, 0.3)
-		Minimap.fadeInfo.finishedFunc = function() Minimap:Hide() Minimap.backdrop:Hide() _G.MinimapZoomIn:Click() _G.MinimapZoomOut:Click() Minimap:SetAlpha(1) end
+		Minimap.fadeInfo.finishedFunc = function()
+			Minimap:Hide()
+			Minimap.backdrop:Hide()
+			_G.MinimapZoomIn:Click()
+			_G.MinimapZoomOut:Click()
+			Minimap:SetAlpha(1)
+		end
 		FarmModeMap.enabled = true
 	else
 		UIFrameFadeOut(FarmModeMap, 0.3)
 		UIFrameFadeIn(Minimap, 0.3)
-		FarmModeMap.fadeInfo.finishedFunc = function() FarmModeMap:Hide() Minimap.backdrop:Show() _G.MinimapZoomIn:Click() _G.MinimapZoomOut:Click() Minimap:SetAlpha(1) end
+		FarmModeMap.fadeInfo.finishedFunc = function()
+			FarmModeMap:Hide()
+			Minimap.backdrop:Show()
+			_G.MinimapZoomIn:Click()
+			_G.MinimapZoomOut:Click()
+			Minimap:SetAlpha(1)
+		end
 		FarmModeMap.enabled = false
 	end
 end
@@ -75,6 +87,8 @@ function E:LuaError(msg)
 	msg = lower(msg)
 	if msg == "on" then
 		DisableAllAddOns()
+		EnableAddOn("!Compatibility")
+		EnableAddOn("!DebugTools")
 		EnableAddOn("ElvUI")
 		EnableAddOn("ElvUI_Config")
 		SetCVar("ShowErrors", "1")
@@ -114,7 +128,32 @@ function E:DelayScriptCall(msg)
 		self:Print("usage: /in <seconds> <command>")
 		self:Print("example: /in 1.5 /say hi")
 	else
-		E:ScheduleTimer(OnCallback, secs, command)
+		E:Delay(secs, OnCallback, command)
+	end
+end
+
+local BLIZZARD_ADDONS = {
+	"Blizzard_AuctionUI",
+	"Blizzard_BattlefieldMinimap",
+	"Blizzard_BindingUI",
+	"Blizzard_CombatText",
+	"Blizzard_CraftUI",
+	"Blizzard_GMSurveyUI",
+	"Blizzard_InspectUI",
+	"Blizzard_MacroUI",
+	"Blizzard_RaidUI",
+	"Blizzard_TalentUI",
+	"Blizzard_TradeSkillUI",
+	"Blizzard_TrainerUI"
+}
+
+function E:EnableBlizzardAddOns()
+	for _, addon in pairs(BLIZZARD_ADDONS) do
+		local reason = select(5, GetAddOnInfo(addon))
+		if reason == "DISABLED" then
+			EnableAddOn(addon)
+			E:Print("The following addon was re-enabled:", addon)
+		end
 	end
 end
 
@@ -130,6 +169,8 @@ function E:LoadCommands()
 	self:RegisterChatCommand("enable", "EnableAddon")
 	self:RegisterChatCommand("disable", "DisableAddon")
 	self:RegisterChatCommand("farmmode", "FarmMode")
+	self:RegisterChatCommand("enableblizzard", "EnableBlizzardAddOns")
+	self:RegisterChatCommand("estatus", "ShowStatusReport")
 
 	if E:GetModule("ActionBars") and E.private.actionbar.enable then
 		self:RegisterChatCommand("kb", E:GetModule("ActionBars").ActivateBindMode)
