@@ -848,7 +848,6 @@ function B:GetGraysValue()
 			if itemLink then
 				_, _, rarity, _, _, itype = GetItemInfo(match(itemLink, "item:(%d+)"))
 				itemPrice = LIP:GetSellValue(itemLink)
-				print(itype)
 				if itemPrice then
 					stackCount = select(2, GetContainerItemInfo(bag, slot)) or 1
 					stackPrice = itemPrice * stackCount
