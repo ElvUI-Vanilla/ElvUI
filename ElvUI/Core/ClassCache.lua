@@ -53,7 +53,7 @@ end
 local function WhoCallback(result)
 	if result and result.NoLocaleClass then
 		CC:CachePlayer(result.Name, result.NoLocaleClass)
-		CC:SendMessage("ClassCacheQueryResult", result.Name, result.NoLocaleClass)
+		CC:SendMessage("ClassCache_QueryResult", result.Name, result.NoLocaleClass)
 	end
 end
 

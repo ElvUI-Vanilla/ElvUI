@@ -241,7 +241,7 @@ E.PopupDialogs["RESET_UF_UNIT"] = {
 			end
 
 			if IsAddOnLoaded("ElvUI_Config") then
-				local ACD = LibStub and LibStub("AceConfigDialog-3.0-ElvUI")
+				local ACD = LibStub and LibStub("AceConfigDialog-3.0")
 				if ACD and ACD.OpenFrames and ACD.OpenFrames.ElvUI then
 					ACD:SelectGroup("ElvUI", "unitframe", this.data.unit)
 				end
