@@ -6,7 +6,7 @@ local CH = E:GetModule("Chat")
 --Lua functions
 local _G = _G
 local format = string.format
-local floor = math.floor
+local floor, mod = math.floor, math.mod
 --WoW API / Variables
 local CinematicFrame = CinematicFrame
 local CreateFrame = CreateFrame
@@ -18,6 +18,8 @@ local GetScreenWidth = GetScreenWidth
 local GetTime = GetTime
 local IsInGuild = IsInGuild
 local IsShiftKeyDown = IsShiftKeyDown
+local MoveViewLeftStart = MoveViewLeftStart
+local MoveViewLeftStop = MoveViewLeftStop
 local Screenshot = Screenshot
 local UnitAffectingCombat = UnitAffectingCombat
 
@@ -43,7 +45,7 @@ end
 
 function AFK:UpdateTimer()
 	local time = GetTime() - self.startTime
-	self.AFKMode.bottom.time:SetText(format("%02d:%02d", floor(time / 60), time - floor(time / 60) * 60))
+	self.AFKMode.bottom.time:SetText(format("%02d:%02d", floor(time / 60), mod(time, 60)))
 end
 
 local function StopAnimation(self)
@@ -105,10 +107,10 @@ function AFK:SetAFK(status)
 		E.global.afkEnabled = true
 		E.global.afkCameraSpeedYaw = GetCVar("cameraYawMoveSpeed")
 		E.global.afkCameraSpeedPitch = GetCVar("cameraPitchMoveSpeed")
-		MoveViewLeftStart()
 
 		SetCVar("cameraYawMoveSpeed", AFK_SPEED)
 		SetCVar("cameraPitchMoveSpeed", E.global.afkCameraSpeedPitch)
+		MoveViewLeftStart()
 
 		if IsInGuild() then
 			local guildName, guildRankName = GetGuildInfo("player")
@@ -164,6 +166,7 @@ function AFK:OnEvent()
 					status = status
 				end
 			end
+			local status = status
 			if status == "confirm" then
 				self:SetAFK(false)
 			end
