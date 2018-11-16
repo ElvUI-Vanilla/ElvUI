@@ -448,7 +448,7 @@ E.Options.args.modulecontrol= {
 						header = {
 							order = 0,
 							type = "header",
-							name = L["Core |cff00b30bE|r|cffC4C4C4lvUI|r options."]
+							name = L["Core |cff175581E|r|cffC4C4C4lvUI|r options."]
 						},
 						actionbar = CreateActionbarsConfig(),
 						auras = CreateAurasConfig(),

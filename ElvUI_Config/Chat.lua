@@ -32,24 +32,24 @@ E.Options.args.chat = {
 			name = GENERAL,
 			args = {
 				header = {
-					order = 0,
+					order = 1,
 					type = "header",
 					name = GENERAL
 				},
 				url = {
-					order = 1,
+					order = 2,
 					type = "toggle",
 					name = L["URL Links"],
 					desc = L["Attempt to create URL links inside the chat."]
 				},
 				shortChannels = {
-					order = 2,
+					order = 3,
 					type = "toggle",
 					name = L["Short Channels"],
 					desc = L["Shorten the channel names in chat."]
 				},
 				hyperlinkHover = {
-					order = 3,
+					order = 4,
 					type = "toggle",
 					name = L["Hyperlink Hover"],
 					desc = L["Display the hyperlink tooltip while hovering over a hyperlink."],
@@ -63,7 +63,7 @@ E.Options.args.chat = {
 					end
 				},
 				sticky = {
-					order = 4,
+					order = 5,
 					type = "toggle",
 					name = L["Sticky Chat"],
 					desc = L["When opening the Chat Editbox to type a message having this option set means it will retain the last channel you spoke in. If this option is turned off opening the Chat Editbox should always default to the SAY channel."],
@@ -72,7 +72,7 @@ E.Options.args.chat = {
 					end
 				},
 				fade = {
-					order = 5,
+					order = 6,
 					type = "toggle",
 					name = L["Fade Chat"],
 					desc = L["Fade the chat text when there is no activity."],
@@ -82,7 +82,7 @@ E.Options.args.chat = {
 					end
 				},
 				fadeUndockedTabs = {
-					order = 6,
+					order = 7,
 					type = "toggle",
 					name = L["Fade Undocked Tabs"],
 					desc = L["Fades the text on chat tabs that are not docked at the left or right chat panel."],
@@ -92,7 +92,7 @@ E.Options.args.chat = {
 					end
 				},
 				fadeTabsNoBackdrop = {
-					order = 7,
+					order = 8,
 					type = "toggle",
 					name = L["Fade Tabs No Backdrop"],
 					desc = L["Fades the text on chat tabs that are docked in a panel where the backdrop is disabled."],
@@ -102,13 +102,13 @@ E.Options.args.chat = {
 					end
 				},
 				chatHistory = {
-					order = 8,
+					order = 9,
 					type = "toggle",
 					name = L["Chat History"],
 					desc = L["Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session."]
 				},
 				useAltKey = {
-					order = 9,
+					order = 10,
 					type = "toggle",
 					name = L["Use Alt Key"],
 					desc = L["Require holding the Alt key down to move cursor or cycle through messages in the editbox."],
@@ -118,12 +118,12 @@ E.Options.args.chat = {
 					end
 				},
 				spacer = {
-					order = 10,
+					order = 11,
 					type = "description",
-					name = " ",
+					name = " "
 				},
 				throttleInterval = {
-					order = 11,
+					order = 12,
 					type = "range",
 					name = L["Spam Interval"],
 					desc = L["Prevent the same messages from displaying in chat more than once within this set amount of seconds, set to zero to disable."],
@@ -136,7 +136,7 @@ E.Options.args.chat = {
 					end
 				},
 				scrollDownInterval = {
-					order = 12,
+					order = 13,
 					type = "range",
 					name = L["Scroll Interval"],
 					desc = L["Number of time in seconds to scroll down to the bottom of the chat window if you are not scrolled down completely."],
@@ -146,26 +146,26 @@ E.Options.args.chat = {
 					end
 				},
 				numAllowedCombatRepeat = {
-					order = 13,
+					order = 14,
 					type = "range",
 					name = L["Allowed Combat Repeat"],
 					desc = L["Number of repeat characters while in combat before the chat editbox is automatically closed."],
 					min = 2, max = 10, step = 1
 				},
 				numScrollMessages = {
-					order = 14,
+					order = 15,
 					type = "range",
 					name = L["Scroll Messages"],
 					desc = L["Number of messages you scroll for each step."],
-					min = 1, max = 10, step = 1,
+					min = 1, max = 10, step = 1
 				},
 				spacer2 = {
 					order = 16,
 					type = "description",
-					name = " ",
+					name = " "
 				},
 				timeStampFormat = {
-					order = 15,
+					order = 17,
 					type = "select",
 					name = L["Chat Timestamps"],
 					desc = "OPTION_TOOLTIP_TIMESTAMPS",
@@ -180,13 +180,13 @@ E.Options.args.chat = {
 					}
 				},
 				useCustomTimeColor = {
-					order = 16,
+					order = 18,
 					type = "toggle",
 					name = L["Custom Timestamp Color"],
 					disabled = function() return not E.db.chat.timeStampFormat == "NONE" end
 				},
 				customTimeColor = {
-					order = 17,
+					order = 19,
 					type = "color",
 					hasAlpha = false,
 					name = L["Timestamp Color"],

@@ -94,8 +94,13 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		button:EnableMouse(false)
 		button.text:SetText("|cff808080"..text..FONT_COLOR_CODE_CLOSE)
 	else
-		button.text:SetText(text)
-		button:EnableMouse(true)
+		if level > 1 then
+			button.text:SetText("|cffFFFFFF"..text..FONT_COLOR_CODE_CLOSE)
+			button:EnableMouse(true)
+		else
+			button.text:SetText(text)
+			button:EnableMouse(true)
+		end
 	end
 
 	if icon then
@@ -326,8 +331,6 @@ local methods = {
 		toggle:SetHeight(14)
 		toggle:ClearAllPoints()
 		toggle:SetPoint("TOPRIGHT", button, "TOPRIGHT", -6, -1)
-		toggle:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-UP")
-		toggle:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-DOWN")
 		toggle:SetHighlightTexture("Interface\Buttons\UI-PlusButton-Hilight", "ADD")
 		toggle:SetScript("OnClick", Button_OnClick)
 		button.toggle = toggle
