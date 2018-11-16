@@ -181,6 +181,48 @@ function LO:SetDataPanelStyle()
 	end
 end
 
+function LO:RepositionChatDataPanels()
+	LeftChatDataPanel:ClearAllPoints()
+	RightChatDataPanel:ClearAllPoints()
+	local SPACING = E.Border*3 - E.Spacing
+
+	--Left Chat Tab
+	LeftChatTab:SetPoint("TOPLEFT", LeftChatPanel, "TOPLEFT", SPACING, -SPACING)
+	LeftChatTab:SetPoint("TOPRIGHT", LeftChatPanel, "TOPRIGHT", -SPACING, -SPACING)
+	LeftChatTab:SetPoint("BOTTOMRIGHT", LeftChatPanel, "TOPRIGHT", -SPACING, -(SPACING + PANEL_HEIGHT))
+	LeftChatTab:SetPoint("BOTTOMLEFT", LeftChatPanel, "TOPLEFT", SPACING, -(SPACING + PANEL_HEIGHT))
+
+	--Left Chat Data Panel
+	LeftChatDataPanel:SetPoint("BOTTOMLEFT", LeftChatPanel, "BOTTOMLEFT", SPACING + SIDE_BUTTON_WIDTH, SPACING)
+	LeftChatDataPanel:SetPoint("BOTTOMRIGHT", LeftChatPanel, "BOTTOMRIGHT", -SPACING, SPACING)
+	LeftChatDataPanel:SetPoint("TOPRIGHT", LeftChatPanel, "BOTTOMRIGHT", -SPACING, (SPACING + PANEL_HEIGHT))
+	LeftChatDataPanel:SetPoint("TOPLEFT", LeftChatPanel, "BOTTOMLEFT", SPACING+SIDE_BUTTON_WIDTH, (SPACING + PANEL_HEIGHT))
+
+	--Left Chat Toggle Button
+	LeftChatToggleButton:SetPoint("TOPRIGHT", LeftChatDataPanel, "TOPLEFT", E.Border - E.Spacing*3, 0)
+	LeftChatToggleButton:SetPoint("TOPLEFT", LeftChatDataPanel, "TOPLEFT", -E.Border - E.Spacing*3 - SIDE_BUTTON_WIDTH, 0)
+	LeftChatToggleButton:SetPoint("BOTTOMLEFT", LeftChatPanel, "BOTTOMLEFT", SPACING, SPACING)
+	LeftChatToggleButton:SetPoint("BOTTOMRIGHT", LeftChatPanel, "BOTTOMLEFT", SPACING+SIDE_BUTTON_WIDTH, SPACING)
+
+	--Right Chat Tab
+	RightChatTab:SetPoint("TOPRIGHT", RightChatPanel, "TOPRIGHT", -SPACING, -SPACING)
+	RightChatTab:SetPoint("TOPLEFT", RightChatPanel, "TOPLEFT", SPACING, -SPACING)
+	RightChatTab:SetPoint("BOTTOMLEFT", RightChatPanel, "TOPLEFT", SPACING, -(SPACING + PANEL_HEIGHT))
+	RightChatTab:SetPoint("BOTTOMRIGHT", RightChatPanel, "TOPRIGHT", -SPACING, -(SPACING + PANEL_HEIGHT))
+
+	--Right Chat Data Panel
+	RightChatDataPanel:SetPoint("BOTTOMLEFT", RightChatPanel, "BOTTOMLEFT", SPACING, SPACING)
+	RightChatDataPanel:SetPoint("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -SPACING-SIDE_BUTTON_WIDTH, SPACING)
+	RightChatDataPanel:SetPoint("TOPRIGHT", RightChatPanel, "BOTTOMRIGHT", -(SPACING + SIDE_BUTTON_WIDTH), SPACING + PANEL_HEIGHT)
+	RightChatDataPanel:SetPoint("TOPLEFT", RightChatPanel, "BOTTOMLEFT", (SPACING), SPACING + PANEL_HEIGHT)
+
+	--Right Chat Toggle Button
+	RightChatToggleButton:SetPoint("TOPLEFT", RightChatDataPanel, "TOPRIGHT", -E.Border + E.Spacing*3, 0)
+	RightChatToggleButton:SetPoint("TOPRIGHT", RightChatDataPanel, "TOPRIGHT", E.Border + E.Spacing*3 + SIDE_BUTTON_WIDTH, 0)
+	RightChatToggleButton:SetPoint("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -SPACING, SPACING)
+	RightChatToggleButton:SetPoint("BOTTOMLEFT", RightChatPanel, "BOTTOMRIGHT", -SPACING-SIDE_BUTTON_WIDTH, SPACING)
+end
+
 function LO:ToggleChatPanels()
 	LeftChatDataPanel:ClearAllPoints()
 	RightChatDataPanel:ClearAllPoints()

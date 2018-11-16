@@ -34,6 +34,7 @@ local PlaySoundFile = PlaySoundFile
 local ShowUIPanel, HideUIPanel = ShowUIPanel, HideUIPanel
 local StaticPopup_Visible = StaticPopup_Visible
 local ToggleFrame = ToggleFrame
+local UnitAffectingCombat = UnitAffectingCombat
 local UnitName = UnitName
 local hooksecurefunc = hooksecurefunc
 
@@ -220,8 +221,8 @@ function CH:StyleChat(frame)
 	E:Point(tab.flash, "TOPLEFT", _G[name.."TabLeft"], "TOPLEFT", -3, id == 2 and -3 or -2)
 	E:Point(tab.flash, "BOTTOMRIGHT", _G[name.."TabRight"], "BOTTOMRIGHT", 3, id == 2 and -7 or -6)
 
-	--frame:SetClampRectInsets(0, 0, 0, 0)
 	frame:SetClampedToScreen(false)
+	E:StripTextures(frame, true)
 
 	--copy chat button
 	frame.button = CreateFrame("Button", format("CopyChatButton%d", id), frame)
@@ -349,7 +350,7 @@ function CH:UpdateAnchors()
 		E:Point(frame, "TOPRIGHT", ChatFrame1, "TOPRIGHT", noBackdrop and 10 or 4, LeftChatTab:GetHeight() + (noBackdrop and 1 or 4))
 	end
 
-	-- CH:PositionChat(true)
+	CH:PositionChat(true)
 end
 
 local function FindRightChatID()
@@ -377,14 +378,25 @@ function CH:UpdateChatTabs()
 		local tab = _G[format("ChatFrame%sTab", i)]
 		local id = chat:GetID()
 		local isDocked = chat.isDocked
+		local chatbg = format("ChatFrame%dBackground", i)
 
-		if chat:IsShown() and (id == self.RightChatWindowID) then
+		if id > NUM_CHAT_WINDOWS then
+			if select(2, tab:GetPoint()):GetName() ~= chatbg then
+				isDocked = true
+			else
+				isDocked = false
+			end
+		end
+
+		if chat:IsShown() and not (id > NUM_CHAT_WINDOWS) and (id == self.RightChatWindowID) then
 			if E.db.chat.panelBackdrop == "HIDEBOTH" or E.db.chat.panelBackdrop == "LEFT" then
 				CH:SetupChatTabs(tab, fadeTabsNoBackdrop and true or false)
 			else
 				CH:SetupChatTabs(tab, false)
 			end
 		elseif not isDocked and chat:IsShown() then
+			tab:SetParent(RightChatPanel)
+			chat:SetParent(RightChatPanel)
 			CH:SetupChatTabs(tab, fadeUndockedTabs and true or false)
 		else
 			if E.db.chat.panelBackdrop == "HIDEBOTH" or E.db.chat.panelBackdrop == "RIGHT" then
@@ -397,17 +409,11 @@ function CH:UpdateChatTabs()
 end
 
 function CH:PositionChat(override)
-	if ((not override and self.initialMove) or (not override)) then return end
+	if UnitAffectingCombat("player") and not override and self.initialMove then return end
 	if not RightChatPanel or not LeftChatPanel then return end
-	RightChatPanel:SetWidth(E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth)
-	RightChatPanel:SetHeight(E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
-	LeftChatPanel:SetWidth(E.db.chat.panelWidth)
-	LeftChatPanel:SetHeight(E.db.chat.panelHeight)
 
-	LeftChatTab:SetWidth(E.db.chat.panelWidth -((E.Border*3 - E.Spacing)*2))
-	LeftChatDataPanel:SetWidth(E.db.chat.panelWidth -(((E.Border*3 - E.Spacing)*2) + 16))
-	RightChatTab:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) -((E.Border*3 - E.Spacing)*2))
-	RightChatDataPanel:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) -(((E.Border*3 - E.Spacing)*2) + 16))
+	E:Size(RightChatPanel, E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth, E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight)
+	E:Size(LeftChatPanel, E.db.chat.panelWidth, E.db.chat.panelHeight)
 
 	self.RightChatWindowID = FindRightChatID()
 
@@ -421,13 +427,22 @@ function CH:PositionChat(override)
 		local BASE_OFFSET = 57 + E.Spacing*3
 
 		chat = _G[format("ChatFrame%d", i)]
+		chatbg = format("ChatFrame%dBackground", i)
 		id = chat:GetID()
 		tab = _G[format("ChatFrame%sTab", i)]
 		isDocked = chat.isDocked
 		tab.isDocked = chat.isDocked
 		tab.owner = chat
 
-		if chat:IsShown() and id == self.RightChatWindowID then
+		if id > NUM_CHAT_WINDOWS then
+			if select(2, tab:GetPoint()):GetName() ~= chatbg then
+				isDocked = true
+			else
+				isDocked = false
+			end
+		end
+
+		if chat:IsShown() and (id == self.RightChatWindowID) then
 			chat:ClearAllPoints()
 
 			if E.db.datatexts.rightChatPanel then
@@ -437,8 +452,11 @@ function CH:PositionChat(override)
 				E:Point(chat, "BOTTOMLEFT", RightChatDataPanel, "BOTTOMLEFT", 1, 1)
 			end
 
-			chat:SetWidth((E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11)
-			chat:SetHeight((E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
+			if id ~= 2 then
+				E:Size(chat, (E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11, (E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
+			else
+				E:Size(chat, E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET) - CombatLogQuickButtonFrame_Custom:GetHeight())
+			end
 
 			tab:SetParent(RightChatPanel)
 			chat:SetParent(RightChatPanel)
@@ -446,6 +464,7 @@ function CH:PositionChat(override)
 			if chat:IsMovable() then
 				chat:SetUserPlaced(true)
 			end
+
 			if E.db.chat.panelBackdrop == "HIDEBOTH" or E.db.chat.panelBackdrop == "LEFT" then
 				CH:SetupChatTabs(tab, fadeTabsNoBackdrop and true or false)
 			else
@@ -464,15 +483,15 @@ function CH:PositionChat(override)
 					BASE_OFFSET = BASE_OFFSET - 24
 					E:Point(chat, "BOTTOMLEFT", LeftChatToggleButton, "BOTTOMLEFT", 1, 1)
 				end
-				chat:SetWidth(E.db.chat.panelWidth - 11)
-				chat:SetHeight((E.db.chat.panelHeight - BASE_OFFSET))
+
+				E:Size(chat, E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET))
 			end
+
 			chat:SetParent(LeftChatPanel)
 			if i > 2 then
 				tab:SetParent(LeftChatPanel)
-			else
-				tab:SetParent(LeftChatPanel)
 			end
+
 			if chat:IsMovable() then
 				chat:SetUserPlaced(true)
 			end
@@ -484,6 +503,8 @@ function CH:PositionChat(override)
 			end
 		end
 	end
+
+	E.Layout:RepositionChatDataPanels()
 
 	self.initialMove = true
 end
@@ -958,7 +979,7 @@ local function OnTextChanged(self)
 		if strlen(text) > MIN_REPEAT_CHARACTERS then
 		local repeatChar = true
 		for i = 1, MIN_REPEAT_CHARACTERS, 1 do
-			if strsub(text,(0-i), (0-i)) ~= strsub(text, (-1-i), (-1-i)) then
+			if strsub(text, (0 - i), (0 - i)) ~= strsub(text, (-1 - i), (-1 - i)) then
 				repeatChar = false
 				break
 			end
@@ -1028,8 +1049,7 @@ function CH:SetupChat()
 
 	local editbox = _G["ChatFrameEditBox"]
 	if not editbox.isSkinned then
-		local a, b, c = select(6, editbox:GetRegions())
-		E:Kill(a) E:Kill(b) E:Kill(c)
+		local a, b, c = select(6, editbox:GetRegions()) E:Kill(a) E:Kill(b) E:Kill(c)
 		E:SetTemplate(editbox, "Default", true)
 		editbox:SetAltArrowKeyMode(CH.db.useAltKey)
 		editbox:SetAllPoints(LeftChatDataPanel)
@@ -1055,8 +1075,8 @@ function CH:SetupChat()
 
 	DEFAULT_CHAT_FRAME:SetParent(LeftChatPanel)
 
-	self:PositionChat(true)
-	self:ScheduleTimer("PositionChat", 1)
+	self:ScheduleRepeatingTimer("PositionChat", 1)
+	-- self:PositionChat(true)
 end
 
 local function PrepareMessage(author, message)
@@ -1090,7 +1110,7 @@ function CH:CHAT_MSG_CHANNEL(event, message, author, ...)
 	end
 
 	if blockFlag then
-		return true;
+		return true
 	else
 		if CH.db.throttleInterval ~= 0 then
 			msgTime[msg] = time()
@@ -1115,7 +1135,7 @@ function CH:CHAT_MSG_YELL(event, message, author, ...)
 	end
 
 	if blockFlag then
-		return true;
+		return true
 	else
 		if CH.db.throttleInterval ~= 0 then
 			msgTime[msg] = time()
