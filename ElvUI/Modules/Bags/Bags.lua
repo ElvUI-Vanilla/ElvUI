@@ -56,7 +56,7 @@ B.ProfessionColors = {
 	[1] = {225/255, 175/255, 105/255}, -- Quiver
 	[2] = {225/255, 175/255, 105/255}, -- Ammo Pouch
 	[4] = {225/255, 175/255, 105/255}, -- Soul Bag
-	[8] = {18/255, 181/255, 32/255}, -- Herbs
+	[8] = {18/255, 181/255, 32/255}, -- Herbalism
 	[16] = {160/255, 3/255, 168/255}, -- Enchanting
 }
 
@@ -246,6 +246,15 @@ function B:UpdateBagTypes(isBank)
 	end
 end
 
+function B:UpdateAllBagSlots()
+	if E.private.bags.enable ~= true then return end
+
+	for _, bagFrame in pairs(self.BagFrames) do
+		if bagFrame.UpdateAllSlots then
+			bagFrame:UpdateAllSlots()
+		end
+	end
+end
 
 function B:UpdateSlot(bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then return end
@@ -277,7 +286,11 @@ function B:UpdateSlot(bagID, slotID)
 		if iLvl and B.db.itemLevel and (itemEquipLoc ~= nil and itemEquipLoc ~= "" and itemEquipLoc ~= "INVTYPE_AMMO" and itemEquipLoc ~= "INVTYPE_BAG" and itemEquipLoc ~= "INVTYPE_QUIVER" and itemEquipLoc ~= "INVTYPE_TABARD") and (slot.rarity and slot.rarity > 1) then
 			if iLvl >= E.db.bags.itemLevelThreshold then
 				slot.itemLevel:SetText(iLvl)
-				slot.itemLevel:SetTextColor(r, g, b)
+				if B.db.itemLevelCustomColorEnable then
+					slot.itemLevel:SetTextColor(B.db.itemLevelCustomColor.r, B.db.itemLevelCustomColor.g, B.db.itemLevelCustomColor.b)
+				else
+					slot.itemLevel:SetTextColor(r, g, b)
+				end
 			end
 		end
 
@@ -914,9 +927,11 @@ function B:VendorGrayCheck()
 end
 
 function B:ContructContainerFrame(name, isBank)
+	local strata = E.db.bags.strata or "HIGH"
+
 	local f = CreateFrame("Button", name, E.UIParent)
 	E:SetTemplate(f, "Transparent")
-	f:SetFrameStrata("DIALOG")
+	f:SetFrameStrata(strata)
 	f.UpdateSlot = B.UpdateSlot
 	f.UpdateAllSlots = B.UpdateAllSlots
 	f.UpdateBagSlots = B.UpdateBagSlots
@@ -962,7 +977,7 @@ function B:ContructContainerFrame(name, isBank)
 	f:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 	f.closeButton = CreateFrame("Button", name.."CloseButton", f, "UIPanelCloseButton")
-	E:Point(f.closeButton, "TOPRIGHT", -4, -4)
+	E:Point(f.closeButton, "TOPRIGHT", 2, 2)
 
 	E:GetModule("Skins"):HandleCloseButton(f.closeButton)
 
@@ -1531,6 +1546,17 @@ end
  	B.SellFrame:Hide()
 end
 
+B.BagIndice = {
+	quiver = 1,
+	ammoPouch = 2,
+	soulBag = 4,
+	herbs = 8,
+	enchanting = 16,
+}
+
+function B:UpdateBagColors(table, indice, r, g, b)
+	self[table][B.BagIndice[indice]] = {r, g, b}
+end
 
 function B:Initialize()
 	self:LoadBagBar()
@@ -1558,6 +1584,14 @@ function B:Initialize()
 	E.bags = self
 	self.db = E.db.bags
 	self.BagFrames = {}
+
+	self.ProfessionColors = {
+		[1] = {self.db.colors.profession.quiver.r, self.db.colors.profession.quiver.g, self.db.colors.profession.quiver.b},
+		[2] = {self.db.colors.profession.ammoPouch.r, self.db.colors.profession.ammoPouch.g, self.db.colors.profession.ammoPouch.b},
+		[4] = {self.db.colors.profession.soulBag.r, self.db.colors.profession.soulBag.g, self.db.colors.profession.soulBag.b},
+		[8] = {self.db.colors.profession.herbs.r, self.db.colors.profession.herbs.g, self.db.colors.profession.herbs.b},
+		[16] = {self.db.colors.profession.enchanting.r, self.db.colors.profession.enchanting.g, self.db.colors.profession.enchanting.b},
+	}
 
 	--Bag Mover: Set default anchor point and create mover
 	E:Point(BagFrameHolder, "BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", 0, 22 + E.Border*4 - E.Spacing*2)

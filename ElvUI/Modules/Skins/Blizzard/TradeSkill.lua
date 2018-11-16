@@ -110,7 +110,7 @@ local function LoadSkin()
 
 	TradeSkillRequirementLabel:SetTextColor(1, 0.80, 0.10)
 
-	S:HandleCloseButton(TradeSkillFrameCloseButton)
+	S:HandleCloseButton(TradeSkillFrameCloseButton, TradeSkillFrame.backdrop)
 
 	E:StripTextures(TradeSkillExpandButtonFrame)
 

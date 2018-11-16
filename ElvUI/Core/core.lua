@@ -141,7 +141,7 @@ function E:ColorizedName(name, arg2)
 end
 
 function E:Print(msg)
-	print(self:ColorizedName("ElvUI", true), msg)
+	(_G[self.db.general.messageRedirect] or DEFAULT_CHAT_FRAME):AddMessage(strjoin("", self:ColorizedName("ElvUI", true), msg)) -- I put DEFAULT_CHAT_FRAME as a fail safe.
 end
 
 E.PriestColors = {

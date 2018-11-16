@@ -5,6 +5,7 @@ P.farmSize = 340
 
 --Core
 P["general"] = {
+	["messageRedirect"] = DEFAULT_CHAT_FRAME:GetName(),
 	["stickyFrames"] = true,
 	["loginmessage"] = true,
 	["autoRepair"] = "NONE",
@@ -94,6 +95,101 @@ P["databars"] = {
 		["mouseover"] = false,
 		["orientation"] = "VERTICAL",
 	},
+}
+
+--Bags
+P["bags"] = {
+	["sortInverted"] = true,
+	["bagSize"] = 34,
+	["bankSize"] = 34,
+	["bagWidth"] = 406,
+	["bankWidth"] = 406,
+	["moneyFormat"] = "SMART",
+	["moneyCoins"] = true,
+	["ignoredItems"] = {},
+	["itemLevel"] = true,
+	["itemLevelThreshold"] = 1,
+	["itemLevelFont"] = "Homespun",
+	["itemLevelFontSize"] = 10,
+	["itemLevelFontOutline"] = "MONOCHROMEOUTLINE",
+	["itemLevelCustomColorEnable"] = false,
+	["itemLevelCustomColor"] = {r = 1, g = 1, b = 1},
+	["countFont"] = "Homespun",
+	["countFontSize"] = 10,
+	["countFontOutline"] = "MONOCHROMEOUTLINE",
+	["countFontColor"] = {r = 1, g = 1, b = 1},
+	["reverseSlots"] = false,
+	["clearSearchOnClose"] = false,
+	["disableBagSort"] = false,
+	["disableBankSort"] = false,
+	["strata"] = "DIALOG",
+	["colors"] = {
+		["profession"] = {
+			["quiver"] = {r = 1, g = 0.56, b = 0.73},
+			["ammoPouch"] = {r = 1, g = 0.56, b = 0.73},
+			["soulBag"] = {r = 0.47, g = 0.26, b = 1},
+			["leatherworking"] = {r = 0.88, g = 0.73, b = 0.29},
+			["herbs"] = {r = 0.07, g = 0.71, b = 0.13},
+			["enchanting"] = {r = 0.76, g = 0.02, b = 0.8},
+			["engineering"] = {r = 0.91, g = 0.46, b = 0.18},
+			["gems"] = {r = 0.03, g = 0.71, b = 0.81},
+			["mining"] = {r = 0.54, g = 0.40, b = 0.04}
+		}
+	},
+	["vendorGrays"] = {
+		["enable"] = false,
+		["interval"] = 0.2,
+		["details"] = false
+	},
+	["split"] = {
+		["bagSpacing"] = 5,
+		["player"] = false,
+		["bank"] = false,
+		["bag1"] = false,
+		["bag2"] = false,
+		["bag3"] = false,
+		["bag4"] = false,
+		["bag5"] = false,
+		["bag6"] = false,
+		["bag7"] = false,
+		["bag8"] = false,
+		["bag9"] = false,
+		["bag10"] = false,
+		["bag11"] = false,
+	},
+	["cooldown"] = {
+		["threshold"] = 4,
+		["override"] = false,
+		["reverse"] = false,
+		["expiringColor"] = {r = 1, g = 0, b = 0},
+		["secondsColor"] = {r = 1, g = 1, b = 1},
+		["minutesColor"] = {r = 1, g = 1, b = 1},
+		["hoursColor"] = {r = 1, g = 1, b = 1},
+		["daysColor"] = {r = 1, g = 1, b = 1},
+
+		["checkSeconds"] = false,
+		["hhmmColor"] = {r = 1, g = 1, b = 1},
+		["mmssColor"] = {r = 1, g = 1, b = 1},
+		["hhmmThreshold"] = -1,
+		["mmssThreshold"] = -1,
+
+		["fonts"] = {
+			["enable"] = false,
+			["font"] = "PT Sans Narrow",
+			["fontOutline"] = "OUTLINE",
+			["fontSize"] = 18
+		}
+	},
+	["bagBar"] = {
+		["growthDirection"] = "VERTICAL",
+		["sortDirection"] = "ASCENDING",
+		["size"] = 30,
+		["spacing"] = 4,
+		["backdropSpacing"] = 4,
+		["showBackdrop"] = false,
+		["mouseover"] = false,
+		["visibility"] = "",
+	}
 }
 
 P["nameplates"] = {
@@ -542,60 +638,6 @@ P["tooltip"] = {
 		[6] = {r = 0, g = 0.6, b = 0.1},
 		[7] = {r = 0, g = 0.6, b = 0.1},
 		[8] = {r = 0, g = 0.6, b = 0.1},
-	}
-}
-
-P["bags"] = {
-	["sortInverted"] = true,
-	["bagSize"] = 34,
-	["bankSize"] = 34,
-	["bagWidth"] = 406,
-	["bankWidth"] = 406,
-	["moneyFormat"] = "SMART",
-	["moneyCoins"] = true,
-	["ignoredItems"] = {},
-	["itemLevel"] = true,
-	["itemLevelThreshold"] = 1,
-	["itemLevelFont"] = "Homespun",
-	["itemLevelFontSize"] = 10,
-	["itemLevelFontOutline"] = "MONOCHROMEOUTLINE",
-	["countFont"] = "Homespun",
-	["countFontSize"] = 10,
-	["countFontOutline"] = "MONOCHROMEOUTLINE",
-	["countFontColor"] = {r = 1, g = 1, b = 1},
-	["reverseSlots"] = false,
-	["clearSearchOnClose"] = false,
-	["disableBagSort"] = false,
-	["disableBankSort"] = false,
-	["vendorGrays"] = {
-		["enable"] = false,
-		["interval"] = 0.2,
-		["details"] = false
-	},
-	["split"] = {
-		["bagSpacing"] = 5,
-		["player"] = false,
-		["bank"] = false,
-		["bag1"] = false,
-		["bag2"] = false,
-		["bag3"] = false,
-		["bag4"] = false,
-		["bag5"] = false,
-		["bag6"] = false,
-		["bag7"] = false,
-		["bag8"] = false,
-		["bag9"] = false,
-		["bag10"] = false,
-		["bag11"] = false,
-	},
-	["bagBar"] = {
-		["growthDirection"] = "VERTICAL",
-		["sortDirection"] = "ASCENDING",
-		["size"] = 30,
-		["spacing"] = 4,
-		["backdropSpacing"] = 4,
-		["showBackdrop"] = false,
-		["mouseover"] = false
 	}
 }
 

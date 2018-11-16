@@ -7,6 +7,17 @@ local getn = table.getn
 --WoW API / Variables
 local CHAT_MSG_EMOTE, GENERAL, NONE, PLAYER, RAID_CONTROL, SAY = CHAT_MSG_EMOTE, GENERAL, NONE, PLAYER, RAID_CONTROL, SAY
 
+local function GetChatWindowInfo()
+	local ChatTabInfo = {}
+	for i = 1, FCF_GetNumActiveChatFrames() do
+		if i ~= 2 then
+			ChatTabInfo["ChatFrame"..i] = _G["ChatFrame"..i.."Tab"]:GetText()
+		end
+	end
+
+	return ChatTabInfo
+end
+
 E.Options.args.general = {
 	type = "group",
 	name = GENERAL,
@@ -50,6 +61,13 @@ E.Options.args.general = {
 					desc = L["The Thin Border Theme option will change the overall apperance of your UI. Using Thin Border Theme is a slight performance increase over the traditional layout."],
 					get = function(info) return E.private.general.pixelPerfect; end,
 					set = function(info, value) E.private.general.pixelPerfect = value; E:StaticPopup_Show("PRIVATE_RL"); end
+				},
+				messageRedirect = {
+					order = 2,
+					type = "select",
+					name = L["Chat Output"],
+					desc = L["This selects the Chat Frame to use as the output of ElvUI messages."],
+					values = GetChatWindowInfo()
 				},
 				interruptAnnounce = {
 					order = 3,
@@ -203,70 +221,11 @@ E.Options.args.general = {
 					min = 0, max = 4, step = 1,
 					get = function(info) return E.db.general.decimalLength end,
 					set = function(info, value) E.db.general.decimalLength = value; E:StaticPopup_Show("GLOBAL_RL") end
-  				},
-				classCacheHeader = {
-					order = 51,
-					type = "header",
-					name = L["Class Cache"]
-				},
-				classCacheEnable = {
-					order = 52,
-					type = "toggle",
-					name = L["Enable"],
-					desc = L["Enable class caching to colorize names in chat and nameplates."],
-					get = function(info) return E.private.general.classCache end,
-					set = function(info, value)
-						E.private.general.classCache = value
-						CC:ToggleModule()
-					end
-				},
-				classCacheStoreInDB = {
-					order = 53,
-					type = "toggle",
-					name = L["Store cache in DB"],
-					desc = L["If cache stored in DB it will be available between game sessions but increase memory usage.\nIn other way it will be wiped on relog or UI reload."],
-					get = function(info) return E.db.general.classCacheStoreInDB end,
-					set = function(info, value)
-						E.db.general.classCacheStoreInDB = value
-						CC:SwitchCacheType()
-					end,
-					disabled = function() return not E.private.general.classCache end
-				},
-				classCacheRequestInfo = {
-					order = 54,
-					type = "toggle",
-					name = L["Request info for class cache"],
-					desc = L["Use LibWho to cache class info"],
-					get = function(info) return E.db.general.classCacheRequestInfo end,
-					set = function(info, value)
-						E.db.general.classCacheRequestInfo = value
-					end,
-					disabled = function() return not E.private.general.classCache end
-				},
-				wipeClassCacheGlobal = {
-					order = 55,
-					type = "execute",
-					name = L["Wipe DB Cache"],
-					func = function()
-						CC:WipeCache(true)
-						GameTooltip:Hide()
-					end,
-					disabled = function() return not CC:GetCacheSize(true) end
-				},
-				wipeClassCacheLocal = {
-					order = 56,
-					type = "execute",
-					name = L["Wipe Session Cache"],
-					func = function()
-						CC:WipeCache()
-						GameTooltip:Hide()
-					end,
-					disabled = function() return not CC:GetCacheSize() end
-				}
+  				}
 			}
 		},
 		media = {
-			order = 6,
+			order = 5,
 			type = "group",
 			name = L["Media"],
 			get = function(info) return E.db.general[ info[getn(info)] ]; end,
@@ -462,6 +421,74 @@ E.Options.args.general = {
 						t.r, t.g, t.b, t.a = r, g, b, a;
 						E:UpdateMedia();
 					end
+				}
+			}
+		},
+		classCache = {
+			order = 6,
+			type = "group",
+			name = L["Class Cache"],
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["Class Cache"]
+				},
+				classCacheEnable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"],
+					desc = L["Enable class caching to colorize names in chat and nameplates."],
+					get = function(info) return E.private.general.classCache end,
+					set = function(info, value)
+						E.private.general.classCache = value
+						CC:ToggleModule()
+					end
+				},
+				classCacheStoreInDB = {
+					order = 3,
+					type = "toggle",
+					name = L["Store cache in DB"],
+					desc = L["If cache stored in DB it will be available between game sessions but increase memory usage.\nIn other way it will be wiped on relog or UI reload."],
+					get = function(info) return E.db.general.classCacheStoreInDB end,
+					set = function(info, value)
+						E.db.general.classCacheStoreInDB = value
+						CC:SwitchCacheType()
+					end,
+					disabled = function() return not E.private.general.classCache end
+				},
+				classCacheRequestInfo = {
+					order = 4,
+					type = "toggle",
+					name = L["Request info for class cache"],
+					desc = L["Use LibWho to cache class info"],
+					get = function(info) return E.db.general.classCacheRequestInfo end,
+					set = function(info, value)
+						E.db.general.classCacheRequestInfo = value
+					end,
+					disabled = function() return not E.private.general.classCache end
+				},
+				wipeClassCacheGlobal = {
+					order = 5,
+					type = "execute",
+					name = L["Wipe DB Cache"],
+					buttonElvUI = true,
+					func = function()
+						CC:WipeCache(true)
+						GameTooltip:Hide()
+					end,
+					disabled = function() return not CC:GetCacheSize(true) end
+				},
+				wipeClassCacheLocal = {
+					order = 6,
+					type = "execute",
+					name = L["Wipe Session Cache"],
+					buttonElvUI = true,
+					func = function()
+						CC:WipeCache()
+						GameTooltip:Hide()
+					end,
+					disabled = function() return not CC:GetCacheSize() end
 				}
 			}
 		},

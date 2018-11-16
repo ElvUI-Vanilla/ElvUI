@@ -89,7 +89,7 @@ local function LoadSkin()
 
 	CraftRequirements:SetTextColor(1, 0.80, 0.10)
 
-	S:HandleCloseButton(CraftFrameCloseButton)
+	S:HandleCloseButton(CraftFrameCloseButton, CraftFrame.backdrop)
 
 	E:StripTextures(CraftExpandButtonFrame)
 
