@@ -1,7 +1,11 @@
 -- Russian localization file for ruRU.
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("ElvUI", "ruRU")
-if not L then return; end
+if not L then return end
+
+--GlobalStrings Override
+GUILD_STATUS = "Данные гильдии"
+PLAYER_STATUS = "Данные игрока"
 
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "Аддон %s не совместим с модулем %s ElvUI. Пожалуйста, выберите отключить ли несовместимый аддон или модуль."
@@ -247,7 +251,7 @@ L["Target Frame"] = "Цель" --Also used in UnitFrames
 L["Target Powerbar"] = "Полоса ресурса цели"
 L["TargetTarget Frame"] = "Цель цели" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "Цель цели цели"
-L["Time Manager Frame"] = true;
+L["Time Manager Frame"] = true
 L["Tooltip"] = "Подсказка"
 L["Watch Frame"] = "Задания"
 L["Weapons"] = "Оружие"

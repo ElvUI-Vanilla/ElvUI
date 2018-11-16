@@ -3,6 +3,10 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("ElvUI", "enUS", true, true);
 if not L then return; end
 
+--GlobalStrings Override
+GUILD_STATUS = "Guild Status"
+PLAYER_STATUS = "Player Status"
+
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "The addon %s is not compatible with ElvUI's %s module. Please select either the addon or the ElvUI module to disable."
 

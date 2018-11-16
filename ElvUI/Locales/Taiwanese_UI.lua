@@ -3,6 +3,10 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("ElvUI", "zhTW")
 if not L then return end
 
+--GlobalStrings Override
+GUILD_STATUS = "公會狀態"
+PLAYER_STATUS = "玩家狀態"
+
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "插件 %s 與 ElvUI 的 %s 模組不相容。請停用不相容的插件，或停用相關的模組."
 
@@ -42,8 +46,8 @@ L["Vendor / Delete Grays"] = true
 
 --Chat
 L["AFK"] = "暫離" --Also used in datatexts and tooltip
-L["BG"] = true;
-L["BGL"] = true;
+L["BG"] = true
+L["BGL"] = true
 L["DND"] = "忙碌" --Also used in datatexts and tooltip
 L["G"] = "公會"
 L["Invalid Target"] = "無效的目標"
@@ -63,8 +67,8 @@ L["Avoidance Breakdown"] = "免傷統計"
 L["Character: "] = "角色: "
 L["Chest"] = "胸部"
 L["Combat"] = "戰鬥"
-L["Combat Time"] = true;
-L["Coords"] = true;
+L["Combat Time"] = true
+L["Coords"] = true
 L["copperabbrev"] = "|cffeda55f銅|r" --Also used in Bags
 L["Deficit:"] = "赤字:"
 L["DPS"] = "傷害輸出"
@@ -79,28 +83,28 @@ L["Home Latency:"] = "本機延遲:"
 L["HP"] = "生命值"
 L["HPS"] = "治療輸出"
 L["lvl"] = "等級"
-L["Miss Chance"] = true;
+L["Miss Chance"] = true
 L["Mitigation By Level: "] = "等級減傷: "
 L["No Guild"] = "沒有公會"
 L["Profit:"] = "利潤: "
 L["Realm time:"] = "伺服器時間:"
-L["Reload UI"] = true;
+L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "重置數據: 按住 Shift + 右鍵點擊"
-L["Right Click: Reset CPU Usage"] = true;
+L["Right Click: Reset CPU Usage"] = true
 L["Saved Raid(s)"] = "已有進度的副本"
 L["Server: "] = "伺服器: "
 L["Session:"] = "本次登入:"
 L["silverabbrev"] = "|cffc7c7cf銀|r" --Also used in Bags
 L["SP"] = "法術能量"
-L["Spell/Heal Power"] = true;
+L["Spell/Heal Power"] = true
 L["Spent:"] = "花費:"
 L["Stats For:"] = "統計:"
-L["System"] = true;
+L["System"] = true
 L["Total CPU:"] = "CPU佔用"
 L["Total Memory:"] = "總記憶體:"
 L["Total: "] = "合計: "
 L["Unhittable:"] = "未命中:"
-L["Wintergrasp"] = true;
+L["Wintergrasp"] = true
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s 嘗試調用保護函數'%s'."
@@ -187,10 +191,10 @@ L["Bars"] = "條" --Also used in UnitFrames
 L["Calendar"] = "日曆"
 L["Can't Roll"] = "無法需求此裝備"
 L["Disband Group"] = "解散隊伍"
-L["Empty Slot"] = true;
+L["Empty Slot"] = true
 L["Enable"] = "啟用" --Doesn't fit a section since it's used a lot of places
 L["Experience"] = "經驗/聲望條"
-L["Farm Mode"] = true;
+L["Farm Mode"] = true
 L["Fishy Loot"] = "貪婪"
 L["Left Click:"] = "滑鼠左鍵：" --layout\layout.lua
 L["Mouse"] = "滑鼠"
@@ -247,10 +251,10 @@ L["Target Frame"] = "目標框架" --Also used in UnitFrames
 L["Target Powerbar"] = "目標能量條"
 L["TargetTarget Frame"] = "目標的目標框架" --Also used in UnitFrames
 L["TargetTargetTarget Frame"] = "目標的目標的目標框架"
-L["Time Manager Frame"] = true;
+L["Time Manager Frame"] = true
 L["Tooltip"] = "浮動提示"
-L["Watch Frame"] = true;
-L["Weapons"] = true;
+L["Watch Frame"] = true
+L["Weapons"] = true
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."
 
 --Plugin Installer

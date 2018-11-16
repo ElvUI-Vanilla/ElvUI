@@ -1,7 +1,11 @@
 -- Chinese localization file for zhCN.
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("ElvUI", "zhCN")
+local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
+local L = AceLocale:NewLocale("ElvUI", "zhCN");
 if not L then return end
+
+--GlobalStrings Override
+GUILD_STATUS = "公会状态"
+PLAYER_STATUS = "玩家状态"
 
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "插件 %s 不相容于 ElvUI 的 %s 模组, 请停用不相容的插件, 或停用模组."
@@ -42,8 +46,8 @@ L["Vendor / Delete Grays"] = "出售/删除灰色物品"
 
 --Chat
 L["AFK"] = "离开" --Also used in datatexts and tooltip
-L["BG"] = true;
-L["BGL"] = true;
+L["BG"] = true
+L["BGL"] = true
 L["DND"] = "忙碌" --Also used in datatexts and tooltip
 L["G"] = "公会"
 L["Invalid Target"] = "无效的目标"
@@ -63,7 +67,7 @@ L["Avoidance Breakdown"] = "免伤统计"
 L["Character: "] = "角色: "
 L["Chest"] = "胸"
 L["Combat"] = "战斗"
-L["Combat Time"] = true;
+L["Combat Time"] = true
 L["Coords"] = "坐标"
 L["copperabbrev"] = "|cffeda55f铜|r"
 L["Deficit:"] = "赤字:"
@@ -79,14 +83,14 @@ L["Home Latency:"] = "本机延迟:"
 L["HP"] = "生命值"
 L["HPS"] = "治疗输出"
 L["lvl"] = "等级"
-L["Miss Chance"] = true;
+L["Miss Chance"] = true
 L["Mitigation By Level: "] = "等级减伤: "
 L["No Guild"] = "没有公会"
 L["Profit:"] = "利润:"
 L["Realm time:"] = "服务器时间："
-L["Reload UI"] = true;
+L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "重置数据: 按住 Shift + 右键点击"
-L["Right Click: Reset CPU Usage"] = true;
+L["Right Click: Reset CPU Usage"] = true
 L["Saved Raid(s)"] = "已有进度的副本"
 L["Server: "] = "服务器: "
 L["Session:"] = "本次登陆:"
@@ -100,7 +104,7 @@ L["Total CPU:"] = "CPU占用"
 L["Total Memory:"] = "总内存:"
 L["Total: "] = "合计: "
 L["Unhittable:"] = "未命中:"
-L["Wintergrasp"] = true;
+L["Wintergrasp"] = true
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s 尝试调用保护函数 '%s'."
@@ -190,7 +194,7 @@ L["Disband Group"] = "解散队伍"
 L["Empty Slot"] = "空拾取位"
 L["Enable"] = "启用"
 L["Experience"] = "经验/声望条"
-L["Farm Mode"] = true;
+L["Farm Mode"] = true
 L["Fishy Loot"] = "贪婪"
 L["Left Click:"] = "左键:"
 L["Mouse"] = "老鼠"
@@ -247,10 +251,10 @@ L["Target Frame"] = "目标框架"
 L["Target Powerbar"] = "目标能量条"
 L["TargetTarget Frame"] = "目标的目标框架"
 L["TargetTargetTarget Frame"] = "目标的目标的目标框架"
-L["Time Manager Frame"] = true;
+L["Time Manager Frame"] = true
 L["Tooltip"] = "鼠标提示"
-L["Watch Frame"] = true;
-L["Weapons"] = true;
+L["Watch Frame"] = true
+L["Weapons"] = true
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."
 
 --Plugin Installer
@@ -301,7 +305,7 @@ L["Discard"] = "取消"
 L["Do you enjoy the new ElvUI?"] = "你喜欢新的ElvUI么？"
 L["Do you swear not to post in technical support about something not working without first disabling the addon/module combination first?"] = "你发誓在你没停用其他插件前不会到技术支持询问某些功能失效吗？"
 L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = "ElvUI已过期5个或者更多的版本。你可以在 https://github.com/ElvUI-Vanilla/ElvUI/ 下载到最新的版本"
-L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = true;
+L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = true
 L["ElvUI needs to perform database optimizations please be patient."] = "ElvUI需要进行数据库优化, 请耐性等待."
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "移动鼠标到动作条或技能书按钮上绑定快捷键. 按ESC或鼠标右键取消目前快捷键"
 L["I Swear"] = "我承诺"

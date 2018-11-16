@@ -1,7 +1,11 @@
 -- Portuguese localization file for ptBR.
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("ElvUI", "ptBR")
+local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
+local L = AceLocale:NewLocale("ElvUI", "ptBR");
 if not L then return end
+
+--GlobalStrings Override
+GUILD_STATUS = "Status da guilda"
+PLAYER_STATUS = "Status do Jogador"
 
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "The addon %s is not compatible with ElvUI's %s module. Please select either the addon or the ElvUI module to disable."
@@ -30,10 +34,10 @@ L["Remove Bar %d Action Page"] = "Remover paginação de ação da barra %d."
 L["Trigger"] = "Gatilho"
 
 --Bags
-L["Bank"] = true;
+L["Bank"] = true
 L["Hold Control + Right Click:"] = "Segurar Control + Clique Direito:"
 L["Hold Shift + Drag:"] = "Segurar Shift + Arrastar:"
-L["Purchase Bags"] = true;
+L["Purchase Bags"] = true
 L["Reset Position"] = "Redefinir Posição"
 L["Sort Bags"] = "Organizar Bolsas"
 L["Temporary Move"] = "Mover Temporariamente"
@@ -42,8 +46,8 @@ L["Vendor / Delete Grays"] = true
 
 --Chat
 L["AFK"] = "LDT"
-L["BG"] = true;
-L["BGL"] = true;
+L["BG"] = true
+L["BGL"] = true
 L["DND"] = "NP"
 L["G"] = "G"
 L["Invalid Target"] = "Alvo inválido"
@@ -62,45 +66,45 @@ L["(Hold Shift) Memory Usage"] = "(Segurar Shift) Memória em Uso"
 L["Avoidance Breakdown"] = "Separação de Anulação"
 L["Character: "] = "Personagem: "
 L["Chest"] = "Torso"
-L["Combat"] = true;
-L["Combat Time"] = true;
-L["Coords"] = true;
+L["Combat"] = true
+L["Combat Time"] = true
+L["Coords"] = true
 L["copperabbrev"] = "|cffeda55fc|r"
 L["Deficit:"] = "Défice:"
 L["DPS"] = "DPS"
 L["Earned:"] = "Ganho:"
 L["Friends List"] = "Lista de Amigos"
 L["Friends"] = "Amigos"
-L["Gold"] = true;
+L["Gold"] = true
 L["goldabbrev"] = "|cffffd700g|r"
 L["Hit"] = "Acerto"
-L["Hold Shift + Right Click:"] = true;
+L["Hold Shift + Right Click:"] = true
 L["Home Latency:"] = "Latência de Casa:"
 L["HP"] = "PV"
 L["HPS"] = "PVS"
 L["lvl"] = "nível"
-L["Miss Chance"] = true;
+L["Miss Chance"] = true
 L["Mitigation By Level: "] = "Mitigação por nível"
 L["No Guild"] = "Sem Guilda"
 L["Profit:"] = "Lucro:"
 L["Realm time:"] = "Hora do reino:"
-L["Reload UI"] = true;
+L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "Redefinir Dados: Segurar Shifr + Clique Direito"
-L["Right Click: Reset CPU Usage"] = true;
+L["Right Click: Reset CPU Usage"] = true
 L["Saved Raid(s)"] = "Raide(s) Salva(s)"
 L["Server: "] = "Servidor: "
 L["Session:"] = "Sessão:"
 L["silverabbrev"] = "|cffc7c7cfs|r"
 L["SP"] = "PM"
-L["Spell/Heal Power"] = true;
+L["Spell/Heal Power"] = true
 L["Spent:"] = "Gasto:"
 L["Stats For:"] = "Estatísticas para:"
-L["System"] = true;
+L["System"] = true
 L["Total CPU:"] = "CPU Total:"
 L["Total Memory:"] = "Memória Total:"
 L["Total: "] = "Total: "
 L["Unhittable:"] = "Inacertável"
-L["Wintergrasp"] = true;
+L["Wintergrasp"] = true
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s tentou chamar a função protegida '%s'."
@@ -119,9 +123,9 @@ L["Request was denied by user."] = "Pedido negado pelo usuário."
 L["Your profile was successfully recieved by the player."] = "Seu perfil foi recebido com sucesso pelo jogador."
 
 --Install
-L["Aura Bars & Icons"] = true;
+L["Aura Bars & Icons"] = true
 L["Auras Set"] = "Auras configuradas"
-L["Auras"] = true;
+L["Auras"] = true
 L["Caster DPS"] = "DPS Lançador"
 L["Chat Set"] = "Bate-Papo configurado"
 L["Choose a theme layout you wish to use for your initial setup."] = "Escolha o tema de layout que deseje usar inicialmente."
@@ -156,7 +160,7 @@ L["Please click the button below to setup your CVars."] = "Por favor, clique no 
 L["Please press the continue button to go onto the next step."] = "Por favor, pressione o botão Continuar para passar à próxima etapa."
 L["Resolution Style Set"] = "Estilo de Resolução defenido"
 L["Resolution"] = "Resolução"
-L["Select the type of aura system you want to use with ElvUI's unitframes. Set to Aura Bar & Icons to use both aura bars and icons, set to icons only to only see icons."] = true;
+L["Select the type of aura system you want to use with ElvUI's unitframes. Set to Aura Bar & Icons to use both aura bars and icons, set to icons only to only see icons."] = true
 L["Setup Chat"] = "Configurar Bate-papo"
 L["Setup CVars"] = "Configurar CVars"
 L["Skip Process"] = "Pular Processo"
@@ -172,7 +176,7 @@ L["This part of the installation process sets up your chat windows names, positi
 L["This part of the installation process sets up your World of Warcraft default options it is recommended you should do this step for everything to behave properly."] = "Esta parte da instalação serve para definir as suas opcões padrão do WoW, é recomendado fazer isto para que tudo funcione corretamente."
 L["This resolution doesn't require that you change settings for the UI to fit on your screen."] = "Esta resolução não exige que altere as definições para que a interface caiba no seu ecrã (monitor)."
 L["This resolution requires that you change some settings to get everything to fit on your screen."] = "Esta resolução requer que altere algumas definições para que tudo caiba no seu ecrã (monitor)."
-L["This will change the layout of your unitframes and actionbars."] = true;
+L["This will change the layout of your unitframes and actionbars."] = true
 L["Trade"] = "Comércio"
 L["Welcome to ElvUI version %s!"] = "Bem-vindo à versão %s da ElvUI!"
 L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-Vanilla/ElvUI"] = "O processo de instalação está agora terminado. Se precisar de suporte técnico por favor visite-nos no site https://github.com/ElvUI-Vanilla/ElvUI"
@@ -187,10 +191,10 @@ L["Bars"] = "Barras"
 L["Calendar"] = "Calendário"
 L["Can't Roll"] = "Não pode rolar"
 L["Disband Group"] = "Dissolver Grupo"
-L["Empty Slot"] = true;
+L["Empty Slot"] = true
 L["Enable"] = "Ativar"
 L["Experience"] = "Experiência"
-L["Farm Mode"] = true;
+L["Farm Mode"] = true
 L["Fishy Loot"] = "Saque de Peixes"
 L["Left Click:"] = "Clique Esquerdo:"
 L["Mouse"] = "rato"
@@ -205,12 +209,12 @@ L["XP:"] = "XP:"
 L["You don't have permission to mark targets."] = "Você não tem permissão para marcar alvos."
 
 --Movers
-L["Bag Mover (Grow Down)"] = true;
-L["Bag Mover (Grow Up)"] = true;
-L["Bag Mover"] = true;
+L["Bag Mover (Grow Down)"] = true
+L["Bag Mover (Grow Up)"] = true
+L["Bag Mover"] = true
 L["Bags"] = "Bolsas"
-L["Bank Mover (Grow Down)"] = true;
-L["Bank Mover (Grow Up)"] = true;
+L["Bank Mover (Grow Down)"] = true
+L["Bank Mover (Grow Up)"] = true
 L["Bar "] = "Barra "
 L["Classbar"] = "Barra da Classe"
 L["Experience Bar"] = "Barra de Experiência"
@@ -220,45 +224,45 @@ L["FocusTarget Frame"] = "Quadro do Alvo do Foco"
 L["GM Ticket Frame"] = "Quadro de Consulta com GM"
 L["Left Chat"] = "Bate-papo esquerdo"
 L["Loot / Alert Frames"] = "Quadro de Saque / Alerta"
-L["Loot Frame"] = true;
+L["Loot Frame"] = true
 L["MA Frames"] = "Quadro do Assistente Principal"
 L["Micro Bar"] = "Micro Barra"
 L["Minimap"] = "Minimapa"
-L["MirrorTimer"] = true;
+L["MirrorTimer"] = true
 L["MT Frames"] = "Quadro do Tank Principal"
 L["Party Frames"] = "Quadros de Grupo"
 L["Pet Bar"] = "Barra do Ajudante"
-L["Pet Castbar"] = true;
+L["Pet Castbar"] = true
 L["Pet Frame"] = "Quadro do Ajudante"
 L["PetTarget Frame"] = "Quadro do Alvo do Ajudante"
-L["Player Buffs"] = true;
+L["Player Buffs"] = true
 L["Player Castbar"] = "Barra de lançamento do Jogador"
-L["Player Debuffs"] = true;
+L["Player Debuffs"] = true
 L["Player Frame"] = "Quadro do Jogador"
-L["Player Powerbar"] = true;
-L["Raid Frames"] = true;
-L["Raid Pet Frames"] = true;
-L["Raid-40 Frames"] = true;
+L["Player Powerbar"] = true
+L["Raid Frames"] = true
+L["Raid Pet Frames"] = true
+L["Raid-40 Frames"] = true
 L["Reputation Bar"] = "Barra de Reputação"
 L["Right Chat"] = "Bate-papo direito"
 L["Stance Bar"] = "Barra de Postura"
 L["Target Castbar"] = "Barra de lançamento do Alvo"
 L["Target Frame"] = "Quadro do Alvo"
-L["Target Powerbar"] = true;
+L["Target Powerbar"] = true
 L["TargetTarget Frame"] = "Quadro do Alvo do Alvo"
-L["TargetTargetTarget Frame"] = true;
-L["Time Manager Frame"] = true;
+L["TargetTargetTarget Frame"] = true
+L["Time Manager Frame"] = true
 L["Tooltip"] = "Tooltip"
-L["Watch Frame"] = true;
-L["Weapons"] = true;
+L["Watch Frame"] = true
+L["Weapons"] = true
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."
 
 --Plugin Installer
-L["ElvUI Plugin Installation"] = true;
-L["In Progress"] = true;
-L["List of installations in queue:"] = true;
-L["Pending"] = true;
-L["Steps"] = true;
+L["ElvUI Plugin Installation"] = true
+L["In Progress"] = true
+L["List of installations in queue:"] = true
+L["Pending"] = true
+L["Steps"] = true
 
 --Prints
 L[" |cff00ff00bound to |r"] = " |cff00ff00Ligado a |r"
@@ -272,7 +276,7 @@ L["Binds Saved"] = "Ligações Salvas"
 L["Confused.. Try Again!"] = "Confuso... Tente novamente!"
 L["No gray items to delete."] = "Nenhum item cinzento para destruir."
 L["The spell '%s' has been added to the Blacklist unitframe aura filter."] = "O feitiço '%s' foi adicionado à Lista Negra dos filtros das auras de unidades."
-L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."] = true;
+L["This setting caused a conflicting anchor point, where '%s' would be attached to itself. Please check your anchor points. Setting '%s' to be attached to '%s'."] = true
 L["Vendored gray items for:"] = "Vendeu os itens cinzentos por:"
 L["You don't have enough money to repair."] = "Você não tem dinheiro suficiente para reparar."
 L["You must be at a vendor."] = "Tem de estar num vendedor."
@@ -289,7 +293,7 @@ L["Track"] = "Listar"
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "A definição que você alterou afetará apenas este personagem. Esta definição que você alterou não será afetada por mudanças de perfil. Alterar esta difinição requer que você recarregue a sua interface."
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
-L["Are you sure you want to apply this font to all ElvUI elements?"] = true;
+L["Are you sure you want to apply this font to all ElvUI elements?"] = true
 L["Are you sure you want to disband the group?"] = "Tem a certeza de que quer dissolver o grupo?"
 L["Are you sure you want to reset all the settings on this profile?"] = "Tem certeza que quer redefinir todas as configurações desse perfil?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "Tem a certeza de que deseja restaurar todos os movedores de volta para a sua posição padrão?"
@@ -298,31 +302,31 @@ L["Can't buy anymore slots!"] = "Não é possível comprar mais espaços!"
 L["Delete gray items?"] = true
 L["Disable Warning"] = "Desativar Aviso"
 L["Discard"] = "Descartar"
-L["Do you enjoy the new ElvUI?"] = true;
+L["Do you enjoy the new ElvUI?"] = true
 L["Do you swear not to post in technical support about something not working without first disabling the addon/module combination first?"] = "Você jura não postar no suporte técnico sobre alguma coisa não funcionando sem antes desabilitar a combinação addon/módulo?"
-L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = true;
-L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = true;
-L["ElvUI needs to perform database optimizations please be patient."] = true;
+L["ElvUI is five or more revisions out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = true
+L["ElvUI is out of date. You can download the newest version from https://github.com/ElvUI-Vanilla/ElvUI/"] = true
+L["ElvUI needs to perform database optimizations please be patient."] = true
 L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."] = "Paire com o seu rato (mouse) sobre qualquer botão de ação ou botão do grimório para fazer uma Ligação. Pressione a tecla Escape ou clique com o botão direito para limpar o atalho atual."
 L["I Swear"] = "Eu Juro"
-L["No, Revert Changes!"] = true;
+L["No, Revert Changes!"] = true
 L["Oh lord, you have got ElvUI and Tukui both enabled at the same time. Select an addon to disable."] = "Oh senhor, você está com os addons ElvUI e Tuki ativos ao mesmo tempo. Selecione um para desativar."
 L["One or more of the changes you have made require a ReloadUI."] = "Uma ou mais das alterações que fez requerem que recarregue a IU."
 L["One or more of the changes you have made will effect all characters using this addon. You will have to reload the user interface to see the changes you have made."] = "Uma ou mais das alterações que fez afetará todos os personagens que usam este addon. Você terá que recarregar a interface para ver as alterações que fez."
 L["Save"] = "Salvar"
-L["The profile you tried to import already exists. Choose a new name or accept to overwrite the existing profile."] = true;
-L["Type /hellokitty to revert to old settings."] = true;
+L["The profile you tried to import already exists. Choose a new name or accept to overwrite the existing profile."] = true
+L["Type /hellokitty to revert to old settings."] = true
 L["Using the healer layout it is highly recommended you download the addon Clique if you wish to have the click-to-heal function."] = "Ao usar o leioute de curandeiro é altamente recomendado que você baixe o addon Clique se quiser ter a função de clicar-para-curar."
-L["Yes, Keep Changes!"] = true;
-L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = true;
+L["Yes, Keep Changes!"] = true
+L["You have changed the Thin Border Theme option. You will have to complete the installation process to remove any graphical bugs."] = true
 L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = "Você mudou a Escala da sua IU, no entanto ainda tem a opção de dimensionamento automático ativa na ElvUI. Pressione Aceitar se gostaria de desativar a opção de dimensionamento automático."
-L["You have imported settings which may require a UI reload to take effect. Reload now?"] = true;
+L["You have imported settings which may require a UI reload to take effect. Reload now?"] = true
 L["You must purchase a bank slot first!"] = "Você deve comprar um espaço no banco primeiro!"
 
 --Tooltip
 L["Count"] = "Contar"
-L["Item Level:"] = true;
-L["Talent Specialization:"] = true;
+L["Item Level:"] = true
+L["Talent Specialization:"] = true
 L["Targeted By:"] = "Sendo Alvo de:"
 
 --Tutorials
@@ -341,6 +345,6 @@ L["You can toggle the microbar by using your middle mouse button on the minimap 
 L["You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame"] = "Você pode usar o comando /resetui para restaurar todos os movedores. Pode usar este comando também para restaurar um movedor especifico escrevendo /resetui <nome do movedor> \nExemplo: /resetui Player Frame"
 
 --UnitFrames
-L["Dead"] = true;
+L["Dead"] = true
 L["Ghost"] = "Fantasma"
 L["Offline"] = "Desconectado"

@@ -1,7 +1,11 @@
 -- Spanish localization file for esES and esMX.
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("ElvUI", "esES") or AceLocale:NewLocale("ElvUI", "esMX")
+local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
+local L = AceLocale:NewLocale("ElvUI", "esES") or AceLocale:NewLocale("ElvUI", "esMX");
 if not L then return end
+
+--GlobalStrings Override
+GUILD_STATUS = "Estado herm."
+PLAYER_STATUS = "Estado del jugador"
 
 --*_ADDON locales
 L["INCOMPATIBLE_ADDON"] = "The addon %s is not compatible with ElvUI's %s module. Please select either the addon or the ElvUI module to disable."
@@ -42,8 +46,8 @@ L["Vendor / Delete Grays"] = true
 
 --Chat
 L["AFK"] = "Ausente"
-L["BG"] = true;
-L["BGL"] = true;
+L["BG"] = true
+L["BGL"] = true
 L["DND"] = "Oc"
 L["G"] = "H"
 L["Invalid Target"] = "Objetivo Inválido"
@@ -63,8 +67,8 @@ L["Avoidance Breakdown"] = "Desglose de Evasión"
 L["Character: "] = "Personaje: "
 L["Chest"] = "Pecho"
 L["Combat"] = "Combate"
-L["Combat Time"] = true;
-L["Coords"] = true;
+L["Combat Time"] = true
+L["Coords"] = true
 L["copperabbrev"] = "|cffeda55fc|r"
 L["Deficit:"] = "Déficit:"
 L["DPS"] = "DPS"
@@ -74,33 +78,33 @@ L["Friends"] = "Amigos"
 L["Gold"] = "Oro"
 L["goldabbrev"] = "|cffffd700g|r"
 L["Hit"] = "Golpe"
-L["Hold Shift + Right Click:"] = true;
+L["Hold Shift + Right Click:"] = true
 L["Home Latency:"] = "Latencia Local:"
 L["HP"] = "Salud"
 L["HPS"] = "VPS"
 L["lvl"] = "Niv"
-L["Miss Chance"] = true;
+L["Miss Chance"] = true
 L["Mitigation By Level: "] = "Mitigación Por Nivel: "
 L["No Guild"] = "Sin Hermandad"
 L["Profit:"] = "Ganancia:"
 L["Realm time:"] = "Hora del reino:"
-L["Reload UI"] = true;
+L["Reload UI"] = true
 L["Reset Data: Hold Shift + Right Click"] = "Restablecer Datos: Mantén Shift + Clic Derecho"
-L["Right Click: Reset CPU Usage"] = true;
+L["Right Click: Reset CPU Usage"] = true
 L["Saved Raid(s)"] = "Banda(s) Guardada(s)"
 L["Server: "] = "Servidor: "
 L["Session:"] = "Sesión:"
 L["silverabbrev"] = "|cffc7c7cfs|r"
 L["SP"] = "PH"
-L["Spell/Heal Power"] = true;
+L["Spell/Heal Power"] = true
 L["Spent:"] = "Gastada:"
 L["Stats For:"] = "Estadísticas para:"
-L["System"] = true;
+L["System"] = true
 L["Total CPU:"] = "CPU Total:"
 L["Total Memory:"] = "Memoria Total:"
 L["Total: "] = "Total: "
 L["Unhittable:"] = "Imbatible:"
-L["Wintergrasp"] = true;
+L["Wintergrasp"] = true
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s intentó llamar a la función protegida '%s'."
@@ -121,7 +125,7 @@ L["Your profile was successfully recieved by the player."] = "Tu perfil ha sido 
 --Install
 L["Aura Bars & Icons"] = "Barras de Auras e Iconos"
 L["Auras Set"] = "Auras Configuradas"
-L["Auras"] = true;
+L["Auras"] = true
 L["Caster DPS"] = "DPS Hechizos"
 L["Chat Set"] = "Chat Configurado"
 L["Choose a theme layout you wish to use for your initial setup."] = "Elige un tema de distribución para usar en tu configuración inicial."
@@ -187,10 +191,10 @@ L["Bars"] = "Barras"
 L["Calendar"] = "Calendario"
 L["Can't Roll"] = "No puede tirar dados"
 L["Disband Group"] = "Disolver Grupo"
-L["Empty Slot"] = true;
+L["Empty Slot"] = true
 L["Enable"] = "Habilitar"
 L["Experience"] = "Experiencia"
-L["Farm Mode"] = true;
+L["Farm Mode"] = true
 L["Fishy Loot"] = "Botín Sospechoso"
 L["Left Click:"] = "Click Izquierdo"
 L["Mouse"] = "Ratón"
@@ -224,7 +228,7 @@ L["Loot Frame"] = "Marco de Botín"
 L["MA Frames"] = "Marcos de AP"
 L["Micro Bar"] = "Micro Barra"
 L["Minimap"] = "Minimapa"
-L["MirrorTimer"] = true;
+L["MirrorTimer"] = true
 L["MT Frames"] = "Marcos de TP"
 L["Party Frames"] = "Marco de Grupo"
 L["Pet Bar"] = "Barra de Mascota"
@@ -247,10 +251,10 @@ L["Target Frame"] = "Marco de Objetivo"
 L["Target Powerbar"] = "Barra de Poder del Objetivo"
 L["TargetTarget Frame"] = "Marco de Objetivo de Objetivo"
 L["TargetTargetTarget Frame"] = "Marco del Objetivo del Objetivo del Objetivo"
-L["Time Manager Frame"] = true;
+L["Time Manager Frame"] = true
 L["Tooltip"] = "Descripción Emergente"
-L["Watch Frame"] = true;
-L["Weapons"] = true;
+L["Watch Frame"] = true
+L["Weapons"] = true
 L["DESC_MOVERCONFIG"] = "Movers unlocked. Move them now and click Lock when you are done./nOptions:/nShift + RightClick - Hides mover temporarily./nCtrl + RightClick - Resets mover position to default."
 
 --Plugin Installer
@@ -289,7 +293,7 @@ L["Track"] = "Seguim."
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "La opción que has cambiado se aplicará sólo para este personaje. Esta opción no se verá alterada al cambiar el perfil de usuario. Cambiar esta opción requiere que recargues tu Interfaz de Usuario."
 L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true
 L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true
-L["Are you sure you want to apply this font to all ElvUI elements?"] = true;
+L["Are you sure you want to apply this font to all ElvUI elements?"] = true
 L["Are you sure you want to disband the group?"] = "¿Estás seguro que quieres deshacer el grupo?"
 L["Are you sure you want to reset all the settings on this profile?"] = "¿Estás seguro que deseas restablecer todos los ajustes de este perfil?"
 L["Are you sure you want to reset every mover back to it's default position?"] = "¿Estás seguro que quieres resetear cada fijador a su posición por defecto?"
@@ -341,6 +345,6 @@ L["You can toggle the microbar by using your middle mouse button on the minimap 
 L["You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame"] = "Puedes usar el commando /resetui para restablecer todos tus fijadores. También puedes usar el comando para restablecer alguno en específico, /resetui <fijador>. PE: /resetui Player Frame"
 
 --UnitFrames
-L["Dead"] = true;
+L["Dead"] = true
 L["Ghost"] = "Fantasma"
 L["Offline"] = "Fuera de Línea"
