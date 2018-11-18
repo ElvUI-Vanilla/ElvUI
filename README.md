@@ -1,7 +1,3 @@
-# NOTE: STILL UNDER DEVELOPMENT
-### IF YOU WANT TO TEST AND HELP SUBMIT FEEDBACK OR PULL REQUESTS, PLEASE DO SO IN OUR "DEV" BRANCH: 
-https://github.com/ElvUI-Vanilla/ElvUI/commits/dev
-
 # ElvUI - Vanilla (1.12.1)
 
 This is the backported version of ElvUI for World of Warcraft - Vanilla (1.12.1) 
@@ -41,10 +37,6 @@ This UI will arrange your interface to be more flexible and practical.
     /ec or /elvui     Toggle the configuration GUI.
     /rl or /reloadui  Reload the whole UI.
     /moveui           Open the movable frames options.
-    /bgstats          Toggles Battleground datatexts to display info when inside a battleground.
-    /hellokitty       Enables the Hello Kitty theme (can be reverted by repeating the command).
-    /hellokittyfix    Fixes any colors or borders to default after using /hellokitty. Optional Use.
-    /harlemshake      Enables Harlem Shake april fools joke. (DO THE HARLEM SHAKE!)
     /egrid            Toggles visibility of the grid for helping placement of thirdparty addons.
     /farmmode         Toggles the Minimap Farmmode.
     /in               The input of how many seconds you want a command to fire. 
@@ -63,8 +55,6 @@ This UI will arrange your interface to be more flexible and practical.
     /etrace           Toggles events window.
     /luaerror on      Enable luaerrors.
     /luaerror off     Disable luaerrors.
-    /cpuimpact        Toggles calculations of CPU Impact. Type /cpuimpact to get results when you are ready.
-    /cpuusage         Calculates and dumps CPU usage differences (module: all, showall: false, minCalls: 15, delay: 5).
     /frame            Command to grab frame information when mouseing over a frame or when inputting the name.
                           usage: /frame (when mousing over frame) or /frame <name>
                           example: /frame WorldFrame
