@@ -42,20 +42,48 @@ local function SkinButton(f, strip, noTemplate)
 end
 
 local function SkinDropdownPullout(self)
-	if self.obj.pullout.frame.template and self.obj.pullout.slider.template then return end
+	if self and self.obj then
+		local pullout = self.obj.pullout
+		local dropdown = self.obj.dropdown
 
-	if not self.obj.pullout.frame.template then
-		E:SetTemplate(self.obj.pullout.frame, "Default", true)
-	end
+		if pullout and pullout.frame then
+			if pullout.frame.template and pullout.slider.template then return end
 
-	if not self.obj.pullout.slider.template then
-		E:SetTemplate(self.obj.pullout.slider, "Default")
-		E:Point(self.obj.pullout.slider, "TOPRIGHT", self.obj.pullout.frame, "TOPRIGHT", -10, -10)
-		E:Point(self.obj.pullout.slider, "BOTTOMRIGHT", self.obj.pullout.frame, "BOTTOMRIGHT", -10, 10)
-		if self.obj.pullout.slider:GetThumbTexture() then
-			self.obj.pullout.slider:SetThumbTexture(E.media.normTex)
-			self.obj.pullout.slider:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
-			E:Size(self.obj.pullout.slider:GetThumbTexture(), 10, 14)
+			if not pullout.frame.template then
+				E:SetTemplate(pullout.frame, "Default", true)
+			end
+
+			if not pullout.slider.template then
+				E:SetTemplate(pullout.slider, "Default")
+				E:Point(pullout.slider, "TOPRIGHT", pullout.frame, "TOPRIGHT", -10, -10)
+				E:Point(pullout.slider, "BOTTOMRIGHT", pullout.frame, "BOTTOMRIGHT", -10, 10)
+				if pullout.slider:GetThumbTexture() then
+					pullout.slider:SetThumbTexture(E.media.normTex)
+					pullout.slider:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+					E:Size(pullout.slider:GetThumbTexture(), 10, 14)
+				end
+			end
+		elseif dropdown then
+			E:SetTemplate(dropdown, "Default", true)
+
+			if dropdown.slider then
+				E:SetTemplate(dropdown.slider, "Default")
+				E:Point(dropdown.slider, "TOPRIGHT", dropdown, "TOPRIGHT", -10, -10)
+				E:Point(dropdown.slider, "BOTTOMRIGHT", dropdown, "BOTTOMRIGHT", -10, 10)
+
+				if dropdown.slider:GetThumbTexture() then
+					dropdown.slider:SetThumbTexture(E.media.normTex)
+					dropdown.slider:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+					E:Size(dropdown.slider:GetThumbTexture(), 10, 14)
+				end
+			end
+
+			if TYPE == "LSM30_Sound" then
+				local frame = self.obj.frame
+				local width = frame:GetWidth()
+				E:Point(dropdown, "TOPLEFT", frame, "BOTTOMLEFT")
+				E:Point(dropdown, "TOPRIGHT", frame, "BOTTOMRIGHT", width < 160 and (160 - width) or 30, 0)
+			end
 		end
 	end
 end
@@ -81,6 +109,7 @@ function S:SkinAce3()
 			SkinButton(widget.button)
 			S:HandleScrollBar(widget.scrollBar)
 			E:Point(widget.scrollBar, "RIGHT", frame, "RIGHT", 0 -4)
+
 			E:Point(scrollBG, "TOPRIGHT", widget.scrollBar, "TOPLEFT", -2, 19)
 			E:Point(scrollBG, "BOTTOMLEFT", widget.button, "TOPLEFT")
 			E:Point(widget.scrollFrame, "BOTTOMRIGHT", scrollBG, "BOTTOMRIGHT", -4, 8)
@@ -117,7 +146,7 @@ function S:SkinAce3()
 				E:CreateBackdrop(frame, "Default")
 			end
 
-			E:Point(frame.backdrop, "TOPLEFT", 15, -2)
+			E:Point(frame.backdrop, "TOPLEFT", 17, -2)
 			E:Point(frame.backdrop, "BOTTOMRIGHT", -21, 0)
 
 			widget.label:ClearAllPoints()
@@ -128,6 +157,9 @@ function S:SkinAce3()
 			E:Point(button, "RIGHT", frame.backdrop, "RIGHT", -2, 0)
 			button:SetParent(frame.backdrop)
 
+			text:ClearAllPoints()
+			E:Point(text, "RIGHT", frame.backdrop, "RIGHT", -26, 2)
+			E:Point(text, "LEFT", frame.backdrop, "LEFT", 2, 0)
 			text:SetParent(frame.backdrop)
 
 			HookScript(button, "OnClick", SkinDropdownPullout)
@@ -176,30 +208,7 @@ function S:SkinAce3()
 			button:SetParent(frame.backdrop)
 			text:SetParent(frame.backdrop)
 
-			HookScript(button, "OnClick", function(self)
-				local dropdown = self.obj.dropdown
-				if dropdown then
-					E:SetTemplate(dropdown, "Default", true)
-					if dropdown.slider then
-						E:SetTemplate(dropdown.slider, "Transparent")
-						E:Point(dropdown.slider, "TOPRIGHT", dropdown, "TOPRIGHT", -10, -10)
-						E:Point(dropdown.slider, "BOTTOMRIGHT", dropdown, "BOTTOMRIGHT", -10, 10)
-
-						if dropdown.slider:GetThumbTexture() then
-							dropdown.slider:SetThumbTexture(E.media.normTex)
-							dropdown.slider:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
-							E:Size(dropdown.slider:GetThumbTexture(), 10, 14)
-						end
-					end
-
-					if TYPE == "LSM30_Sound" then
-						local frame = self.obj.frame
-						local width = frame:GetWidth()
-						E:Point(dropdown, "TOPLEFT", frame, "BOTTOMLEFT")
-						E:Point(dropdown, "TOPRIGHT", frame, "BOTTOMRIGHT", width < 160 and (160 - width) or 30, 0)
-					end
-				end
-			end)
+			HookScript(button, "OnClick", SkinDropdownPullout)
 		elseif TYPE == "EditBox" then
 			local frame = widget.editbox
 			local button = widget.button
@@ -235,23 +244,6 @@ function S:SkinAce3()
 			E:SetInside(frame.backdrop)
 
 			widget.text:SetParent(frame.backdrop)
-		elseif TYPE == "Keybinding" then
-			local button = widget.button
-			local msgframe = widget.msgframe
-			local msg = widget.msgframe.msg
-
-			SkinButton(button)
-
-			E:StripTextures(msgframe)
-			E:CreateBackdrop(msgframe, "Default", true)
-			E:SetInside(msgframe.backdrop)
-			msgframe:SetToplevel(true)
-
-			msg:ClearAllPoints()
-			E:Point(msg, "LEFT", 10, 0)
-			E:Point(msg, "RIGHT", -10, 0)
-			msg:SetJustifyV("MIDDLE")
-			E:Width(msg, msg:GetWidth() + 10)
 		elseif TYPE == "Slider" then
 			local frame = widget.slider
 			local editbox = widget.editbox
@@ -273,6 +265,23 @@ function S:SkinAce3()
 
 			E:Point(lowtext, "TOPLEFT", frame, "BOTTOMLEFT", 2, -2)
 			E:Point(hightext, "TOPRIGHT", frame, "BOTTOMRIGHT", -2, -2)
+		elseif TYPE == "Keybinding" then
+			local button = widget.button
+			local msgframe = widget.msgframe
+			local msg = widget.msgframe.msg
+
+			SkinButton(button)
+
+			E:StripTextures(msgframe)
+			E:CreateBackdrop(msgframe, "Default", true)
+			E:SetInside(msgframe.backdrop)
+			msgframe:SetToplevel(true)
+
+			msg:ClearAllPoints()
+			E:Point(msg, "LEFT", 10, 0)
+			E:Point(msg, "RIGHT", -10, 0)
+			msg:SetJustifyV("MIDDLE")
+			E:Width(msg, msg:GetWidth() + 10)
 		elseif (TYPE == "ColorPicker" or TYPE == "ColorPicker-ElvUI") then
 			local frame = widget.frame
 			local colorSwatch = widget.colorSwatch
@@ -286,6 +295,8 @@ function S:SkinAce3()
 			E:Point(frame.backdrop, "LEFT", frame, "LEFT", 4, 0)
 			frame.backdrop:SetBackdropColor(0, 0, 0, 0)
 			frame.backdrop.SetBackdropColor = E.noop
+			frame.backdrop:SetBackdropBorderColor(1, 1, 1)
+			frame.backdrop.SetBackdropBorderColor = E.noop
 
 			colorSwatch:SetTexture(E.media.blankTex)
 			colorSwatch:ClearAllPoints()
@@ -370,20 +381,28 @@ function S:SkinAce3()
 				end
 			end
 
-			if TYPE == "TabGroup" then
-				local oldCreateTab = widget.CreateTab
-				widget.CreateTab = function(self, id)
-					local tab = oldCreateTab(self, id)
-					E:StripTextures(tab)
-					--[[tab.backdrop = CreateFrame("Frame", nil, tab)
-					E:SetTemplate(tab.backdrop, "Transparent")
-					tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
-					E:Point(tab.backdrop, "TOPLEFT", 10, -3)
-					E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)--]]
+        	if TYPE == "TabGroup" then
+                local oldCreateTab = widget.CreateTab
+                widget.CreateTab = function(self, id)
+                    local tab = oldCreateTab(self, id)
+                    E:StripTextures(tab)
+                    tab.backdrop = CreateFrame("Frame", nil, tab)
+                    E:SetTemplate(tab.backdrop, "Transparent")
+                    E:Point(tab.backdrop, "TOPLEFT", 10, -3)
+                    E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)
 
-					return tab
-				end
-			end
+                    HookScript(tab, "OnShow", function(self)
+                        local tabFrame = tab:GetFrameLevel()
+                        local tabBackdrop = tab.backdrop:GetFrameLevel()
+
+                        if tabFrame <= tabBackdrop then
+                            tab.backdrop:SetFrameLevel(tabFrame - 1)
+                        end
+                    end)
+
+                    return tab
+                end
+            end
 
 			if widget.scrollbar then
 				S:HandleScrollBar(widget.scrollbar)
