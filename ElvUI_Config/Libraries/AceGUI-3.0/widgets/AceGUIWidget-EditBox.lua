@@ -38,36 +38,31 @@ Support functions
 -------------------------------------------------------------------------------]]
 if not AceGUIEditBoxInsertLink then
 	-- upgradeable hook
-	local orig_BankFrameItemButtonGeneric_OnClick = BankFrameItemButtonGeneric_OnClick
-	function BankFrameItemButtonGeneric_OnClick(button)
+	hooksecurefunc("BankFrameItemButtonGeneric_OnClick", function(button)
 		if button == "LeftButton" and IsShiftKeyDown() and not this.isBag then
 			return _G.AceGUIEditBoxInsertLink(GetContainerItemLink(BANK_CONTAINER, this:GetID()))
 		end
-	end
+	end)
 
-	local orig_ContainerFrameItemButton_OnClick = ContainerFrameItemButton_OnClick
-	function ContainerFrameItemButton_OnClick(button, ignoreModifiers)
+	hooksecurefunc("ContainerFrameItemButton_OnClick", function(button, ignoreModifiers)
 		if button == "LeftButton" and IsShiftKeyDown() and not ignoreModifiers then
 			return _G.AceGUIEditBoxInsertLink(GetContainerItemLink(this:GetParent():GetID(), this:GetID()))
 		end
-	end
+	end)
 
-	local orig_KeyRingItemButton_OnClick = KeyRingItemButton_OnClick
-	function KeyRingItemButton_OnClick(button)
+	hooksecurefunc("KeyRingItemButton_OnClick", function(button)
 		if button == "LeftButton" and IsShiftKeyDown() and not this.isBag then
 			return _G.AceGUIEditBoxInsertLink(GetContainerItemLink(KEYRING_CONTAINER, this:GetID()))
 		end
-	end
+	end)
 
-	local orig_LootFrameItem_OnClick = LootFrameItem_OnClick
-	function LootFrameItem_OnClick(button)
+	hooksecurefunc("LootFrameItem_OnClick", function(button)
 		if button == "LeftButton" and IsShiftKeyDown() then
 			return _G.AceGUIEditBoxInsertLink(GetLootSlotLink(this.slot))
 		end
-	end
+	end)
 
-	local orig_SetItemRef = SetItemRef
-	function SetItemRef(link, text, button)
+	hooksecurefunc("SetItemRef", function(link, text, button)
 		if IsShiftKeyDown() then
 			if sub(link, 1, 6) == "player" then
 				local name = sub(link, 8)
@@ -78,52 +73,45 @@ if not AceGUIEditBoxInsertLink then
 				return _G.AceGUIEditBoxInsertLink(text)
 			end
 		end
-	end
+	end)
 
-	local orig_MerchantItemButton_OnClick = MerchantItemButton_OnClick
-	function MerchantItemButton_OnClick(button, ignoreModifiers)
+	hooksecurefunc("MerchantItemButton_OnClick", function(button, ignoreModifiers)
 		if MerchantFrame.selectedTab == 1 and button == "LeftButton" and IsShiftKeyDown() and not ignoreModifiers then
 			return _G.AceGUIEditBoxInsertLink(GetMerchantItemLink(this:GetID()))
 		end
-	end
+	end)
 
-	local orig_PaperDollItemSlotButton_OnClick = PaperDollItemSlotButton_OnClick
-	function PaperDollItemSlotButton_OnClick(button, ignoreModifiers)
+	hooksecurefunc("PaperDollItemSlotButton_OnClick", function(button, ignoreModifiers)
 		if button == "LeftButton" and IsShiftKeyDown() and not ignoreModifiers then
 			return _G.AceGUIEditBoxInsertLink(GetInventoryItemLink("player", this:GetID()))
 		end
-	end
+	end)
 
-	local orig_QuestItem_OnClick = QuestItem_OnClick
-	function QuestItem_OnClick()
+	hooksecurefunc("QuestItem_OnClick", function()
 		if IsShiftKeyDown() and this.rewardType ~= "spell" then
 			return _G.AceGUIEditBoxInsertLink(GetQuestItemLink(this.type, this:GetID()))
 		end
-	end
+	end)
 
-	local orig_QuestRewardItem_OnClick = QuestRewardItem_OnClick
-	function QuestRewardItem_OnClick()
+	hooksecurefunc("QuestRewardItem_OnClick", function()
 		if IsShiftKeyDown() and this.rewardType ~= "spell" then
 			return _G.AceGUIEditBoxInsertLink(GetQuestItemLink(this.type, this:GetID()))
 		end
-	end
+	end)
 
-	local orig_QuestLogTitleButton_OnClick = QuestLogTitleButton_OnClick
-	function QuestLogTitleButton_OnClick(button)
+	hooksecurefunc("QuestLogTitleButton_OnClick", function(button)
 		if IsShiftKeyDown() and (not this.isHeader) then
 			return _G.AceGUIEditBoxInsertLink(gsub(this:GetText(), " *(.*)", "%1"))
 		end
-	end
+	end)
 
-	local orig_QuestLogRewardItem_OnClick = QuestLogRewardItem_OnClick
-	function QuestLogRewardItem_OnClick()
+	hooksecurefunc("QuestLogRewardItem_OnClick", function()
 		if IsShiftKeyDown() and this.rewardType ~= "spell" then
 			return _G.AceGUIEditBoxInsertLink(GetQuestLogItemLink(this.type, this:GetID()))
 		end
-	end
+	end)
 
-	local orig_SpellButton_OnClick = SpellButton_OnClick
-	function SpellButton_OnClick(drag)
+	hooksecurefunc("SpellButton_OnClick", function(drag)
 		local id = SpellBook_GetSpellID(this:GetID())
 		if id <= MAX_SPELLS and (not drag) and IsShiftKeyDown() then
 			local spellName, subSpellName = GetSpellName(id, SpellBookFrame.bookType)
@@ -135,7 +123,7 @@ if not AceGUIEditBoxInsertLink then
 				end
 			end
 		end
-	end
+	end)
 end
 
 function _G.AceGUIEditBoxInsertLink(text)
