@@ -37,6 +37,7 @@ This UI will arrange your interface to be more flexible and practical.
     /ec or /elvui     Toggle the configuration GUI.
     /rl or /reloadui  Reload the whole UI.
     /moveui           Open the movable frames options.
+    /bgstats          Toggles Battleground datatexts to display info when inside a battleground.
     /egrid            Toggles visibility of the grid for helping placement of thirdparty addons.
     /farmmode         Toggles the Minimap Farmmode.
     /in               The input of how many seconds you want a command to fire. 

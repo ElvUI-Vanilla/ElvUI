@@ -148,6 +148,21 @@ function B:EnhanceColorPicker()
 	end)
 
 	hooksecurefunc(ColorPickerFrame, "SetFrameLevel", function(self, level)
+		for _, child in ipairs({self:GetChildren()}) do
+			child:SetFrameLevel(level + 1)
+
+			if child:GetFrameType() == "EditBox" then
+				for _, child in ipairs({child:GetChildren()}) do
+					child:SetFrameLevel(level + 1)
+				end
+			end
+		end
+
+		--Set OnUpdate script to handle update limiter
+		this:SetScript("OnUpdate", HandleUpdateLimiter)
+	end)
+
+	hooksecurefunc(ColorPickerFrame, "SetFrameLevel", function(self, level)
 	    for _, child in ipairs({self:GetChildren()}) do
 	        child:SetFrameLevel(level + 1)
 	    end
