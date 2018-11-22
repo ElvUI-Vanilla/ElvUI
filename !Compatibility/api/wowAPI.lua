@@ -500,7 +500,6 @@ function EditBoxSetCursorPosition(self, pos)
 
 		text = sub(text, 0, 1)
 		self:HighlightText(0, 1)
-		self:Insert(nbsp)
 		self:Insert(text)
 		self:HighlightText(0, 1)
 		self:Insert("")

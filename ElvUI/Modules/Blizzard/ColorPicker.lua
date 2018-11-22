@@ -157,6 +157,15 @@ function B:EnhanceColorPicker()
 				end
 			end
 		end
+
+		--Set OnUpdate script to handle update limiter
+		this:SetScript("OnUpdate", HandleUpdateLimiter)
+	end)
+
+	hooksecurefunc(ColorPickerFrame, "SetFrameLevel", function(self, level)
+	    for _, child in ipairs({self:GetChildren()}) do
+	        child:SetFrameLevel(level + 1)
+	    end
 	end)
 
 	--Memory Fix, Colorpicker will call the this.func() 100x per second, causing fps/memory issues,
@@ -233,7 +242,8 @@ function B:EnhanceColorPicker()
 	b = CreateFrame("Button", "ColorPPClass", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SetText(CLASS)
 	S:HandleButton(b)
-	E:Size(b, 80, 22)
+	E:Width(b, 80)
+	E:Height(b, 22)
 	E:Point(b, "TOP", "ColorPPCopy", "BOTTOMRIGHT", 0, -7)
 
 	b:SetScript("OnClick", function()
@@ -249,7 +259,8 @@ function B:EnhanceColorPicker()
 	b = CreateFrame("Button", "ColorPPPaste", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SetText(L["Paste"])
 	S:HandleButton(b)
-	E:Size(b, 60, 22)
+	E:Width(b, 60)
+	E:Height(b, 22)
 	E:Point(b, "TOPLEFT", "ColorPPCopy", "TOPRIGHT", 2, 0)
 	b:Disable() -- enable when something has been copied
 
@@ -268,7 +279,8 @@ function B:EnhanceColorPicker()
 	b = CreateFrame("Button", "ColorPPDefault", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SetText(DEFAULTS)
 	S:HandleButton(b)
-	E:Size(b, 80, 22)
+	E:Width(b, 80)
+	E:Height(b, 22)
 	E:Point(b, "TOPLEFT", "ColorPPClass", "BOTTOMLEFT", 0, -7)
 	b:Disable() -- enable when something has been copied
 	b:SetScript("OnHide", function()
