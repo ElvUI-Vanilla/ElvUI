@@ -1,26 +1,22 @@
 --[[
 	Credit to Jaslm, most of this code is his from the addon ColorPickerPlus
 ]]
-local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local B = E:GetModule("Blizzard");
-local S = E:GetModule("Skins");
+local E, L, DF = unpack(ElvUI)
+local B = E:GetModule("Blizzard")
+local S = E:GetModule("Skins")
 
---Cache global variables
---Lua functions
 local collectgarbage = collectgarbage
+local tonumber = tonumber
 local floor = math.floor
-local format = string.format
---WoW API / Variables
+local format, strsub = string.format, strsub
+local getn = table.getn
+
 local CreateFrame = CreateFrame
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local CLASS, DEFAULTS = CLASS, DEFAULTS
 
 local colorBuffer = {}
 local editingText
-
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 
 local function UpdateAlphaText()
 	local a = OpacitySliderFrame:GetValue()
@@ -29,35 +25,105 @@ local function UpdateAlphaText()
 	ColorPPBoxA:SetText(format("%d", a))
 end
 
+local function UpdateAlpha()
+	local a = this:GetNumber()
+	if a > 100 then
+		a = 100
+		ColorPPBoxA:SetText(format("%d", a))
+	end
+	a = 1 - (a / 100)
+	editingText = true
+	OpacitySliderFrame:SetValue(a)
+	editingText = nil
+end
+
 local function UpdateColorTexts(r, g, b)
 	if not r then r, g, b = ColorPickerFrame:GetColorRGB() end
-	r = r*255
-	g = g*255
-	b = b*255
+	r = r * 255
+	g = g * 255
+	b = b * 255
 	ColorPPBoxR:SetText(format("%d", r))
 	ColorPPBoxG:SetText(format("%d", g))
 	ColorPPBoxB:SetText(format("%d", b))
 	ColorPPBoxH:SetText(format("%.2x%.2x%.2x", r, g, b))
 end
 
+local function UpdateColor()
+	local r, g, b = ColorPickerFrame:GetColorRGB()
+	local id = this:GetID()
+
+	if id == 1 then
+		r = format("%d", this:GetNumber())
+		if not r then r = 0 end
+		r = r / 255
+	elseif id == 2 then
+		g = format("%d", this:GetNumber())
+		if not g then g = 0 end
+		g = g / 255
+	elseif id == 3 then
+		b = format("%d", this:GetNumber())
+		if not b then b = 0 end
+		b = b / 255
+	elseif id == 4 then
+		-- hex values
+		if this:GetNumLetters() == 6 then
+			local rgb = this:GetText()
+			r, g, b = tonumber(strsub(rgb, 0, 2), 16), tonumber(strsub(rgb, 3, 4), 16), tonumber(strsub(rgb, 5, 6), 16)
+			if not r then r = 0 else r = r / 255 end
+			if not g then g = 0 else g = g / 255 end
+			if not b then b = 0 else b = b / 255 end
+		else
+			return
+		end
+	end
+
+	-- This takes care of updating the hex entry when changing rgb fields and vice versa
+	UpdateColorTexts(r, g, b)
+
+	editingText = true
+	ColorPickerFrame:SetColorRGB(r, g, b)
+	ColorSwatch:SetTexture(r, g, b)
+	editingText = nil
+end
+
+local function HandleUpdateLimiter()
+	this.timeSinceUpdate = (this.timeSinceUpdate or 0) + arg1
+	if this.timeSinceUpdate > 0.15 then
+		this.allowUpdate = true
+	else
+		this.allowUpdate = false
+	end
+end
+
 function B:EnhanceColorPicker()
 	if IsAddOnLoaded("ColorPickerPlus") then return end
-	ColorPickerFrame:SetClampedToScreen(true)
 
 	--Skin the default frame, move default buttons into place
+	ColorPickerFrame:SetClampedToScreen(true)
 	E:SetTemplate(ColorPickerFrame, "Transparent")
+
 	ColorPickerFrameHeader:SetTexture("")
 	ColorPickerFrameHeader:ClearAllPoints()
 	ColorPickerFrameHeader:SetPoint("TOP", ColorPickerFrame, 0, 0)
-	S:HandleButton(ColorPickerOkayButton)
+
 	S:HandleButton(ColorPickerCancelButton)
 	ColorPickerCancelButton:ClearAllPoints()
+	E:Point(ColorPickerCancelButton, "BOTTOMRIGHT", ColorPickerFrame, "BOTTOMRIGHT", -6, 6)
+	E:Point(ColorPickerCancelButton, "BOTTOMLEFT", ColorPickerFrame, "BOTTOM", 0, 6)
+
+	S:HandleButton(ColorPickerOkayButton)
 	ColorPickerOkayButton:ClearAllPoints()
-	ColorPickerCancelButton:SetPoint("BOTTOMRIGHT", ColorPickerFrame, "BOTTOMRIGHT", -6, 6)
-	ColorPickerCancelButton:SetPoint("BOTTOMLEFT", ColorPickerFrame, "BOTTOM", 0, 6)
-	ColorPickerOkayButton:SetPoint("BOTTOMLEFT", ColorPickerFrame,"BOTTOMLEFT", 6,6)
-	ColorPickerOkayButton:SetPoint("RIGHT", ColorPickerCancelButton,"LEFT", -4,0)
+	E:Point(ColorPickerOkayButton, "BOTTOMLEFT", ColorPickerFrame,"BOTTOMLEFT", 6, 6)
+	E:Point(ColorPickerOkayButton, "RIGHT", ColorPickerCancelButton,"LEFT", -4, 0)
+
 	S:HandleSliderFrame(OpacitySliderFrame)
+
+	if OpacitySliderFrame:GetThumbTexture() then
+		OpacitySliderFrame:SetThumbTexture(E.media.normTex)
+		OpacitySliderFrame:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+		E:Size(OpacitySliderFrame:GetThumbTexture(), 10)
+	end
+
 	HookScript(ColorPickerFrame, "OnShow", function()
 		-- get color that will be replaced
 		local r, g, b = ColorPickerFrame:GetColorRGB()
@@ -69,21 +135,40 @@ function B:EnhanceColorPicker()
 			ColorPPBoxLabelA:Show()
 			ColorPPBoxH:SetScript("OnTabPressed", function() ColorPPBoxA:SetFocus() end)
 			UpdateAlphaText()
-			E:Width(this, 405)
+			this:SetWidth(405)
 		else
 			ColorPPBoxA:Hide()
 			ColorPPBoxLabelA:Hide()
 			ColorPPBoxH:SetScript("OnTabPressed", function() ColorPPBoxR:SetFocus() end)
-			E:Width(this, 345)
+			this:SetWidth(345)
+		end
+
+		--Set OnUpdate script to handle update limiter
+		this:SetScript("OnUpdate", HandleUpdateLimiter)
+	end)
+
+	hooksecurefunc(ColorPickerFrame, "SetFrameLevel", function(self, level)
+		for _, child in ipairs({self:GetChildren()}) do
+			child:SetFrameLevel(level + 1)
+
+			if child:GetFrameType() == "EditBox" then
+				for _, child in ipairs({child:GetChildren()}) do
+					child:SetFrameLevel(level + 1)
+				end
+			end
 		end
 	end)
 
-	--Memory Fix, Colorpicker will call the self.func() 100x per second, causing fps/memory issues,
-	--this little script will make you have to press ok for you to notice any changes.
-	ColorPickerFrame:SetScript("OnColorSelect", function(_, r, g, b)
-		ColorSwatch:SetTexture(r, g, b)
+	--Memory Fix, Colorpicker will call the this.func() 100x per second, causing fps/memory issues,
+	--We overwrite the OnColorSelect script and set a limit on how often we allow a call to this.func
+	ColorPickerFrame:SetScript("OnColorSelect", function()
+		ColorSwatch:SetTexture(arg1, arg2, arg3)
 		if not editingText then
-			UpdateColorTexts(r, g, b)
+			UpdateColorTexts(arg1, arg2, arg3)
+		end
+		if this.allowUpdate then
+			this.func()
+			this.timeSinceUpdate = 0
 		end
 	end)
 
@@ -107,25 +192,25 @@ function B:EnhanceColorPicker()
 	-- add Color Swatch for original color
 	local t = ColorPickerFrame:CreateTexture("ColorPPOldColorSwatch")
 	local w, h = ColorSwatch:GetWidth(), ColorSwatch:GetHeight()
-	E:Width(t, w*0.75)
-	E:Height(t, h*0.75)
-	t:SetTexture(0,0,0)
+	E:Size(t, w * 0.75, h * 0.75)
+	t:SetTexture(0, 0, 0)
 	-- OldColorSwatch to appear beneath ColorSwatch
 	t:SetDrawLayer("BORDER")
-	E:Point(t, "BOTTOMLEFT", "ColorSwatch", "TOPRIGHT", -(w/2), -(h/3))
+	E:Point(t, "BOTTOMLEFT", "ColorSwatch", "TOPRIGHT", -(w / 2), -(h / 3))
 
 	-- add Color Swatch for the copied color
 	t = ColorPickerFrame:CreateTexture("ColorPPCopyColorSwatch")
 	E:Size(t, w, h)
-	t:SetTexture(0,0,0)
+	t:SetTexture(0, 0, 0)
 	t:Hide()
 
 	-- add copy button to the ColorPickerFrame
 	local b = CreateFrame("Button", "ColorPPCopy", ColorPickerFrame, "UIPanelButtonTemplate")
 	S:HandleButton(b)
 	b:SetText(L["Copy"])
-	E:Size(b, 60, 22)
-	E:Point(b, "TOPLEFT", "ColorSwatch", "BOTTOMLEFT", 0, -5)
+	b:SetWidth(60)
+	b:SetHeight(22)
+	b:SetPoint("TOPLEFT", "ColorSwatch", "BOTTOMLEFT", 0, -5)
 
 	-- copy color into buffer on button click
 	b:SetScript("OnClick", function()
@@ -227,8 +312,8 @@ function B:EnhanceColorPicker()
 		box:SetID(i)
 		box:SetFrameStrata("DIALOG")
 		box:SetAutoFocus(false)
-		box:SetTextInsets(0,14,0,0)
-		box:SetJustifyH("CENTER")
+		box:SetTextInsets(0, 17, 0, 0)
+		box:SetJustifyH("RIGHT")
 		E:Height(box, 24)
 
 		if i == 4 then
@@ -241,7 +326,7 @@ function B:EnhanceColorPicker()
 			E:Width(box, 40)
 			box:SetNumeric(true)
 		end
-		E:Point(box, "TOP", "ColorPickerWheel", "BOTTOM", 0, -15)
+		box:SetPoint("TOP", "ColorPickerWheel", "BOTTOM", 0, -15)
 
 		-- label
 		local label = box:CreateFontString("ColorPPBoxLabel"..rgb, "ARTWORK", "GameFontNormalSmall")
@@ -257,13 +342,15 @@ function B:EnhanceColorPicker()
 		if i == 5 then
 			box:SetScript("OnEscapePressed", function() this:ClearFocus() UpdateAlphaText() end)
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateAlphaText() end)
+			box:SetScript("OnTextChanged", UpdateAlpha)
 		else
 			box:SetScript("OnEscapePressed", function() this:ClearFocus() UpdateColorTexts() end)
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateColorTexts() end)
+			box:SetScript("OnTextChanged", UpdateColor)
 		end
 
-		box:SetScript("OnEditFocusGained", function() this:HighlightText() end)
-		box:SetScript("OnEditFocusLost", function() this:HighlightText(0,0) end)
+		box:SetScript("OnEditFocusGained", function() EditBoxSetCursorPosition(this, 0) this:HighlightText() end)
+		box:SetScript("OnEditFocusLost", function()	this:HighlightText(0, 0) end)
 		box:SetScript("OnTextSet", function() this:ClearFocus() end)
 		box:Show()
 	end
@@ -283,8 +370,8 @@ function B:EnhanceColorPicker()
 
 	-- make the color picker movable.
 	local mover = CreateFrame("Frame", nil, ColorPickerFrame)
-	E:Point(mover, "TOPLEFT", ColorPickerFrame, "TOP", -60, 0)
-	E:Point(mover, "BOTTOMRIGHT", ColorPickerFrame, "TOP", 60, -15)
+	mover:SetPoint("TOPLEFT", ColorPickerFrame, "TOP", -60, 0)
+	mover:SetPoint("BOTTOMRIGHT", ColorPickerFrame, "TOP", 60, -15)
 	mover:EnableMouse(true)
 	mover:SetScript("OnMouseDown", function() ColorPickerFrame:StartMoving() end)
 	mover:SetScript("OnMouseUp", function() ColorPickerFrame:StopMovingOrSizing() end)
