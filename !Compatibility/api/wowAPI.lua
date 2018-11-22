@@ -430,6 +430,18 @@ function EditBoxGetCursorPosition(self)
 	local otc = removeScript(self, "OnTextChanged")
 	local ots = removeScript(self, "OnTextSet")
 
+	local charsChanged, numeric
+
+	local maxChars = self:GetMaxLetters()
+	if maxChars == self:GetNumLetters() then
+		self:SetMaxLetters(maxChars + 1)
+		charsChanged = true
+	end
+	if self:IsNumeric() then
+		self:SetNumeric(false)
+		numeric = true
+	end
+
 	self:Insert(nbsp)
 
 	local pos = find(self:GetText(), nbsp)
@@ -439,6 +451,13 @@ function EditBoxGetCursorPosition(self)
 	else
 		self:HighlightText(pos - 1, pos)
 		self:Insert("")
+	end
+
+	if charsChanged then
+		self:SetMaxLetters(maxChars)
+	end
+	if numeric then
+		self:SetNumeric(true)
 	end
 
 	if occ then self:SetScript("OnCursorChanged", occ) end
@@ -467,12 +486,31 @@ function EditBoxSetCursorPosition(self, pos)
 	end
 
 	if pos == 0 then
+		local charsChanged, numeric
+
+		local maxChars = self:GetMaxLetters()
+		if maxChars == self:GetNumLetters() then
+			self:SetMaxLetters(maxChars + 1)
+			charsChanged = true
+		end
+		if self:IsNumeric() then
+			self:SetNumeric(false)
+			numeric = true
+		end
+
 		text = sub(text, 0, 1)
 		self:HighlightText(0, 1)
 		self:Insert(nbsp)
 		self:Insert(text)
 		self:HighlightText(0, 1)
 		self:Insert("")
+
+		if charsChanged then
+			self:SetMaxLetters(maxChars)
+		end
+		if numeric then
+			self:SetNumeric(true)
+		end
 	else
 		text = sub(text, pos, pos)
 		self:HighlightText(pos - 1, pos)
