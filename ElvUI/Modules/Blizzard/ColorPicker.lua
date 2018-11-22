@@ -5,7 +5,8 @@ local E, L, DF = unpack(ElvUI)
 local B = E:GetModule("Blizzard")
 local S = E:GetModule("Skins")
 
-local tonumber, collectgarbage = tonumber, collectgarbage
+local collectgarbage = collectgarbage
+local tonumber = tonumber
 local floor = math.floor
 local format, strsub = string.format, strsub
 local getn = table.getn
@@ -67,7 +68,7 @@ local function UpdateColor()
 		-- hex values
 		if this:GetNumLetters() == 6 then
 			local rgb = this:GetText()
-			r, g, b = tonumber("0x"..strsub(rgb, 0, 2)), tonumber("0x"..strsub(rgb, 3, 4)), tonumber("0x"..strsub(rgb, 5, 6))
+			r, g, b = tonumber(strsub(rgb, 0, 2), 16), tonumber(strsub(rgb, 3, 4), 16), tonumber(strsub(rgb, 5, 6), 16)
 			if not r then r = 0 else r = r / 255 end
 			if not g then g = 0 else g = g / 255 end
 			if not b then b = 0 else b = b / 255 end
@@ -126,7 +127,7 @@ function B:EnhanceColorPicker()
 	HookScript(ColorPickerFrame, "OnShow", function()
 		-- get color that will be replaced
 		local r, g, b = ColorPickerFrame:GetColorRGB()
-		ColorPPOldColorSwatch:SetTexture(r,g,b)
+		ColorPPOldColorSwatch:SetTexture(r, g, b)
 
 			-- show/hide the alpha box
 		if ColorPickerFrame.hasOpacity then
@@ -146,13 +147,18 @@ function B:EnhanceColorPicker()
 		this:SetScript("OnUpdate", HandleUpdateLimiter)
 	end)
 
+	hooksecurefunc(ColorPickerFrame, "SetFrameLevel", function(self, level)
+	    for _, child in ipairs({self:GetChildren()}) do
+	        child:SetFrameLevel(level + 1)
+	    end
+	end)
+
 	--Memory Fix, Colorpicker will call the this.func() 100x per second, causing fps/memory issues,
 	--We overwrite the OnColorSelect script and set a limit on how often we allow a call to this.func
 	ColorPickerFrame:SetScript("OnColorSelect", function()
-		local r, g, b = arg1, arg2, arg3
-		ColorSwatch:SetTexture(r, g, b)
+		ColorSwatch:SetTexture(arg1, arg2, arg3)
 		if not editingText then
-			UpdateColorTexts(r, g, b)
+			UpdateColorTexts(arg1, arg2, arg3)
 		end
 		if this.allowUpdate then
 			this.func()
@@ -266,7 +272,6 @@ function B:EnhanceColorPicker()
 		this.colors = nil
 	end)
 	b:SetScript("OnShow", function()
-		print(this.colors)
 		if this.colors then
 			this:Enable()
 		else
@@ -304,7 +309,7 @@ function B:EnhanceColorPicker()
 		box:SetID(i)
 		box:SetFrameStrata("DIALOG")
 		box:SetAutoFocus(false)
-		box:SetTextInsets(0, 14, 0, 0)
+		box:SetTextInsets(0, 17, 0, 0)
 		box:SetJustifyH("RIGHT")
 		E:Height(box, 24)
 
@@ -332,13 +337,13 @@ function B:EnhanceColorPicker()
 
 		-- set up scripts to handle event appropriately
 		if i == 5 then
-			box:SetScript("OnEscapePressed", function()	this:ClearFocus() UpdateAlphaText() end)
+			box:SetScript("OnEscapePressed", function() this:ClearFocus() UpdateAlphaText() end)
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateAlphaText() end)
 			box:SetScript("OnTextChanged", UpdateAlpha)
 		else
-			box:SetScript("OnEscapePressed", function()	this:ClearFocus() UpdateColorTexts() end)
+			box:SetScript("OnEscapePressed", function() this:ClearFocus() UpdateColorTexts() end)
 			box:SetScript("OnEnterPressed", function() this:ClearFocus() UpdateColorTexts() end)
-			-- box:SetScript("OnTextChanged", UpdateColor) -- TODO
+			box:SetScript("OnTextChanged", UpdateColor)
 		end
 
 		box:SetScript("OnEditFocusGained", function() EditBoxSetCursorPosition(this, 0) this:HighlightText() end)
