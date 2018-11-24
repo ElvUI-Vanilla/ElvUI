@@ -495,12 +495,12 @@ function EventTraceFrameEventHideButton_OnClick (button)
 	EventTraceFrame_Update();
 end
 
-local ERROR_FORMAT = [[|cffffd200Message:|r|cffffffff %s|r
+local ERROR_FORMAT = [[||cffffd200Message:|r|cffffffff %s|r
 |cffffd200Time:|r|cffffffff %s|r
 |cffffd200Count:|r|cffffffff %s|r
 |cffffd200Stack:|r|cffffffff %s|r]];
 
-local WARNING_AS_ERROR_FORMAT = [[|cffffd200Message:|r|cffffffff %s|r
+local WARNING_AS_ERROR_FORMAT = [[||cffffd200Message:|r|cffffffff %s|r
 |cffffd200Time:|r|cffffffff %s|r
 |cffffd200Count:|r|cffffffff %s|r]];
 
