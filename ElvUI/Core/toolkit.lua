@@ -199,8 +199,10 @@ function E:CreateBackdrop(f, t, tex, ignoreUpdates, forcePixelMode, isUnitFrameE
 	end
 	E:SetTemplate(b, t, tex, ignoreUpdates, forcePixelMode, isUnitFrameElement)
 
-	if (parent:GetFrameLevel() - 1) >= 0 then
-		b:SetFrameLevel(parent:GetFrameLevel() - 1)
+	local frameLevel = parent.GetFrameLevel and parent:GetFrameLevel()
+	local frameLevelMinusOne = frameLevel and (frameLevel - 1)
+	if frameLevelMinusOne and (frameLevelMinusOne >= 0) then
+		b:SetFrameLevel(frameLevelMinusOne)
 	else
 		b:SetFrameLevel(0)
 	end
@@ -235,18 +237,28 @@ function E:Kill(object)
 	object:Hide()
 end
 
-function E:StripTextures(object, kill)
-	for i = 1, object:GetNumRegions() do
-		local region = select(i, object:GetRegions())
-		if region and region:GetObjectType() == "Texture" then
-			if kill and type(kill) == "boolean" then
-				E:Kill(region)
-			elseif region:GetDrawLayer() == kill then
-				region:SetTexture(nil)
-			elseif kill and type(kill) == "string" and region:GetTexture() ~= kill then
-				region:SetTexture(nil)
-			else
-				region:SetTexture(nil)
+function E:StripTextures(object, kill, alpha)
+	if object:IsObjectType("Texture") then
+		if kill then
+			E:Kill(object)
+		elseif alpha then
+			object:SetAlpha(0)
+		else
+			object:SetTexture(nil)
+		end
+	else
+		if object.GetNumRegions then
+			for i = 1, object:GetNumRegions() do
+				local region = select(i, object:GetRegions())
+				if region and region.IsObjectType and region:IsObjectType("Texture") then
+					if kill then
+						E:Kill(region)
+					elseif alpha then
+						region:SetAlpha(0)
+					else
+						region:SetTexture(nil)
+					end
+				end
 			end
 		end
 	end
