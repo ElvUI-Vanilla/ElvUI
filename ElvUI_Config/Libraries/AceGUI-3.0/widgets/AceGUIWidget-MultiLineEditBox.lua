@@ -113,7 +113,7 @@ if not AceGUIMultiLineEditBoxInsertLink then
 		if id <= MAX_SPELLS and (not drag) and IsShiftKeyDown() then
 			local spellName, subSpellName = GetSpellName(id, SpellBookFrame.bookType)
 			if spellName and not IsSpellPassive(id, SpellBookFrame.bookType) then
-				if subSpellName and (strlen(subSpellName) > 0) then
+				if subSpellName and subSpellName ~= "" then
 					_G.AceGUIMultiLineEditBoxInsertLink(spellName.."("..subSpellName..")")
 				else
 					_G.AceGUIMultiLineEditBoxInsertLink(spellName)
