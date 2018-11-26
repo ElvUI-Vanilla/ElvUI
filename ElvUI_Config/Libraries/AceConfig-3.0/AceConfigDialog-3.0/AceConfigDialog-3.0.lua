@@ -149,6 +149,10 @@ end
 
 --gets an option from a given group, checking plugins
 local function GetSubOption(group, key)
+	if type(key) == "table" then
+		key = key[1]
+	end
+
 	if group.plugins then
 		for plugin, t in pairs(group.plugins) do
 			if t[key] then
