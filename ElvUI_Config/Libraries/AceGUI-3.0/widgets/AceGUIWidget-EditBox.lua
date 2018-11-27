@@ -64,9 +64,9 @@ if not AceGUIEditBoxInsertLink then
 
 	hooksecurefunc("SetItemRef", function(link, text, button)
 		if IsShiftKeyDown() then
-			if strsub(link,1,6) == "player" then
-				local name = strsub(link,8)
-				if name and (strlen(name) > 0) then
+			if sub(link, 1, 6) == "player" then
+				local name = sub(link, 8)
+				if name and name ~= "" then
 					return _G.AceGUIEditBoxInsertLink(name)
 				end
 			else
@@ -116,7 +116,7 @@ if not AceGUIEditBoxInsertLink then
 		if id <= MAX_SPELLS and (not drag) and IsShiftKeyDown() then
 			local spellName, subSpellName = GetSpellName(id, SpellBookFrame.bookType)
 			if spellName and not IsSpellPassive(id, SpellBookFrame.bookType) then
-				if subSpellName and (strlen(subSpellName) > 0) then
+				if subSpellName and subSpellName ~= "" then
 					_G.AceGUIEditBoxInsertLink(spellName.."("..subSpellName..")")
 				else
 					_G.AceGUIEditBoxInsertLink(spellName)
