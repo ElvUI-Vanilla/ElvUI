@@ -5,6 +5,8 @@
 local LIBSTUB_MAJOR, LIBSTUB_MINOR = "LibStub", 2 -- NEVER MAKE THIS AN SVN REVISION! IT NEEDS TO BE USABLE IN ALL REPOS!
 local LibStub = _G[LIBSTUB_MAJOR]
 
+local find, format = string.find, string.format
+
 -- Check to see is this version of the stub is obsolete
 if not LibStub or LibStub.minor < LIBSTUB_MINOR then
 	LibStub = LibStub or {libs = {}, minors = {} }
@@ -19,7 +21,8 @@ if not LibStub or LibStub.minor < LIBSTUB_MINOR then
 	-- returns empty library object or old library object if upgrade is needed
 	function LibStub:NewLibrary(major, minor)
 		assert(type(major) == "string", "Bad argument #2 to `NewLibrary' (string expected)")
-		minor = assert(tonumber(strmatch(minor, "%d+")), "Minor version must either be a number or contain a number.")
+		local _, _, num = find(minor, "(%d+)")
+		minor = assert(tonumber(num), "Minor version must either be a number or contain a number.")
 
 		local oldminor = self.minors[major]
 		if oldminor and oldminor >= minor then return nil end
@@ -35,7 +38,7 @@ if not LibStub or LibStub.minor < LIBSTUB_MINOR then
 	-- returns the library object if found
 	function LibStub:GetLibrary(major, silent)
 		if not self.libs[major] and not silent then
-			error(string.format("Cannot find a library instance of %q.", tostring(major)), 2)
+			error(format("Cannot find a library instance of %q.", tostring(major)), 2)
 		end
 		return self.libs[major], self.minors[major]
 	end
