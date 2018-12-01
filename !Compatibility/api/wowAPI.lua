@@ -32,6 +32,7 @@ local TIMEMANAGER_PM = gsub(TIME_TWELVEHOURPM, "^.-(%w+)$", "%1")
 local LBC = LibStub("LibBabble-Class-3.0"):GetLookupTable()
 local LBZ = LibStub("LibBabble-Zone-3.0"):GetLookupTable()
 local IFDB = LibStub("ItemFamilyDB")
+local QIS = LibStub("QuestItemStarterDB")
 
 CLASS_SORT_ORDER = {
 	"WARRIOR",
@@ -556,6 +557,22 @@ function GetThreatStatus(currentThreat, maxThreat)
 		return 1, threatPercent
 	else
 		return 0, threatPercent
+	end
+end
+
+function GetQuestItemStarterInfo(link)
+	for _, info in pairs(QIS.QuestItemStarterIDs) do
+		if match(link, "item:(%d+):") == info then
+			return true
+		end
+	end
+end
+
+function GetInvalidQuestItemInfo(link)
+	for _, info in pairs(QIS.InvalidQuestItemIDs) do
+		if match(link, "item:(%d+):") == info then
+			return true
+		end
 	end
 end
 
