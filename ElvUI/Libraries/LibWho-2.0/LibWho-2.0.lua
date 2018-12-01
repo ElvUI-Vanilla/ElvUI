@@ -807,7 +807,7 @@ end -- for
 if not lib['hooked']['WhoFrame_Hide'] then
 	lib['hooked']['WhoFrame_Hide'] = true
 	hooksecurefunc(WhoFrame, 'Hide', function(...)
-		lib['hook']['WhoFrame_Hide'](lib)
+		lib['hook']['WhoFrame_Hide'](lib, unpack(arg))
 		end -- function
 	)
 end -- if
@@ -878,8 +878,8 @@ function lib:ProcessWhoResults()
 	local num
 	self.Total, num = GetNumWhoResults()
 	for i=1, num do
-		local charname, guildname, level, race, class, zone, nonlocalclass, sex = GetWhoInfo(i)
-		self.Result[i] = {Name=charname, Guild=guildname, Level=level, Race=race, Class=class, Zone=zone, NoLocaleClass=nonlocalclass, Sex=sex }
+		local charname, guildname, level, race, class, zone = GetWhoInfo(i)
+		self.Result[i] = {Name=charname, Guild=guildname, Level=level, Race=race, Class=class, Zone=zone}
 	end
 
 	self:ReturnWho()
