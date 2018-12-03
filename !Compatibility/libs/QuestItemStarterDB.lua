@@ -14,7 +14,6 @@ lib.QuestItemStarterIDs = {
 	"2837",		-- Thurman's Letter
 	"2839",		-- A Letter to Yvette
 	"2874",		-- An Unsent Letter
-	"3082",		-- Dargol's Skull
 	"3317",		-- A Talking Head
 	"3668",		-- Assassin's Contract
 	"3706",		-- Ensorcelled Parchment
@@ -127,10 +126,8 @@ lib.QuestItemStarterIDs = {
 	"20644",	-- Nightmare Engulfed Object
 	"20741",	-- Deadwood Ritual Totem
 	"20742",	-- Winterfall Ritual Totem
-	"20765",	-- Incriminating Documents
 	"20806",	-- Logistics Task Briefing X
 	"20807",	-- Logistics Task Briefing I
-	"20938",	-- Falconwing Square Gift Voucher
 	"20939",	-- Logistics Task Briefing II
 	"20940",	-- Logistics Task Briefing III
 	"20941",	-- Combat Task Briefing XII
@@ -176,9 +173,7 @@ lib.QuestItemStarterIDs = {
 	"21749",	-- Combat Task Briefing I
 	"21750",	-- Combat Task Briefing II
 	"21751",	-- Tactical Task Briefing III
-	"21776",	-- Captain Kelisendra's Lost Rutters
 	"22520",	-- The Phylactery of Kel'Thuzad
-	"22597",	-- The Lady's Necklace
 	"22600",	-- Craftsman's Writ - Dense Weightstone
 	"22601",	-- Craftsman's Writ - Imperial Plate Chest
 	"22602",	-- Craftsman's Writ - Volcanic Hammer
@@ -206,7 +201,6 @@ lib.QuestItemStarterIDs = {
 	"22719",	-- Omarion's Handbook
 	"22727",	-- Frame of Atiesh
 	"22723",	-- A Letter from the Keeper of the Rolls
-	"22888",	-- Azure Watch Gift Voucher
 	"22970",	-- A Bloodstained Envelope
 	"22977",	-- A Torn Letter
 	"22972",	-- A Careworn Note
@@ -219,76 +213,6 @@ lib.QuestItemStarterIDs = {
 	"23182",	-- Flame of Stormwind
 	"23183",	-- Flame of Ironforge
 	"23184",	-- Flame of Darnassus
-	"23228",	-- Old Whitebark's Pendant
-	"23249",	-- Amani Invasion Plans
-	"23338",	-- Eroded Leather Case
-	"23580",	-- Avruu's Orb
-	"23678",	-- Faintly Glowing Crystal
-	"23759",	-- Rune Covered Tablet
-	"23777",	-- Diabolical Plans
-	"23797",	-- Diabolical Plans
-	"23837",	-- Weathered Treasure Map
-	"23850",	-- Gurf's Dignity
-	"23870",	-- Red Crystal Pendant
-	"23890",	-- Ominous Letter
-	"23892",	-- Ominous Letter
-	"23900",	-- Tzerak's Armor Plate
-	"23910",	-- Blood Elf Communication
-	"24132",	-- A Letter from the Admiral
-	"24330",	-- Drain Schematics
-	"24367",	-- Orders from Lady Vashj
-	"24407",	-- Uncatalogued Species
-	"24414",	-- Blood Elf Plans
-	"24483",	-- Withered Basidium
-	"24484",	-- Withered Basidium
-	"24504",	-- Howling Wind
-	"24558",	-- Murkblood Invasion Plans
-	"24559",	-- Murkblood Invasion Plans
-	"25459",	-- "Count" Ungula's Mandible
-	"25705",	-- Luanga's Orders
-	"25706",	-- Luanga's Orders
-	"28552",	-- A Mysterious Tome
-	"29233",	-- Dathric's Blade
-	"29234",	-- Belmara's Tome
-	"29235",	-- Luminrath's Mantle
-	"29236",	-- Cohlien's Cap
-	"29476",	-- Crimson Crystal Shard
-	"29589",	-- Burning Legion Missive
-	"29738",	-- Vial of Void Horror Ooze
-	"30431",	-- Thunderlord Clan Artifact
-	"30756",	-- Illidari-Bane Shard
-	"30579",	-- Illidari-Bane Shard
-	"31120",	-- Meeting Note
-	"31239",	-- Primed Key Mold
-	"31241",	-- Primed Key Mold
-	"31345",	-- The Journal of Val'zareq
-	"31363",	-- Gorgrom's Favor
-	"31384",	-- Damaged Mask
-	"31489",	-- Orb of the Grishna
-	"31707",	-- Cabal Orders
-	"31890",	-- Blessings Deck
-	"31891",	-- Storms Deck
-	"31907",	-- Furies Deck
-	"31914",	-- Lunacy Deck
-	"32385",	-- Magtheridon's Head
-	"32386",	-- Magtheridon's Head
-	"32405",	-- Verdant Sphere
-	"32523",	-- Ishaal's Almanac
-	"32621",	-- Partially Digested Hand
-	"32726",	-- Murkblood Escape Plans
-	"33102",	-- Blood of Zul'jin
-	"33114",	-- Sealed Letter
-	"33115",	-- Sealed Letter
-	"33978",	-- "Honorary Brewer" Hand Stamp
-	"34028",	-- "Honorary Brewer" Hand Stamp
-	"34469",	-- Strange Engine Part
-	"35568",	-- Flame of Silvermoon
-	"35569",	-- Flame of the Exodar
-	"35723",	-- Shards of Ahune
-	"37571",	-- "Brew of the Month" Club Membership Form
-	"37599",	-- "Brew of the Month" Club Membership Form
-	"38280",	-- Direbrew's Dire Brew
-	"38281",	-- Direbrew's Dire Brew
 }
 
 -- For some reason these are tagged as quest items. They are not.
@@ -300,18 +224,4 @@ lib.InvalidQuestItemIDs = {
 	"23547",	-- Resilience of the Scourge
 	"23548",	-- Might of the Scourge
 	"23549",	-- Fortitude of the Scourge
-	"28886",	-- Greater Inscription of Discipline
-	"28887",	-- Greater Inscription of Faith
-	"28888",	-- Greater Inscription of Vengeance
-	"28889",	-- Greater Inscription of Warding
-	"29186",	-- Glyph of the Defender
-	"29189",	-- Glyph of Renewal
-	"29190",	-- Glyph of Renewal
-	"29191",	-- Glyph of Power
-	"29192",	-- Glyph of Ferocity
-	"30846",	-- Glyph of the Outcast
-	"35728",	-- Greater Inscription of the Blade
-	"35729",	-- Greater Inscription of the Knight
-	"35730",	-- Greater Inscription of the Oracle
-	"35731",	-- Greater Inscription of the Orb
 }

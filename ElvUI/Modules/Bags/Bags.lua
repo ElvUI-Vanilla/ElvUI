@@ -478,7 +478,7 @@ function B:Layout(isBank)
 				f.ContainerHolder[i].backdrop:SetAllPoints()
 				E:StyleButton(f.ContainerHolder[i])
 				f.ContainerHolder[i]:SetNormalTexture("")
-				f.ContainerHolder[i]:SetCheckedTexture(nil)
+				f.ContainerHolder[i]:SetCheckedTexture("")
 				f.ContainerHolder[i]:SetPushedTexture("")
 
 				f.ContainerHolder[i].id = isBank and bagID or bagID + 1
@@ -542,7 +542,7 @@ function B:Layout(isBank)
 					E:StyleButton(f.Bags[bagID][slotID])
 					E:SetTemplate(f.Bags[bagID][slotID], "Default", true)
 					f.Bags[bagID][slotID]:SetNormalTexture("")
-					f.Bags[bagID][slotID]:SetCheckedTexture(nil)
+					f.Bags[bagID][slotID]:SetCheckedTexture("")
 
 					f.Bags[bagID][slotID].Count = _G[f.Bags[bagID][slotID]:GetName().."Count"]
 					f.Bags[bagID][slotID].Count:ClearAllPoints()
