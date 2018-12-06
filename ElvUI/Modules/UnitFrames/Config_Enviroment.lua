@@ -180,7 +180,7 @@ function UF:UnshowChildUnits(header, ...)
 
 	for i = 1, arg.n do
 		local frame = arg[i]
-		frame:RegisterForClicks(self.db.targetOnMouseDown and "AnyDown" or "AnyUp")
+		frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "RightButtonDown" or "LeftButtonUp" or "RightButtonUp")
 		self:UnforceShow(frame)
 	end
 end

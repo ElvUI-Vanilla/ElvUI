@@ -13,7 +13,7 @@ local NUM_BAG_FRAMES = NUM_BAG_FRAMES
 local TOTAL_BAGS = NUM_BAG_FRAMES + 2
 
 local ElvUIKeyRing = CreateFrame("CheckButton", "ElvUIKeyRingButton", UIParent, "ItemButtonTemplate")
-ElvUIKeyRing:RegisterForClicks("anyUp")
+ElvUIKeyRing:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 E:StripTextures(ElvUIKeyRing)
 ElvUIKeyRing:SetScript("OnClick", function() if CursorHasItem() then PutKeyInKeyRing() else ToggleKeyRing() end end)
 ElvUIKeyRing:SetScript("OnReceiveDrag", function() if CursorHasItem() then PutKeyInKeyRing() end end)

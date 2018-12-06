@@ -961,7 +961,7 @@ function B:ContructContainerFrame(name, isBank)
 	--Allow dragging the frame around
 	f:SetMovable(true)
 	f:RegisterForDrag("LeftButton", "RightButton")
-	f:RegisterForClicks("AnyUp")
+	f:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	f:SetScript("OnDragStart", function() if IsShiftKeyDown() then this:StartMoving() end end)
 	f:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
 	f:SetScript("OnClick", function() if IsControlKeyDown() then B.PostBagMove(this.mover) end end)
