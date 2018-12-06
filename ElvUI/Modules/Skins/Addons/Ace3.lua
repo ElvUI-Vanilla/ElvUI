@@ -4,7 +4,7 @@ local S = E:GetModule("Skins");
 --Cache global variables
 --Lua functions
 local _G = _G
-local select, unpack = select, unpack
+local select = select
 local getn = table.getn
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -58,8 +58,8 @@ local function SkinDropdownPullout(self)
 				E:Point(pullout.slider, "TOPRIGHT", pullout.frame, "TOPRIGHT", -10, -10)
 				E:Point(pullout.slider, "BOTTOMRIGHT", pullout.frame, "BOTTOMRIGHT", -10, 10)
 				if pullout.slider:GetThumbTexture() then
-					pullout.slider:SetThumbTexture(E.media.normTex)
-					pullout.slider:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+					pullout.slider:SetThumbTexture([[Interface\AddOns\ElvUI\media\textures\melli]])
+					pullout.slider:GetThumbTexture():SetVertexColor(1, 0.82, 0, 0.8)
 					E:Size(pullout.slider:GetThumbTexture(), 10, 14)
 				end
 			end
@@ -72,8 +72,8 @@ local function SkinDropdownPullout(self)
 				E:Point(dropdown.slider, "BOTTOMRIGHT", dropdown, "BOTTOMRIGHT", -10, 10)
 
 				if dropdown.slider:GetThumbTexture() then
-					dropdown.slider:SetThumbTexture(E.media.normTex)
-					dropdown.slider:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+					dropdown.slider:SetThumbTexture([[Interface\AddOns\ElvUI\media\textures\melli]])
+					dropdown.slider:GetThumbTexture():SetVertexColor(1, 0.82, 0, 0.8)
 					E:Size(dropdown.slider:GetThumbTexture(), 10, 14)
 				end
 			end
@@ -124,9 +124,9 @@ function S:SkinAce3()
 			checkbg:SetTexture("")
 			checkbg.SetTexture = E.noop
 
-			check:SetTexture(E.media.normTex)
+			check:SetTexture([[Interface\AddOns\ElvUI\media\textures\melli]])
 			check.SetTexture = E.noop
-			check:SetVertexColor(unpack(E.media.rgbvaluecolor))
+			check:SetVertexColor(1, 0.82, 0, 0.8)
 			E:SetInside(check, checkbg.backdrop)
 			check:SetParent(checkbg.backdrop)
 
@@ -202,7 +202,6 @@ function S:SkinAce3()
 				widget.bar:ClearAllPoints()
 				E:Point(widget.bar, "TOPLEFT", frame.backdrop, "TOPLEFT", 2, -2)
 				E:Point(widget.bar, "BOTTOMRIGHT", button, "BOTTOMLEFT", -1, 0)
-			--elseif TYPE == "LSM30_Border" or TYPE == "LSM30_Background" then -- Leave this here please. - Azilroka
 			end
 
 			button:SetParent(frame.backdrop)
@@ -255,8 +254,8 @@ function S:SkinAce3()
 			E:SetTemplate(frame, "Default")
 			E:Height(frame, HEIGHT)
 
-			frame:SetThumbTexture(E.media.normTex)
-			frame:GetThumbTexture():SetVertexColor(unpack(E.media.rgbvaluecolor))
+			frame:SetThumbTexture([[Interface\AddOns\ElvUI\media\textures\melli]])
+			frame:GetThumbTexture():SetVertexColor(1, 0.82, 0, 0.8)
 			E:Size(frame:GetThumbTexture(), HEIGHT - 2, HEIGHT - 2)
 
 			E:SetTemplate(editbox, "Default")
@@ -295,8 +294,6 @@ function S:SkinAce3()
 			E:Point(frame.backdrop, "LEFT", frame, "LEFT", 4, 0)
 			frame.backdrop:SetBackdropColor(0, 0, 0, 0)
 			frame.backdrop.SetBackdropColor = E.noop
-			frame.backdrop:SetBackdropBorderColor(1, 1, 1)
-			frame.backdrop.SetBackdropBorderColor = E.noop
 
 			colorSwatch:SetTexture(E.media.blankTex)
 			colorSwatch:ClearAllPoints()
@@ -381,28 +378,28 @@ function S:SkinAce3()
 				end
 			end
 
-        	if TYPE == "TabGroup" then
-                local oldCreateTab = widget.CreateTab
-                widget.CreateTab = function(self, id)
-                    local tab = oldCreateTab(self, id)
-                    E:StripTextures(tab)
-                    tab.backdrop = CreateFrame("Frame", nil, tab)
-                    E:SetTemplate(tab.backdrop, "Transparent")
-                    E:Point(tab.backdrop, "TOPLEFT", 10, -3)
-                    E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)
+			if TYPE == "TabGroup" then
+				local oldCreateTab = widget.CreateTab
+				widget.CreateTab = function(self, id)
+				local tab = oldCreateTab(self, id)
+					E:StripTextures(tab)
+					tab.backdrop = CreateFrame("Frame", nil, tab)
+					E:SetTemplate(tab.backdrop, "Transparent")
+					E:Point(tab.backdrop, "TOPLEFT", 10, -3)
+					E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)
 
-                    HookScript(tab, "OnShow", function(self)
-                        local tabFrame = tab:GetFrameLevel()
-                        local tabBackdrop = tab.backdrop:GetFrameLevel()
+					HookScript(tab, "OnShow", function()
+						local tabLevel = this:GetFrameLevel()
+						local tabBGLevel = this.backdrop:GetFrameLevel()
 
-                        if tabFrame <= tabBackdrop then
-                            tab.backdrop:SetFrameLevel(tabFrame - 1)
-                        end
-                    end)
+						if tabLevel <= tabBGLevel then
+							this.backdrop:SetFrameLevel(tabLevel - 1)
+						end
+					end)
 
-                    return tab
-                end
-            end
+					return tab
+				end
+			end
 
 			if widget.scrollbar then
 				S:HandleScrollBar(widget.scrollbar)
