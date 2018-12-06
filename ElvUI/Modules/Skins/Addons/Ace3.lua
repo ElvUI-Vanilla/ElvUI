@@ -385,6 +385,7 @@ function S:SkinAce3()
 					E:StripTextures(tab)
 					tab.backdrop = CreateFrame("Frame", nil, tab)
 					E:SetTemplate(tab.backdrop, "Transparent")
+					E:Delay(0.01, function() tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1) end) -- Temp Fix
 					E:Point(tab.backdrop, "TOPLEFT", 10, -3)
 					E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)
 
