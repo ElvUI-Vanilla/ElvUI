@@ -1439,12 +1439,14 @@ function B:PostBagMove()
 	local screenHeight = E.UIParent:GetTop()
 	local screenWidth = E.UIParent:GetRight()
 
-	if y > (screenHeight / 2) then
-		self:SetText(self.textGrowDown)
-		self.POINT = ((x > (screenWidth / 2)) and "TOPRIGHT" or "TOPLEFT")
-	else
-		self:SetText(self.textGrowUp)
-		self.POINT = ((x > (screenWidth / 2)) and "BOTTOMRIGHT" or "BOTTOMLEFT")
+	if x and y then -- Temp Fix
+		if y > (screenHeight / 2) then
+			self:SetText(self.textGrowDown)
+			self.POINT = ((x > (screenWidth / 2)) and "TOPRIGHT" or "TOPLEFT")
+		else
+			self:SetText(self.textGrowUp)
+			self.POINT = ((x > (screenWidth / 2)) and "BOTTOMRIGHT" or "BOTTOMLEFT")
+		end
 	end
 
 	local bagFrame
