@@ -68,12 +68,7 @@ local DEFAULT_STRINGS = {
 
 local hyperlinkTypes = {
 	["item"] = true,
-	["spell"] = true,
-	["unit"] = true,
-	["quest"] = true,
 	["enchant"] = true,
-	["instancelock"] = true,
-	["talent"] = true,
 }
 
 CH.Keywords = {}
