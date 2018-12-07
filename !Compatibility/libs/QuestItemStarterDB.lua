@@ -215,11 +215,6 @@ lib.QuestItemStarterIDs = {
 	"23184",	-- Flame of Darnassus
 }
 
--- Items that are quest items and they are not tagged as quest items.
-lib.QuestItemIDs = {
-	"3082", 		-- Dargol's Skull
-}
-
 -- Keys that are quest items and they are not tagged as quest items.
 lib.QuestItemKeyIDs = {
 	"2629",		-- Intrepid Strongbox Key

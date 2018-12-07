@@ -564,16 +564,10 @@ function GetQuestItemStarterInfo(link)
 	local isQuestItem, isQuestStarter, invalidQuestItem = false, false, false
 
 	if link then
-		local itemType = select(6, GetItemInfo(link))
+		local itemType = select(6, GetItemInfo(match(link, "item:(%d+)")))
 
 		if itemType and itemType == "Quest" then
 			isQuestItem = true
-		end
-
-		for _, info in pairs(QIS.QuestItemIDs) do
-			if match(link, "item:(%d+):") == info then
-				isQuestItem = true
-			end
 		end
 
 		for _, info in pairs(QIS.QuestItemKeyIDs) do
