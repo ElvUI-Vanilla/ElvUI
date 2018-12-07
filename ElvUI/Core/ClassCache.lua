@@ -6,7 +6,7 @@ local LW = LibStub:GetLibrary("LibWho-2.0");
 --Lua functions
 local split, upper = string.split, string.upper
 local wipe = table.wipe
-local pairs = pairs
+local pairs, unpack = pairs, unpack
 --WoW API / Variables
 local GetBattlefieldScore = GetBattlefieldScore
 local GetFriendInfo = GetFriendInfo
@@ -60,6 +60,10 @@ end
 function CC:GetClassByName(name, realm)
 	if not name or name == "" then return end
 	if realm and realm == "" then return end
+
+	if type(name) == "table" then
+		name = unpack(name)
+	end
 
 	local cacheDB = self:GetCacheTable()
 
