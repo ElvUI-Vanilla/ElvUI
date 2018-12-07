@@ -215,8 +215,44 @@ lib.QuestItemStarterIDs = {
 	"23184",	-- Flame of Darnassus
 }
 
+-- Items that are quest items and they are not tagged as quest items.
+lib.QuestItemIDs = {
+	"3082", 		-- Dargol's Skull
+}
+
+-- Keys that are quest items and they are not tagged as quest items.
+lib.QuestItemKeyIDs = {
+	"2629",		-- Intrepid Strongbox Key
+	"2719",		-- Small Brass Key
+	"3467",		-- Dull Iron Key
+	"3499",		-- Burnished Gold Key
+	"3704",		-- Rusted Iron Key
+	"3930",		-- Maury's Key
+	"4103",		-- Shackle Key
+	"4483",		-- Burning Key
+	"4484",		-- Cresting Key
+	"4485",		-- Thundering Key
+	"5089",		-- Console Key
+	"5475",		-- Wooden Key
+	"5050",		-- Ignition Key
+	"5851",		-- Cozzle's Key
+	"7923",		-- Defias Tower Key
+	"8072",		-- Silixiz's Tower Key
+	"9299",		-- Thermaplugg's Safe Combination
+	"10757",	-- Ward of the Defiler
+	"11079",	-- Gor'tesh's Lopped Off Head
+	"12301",	-- Bamboo Cage Key
+	"20022",	-- Azure Key
+}
+
 -- For some reason these are tagged as quest items. They are not.
 lib.InvalidQuestItemIDs = {
+	"18169",	-- Flame Mantle of the Dawn
+	"18170",	-- Frost Mantle of the Dawn
+	"18171",	-- Arcane Mantle of the Dawn
+	"18172",	-- Nature Mantle of the Dawn
+	"18173",	-- Shadow Mantle of the Dawn
+	"18182",	-- Chromatic Mantle of the Dawn
 	"20076",	-- Zandalar Signet of Mojo
 	"20078",	-- Zandalar Signet of Serenity
 	"20077",	-- Zandalar Signet of Might

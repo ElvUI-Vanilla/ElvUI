@@ -270,9 +270,10 @@ function B:UpdateSlot(bagID, slotID)
 		slot:SetBackdropBorderColor(unpack(B.ProfessionColors[bagType]))
 		slot.ignoreBorderColors = true
 	elseif clink then
-		local iLink, iLvl, iType, itemEquipLoc
-		slot.name, iLink, slot.rarity, iLvl, _, iType, _, _, itemEquipLoc = GetItemInfo(match(clink, "item:(%d+)"))
+		local iLvl, iType, itemEquipLoc, _
+		slot.name, _, slot.rarity, iLvl, _, iType, _, _, itemEquipLoc = GetItemInfo(match(clink, "item:(%d+)"))
 
+		local isQuestItem, isQuestStarter, invalidQuestItem = GetQuestItemStarterInfo(clink)
 		local r, g, b
 
 		if slot.rarity then
@@ -298,13 +299,12 @@ function B:UpdateSlot(bagID, slotID)
 		end
 
 		-- color slot according to item quality
-		if (iType and iType == "Quest") and not GetInvalidQuestItemInfo(iLink) then
-			if GetQuestItemStarterInfo(iLink) then
-				slot.QuestIcon:Show()
-				slot:SetBackdropBorderColor(unpack(B.QuestColors.questStarter))
-			else
-				slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
-			end
+		if isQuestStarter then
+			slot.QuestIcon:Show()
+			slot:SetBackdropBorderColor(unpack(B.QuestColors.questStarter))
+			slot.ignoreBorderColors = true
+		elseif (isQuestItem and not invalidQuestItem) or isQuestStarter then
+			slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
 			slot.ignoreBorderColors = true
 		elseif slot.rarity and slot.rarity > 1 then
 			slot:SetBackdropBorderColor(r, g, b)
@@ -670,15 +670,6 @@ function B:Layout(isBank)
 				f.keyFrame.slots[i].cooldown:SetModelScale(buttonSize / (37 / 0.75))
 				E:RegisterCooldown(f.keyFrame.slots[i].cooldown)
 
-				if not f.keyFrame.slots[i].QuestIcon then
-					local QuestIcon = f.keyFrame.slots[i]:CreateTexture(nil, "OVERLAY")
-					QuestIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\bagQuestIcon")
-					QuestIcon:SetTexCoord(0, 1, 0, 1)
-					E:SetInside(QuestIcon)
-					QuestIcon:Hide()
-					f.keyFrame.slots[i].QuestIcon = QuestIcon
-				end
-
 				f.keyFrame.slots[i].iconTexture = _G[f.keyFrame.slots[i]:GetName().."IconTexture"]
 				E:SetInside(f.keyFrame.slots[i].iconTexture, f.keyFrame.slots[i])
 				f.keyFrame.slots[i].iconTexture:SetTexCoord(unpack(E.TexCoords))
@@ -724,21 +715,16 @@ function B:UpdateKeySlot(slotID)
 
 	if clink then
 		local _, r, g, b
-		local iLink, iType
 
-		slot.name, iLink, slot.rarity, _, _, iType = GetItemInfo(match(clink, "item:(%d+)"))
+		slot.name, _, slot.rarity = GetItemInfo(match(clink, "item:(%d+)"))
+		local isQuestItem, isQuestStarter, invalidQuestItem = GetQuestItemStarterInfo(clink)
 
 		if slot.rarity then
 			r, g, b = GetItemQualityColor(slot.rarity)
 		end
 
-		if iType and iType == "Quest" then
-			if GetQuestItemStarterInfo(iLink) then
-				slot.QuestIcon:Show()
-				slot:SetBackdropBorderColor(unpack(B.QuestColors.questStarter))
-			else
-				slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
-			end
+		if (isQuestItem and not invalidQuestItem) or isQuestStarter then
+			slot:SetBackdropBorderColor(unpack(B.QuestColors.questItem))
 			slot.ignoreBorderColors = true
 		elseif slot.rarity and slot.rarity > 1 then
 			slot:SetBackdropBorderColor(r, g, b)
@@ -1519,7 +1505,7 @@ end
 
 function B:CreateSellFrame()
 	B.SellFrame = CreateFrame("Frame", "ElvUIVendorGraysFrame", E.UIParent)
-	E:Size(B.SellFrame, 200,40)
+	E:Size(B.SellFrame, 200, 40)
 	E:Point(B.SellFrame, "CENTER", E.UIParent)
 	E:CreateBackdrop(B.SellFrame, "Transparent")
 	B.SellFrame:SetAlpha(E.db.bags.vendorGrays.progressBar and 1 or 0)

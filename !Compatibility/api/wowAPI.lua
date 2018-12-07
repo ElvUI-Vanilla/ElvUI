@@ -561,19 +561,41 @@ function GetThreatStatus(currentThreat, maxThreat)
 end
 
 function GetQuestItemStarterInfo(link)
-	for _, info in pairs(QIS.QuestItemStarterIDs) do
-		if match(link, "item:(%d+):") == info then
-			return true
-		end
-	end
-end
+	local isQuestItem, isQuestStarter, invalidQuestItem = false, false, false
 
-function GetInvalidQuestItemInfo(link)
-	for _, info in pairs(QIS.InvalidQuestItemIDs) do
-		if match(link, "item:(%d+):") == info then
-			return true
+	if link then
+		local itemType = select(6, GetItemInfo(link))
+
+		if itemType and itemType == "Quest" then
+			isQuestItem = true
+		end
+
+		for _, info in pairs(QIS.QuestItemIDs) do
+			if match(link, "item:(%d+):") == info then
+				isQuestItem = true
+			end
+		end
+
+		for _, info in pairs(QIS.QuestItemKeyIDs) do
+			if match(link, "item:(%d+):") == info then
+				isQuestItem = true
+			end
+		end
+
+		for _, info in pairs(QIS.QuestItemStarterIDs) do
+			if (match(link, "item:(%d+):") == info) then
+				isQuestStarter = true
+			end
+		end
+
+		for _, info in pairs(QIS.InvalidQuestItemIDs) do
+			if match(link, "item:(%d+):") == info then
+				invalidQuestItem = true
+			end
 		end
 	end
+
+	return isQuestItem, isQuestStarter, invalidQuestItem
 end
 
 local LAST_ITEM_ID = 24283
