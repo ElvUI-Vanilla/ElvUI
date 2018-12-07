@@ -5,45 +5,44 @@ local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, Profi
 local _G = _G
 local format = string.format
 --WoW API / Variables
-local ChangeChatColor = ChangeChatColor
-local ChatFrame_ActivateCombatMessages = ChatFrame_ActivateCombatMessages
-local ChatFrame_AddChannel = ChatFrame_AddChannel
-local ChatFrame_AddMessageGroup = ChatFrame_AddMessageGroup
-local ChatFrame_RemoveAllMessageGroups = ChatFrame_RemoveAllMessageGroups
-local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
 local CreateFrame = CreateFrame
-local FCF_DockFrame, FCF_UnDockFrame = FCF_DockFrame, FCF_UnDockFrame
-local FCF_OpenNewWindow = FCF_OpenNewWindow
-local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
-local FCF_SetLocked = FCF_SetLocked
-local FCF_SetWindowName = FCF_SetWindowName
-local GetScreenWidth = GetScreenWidth
 local IsAddOnLoaded = IsAddOnLoaded
+local GetScreenWidth = GetScreenWidth
+local SetCVar = SetCVar
 local PlaySoundFile = PlaySoundFile
 local ReloadUI = ReloadUI
-local SetCVar = SetCVar
 local UIFrameFadeOut = UIFrameFadeOut
-
-local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
-
-local CHAT_LABEL, CLASS, CONTINUE, PREV = CHAT_LABEL, CLASS, CONTINUE, PREV
-local GUILD_EVENT_LOG = GUILD_EVENT_LOG
-local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
+local ChatFrame_AddMessageGroup = ChatFrame_AddMessageGroup
+local ChatFrame_RemoveAllMessageGroups = ChatFrame_RemoveAllMessageGroups
+local ChatFrame_AddChannel = ChatFrame_AddChannel
+local ChatFrame_RemoveChannel = ChatFrame_RemoveChannel
+local ChangeChatColor = ChangeChatColor
+local FCF_ResetChatWindows = FCF_ResetChatWindows
+local FCF_SetLocked = FCF_SetLocked
+local FCF_DockFrame, FCF_UnDockFrame = FCF_DockFrame, FCF_UnDockFrame
+local FCF_OpenNewWindow = FCF_OpenNewWindow
+local FCF_SetWindowName = FCF_SetWindowName
+local FCF_StopDragging = FCF_StopDragging
+local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
+local CLASS, CHAT_LABEL, CONTINUE, PREVIOUS = CLASS, CHAT_LABEL, CONTINUE, PREVIOUS
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
+local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
+local GUILD_EVENT_LOG = GUILD_EVENT_LOG
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local CURRENT_PAGE = 0
 local MAX_PAGE = 8
 
 local function FCF_ResetChatWindows()
 	ChatFrame1:ClearAllPoints()
-	E:Point(ChatFrame1, "BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 32, 95)
-	E:Size(ChatFrame1, 430, 120)
+	ChatFrame1:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 32, 95)
+	ChatFrame1:SetWidth(430)
+	ChatFrame1:SetHeight(120)
 	ChatFrame1.isInitialized = 0
 	FCF_SetButtonSide(ChatFrame1, "left")
 	FCF_SetChatWindowFontSize(ChatFrame1, 14)
 	FCF_SetWindowName(ChatFrame1, GENERAL)
-	FCF_SetWindowColor(ChatFrame1, DEFAULT_CHATFRAME_COLOR.r, DEFAULT_CHATFRAME_COLOR.g, DEFAULT_CHATFRAME_COLOR.b)
+	FCF_SetWindowName(ChatFrame1, DEFAULT_CHATFRAME_COLOR.r, DEFAULT_CHATFRAME_COLOR.g, DEFAULT_CHATFRAME_COLOR.b)
 	FCF_SetWindowAlpha(ChatFrame1, DEFAULT_CHATFRAME_ALPHA)
 	FCF_UnDockFrame(ChatFrame1)
 	FCF_ValidateChatFramePosition(ChatFrame1)
@@ -169,15 +168,14 @@ local function SetupChat()
 	ChatFrame_AddMessageGroup(ChatFrame1, "DND")
 	ChatFrame_AddMessageGroup(ChatFrame1, "IGNORED")
 	ChatFrame_AddMessageGroup(ChatFrame1, "CHANNEL")
-
-	ChatFrame_ActivateCombatMessages(ChatFrame2)
-
 	ChatFrame_AddChannel(ChatFrame1, GENERAL)
 	ChatFrame_RemoveMessageGroup(ChatFrame1, "SKILL")
 	ChatFrame_RemoveMessageGroup(ChatFrame1, "LOOT")
 	ChatFrame_RemoveMessageGroup(ChatFrame1, "MONEY")
 	ChatFrame_RemoveMessageGroup(ChatFrame1, "COMBAT_FACTION_CHANGE")
 	ChatFrame_RemoveChannel(ChatFrame1, TRADE)
+
+	ChatFrame_ActivateCombatMessages(ChatFrame2)
 
 	ChatFrame_RemoveAllMessageGroups(ChatFrame3)
 	ChatFrame_AddMessageGroup(ChatFrame3, "SKILL")
@@ -198,11 +196,11 @@ local function SetupChat()
 
 	if E.Chat then
 		E.Chat:PositionChat(true)
-		if E.db["RightChatPanelFaded"] then
+		if E.db.RightChatPanelFaded then
 			RightChatToggleButton:Click()
 		end
 
-		if E.db["LeftChatPanelFaded"] then
+		if E.db.LeftChatPanelFaded then
 			LeftChatToggleButton:Click()
 		end
 	end
@@ -235,7 +233,6 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.general.bordercolor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(.31, .31, .31))
 		E.db.general.backdropcolor = E:GetColor(.1, .1, .1)
 		E.db.general.backdropfadecolor = E:GetColor(.06, .06, .06, .8)
-
 		E.db.unitframe.colors.borderColor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(.31, .31, .31))
 		E.db.unitframe.colors.healthclass = false
 		E.db.unitframe.colors.health = E:GetColor(.31, .31, .31)
@@ -291,6 +288,8 @@ function E:SetupResolution(noDataReset)
 		if not noDataReset then
 			E.db.chat.panelWidth = 400
 			E.db.chat.panelHeight = 180
+			E.db.chat.panelWidthRight = 400
+			E.db.chat.panelHeightRight = 180
 
 			E.db.bags.bagWidth = 394
 			E.db.bags.bankWidth = 394
@@ -331,6 +330,9 @@ function E:SetupResolution(noDataReset)
 			E.db.unitframe.units.targettarget.power.enable = false
 			E.db.unitframe.units.targettarget.width = 200
 			E.db.unitframe.units.targettarget.height = 26
+
+			E.db.unitframe.units.arena.width = 200
+			E.db.unitframe.units.arena.castbar.width = 200
 		end
 
 		local isPixel = E.private.general.pixelPerfect
@@ -409,16 +411,11 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.unitframe.units.raid.debuffs.xOffset = -4
 			E.db.unitframe.units.raid.debuffs.yOffset = -7
 			E.db.unitframe.units.raid.height = 45
-			E.db.unitframe.units.raid.buffs.noConsolidated = false
 			E.db.unitframe.units.raid.buffs.xOffset = 50
 			E.db.unitframe.units.raid.buffs.yOffset = -6
 			E.db.unitframe.units.raid.buffs.clickThrough = true
-			E.db.unitframe.units.raid.buffs.noDuration = false
-			E.db.unitframe.units.raid.buffs.playerOnly = false
 			E.db.unitframe.units.raid.buffs.perrow = 1
-			E.db.unitframe.units.raid.buffs.useFilter = "TurtleBuffs"
 			E.db.unitframe.units.raid.buffs.sizeOverride = 22
-			E.db.unitframe.units.raid.buffs.useBlacklist = false
 			E.db.unitframe.units.raid.buffs.enable = true
 			E.db.unitframe.units.raid.growthDirection = "LEFT_UP"
 
@@ -431,18 +428,12 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.unitframe.units.party.debuffs.xOffset = -4
 			E.db.unitframe.units.party.debuffs.yOffset = -7
 			E.db.unitframe.units.party.height = 45
-			E.db.unitframe.units.party.buffs.noConsolidated = false
 			E.db.unitframe.units.party.buffs.xOffset = 50
 			E.db.unitframe.units.party.buffs.yOffset = -6
 			E.db.unitframe.units.party.buffs.clickThrough = true
-			E.db.unitframe.units.party.buffs.noDuration = false
-			E.db.unitframe.units.party.buffs.playerOnly = false
 			E.db.unitframe.units.party.buffs.perrow = 1
-			E.db.unitframe.units.party.buffs.useFilter = "TurtleBuffs"
 			E.db.unitframe.units.party.buffs.sizeOverride = 22
-			E.db.unitframe.units.party.buffs.useBlacklist = false
 			E.db.unitframe.units.party.buffs.enable = true
-			E.db.unitframe.units.party.roleIcon.position = "BOTTOMRIGHT"
 			E.db.unitframe.units.party.health.text_format = "[healthcolor][health:deficit]"
 			E.db.unitframe.units.party.health.position = "BOTTOM"
 			E.db.unitframe.units.party.GPSArrow.size = 40
@@ -452,16 +443,16 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.unitframe.units.party.name.position = "TOP"
 			E.db.unitframe.units.party.power.text_format = ""
 
-			-- E.db.unitframe.units.raid40.height = 30
-			-- E.db.unitframe.units.raid40.growthDirection = "LEFT_UP"
+			E.db.unitframe.units.raid40.height = 30
+			E.db.unitframe.units.raid40.growthDirection = "LEFT_UP"
 
 			E.db.unitframe.units.party.health.frequentUpdates = true
 			E.db.unitframe.units.raid.health.frequentUpdates = true
-			-- E.db.unitframe.units.raid40.health.frequentUpdates = true
+			E.db.unitframe.units.raid40.health.frequentUpdates = true
 
 			E.db.unitframe.units.party.healPrediction = true
 			E.db.unitframe.units.raid.healPrediction = true
-			-- E.db.unitframe.units.raid40.healPrediction = true
+			E.db.unitframe.units.raid40.healPrediction = true
 
 			E.db.unitframe.units.player.castbar.insideInfoPanel = false
 			E.db.actionbar.bar2.enabled = true
@@ -476,6 +467,7 @@ function E:SetupLayout(layout, noDataReset)
 		end
 
 		if not E.db.movers then E.db.movers = {} end
+		 --Make sure we account for EyeFinity or other scenarious where ElvUIParent is not the same size as UIParent
 		local xOffset = ((GetScreenWidth() - E.diffGetLeft - E.diffGetRight) * 0.34375)
 
 		if E.PixelMode then
@@ -483,7 +475,6 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.movers.ElvAB_5 = "BOTTOM,ElvUIParent,BOTTOM,-312,4"
 			E.db.movers.ElvUF_PartyMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMLEFT,"..xOffset..",450"
 			E.db.movers.ElvUF_RaidMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMLEFT,"..xOffset..",450"
-
 			E.db.movers.ElvUF_Raid40Mover = "BOTTOMRIGHT,ElvUIParent,BOTTOMLEFT,"..xOffset..",450"
 
 			if not E.db.lowresolutionset then
@@ -559,6 +550,9 @@ function E:SetupLayout(layout, noDataReset)
 		E.db.unitframe.units.targettarget.power.enable = false
 		E.db.unitframe.units.targettarget.width = 200
 		E.db.unitframe.units.targettarget.height = 26
+
+		E.db.unitframe.units.arena.width = 200
+		E.db.unitframe.units.arena.castbar.width = 200
 	end
 
 	if layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER") then
@@ -607,6 +601,7 @@ function E:SetupLayout(layout, noDataReset)
 			E.db.movers.ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-2,"..(yOffset + 5)
 		end
 	elseif (layout == "dpsMelee" or layout == "tank") and not E.db.lowresolutionset and not E.PixelMode then
+		if not E.db.movers then E.db.movers = {} end
 		E.db.movers.ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-307,76"
 		E.db.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,307,76"
 		E.db.movers.ElvUF_TargetTargetMover = "BOTTOM,ElvUIParent,BOTTOM,0,76"
@@ -644,7 +639,7 @@ end
 local function SetupAuras(style)
 	local UF = E:GetModule("UnitFrames")
 
-	local frame = UF["player"]
+	local frame = UF.player
 	E:CopyTable(E.db.unitframe.units.player.buffs, P.unitframe.units.player.buffs)
 	E:CopyTable(E.db.unitframe.units.player.debuffs, P.unitframe.units.player.debuffs)
 	E:CopyTable(E.db.unitframe.units.player.aurabar, P.unitframe.units.player.aurabar)
@@ -655,11 +650,10 @@ local function SetupAuras(style)
 		-- UF:Configure_AuraBars(frame)
 	end
 
-	frame = UF["target"]
+	frame = UF.target
 	E:CopyTable(E.db.unitframe.units.target.buffs, P.unitframe.units.target.buffs)
 	E:CopyTable(E.db.unitframe.units.target.debuffs, P.unitframe.units.target.debuffs)
 	E:CopyTable(E.db.unitframe.units.target.aurabar, P.unitframe.units.target.aurabar)
-	E.db.unitframe.units.target.smartAuraDisplay = P.unitframe.units.target.smartAuraDisplay
 
 	if frame then
 		UF:Configure_Auras(frame, "Buffs")
@@ -667,18 +661,33 @@ local function SetupAuras(style)
 		-- UF:Configure_AuraBars(frame)
 	end
 
+	frame = UF.focus
+	E:CopyTable(E.db.unitframe.units.focus.buffs, P.unitframe.units.focus.buffs)
+	E:CopyTable(E.db.unitframe.units.focus.debuffs, P.unitframe.units.focus.debuffs)
+	E:CopyTable(E.db.unitframe.units.focus.aurabar, P.unitframe.units.focus.aurabar)
+
+	if frame then
+		UF:Configure_Auras(frame, "Buffs")
+		UF:Configure_Auras(frame, "Debuffs")
+		UF:Configure_AuraBars(frame)
+	end
+
 	if not style then
+		--PLAYER
 		E.db.unitframe.units.player.buffs.enable = true
 		E.db.unitframe.units.player.buffs.attachTo = "FRAME"
-		E.db.unitframe.units.player.buffs.noDuration = false
 		E.db.unitframe.units.player.debuffs.attachTo = "BUFFS"
 		E.db.unitframe.units.player.aurabar.enable = false
-		E:GetModule("UnitFrames"):CreateAndUpdateUF("player")
+		if E.private.unitframe.enable then
+			E:GetModule("UnitFrames"):CreateAndUpdateUF("player")
+		end
 
-		E.db.unitframe.units.target.smartAuraDisplay = "DISABLED"
+		--TARGET
 		E.db.unitframe.units.target.debuffs.enable = true
 		E.db.unitframe.units.target.aurabar.enable = false
-		E:GetModule("UnitFrames"):CreateAndUpdateUF("target")
+		if E.private.unitframe.enable then
+			E:GetModule("UnitFrames"):CreateAndUpdateUF("target")
+		end
 	end
 
 	if InstallStepComplete then
@@ -834,8 +843,12 @@ local function SetPage(PageNum)
 		f.Desc1:SetText(L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-Vanilla/ElvUI"])
 		f.Desc2:SetText(L["Please click the button below so you can setup variables and ReloadUI."])
 		InstallOption1Button:Show()
-		InstallOption1Button:SetScript("OnClick", InstallComplete)
-		InstallOption1Button:SetText(L["Finished"])
+		InstallOption1Button:SetScript("OnClick", function() E:StaticPopup_Show("ELVUI_EDITBOX", nil, nil, "https://discord.gg/Uatdmm7") end)
+		InstallOption1Button:SetText("Discord") -- No need for a locale
+		InstallOption2Button:Show()
+		InstallOption2Button:SetScript("OnClick", InstallComplete)
+		InstallOption2Button:SetText(L["Finished"])
+
 		E:Size(ElvUIInstallFrame, 550, 350)
 	end
 end
@@ -875,6 +888,27 @@ function E:Install()
 
 		imsg.firstShow = false
 
+		imsg.bg = imsg:CreateTexture(nil, "BACKGROUND")
+		imsg.bg:SetTexture([[Interface\AddOns\ElvUI\media\textures\LevelUpTex]])
+		E:Point(imsg.bg, "BOTTOM")
+		E:Size(imsg.bg, 326, 103)
+		imsg.bg:SetTexCoord(0.00195313, 0.63867188, 0.03710938, 0.23828125)
+		imsg.bg:SetVertexColor(1, 1, 1, 0.6)
+
+		imsg.lineTop = imsg:CreateTexture(nil, "BACKGROUND")
+		imsg.lineTop:SetDrawLayer('BACKGROUND', 2)
+		imsg.lineTop:SetTexture([[Interface\AddOns\ElvUI\media\textures\LevelUpTex]])
+		E:Point(imsg.lineTop, "TOP")
+		E:Size(imsg.lineTop, 418, 7)
+		imsg.lineTop:SetTexCoord(0.00195313, 0.81835938, 0.01953125, 0.03320313)
+
+		imsg.lineBottom = imsg:CreateTexture(nil, "BACKGROUND")
+		imsg.lineBottom:SetDrawLayer('BACKGROUND', 2)
+		imsg.lineBottom:SetTexture([[Interface\AddOns\ElvUI\media\textures\LevelUpTex]])
+		E:Point(imsg.lineBottom, "BOTTOM")
+		E:Size(imsg.lineBottom, 418, 7)
+		imsg.lineBottom:SetTexCoord(0.00195313, 0.81835938, 0.01953125, 0.03320313)
+
 		imsg.text = imsg:CreateFontString(nil, "OVERLAY")
 		E:FontTemplate(imsg.text, E["media"].normFont, 32, "OUTLINE")
 		E:Point(imsg.text, "BOTTOM", 0, 16)
@@ -882,6 +916,7 @@ function E:Install()
 		imsg.text:SetJustifyH("CENTER")
 	end
 
+	--Create Frame
 	if not ElvUIInstallFrame then
 		local f = CreateFrame("Button", "ElvUIInstallFrame", E.UIParent)
 		f.SetPage = SetPage
@@ -918,7 +953,7 @@ function E:Install()
 		f.Status = CreateFrame("StatusBar", "InstallStatus", f)
 		f.Status:SetFrameLevel(f.Status:GetFrameLevel() + 2)
 		E:CreateBackdrop(f.Status, "Default")
-		f.Status:SetStatusBarTexture(E["media"].normTex)
+		f.Status:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(f.Status)
 		f.Status:SetMinMaxValues(0, MAX_PAGE)
 		E:Point(f.Status, "TOPLEFT", f.Prev, "TOPRIGHT", 6, -2)

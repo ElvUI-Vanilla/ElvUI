@@ -6,7 +6,7 @@ local LibBase64 = LibStub("LibBase64-1.0");
 --Cache global variables
 --Lua functions
 local tonumber, type, pcall, loadstring = tonumber, type, pcall, loadstring
-local len, format, split, find = string.len, string.format, string.split, string.find
+local len, format, gsub, split, find = string.len, string.format, string.gsub, string.split, string.find
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local GetNumRaidMembers, UnitInRaid = GetNumRaidMembers, UnitInRaid
@@ -85,19 +85,17 @@ function D:Distribute(target, otherServer, isGlobal)
 end
 
 function D:CHAT_MSG_ADDON()
-	local prefix, message, sender = arg1, arg2, arg4
+	if not Downloads[sender] then return end
 
-	if --[[prefix ~= TRANSFER_PREFIX or --]] not Downloads[sender] then return end
+	local cur = len(arg2)
+	local max = Downloads[arg4].length
+	Downloads[arg4].current = Downloads[arg4].current + cur
 
-	local cur = len(message)
-	local max = Downloads[sender].length
-	Downloads[sender].current = Downloads[sender].current + cur
-
-	if Downloads[sender].current > max then
-		Downloads[sender].current = max
+	if Downloads[arg4].current > max then
+		Downloads[arg4].current = max
 	end
 
-	self.statusBar:SetValue(Downloads[sender].current)
+	self.statusBar:SetValue(Downloads[arg4].current)
 end
 
 function D:OnCommReceived(prefix, msg, dist, sender)
@@ -237,6 +235,61 @@ function D:OnCommReceived(prefix, msg, dist, sender)
 	end
 end
 
+--Keys that should not be exported
+local blacklistedKeys = {
+	["profile"] = {
+		["actionbar"] = {
+			--[[
+			["bar1"] = {
+				["paging"] = true,
+			},
+			["bar2"] = {
+				["paging"] = true,
+			},
+			["bar3"] = {
+				["paging"] = true,
+			},
+			["bar4"] = {
+				["paging"] = true,
+			},
+			["bar5"] = {
+				["paging"] = true,
+			},
+			["bar6"] = {
+				["paging"] = true,
+			},
+			["bar7"] = {
+				["paging"] = true,
+			},
+			["bar8"] = {
+				["paging"] = true,
+			},
+			["bar9"] = {
+				["paging"] = true,
+			},
+			["bar10"] = {
+				["paging"] = true,
+			},
+			--]]
+		}
+	},
+	["private"] = {},
+	["global"] = {
+		["uiScale"] = true,
+		["general"] = {
+			["autoScale"] = true,
+			["minUiScale"] = true,
+			["eyefinity"] = true,
+		},
+		["chat"] = {
+			["classColorMentionExcludedNames"] = true
+		},
+		["unitframe"] = {
+			["spellRangeCheck"] = true
+		}
+	}
+}
+
 local function GetProfileData(profileType)
 	if not profileType or type(profileType) ~= "string" then
 		E:Print("Bad argument #1 to 'GetProfileData' (string expected)")
@@ -257,44 +310,35 @@ local function GetProfileData(profileType)
 		--This makes the table huge, and will cause the WoW client to lock up for several seconds.
 		--We compare against the default table and remove all duplicates from our table. The table is now much smaller.
 		profileData = E:RemoveTableDuplicates(profileData, P)
+		profileData = E:FilterTableFromBlacklist(profileData, blacklistedKeys.profile)
 	elseif profileType == "private" then
 		local privateProfileKey = E.myname.." - "..E.myrealm
 		profileKey = "private"
 
 		profileData = E:CopyTable(profileData, ElvPrivateDB.profiles[privateProfileKey])
 		profileData = E:RemoveTableDuplicates(profileData, V)
+		profileData = E:FilterTableFromBlacklist(profileData, blacklistedKeys.private)
 	elseif profileType == "global" then
 		profileKey = "global"
 
 		profileData = E:CopyTable(profileData, ElvDB.global)
 		profileData = E:RemoveTableDuplicates(profileData, G)
-	elseif profileType == "filtersNP" then
-		profileKey = "filtersNP"
+		profileData = E:FilterTableFromBlacklist(profileData, blacklistedKeys.global)
+	elseif profileType == "filters" then
+		profileKey = "filters"
 
-		profileData["nameplates"] = {}
-		profileData["nameplates"]["filter"] = {}
-		profileData["nameplates"]["filter"] = E:CopyTable(profileData["nameplates"]["filter"], ElvDB.global.nameplates.filter)
+		profileData.unitframe = {}
+		profileData.unitframe.aurafilters = {}
+		profileData.unitframe.aurafilters = E:CopyTable(profileData.unitframe.aurafilters, ElvDB.global.unitframe.aurafilters)
+		profileData.unitframe.buffwatch = {}
+		profileData.unitframe.buffwatch = E:CopyTable(profileData.unitframe.buffwatch, ElvDB.global.unitframe.buffwatch)
 		profileData = E:RemoveTableDuplicates(profileData, G)
-	elseif profileType == "filtersUF" then
-		profileKey = "filtersUF"
+	elseif profileType == "styleFilters" then
+		profileKey = "styleFilters"
 
-		profileData["unitframe"] = {}
-		profileData["unitframe"]["aurafilters"] = {}
-		profileData["unitframe"]["aurafilters"] = E:CopyTable(profileData["unitframe"]["aurafilters"], ElvDB.global.unitframe.aurafilters)
-		profileData["unitframe"]["buffwatch"] = {}
-		profileData["unitframe"]["buffwatch"] = E:CopyTable(profileData["unitframe"]["buffwatch"], ElvDB.global.unitframe.buffwatch)
-		profileData = E:RemoveTableDuplicates(profileData, G)
-	elseif profileType == "filtersAll" then
-		profileKey = "filtersAll"
-
-		profileData["nameplates"] = {}
-		profileData["nameplates"]["filter"] = {}
-		profileData["nameplates"]["filter"] = E:CopyTable(profileData["nameplates"]["filter"], ElvDB.global.nameplates.filter)
-		profileData["unitframe"] = {}
-		profileData["unitframe"]["aurafilters"] = {}
-		profileData["unitframe"]["aurafilters"] = E:CopyTable(profileData["unitframe"]["aurafilters"], ElvDB.global.unitframe.aurafilters)
-		profileData["unitframe"]["buffwatch"] = {}
-		profileData["unitframe"]["buffwatch"] = E:CopyTable(profileData["unitframe"]["buffwatch"], ElvDB.global.unitframe.buffwatch)
+		profileData.nameplates = {}
+		profileData.nameplates.filters = {}
+		profileData.nameplates.filters = E:CopyTable(profileData.nameplates.filters, ElvDB.global.nameplates.filters)
 		profileData = E:RemoveTableDuplicates(profileData, G)
 	end
 
@@ -443,13 +487,10 @@ local function SetImportedProfile(profileType, profileKey, profileData, force)
 	elseif profileType == "global" then
 		E:CopyTable(ElvDB.global, profileData)
 		E:StaticPopup_Show("IMPORT_RL")
-	elseif profileType == "filtersNP" then
-		E:CopyTable(ElvDB.global.nameplates, profileData.nameplates)
-	elseif profileType == "filtersUF" then
+	elseif profileType == "filters" then
 		E:CopyTable(ElvDB.global.unitframe, profileData.unitframe)
-	elseif profileType == "filtersAll" then
+	elseif profileType == "styleFilters" then
 		E:CopyTable(ElvDB.global.nameplates, profileData.nameplates)
-		E:CopyTable(ElvDB.global.unitframe, profileData.unitframe)
 	end
 
 	--Update all ElvUI modules

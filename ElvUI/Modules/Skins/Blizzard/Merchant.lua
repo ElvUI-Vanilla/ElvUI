@@ -30,7 +30,7 @@ local function LoadSkin()
 		else
 			if MerchantNextPageButton:IsShown() and MerchantNextPageButton:IsEnabled() == 1 then
 				MerchantNextPageButton_OnClick()
-			end	
+			end
 		end
 	end)
 
@@ -112,15 +112,15 @@ local function LoadSkin()
 						itemName:SetTextColor(GetItemQualityColor(quality))
 						itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						itemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				else
-					itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					itemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 
 			HookScript(MerchantBuyBackItemItemButton, "OnEvent", function()
-				this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end)
 
 			local buybackName = GetBuybackItemInfo(GetNumBuybackItems())
@@ -130,7 +130,7 @@ local function LoadSkin()
 					MerchantBuyBackItemName:SetTextColor(GetItemQualityColor(quality))
 					MerchantBuyBackItemItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else
-					MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					MerchantBuyBackItemItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		end
@@ -150,7 +150,7 @@ local function LoadSkin()
 						itemName:SetTextColor(GetItemQualityColor(quality))
 						itemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						itemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						itemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				end
 			end

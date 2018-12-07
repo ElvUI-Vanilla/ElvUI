@@ -24,7 +24,7 @@ function UF:Construct_AuraBars()
 	E:SetTemplate(self, "Default", nil, nil, UF.thinBorders, true)
 	local inset = UF.thinBorders and E.mult or nil
 	E:SetInside(bar, self, inset, inset)
-	UF["statusbars"][bar] = true
+	UF.statusbars[bar] = true
 	UF:Update_StatusBar(bar)
 
 	UF:Configure_FontString(bar.spelltime)

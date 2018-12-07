@@ -1,9 +1,14 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:GetModule("Skins");
 
+--Cache global variables
+--Lua functions
+local _G = _G
+
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.worldmap ~= true then return end
 
+	local WorldMapFrame = _G["WorldMapFrame"]
 	E:StripTextures(WorldMapFrame)
 	E:CreateBackdrop(WorldMapPositioningGuide, "Transparent")
 

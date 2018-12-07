@@ -13,7 +13,7 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 function UF:Construct_PowerBar(frame, bg, text, textPos)
 	local power = CreateFrame("StatusBar", nil, frame)
-	UF["statusbars"][power] = true
+	UF.statusbars[power] = true
 
 	power.PostUpdate = self.PostUpdatePower
 
@@ -22,7 +22,7 @@ function UF:Construct_PowerBar(frame, bg, text, textPos)
 	if bg then
 		power.bg = power:CreateTexture(nil, "BORDER")
 		power.bg:SetAllPoints()
-		power.bg:SetTexture(E["media"].blankTex)
+		power.bg:SetTexture(E.media.blankTex)
 		power.bg.multiplier = 0.2
 	end
 

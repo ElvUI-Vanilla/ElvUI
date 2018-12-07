@@ -86,4 +86,4 @@ function UF:Update_PetFrame(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-tinsert(UF["unitstoload"], "pet")
+tinsert(UF.unitstoload, "pet")

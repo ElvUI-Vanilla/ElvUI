@@ -100,7 +100,7 @@ local function LoadSkin()
 			local rarity = GetInventoryItemQuality("player", this:GetID())
 			this:SetBackdropBorderColor(GetItemQualityColor(rarity))
 		else
-			this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 
@@ -133,7 +133,7 @@ local function LoadSkin()
 	PetMagicResFrame5:GetRegions():SetTexCoord(0.21875, 0.78125, 0.4765625, 0.546875)
 
 	E:StripTextures(PetPaperDollFrameExpBar)
-	PetPaperDollFrameExpBar:SetStatusBarTexture(E["media"].normTex)
+	PetPaperDollFrameExpBar:SetStatusBarTexture(E.media.normTex)
 	E:RegisterStatusBar(PetPaperDollFrameExpBar)
 	E:CreateBackdrop(PetPaperDollFrameExpBar, "Default")
 

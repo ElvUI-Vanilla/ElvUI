@@ -24,37 +24,37 @@ local ns = oUF
 ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
-UF["headerstoload"] = {}
-UF["unitstoload"] = {}
+UF.headerstoload = {}
+UF.unitstoload = {}
 
-UF["groupPrototype"] = {}
-UF["headerPrototype"] = {}
-UF["headers"] = {}
-UF["units"] = {}
+UF.groupPrototype = {}
+UF.headerPrototype = {}
+UF.headers = {}
+UF.units = {}
 
-UF["statusbars"] = {}
-UF["fontstrings"] = {}
-UF["badHeaderPoints"] = {
+UF.statusbars = {}
+UF.fontstrings = {}
+UF.badHeaderPoints = {
 	["TOP"] = "BOTTOM",
 	["LEFT"] = "RIGHT",
 	["BOTTOM"] = "TOP",
 	["RIGHT"] = "LEFT"
 }
 
-UF["headerFunctions"] = {}
+UF.headerFunctions = {}
 
-UF["classMaxResourceBar"] = {
+UF.classMaxResourceBar = {
 	["DRUID"] = 1
 }
 
-UF["mapIDs"] = {
+UF.mapIDs = {
 	[443] = 10, -- Warsong Gulch
 	[461] = 15, -- Arathi Basin
 	[401] = 40, -- Alterac Valley
 	[566] = 15, -- Eye of the Storm
 }
 
-UF["headerGroupBy"] = {
+UF.headerGroupBy = {
 	["CLASS"] = function(header)
 		header:SetAttribute("groupingOrder", "DRUID,HUNTER,MAGE,PALADIN,PRIEST,SHAMAN,WARLOCK,WARRIOR")
 		header:SetAttribute("sortMethod", "NAME")
@@ -325,7 +325,7 @@ end
 
 function UF:Update_StatusBars()
 	local statusBarTexture = LSM:Fetch("statusbar", self.db.statusbar)
-	for statusbar in pairs(UF["statusbars"]) do
+	for statusbar in pairs(UF.statusbars) do
 		if statusbar and statusbar:GetObjectType() == "StatusBar" and not statusbar.isTransparent then
 			statusbar:SetStatusBarTexture(statusBarTexture)
 		elseif statusbar and statusbar:GetObjectType() == "Texture" then
@@ -344,24 +344,24 @@ end
 
 function UF:Update_FontStrings()
 	local stringFont = LSM:Fetch("font", self.db.font)
-	for font in pairs(UF["fontstrings"]) do
+	for font in pairs(UF.fontstrings) do
 		E:FontTemplate(font, stringFont, self.db.fontSize, self.db.fontOutline)
 	end
 end
 
 function UF:Configure_FontString(obj)
-	UF["fontstrings"][obj] = true
+	UF.fontstrings[obj] = true
 	E:FontTemplate(obj) --This is temporary.
 end
 
 function UF:Update_AllFrames()
-	if E.private["unitframe"].enable ~= true then return; end
+	if E.private.unitframe.enable ~= true then return; end
 	self:UpdateColors()
 	self:Update_FontStrings()
 	self:Update_StatusBars()
 
-	for unit in pairs(self["units"]) do
-		if self.db["units"][unit].enable then
+	for unit in pairs(self.units) do
+		if self.db.units[unit].enable then
 			self[unit]:Enable()
 			self[unit]:Update()
 			E:EnableMover(self[unit].mover:GetName())
@@ -519,9 +519,9 @@ end
 function UF.groupPrototype:Update(self)
 	local group = self.groupName
 
-	UF[group].db = UF.db["units"][group]
+	UF[group].db = UF.db.units[group]
 	for i = 1, getn(self.groups) do
-		self.groups[i].db = UF.db["units"][group]
+		self.groups[i].db = UF.db.units[group]
 		self.groups[i]:Update()
 	end
 end
@@ -548,7 +548,7 @@ end
 
 function UF.groupPrototype:UpdateHeader(self)
 	local group = self.groupName;
-	UF["Update_"..E:StringTitle(group).."Header"](UF, self, UF.db["units"][group]);
+	UF["Update_"..E:StringTitle(group).."Header"](UF, self, UF.db.units[group]);
 end
 
 function UF.headerPrototype:ClearChildPoints()
@@ -560,7 +560,7 @@ end
 
 function UF.headerPrototype:Update(isForced)
 	local group = self.groupName
-	local db = UF.db["units"][group]
+	local db = UF.db.units[group]
 
 	local i = 1
 	local child = self:GetAttribute("child" .. i)
@@ -609,7 +609,7 @@ end
 
 function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName, headerTemplate)
 	local group = parent.groupName or groupName
-	local db = UF.db["units"][group]
+	local db = UF.db.units[group]
 	ElvUF:SetActiveStyle("ElvUF_"..E:StringTitle(group))
 	local header = ElvUF:SpawnHeader(overrideName, headerTemplate, nil,
 			"groupFilter", groupFilter,
@@ -630,7 +630,7 @@ function UF:CreateHeader(parent, groupFilter, overrideName, template, groupName,
 end
 
 function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdate, headerTemplate)
-	local db = self.db["units"][group]
+	local db = self.db.units[group]
 	local numGroups = db.numGroups
 
 	if not self[group] then
@@ -645,16 +645,16 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 			self[group].groupName = group
 			self[group].template = self[group].template or template
 			self[group].headerTemplate = self[group].headerTemplate or headerTemplate
-			if not UF["headerFunctions"][group] then UF["headerFunctions"][group] = {} end
+			if not UF.headerFunctions[group] then UF.headerFunctions[group] = {} end
 			for k, v in pairs(self.groupPrototype) do
-				UF["headerFunctions"][group][k] = v
+				UF.headerFunctions[group][k] = v
 			end
 		else
 			self[group] = self:CreateHeader(E.UIParent, groupFilter, "ElvUF_"..E:StringTitle(group), template, group, headerTemplate)
 		end
 
 		self[group].db = db
-		self["headers"][group] = self[group]
+		self.headers[group] = self[group]
 		self[group]:Show()
 	end
 
@@ -671,17 +671,17 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 			end
 		end
 
-		UF["headerFunctions"][group]:AdjustVisibility(self[group])
+		UF.headerFunctions[group]:AdjustVisibility(self[group])
 
 		if headerUpdate or not self[group].mover then
-			UF["headerFunctions"][group]:Configure_Groups(self[group])
+			UF.headerFunctions[group]:Configure_Groups(self[group])
 			if not self[group].isForced and not self[group].blockVisibilityChanges then
 			--	RegisterStateDriver(self[group], "visibility", db.visibility)
 			end
 		else
-			UF["headerFunctions"][group]:Configure_Groups(self[group])
-			UF["headerFunctions"][group]:UpdateHeader(self[group])
-			UF["headerFunctions"][group]:Update(self[group])
+			UF.headerFunctions[group]:Configure_Groups(self[group])
+			UF.headerFunctions[group]:UpdateHeader(self[group])
+			UF.headerFunctions[group]:Update(self[group])
 		end
 
 		if db.enable then
@@ -700,9 +700,9 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 	else
 		self[group].db = db
 
-		if not UF["headerFunctions"][group] then UF["headerFunctions"][group] = {} end
-		UF["headerFunctions"][group]["Update"] = function()
-			local db = UF.db["units"][group]
+		if not UF.headerFunctions[group] then UF.headerFunctions[group] = {} end
+		UF.headerFunctions[group]["Update"] = function()
+			local db = UF.db.units[group]
 			if db.enable ~= true then
 				--UnregisterStateDriver(UF[group], "visibility")
 				UF[group]:Hide()
@@ -715,14 +715,14 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 
 			for i = 1, UF[group]:GetNumChildren() do
 				local child = select(i, UF[group]:GetChildren())
-				UF["Update_"..E:StringTitle(group).."Frames"](UF, child, UF.db["units"][group])
+				UF["Update_"..E:StringTitle(group).."Frames"](UF, child, UF.db.units[group])
 
 				if _G[child:GetName().."Target"] then
-					UF["Update_"..E:StringTitle(group).."Frames"](UF, _G[child:GetName().."Target"], UF.db["units"][group])
+					UF["Update_"..E:StringTitle(group).."Frames"](UF, _G[child:GetName().."Target"], UF.db.units[group])
 				end
 
 				if _G[child:GetName().."Pet"] then
-					UF["Update_"..E:StringTitle(group).."Frames"](UF, _G[child:GetName().."Pet"], UF.db["units"][group])
+					UF["Update_"..E:StringTitle(group).."Frames"](UF, _G[child:GetName().."Pet"], UF.db.units[group])
 				end
 			end
 
@@ -732,7 +732,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template, headerUpdat
 		if headerUpdate then
 			UF["Update_"..E:StringTitle(group).."Header"](self, self[group], db)
 		else
-			UF["headerFunctions"][group]:Update(self[group])
+			UF.headerFunctions[group]:Update(self[group])
 		end
 	end
 end
@@ -749,14 +749,14 @@ function UF:CreateAndUpdateUF(unit)
 	frameName = gsub(frameName, "t(arget)", "T%1")
 	if not self[unit] then
 		self[unit] = ElvUF:Spawn(unit, "ElvUF_"..frameName)
-		self["units"][unit] = unit
+		self.units[unit] = unit
 	end
 
 	self[unit].Update = function()
-		UF["Update_"..frameName.."Frame"](self, self[unit], self.db["units"][unit])
+		UF["Update_"..frameName.."Frame"](self, self[unit], self.db.units[unit])
 	end
 
-	if self.db["units"][unit].enable then
+	if self.db.units[unit].enable then
 		self[unit]:Enable()
 		self[unit].Update()
 		E:EnableMover(self[unit].mover:GetName())
@@ -767,12 +767,12 @@ function UF:CreateAndUpdateUF(unit)
 end
 
 function UF:LoadUnits()
-	for _, unit in pairs(self["unitstoload"]) do
+	for _, unit in pairs(self.unitstoload) do
 		self:CreateAndUpdateUF(unit)
 	end
-	self["unitstoload"] = nil
+	self.unitstoload = nil
 
-	for group, groupOptions in pairs(self["headerstoload"]) do
+	for group, groupOptions in pairs(self.headerstoload) do
 		local groupFilter, template, headerTemplate
 		if type(groupOptions) == "table" then
 			groupFilter, template, headerTemplate = unpack(groupOptions)
@@ -780,7 +780,7 @@ function UF:LoadUnits()
 
 		self:CreateAndUpdateHeaderGroup(group, groupFilter, template, nil, headerTemplate)
 	end
-	self["headerstoload"] = nil
+	self.headerstoload = nil
 end
 
 function UF:UpdateAllHeaders(event)
@@ -796,15 +796,15 @@ function UF:UpdateAllHeaders(event)
 		end
 	end
 
-	if E.private["unitframe"]["disabledBlizzardFrames"].party then
+	if E.private.unitframe.disabledBlizzardFrames.party then
 		ElvUF:DisableBlizzard("party")
 	end
 
-	for group, header in pairs(self["headers"]) do
+	for group, header in pairs(self.headers) do
 		if header.numGroups then
-			UF["headerFunctions"][group]:UpdateHeader(header)
+			UF.headerFunctions[group]:UpdateHeader(header)
 		end
-		UF["headerFunctions"][group]:Update(header)
+		UF.headerFunctions[group]:Update(header)
 
 		if group == "party" or group == "raid" then
 			--Update BuffIndicators on profile change as they might be using profile specific data
@@ -851,19 +851,19 @@ end
 function ElvUF:DisableBlizzard(unit)
 	if not unit then return end
 
-	if(unit == "player") and E.private["unitframe"]["disabledBlizzardFrames"].player then
+	if(unit == "player") and E.private.unitframe.disabledBlizzardFrames.player then
 		HandleFrame(PlayerFrame)
-	elseif(unit == "pet") and E.private["unitframe"]["disabledBlizzardFrames"].player then
+	elseif(unit == "pet") and E.private.unitframe.disabledBlizzardFrames.player then
 		HandleFrame(PetFrame)
-	elseif(unit == "target") and E.private["unitframe"]["disabledBlizzardFrames"].target then
+	elseif(unit == "target") and E.private.unitframe.disabledBlizzardFrames.target then
 		HandleFrame(TargetFrame)
 		HandleFrame(ComboFrame)
---	elseif(unit == "focus") and E.private["unitframe"]["disabledBlizzardFrames"].focus then
+--	elseif(unit == "focus") and E.private.unitframe.disabledBlizzardFrames.focus then
 --		HandleFrame(FocusFrame)
 --		HandleFrame(FocusFrameToT)
-	elseif(unit == "targettarget") and E.private["unitframe"]["disabledBlizzardFrames"].target then
+	elseif(unit == "targettarget") and E.private.unitframe.disabledBlizzardFrames.target then
 		HandleFrame(TargetofTargetFrame)
-	elseif string.match(unit, "(party)%d?$") == "party" and E.private["unitframe"]["disabledBlizzardFrames"].party then
+	elseif string.match(unit, "(party)%d?$") == "party" and E.private.unitframe.disabledBlizzardFrames.party then
 		local id = string.match(unit, "party(%d)")
 		if id then
 			HandleFrame("PartyMemberFrame"..id)
@@ -892,9 +892,9 @@ function UF:PLAYER_ENTERING_WORLD()
 end
 
 function UF:Initialize()
-	self.db = E.db["unitframe"]
+	self.db = E.db.unitframe
 	self.thinBorders = self.db.thinBorders or E.PixelMode
-	if E.private["unitframe"].enable ~= true then return; end
+	if E.private.unitframe.enable ~= true then return; end
 	E.UnitFrames = UF
 
 	self:UpdateColors()
@@ -915,14 +915,14 @@ function UF:Initialize()
 end
 
 function UF:ResetUnitSettings(unit)
-	E:CopyTable(self.db["units"][unit], P["unitframe"]["units"][unit])
+	E:CopyTable(self.db.units[unit], P.unitframe.units[unit])
 
-	if self.db["units"][unit].buffs and self.db["units"][unit].buffs.sizeOverride then
-		self.db["units"][unit].buffs.sizeOverride = P.unitframe.units[unit].buffs.sizeOverride or 0
+	if self.db.units[unit].buffs and self.db.units[unit].buffs.sizeOverride then
+		self.db.units[unit].buffs.sizeOverride = P.unitframe.units[unit].buffs.sizeOverride or 0
 	end
 
-	if self.db["units"][unit].debuffs and self.db["units"][unit].debuffs.sizeOverride then
-		self.db["units"][unit].debuffs.sizeOverride = P.unitframe.units[unit].debuffs.sizeOverride or 0
+	if self.db.units[unit].debuffs and self.db.units[unit].debuffs.sizeOverride then
+		self.db.units[unit].debuffs.sizeOverride = P.unitframe.units[unit].debuffs.sizeOverride or 0
 	end
 
 	self:Update_AllFrames()
@@ -958,7 +958,7 @@ local allowPass = {
 }
 
 function UF:MergeUnitSettings(fromUnit, toUnit, isGroupUnit)
-	local db = self.db["units"]
+	local db = self.db.units
 	local filter = ignoreSettings
 	if isGroupUnit then
 		filter = ignoreSettingsGroup

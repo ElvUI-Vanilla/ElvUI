@@ -161,7 +161,7 @@ ElvUF.Tags.Methods["health:deficit-percent:name"] = function(unit)
 	if (deficit > 0 and currentHealth > 0) then
 		return _TAGS["health:percent-nostatus"](unit);
 	else
-		return _TAGS["name"](unit);
+		return _TAGS.name(unit);
 	end
 end
 
@@ -215,11 +215,11 @@ end
 
 ElvUF.Tags.Events["powercolor"] = "UNIT_ENERGY UNIT_FOCUS UNIT_MANA UNIT_RAGE UNIT_RUNIC_POWER UNIT_MAXPOWER"
 ElvUF.Tags.Methods["powercolor"] = function(unit)
-	local color = ElvUF["colors"].power[UnitPowerType(unit)]
+	local color = ElvUF.colors.power[UnitPowerType(unit)]
 	if color then
 		return Hex(color[1], color[2], color[3])
 	else
-		return Hex(unpack(ElvUF["colors"].power[0]))
+		return Hex(unpack(ElvUF.colors.power[0]))
 	end
 end
 
@@ -271,8 +271,8 @@ ElvUF.Tags.Methods["power:max"] = function(unit)
 end
 
 ElvUF.Tags.Methods["manacolor"] = function()
-	local altR, altG, altB = PowerBarColor["MANA"].r, PowerBarColor["MANA"].g, PowerBarColor["MANA"].b
-	local color = ElvUF["colors"].power["MANA"]
+	local altR, altG, altB = PowerBarColor.MANA.r, PowerBarColor.MANA.g, PowerBarColor.MANA.b
+	local color = ElvUF.colors.power[0]
 	if color then
 		return Hex(color[1], color[2], color[3])
 	else
@@ -358,7 +358,7 @@ ElvUF.Tags.Methods["namecolor"] = function(unit)
 		if not class then return "" end
 		return Hex(class[1], class[2], class[3])
 	elseif (unitReaction) then
-		local reaction = ElvUF["colors"].reaction[unitReaction]
+		local reaction = ElvUF.colors.reaction[unitReaction]
 		return Hex(reaction[1], reaction[2], reaction[3])
 	else
 		return "|cFFC2C2C2"

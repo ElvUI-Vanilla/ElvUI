@@ -11,6 +11,7 @@ local getn = table.getn
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.macro ~= true then return end
 
+	local MacroFrame = _G["MacroFrame"]
 	E:StripTextures(MacroFrame)
 	E:CreateBackdrop(MacroFrame, "Transparent")
 	E:Point(MacroFrame.backdrop, "TOPLEFT", 10, -11)

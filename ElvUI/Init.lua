@@ -26,10 +26,10 @@ AddOn.callbacks = AddOn.callbacks or LibStub("CallbackHandler-1.0"):New(AddOn)
 
 -- Defaults
 AddOn.DF = {}
-AddOn.DF["profile"] = {}
-AddOn.DF["global"] = {}
+AddOn.DF.profile = {}
+AddOn.DF.global = {}
 AddOn.privateVars = {}
-AddOn.privateVars["profile"] = {}
+AddOn.privateVars.profile = {}
 
 AddOn.Options = {
 	type = "group",
@@ -40,9 +40,9 @@ AddOn.Options = {
 local Locale = LibStub("AceLocale-3.0"):GetLocale(AddOnName, false)
 Engine[1] = AddOn
 Engine[2] = Locale
-Engine[3] = AddOn.privateVars["profile"]
-Engine[4] = AddOn.DF["profile"]
-Engine[5] = AddOn.DF["global"]
+Engine[3] = AddOn.privateVars.profile
+Engine[4] = AddOn.DF.profile
+Engine[5] = AddOn.DF.global
 
 _G[AddOnName] = Engine
 local tcopy = table.copy
@@ -125,6 +125,9 @@ function AddOn:OnInitialize()
 			GameMenuButtonLogout:SetPoint("TOPLEFT", GameMenuFrame[AddOnName], "BOTTOMLEFT", 0, -16)
 		end
 	end)
+
+	if AddOn.private.skins.blizzard.enable ~= true or AddOn.private.skins.blizzard.misc ~= true then return end
+
 	local S = AddOn:GetModule("Skins")
 	S:HandleButton(GameMenuButton)
 end
@@ -147,7 +150,8 @@ function AddOn:OnProfileReset()
 	self:StaticPopup_Show("RESET_PROFILE_PROMPT")
 end
 
-function AddOn:ToggleConfig()
+local pageNodes = {}
+function AddOn:ToggleConfig(msg)
 	if not IsAddOnLoaded("ElvUI_Config") then
 		local _, _, _, _, _, reason = GetAddOnInfo("ElvUI_Config")
 		if reason ~= "MISSING" and reason ~= "DISABLED" then
@@ -226,8 +230,6 @@ function AddOn:ToggleConfig()
 	else
 		PlaySound("igMainMenuClose")
 	end
-
-	ACD[mode](ACD, AddOnName)
 
 	GameTooltip:Hide() --Just in case you're mouseovered something and it closes.
 end

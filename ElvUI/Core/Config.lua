@@ -220,7 +220,7 @@ function E:CreateMoverPopup()
 	E:Point(header, "CENTER", f, "TOP")
 	header:SetFrameLevel(header:GetFrameLevel() + 2)
 	header:EnableMouse(true)
-	header:RegisterForClicks("AnyUp", "AnyDown")
+	header:RegisterForClicks("LeftButtonUp", "RightButtonUp", "LeftButtonDown", "RightButtonDown")
 	header:SetScript("OnMouseDown", function() f:StartMoving() end)
 	header:SetScript("OnMouseUp", function() f:StopMovingOrSizing() end)
 

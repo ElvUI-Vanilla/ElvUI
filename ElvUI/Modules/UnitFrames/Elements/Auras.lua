@@ -79,7 +79,7 @@ function UF:Construct_AuraIcon(button)
 
 		if auraName then
 			E:Print(format(L["The spell '%s' has been added to the Blacklist unitframe aura filter."], auraName))
-			E.global["unitframe"]["aurafilters"]["Blacklist"]["spells"][auraName] = {
+			E.global.unitframe.aurafilters.Blacklist.spells[auraName] = {
 				["enable"] = true,
 				["priority"] = 0,
 			}
@@ -319,8 +319,8 @@ function UF:UpdateAuraIconSettings(auras, noCycle)
 	if not frame.db then return end
 
 	local db = frame.db[type]
-	local unitframeFont = LSM:Fetch("font", E.db["unitframe"].font)
-	local unitframeFontOutline = E.db["unitframe"].fontOutline
+	local unitframeFont = LSM:Fetch("font", E.db.unitframe.font)
+	local unitframeFontOutline = E.db.unitframe.fontOutline
 	local index = 1
 	auras.db = db
 	if db then
@@ -421,7 +421,7 @@ function UF:UpdateAuraTimer(elapsed)
 	if self.text:GetFont() then
 		self.text:SetText(format("%s%s|r", E.TimeColors[formatid], E.TimeFormats[formatid][2]), timervalue)
 	elseif self:GetParent():GetParent().db then
-		E:FontTemplate(self.text, LSM:Fetch("font", E.db["unitframe"].font), self:GetParent():GetParent().db[self:GetParent().type].fontSize, E.db["unitframe"].fontOutline)
+		E:FontTemplate(self.text, LSM:Fetch("font", E.db.unitframe.font), self:GetParent():GetParent().db[self:GetParent().type].fontSize, E.db.unitframe.fontOutline)
 		self.text:SetText(format("%s%s|r", E.TimeColors[formatid], E.TimeFormats[formatid][2]), timervalue)
 	end
 end

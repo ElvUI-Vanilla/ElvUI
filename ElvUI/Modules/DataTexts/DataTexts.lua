@@ -110,7 +110,7 @@ end
 local function ValueColorUpdate(newHex)
 	hex = newHex
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 function DT:GetDataPanelPoint(panel, i, numPoints)
 	if(numPoints == 1) then
@@ -119,9 +119,9 @@ function DT:GetDataPanelPoint(panel, i, numPoints)
 		if(i == 1) then
 			return "CENTER", panel, "CENTER"
 		elseif(i == 2) then
-			return "RIGHT", panel.dataPanels["middle"], "LEFT", -4, 0
+			return "RIGHT", panel.dataPanels.middle, "LEFT", -4, 0
 		elseif(i == 3) then
-			return "LEFT", panel.dataPanels["middle"], "RIGHT", 4, 0
+			return "LEFT", panel.dataPanels.middle, "RIGHT", 4, 0
 		end
 	end
 end
@@ -180,12 +180,12 @@ end
 
 function DT:AssignPanelToDataText(panel, data)
 	panel.name = ""
-	if data["name"] then
-		panel.name = data["name"]
+	if data.name then
+		panel.name = data.name
 	end
 
-	if data["events"] then
-		for _, event in pairs(data["events"]) do
+	if data.events then
+		for _, event in pairs(data.events) do
 			-- random error 132
 			if event == "PLAYER_ENTERING_WORLD" then
 				event = "PLAYER_LOGIN"
@@ -194,35 +194,35 @@ function DT:AssignPanelToDataText(panel, data)
 		end
 	end
 
-	if data["eventFunc"] then
+	if data.eventFunc then
 		panel:SetScript("OnEvent", function()
-			data["eventFunc"](this, event)
+			data.eventFunc(this, event)
 		end)
-		data["eventFunc"](panel, "ELVUI_FORCE_RUN")
+		data.eventFunc(panel, "ELVUI_FORCE_RUN")
 	end
 
-	if data["onUpdate"] then
+	if data.onUpdate then
 		panel:SetScript("OnUpdate", function()
-			data["onUpdate"](this, arg1)
+			data.onUpdate(this, arg1)
 		end)
-		data["onUpdate"](panel, 20000)
+		data.onUpdate(panel, 20000)
 	end
 
-	if data["onClick"] then
+	if data.onClick then
 		panel:SetScript("OnClick", function()
-			data["onClick"](this)
+			data.onClick(this)
 		end)
 	end
 
-	if data["onEnter"] then
+	if data.onEnter then
 		panel:SetScript("OnEnter", function()
-			data["onEnter"](this)
+			data.onEnter(this)
 		end)
 	end
 
-	if data["onLeave"] then
+	if data.onLeave then
 		panel:SetScript("OnLeave", function()
-			data["onLeave"](this)
+			data.onLeave(this)
 		end)
 	else
 		panel:SetScript("OnLeave", DT.Data_OnLeave)
@@ -285,33 +285,33 @@ function DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onE
 		error("Cannot register datatext no name was provided.")
 	end
 
-	DT.RegisteredDataTexts[name]["name"] = name
+	DT.RegisteredDataTexts[name].name = name
 
 	if type(events) ~= "table" and events ~= nil then
 		error("Events must be registered as a table.")
 	else
-		DT.RegisteredDataTexts[name]["events"] = events
-		DT.RegisteredDataTexts[name]["eventFunc"] = eventFunc
+		DT.RegisteredDataTexts[name].events = events
+		DT.RegisteredDataTexts[name].eventFunc = eventFunc
 	end
 
 	if updateFunc and type(updateFunc) == "function" then
-		DT.RegisteredDataTexts[name]["onUpdate"] = updateFunc
+		DT.RegisteredDataTexts[name].onUpdate = updateFunc
 	end
 
 	if clickFunc and type(clickFunc) == "function" then
-		DT.RegisteredDataTexts[name]["onClick"] = clickFunc
+		DT.RegisteredDataTexts[name].onClick = clickFunc
 	end
 
 	if onEnterFunc and type(onEnterFunc) == "function" then
-		DT.RegisteredDataTexts[name]["onEnter"] = onEnterFunc
+		DT.RegisteredDataTexts[name].onEnter = onEnterFunc
 	end
 
 	if onLeaveFunc and type(onLeaveFunc) == "function" then
-		DT.RegisteredDataTexts[name]["onLeave"] = onLeaveFunc
+		DT.RegisteredDataTexts[name].onLeave = onLeaveFunc
 	end
 
 	if localizedName and type(localizedName) == "string" then
-		DT.RegisteredDataTexts[name]["localizedName"] = localizedName
+		DT.RegisteredDataTexts[name].localizedName = localizedName
 	end
 end
 

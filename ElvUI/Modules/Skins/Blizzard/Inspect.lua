@@ -16,6 +16,7 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if not E.private.skins.blizzard.enable or not E.private.skins.blizzard.inspect then return end
 
+	local InspectFrame = _G["InspectFrame"]
 	E:StripTextures(InspectFrame, true)
 	E:CreateBackdrop(InspectFrame, "Transparent")
 	E:Point(InspectFrame.backdrop, "TOPLEFT", 10, -12)

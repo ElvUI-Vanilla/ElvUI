@@ -6,10 +6,13 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 --WoW API / Variables
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.spellbook ~= true then return end
 
+	local SpellBookFrame = _G["SpellBookFrame"]
 	E:StripTextures(SpellBookFrame, true)
 	E:CreateBackdrop(SpellBookFrame, "Transparent")
 	E:Point(SpellBookFrame.backdrop, "TOPLEFT", 10, -12)
@@ -28,7 +31,7 @@ local function LoadSkin()
 			if currentPage > 1 then
 				PrevPageButton_OnClick()
 			end
-		else 
+		else
 			if currentPage < maxPages then
 				NextPageButton_OnClick()
 			end

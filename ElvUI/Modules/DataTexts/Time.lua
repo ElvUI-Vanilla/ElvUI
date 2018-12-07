@@ -89,6 +89,6 @@ local function ValueColorUpdate(hex)
 		OnUpdate(lastPanel, 20000)
 	end
 end
-E["valueColorUpdateFuncs"][ValueColorUpdate] = true
+E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
 DT:RegisterDatatext("Time", nil, nil, OnUpdate, OnClick, OnEnter, OnLeave)

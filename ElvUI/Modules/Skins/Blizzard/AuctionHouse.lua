@@ -92,7 +92,7 @@ local function LoadSkin()
 	E:StyleButton(AuctionsItemButton, false, true)
 
 	HookScript(AuctionsItemButton, "OnEvent", function()
-		this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+		this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		if event == "NEW_AUCTION_UPDATE" and this:GetNormalTexture() then
 			this:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
 			E:SetInside(this:GetNormalTexture())
@@ -104,11 +104,11 @@ local function LoadSkin()
 				if quality then
 					this:SetBackdropBorderColor(GetItemQualityColor(quality))
 				else
-					this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		else
-			this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 
@@ -221,7 +221,7 @@ local function LoadSkin()
 				icon:SetBackdropBorderColor(r, g, b)
 			end)
 			hooksecurefunc(name, "Hide", function()
-				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				icon:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end)
 		end
 
@@ -254,7 +254,7 @@ local function LoadSkin()
 				icon:SetBackdropBorderColor(r, g, b)
 			end)
 			hooksecurefunc(name, "Hide", function(_, r, g, b)
-				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				icon:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end)
 		end
 
@@ -287,7 +287,7 @@ local function LoadSkin()
 				icon:SetBackdropBorderColor(r, g, b)
 			end)
 			hooksecurefunc(name, "Hide", function(_, r, g, b)
-				icon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				icon:SetBackdropBorderColor(unpack(E.media.bordercolor))
 			end)
 		end
 

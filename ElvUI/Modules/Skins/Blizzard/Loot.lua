@@ -70,10 +70,10 @@ local function LoadSkin()
 					if quality then
 						lootButton.backdrop:SetBackdropBorderColor(GetItemQualityColor(quality))
 					else
-						lootButton.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+						lootButton.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 					end
 				else
-					lootButton.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					lootButton.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		end
@@ -121,7 +121,7 @@ local function LoadRollSkin()
 		local statusBar = _G[frameName.."Timer"]
 		E:StripTextures(statusBar)
 		E:CreateBackdrop(statusBar, "Default")
-		statusBar:SetStatusBarTexture(E["media"].normTex)
+		statusBar:SetStatusBarTexture(E.media.normTex)
 		E:RegisterStatusBar(statusBar)
 
 		local decoration = _G[frameName.."Decoration"]

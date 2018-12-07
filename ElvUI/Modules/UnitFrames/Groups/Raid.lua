@@ -37,7 +37,7 @@ function UF:Construct_RaidFrames()
 	UF:Update_FontStrings()
 	self.unitframeType = "raid"
 
-	UF:Update_RaidFrames(self, UF.db["units"]["raid"])
+	UF:Update_RaidFrames(self, UF.db.units.raid)
 
 	return self
 end
@@ -61,7 +61,7 @@ function UF:Update_RaidHeader(header)
 
 		header:RegisterEvent("PARTY_MEMBERS_CHANGED")
 		header:RegisterEvent("RAID_ROSTER_UPDATE")
-		header:SetScript("OnEvent", UF["RaidSmartVisibility"])
+		header:SetScript("OnEvent", UF.RaidSmartVisibility)
 
 		header.positioned = true
 	end
@@ -140,4 +140,4 @@ function UF:Update_RaidFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["raid"] = true
+UF.headerstoload.raid = true

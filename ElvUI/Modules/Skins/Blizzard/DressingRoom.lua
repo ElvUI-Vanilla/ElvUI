@@ -9,6 +9,7 @@ local SetDressUpBackground = SetDressUpBackground
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.dressingroom ~= true then return end
 
+	local DressUpFrame = _G["DressUpFrame"]
 	E:StripTextures(DressUpFrame)
 	E:CreateBackdrop(DressUpFrame, "Transparent")
 	E:Point(DressUpFrame.backdrop, "TOPLEFT", 10, -12)

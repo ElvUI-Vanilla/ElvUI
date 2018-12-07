@@ -38,12 +38,12 @@ end
 
 function S:SetModifiedBackdrop()
 	if this.backdrop then this = this.backdrop end
-	this:SetBackdropBorderColor(unpack(E["media"].rgbvaluecolor))
+	this:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
 end
 
 function S:SetOriginalBackdrop()
 	if this.backdrop then this = this.backdrop end
-	this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+	this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 end
 
 function S:HandleButton(f, strip)
@@ -389,7 +389,7 @@ function S:HandleSliderFrame(frame)
 			frame:SetBackdrop(nil)
 		end
 	end)
-	frame:SetThumbTexture(E["media"].blankTex)
+	frame:SetThumbTexture(E.media.blankTex)
 	frame:GetThumbTexture():SetVertexColor(0.3, 0.3, 0.3)
 	E:Size(frame:GetThumbTexture(), SIZE-2)
 	if orientation == "VERTICAL" then
@@ -460,9 +460,9 @@ function S:ADDON_LOADED()
 			self.addonsToLoad[arg1] = nil
 		elseif self.addonCallbacks[arg1] then
 			--Fire events to the skins that rely on this addon
-			for index, event in ipairs(self.addonCallbacks[arg1]["CallPriority"]) do
+			for index, event in ipairs(self.addonCallbacks[arg1].CallPriority) do
 				self.addonCallbacks[arg1][event] = nil
-				self.addonCallbacks[arg1]["CallPriority"][index] = nil
+				self.addonCallbacks[arg1].CallPriority[index] = nil
 				E.callbacks:Fire(event)
 			end
 		end
@@ -475,9 +475,9 @@ function S:ADDON_LOADED()
 		self.addonsToLoad[arg1]()
 		self.addonsToLoad[arg1] = nil
 	elseif self.addonCallbacks[arg1] then
-		for index, event in ipairs(self.addonCallbacks[arg1]["CallPriority"]) do
+		for index, event in ipairs(self.addonCallbacks[arg1].CallPriority) do
 			self.addonCallbacks[arg1][event] = nil
-			self.addonCallbacks[arg1]["CallPriority"][index] = nil
+			self.addonCallbacks[arg1].CallPriority[index] = nil
 			E.callbacks:Fire(event)
 		end
 	end
@@ -536,7 +536,7 @@ function S:AddCallbackForAddon(addonName, eventName, loadFunc, forceLoad, bypass
 	else
 		--Insert eventName in this addons' registry
 		self.addonCallbacks[addonName][eventName] = true
-		tinsert(self.addonCallbacks[addonName]["CallPriority"], eventName)
+		tinsert(self.addonCallbacks[addonName].CallPriority, eventName)
 	end
 end
 
@@ -559,7 +559,7 @@ function S:AddCallback(eventName, loadFunc)
 
 	--Add event name to registry
 	self.nonAddonCallbacks[eventName] = true
-	tinsert(self.nonAddonCallbacks["CallPriority"], eventName)
+	tinsert(self.nonAddonCallbacks.CallPriority, eventName)
 
 	--Register loadFunc to be called when event is fired
 	E.RegisterCallback(E, eventName, loadFunc)
@@ -571,17 +571,17 @@ function S:Initialize()
 	--Fire events for Blizzard addons that are already loaded
 	for addon in pairs(self.addonCallbacks) do
 		if IsAddOnLoaded(addon) then
-			for index, event in ipairs(self.addonCallbacks[addon]["CallPriority"]) do
+			for index, event in ipairs(self.addonCallbacks[addon].CallPriority) do
 				self.addonCallbacks[addon][event] = nil
-				self.addonCallbacks[addon]["CallPriority"][index] = nil
+				self.addonCallbacks[addon].CallPriority[index] = nil
 				E.callbacks:Fire(event)
 			end
 		end
 	end
 	--Fire event for all skins that doesn't rely on a Blizzard addon
-	for index, event in ipairs(self.nonAddonCallbacks["CallPriority"]) do
+	for index, event in ipairs(self.nonAddonCallbacks.CallPriority) do
 		self.nonAddonCallbacks[event] = nil
-		self.nonAddonCallbacks["CallPriority"][index] = nil
+		self.nonAddonCallbacks.CallPriority[index] = nil
 		E.callbacks:Fire(event)
 	end
 

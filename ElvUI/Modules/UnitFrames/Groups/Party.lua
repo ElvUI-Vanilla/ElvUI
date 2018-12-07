@@ -35,7 +35,7 @@ function UF:Construct_PartyFrames()
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
-	UF:Update_PartyFrames(self, UF.db["units"]["party"])
+	UF:Update_PartyFrames(self, UF.db.units.party)
 
 	return self;
 end
@@ -59,7 +59,7 @@ function UF:Update_PartyHeader(header)
 
 		header:RegisterEvent("PARTY_MEMBERS_CHANGED")
 		header:RegisterEvent("RAID_ROSTER_UPDATE")
-		header:SetScript("OnEvent", UF["PartySmartVisibility"])
+		header:SetScript("OnEvent", UF.PartySmartVisibility)
 
 		header.positioned = true
 	end
@@ -136,4 +136,4 @@ function UF:Update_PartyFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF["headerstoload"]["party"] = true
+UF.headerstoload.party = true

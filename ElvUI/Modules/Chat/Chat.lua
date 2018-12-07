@@ -204,9 +204,9 @@ function CH:StyleChat(frame)
 	end)
 
 	tab.text = _G[name.."TabText"]
-	tab.text:SetTextColor(unpack(E["media"].rgbvaluecolor))
+	tab.text:SetTextColor(unpack(E.media.rgbvaluecolor))
 	hooksecurefunc(tab.text, "SetTextColor", function(self, r, g, b)
-		local rR, gG, bB = unpack(E["media"].rgbvaluecolor)
+		local rR, gG, bB = unpack(E.media.rgbvaluecolor)
 		if r ~= rR or g ~= gG or b ~= bB then
 			self:SetTextColor(rR, gG, bB)
 		end
@@ -370,8 +370,8 @@ local function FindRightChatID()
 end
 
 function CH:UpdateChatTabs()
-	local fadeUndockedTabs = E.db["chat"].fadeUndockedTabs
-	local fadeTabsNoBackdrop = E.db["chat"].fadeTabsNoBackdrop
+	local fadeUndockedTabs = E.db.chat.fadeUndockedTabs
+	local fadeTabsNoBackdrop = E.db.chat.fadeTabsNoBackdrop
 
 	for i = 1, CreatedFrames do
 		local chat = _G[format("ChatFrame%d", i)]
@@ -420,8 +420,8 @@ function CH:PositionChat(override)
 	if not self.db.lockPositions or E.private.chat.enable ~= true then return end
 
 	local chat, tab, id, isDocked
-	local fadeUndockedTabs = E.db["chat"].fadeUndockedTabs
-	local fadeTabsNoBackdrop = E.db["chat"].fadeTabsNoBackdrop
+	local fadeUndockedTabs = E.db.chat.fadeUndockedTabs
+	local fadeTabsNoBackdrop = E.db.chat.fadeTabsNoBackdrop
 
 	for i = 1, CreatedFrames do
 		local BASE_OFFSET = 57 + E.Spacing*3
@@ -514,7 +514,7 @@ local function UpdateChatTabColor(_, r, g, b)
 		_G["ChatFrame"..i.."TabText"]:SetTextColor(r, g, b)
 	end
 end
-E["valueColorUpdateFuncs"][UpdateChatTabColor] = true
+E.valueColorUpdateFuncs[UpdateChatTabColor] = true
 
 function CH:ScrollToBottom(frame)
 	frame:ScrollToBottom()
@@ -1158,7 +1158,7 @@ local protectLinks = {}
 function CH:CheckKeyword(message)
 	for itemLink in gmatch(message, "|%x+|Hitem:.-|h.-|h|r") do
 		protectLinks[itemLink] = gsub(itemLink, "%s","|s")
-		for keyword, _ in pairs(CH.Keywords) do
+		for keyword in pairs(CH.Keywords) do
 			if itemLink == keyword then
 				if self.db.keywordSound ~= "None" and not self.SoundPlayed then
 					PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
@@ -1358,10 +1358,10 @@ function CH:DisplayChatHistory()
 	CH.SoundPlayed = nil
 end
 
-tremove(ChatTypeGroup["GUILD"], 3)
+tremove(ChatTypeGroup.GUILD, 3)
 function CH:DelayGuildMOTD()
 	local delay, delayFrame, chat = 0, CreateFrame("Frame")
-	tinsert(ChatTypeGroup["GUILD"], 3, "GUILD_MOTD")
+	tinsert(ChatTypeGroup.GUILD, 3, "GUILD_MOTD")
 	delayFrame:SetScript("OnUpdate", function()
 		delay = delay + arg1
 		if delay < 7 then return end

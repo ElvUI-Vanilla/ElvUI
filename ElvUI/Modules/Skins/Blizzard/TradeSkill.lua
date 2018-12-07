@@ -22,6 +22,7 @@ local function LoadSkin()
 
 	UIPanelWindows["TradeSkillFrame"] = {area = "doublewide", pushable = 0, whileDead = 1}
 
+	local TradeSkillFrame = _G["TradeSkillFrame"]
 	E:StripTextures(TradeSkillFrame, true)
 	E:CreateBackdrop(TradeSkillFrame, "Transparent")
 	TradeSkillFrame.backdrop:SetPoint("TOPLEFT", 10, -12)
@@ -47,7 +48,7 @@ local function LoadSkin()
 	E:Size(TradeSkillRankFrame, 420, 18)
 	TradeSkillRankFrame:ClearAllPoints()
 	TradeSkillRankFrame:SetPoint("TOP", -10, -38)
-	TradeSkillRankFrame:SetStatusBarTexture(E["media"].normTex)
+	TradeSkillRankFrame:SetStatusBarTexture(E.media.normTex)
 	E:RegisterStatusBar(TradeSkillRankFrame)
 
 	TradeSkillRankFrameSkillName:Hide()
@@ -224,7 +225,7 @@ local function LoadSkin()
 				TradeSkillSkillIcon:SetBackdropBorderColor(GetItemQualityColor(quality))
 				TradeSkillSkillName:SetTextColor(GetItemQualityColor(quality))
 			else
-				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+				TradeSkillSkillIcon:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				TradeSkillSkillName:SetTextColor(1, 1, 1)
 			end
 		end
@@ -248,8 +249,8 @@ local function LoadSkin()
 						name:SetTextColor(GetItemQualityColor(quality))
 					end
 				else
-					reagent:SetBackdropBorderColor(unpack(E["media"].bordercolor))
-					icon.backdrop:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+					reagent:SetBackdropBorderColor(unpack(E.media.bordercolor))
+					icon.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 				end
 			end
 		end

@@ -14,7 +14,7 @@ local function LoadSkin()
 	S:HandleCloseButton(ItemRefCloseButton)
 
 	local GameTooltip = _G["GameTooltip"]
-	local GameTooltipStatusBar =  _G["GameTooltipStatusBar"]
+	local GameTooltipStatusBar = _G["GameTooltipStatusBar"]
 	local tooltips = {
 		GameTooltip,
 		ItemRefTooltip,
@@ -37,7 +37,7 @@ local function LoadSkin()
 		TT:SecureHookScript(tt, "OnShow", "CheckBackdropColor")
 	end
 
-	GameTooltipStatusBar:SetStatusBarTexture(E["media"].normTex)
+	GameTooltipStatusBar:SetStatusBarTexture(E.media.normTex)
 	E:RegisterStatusBar(GameTooltipStatusBar)
 	E:CreateBackdrop(GameTooltipStatusBar, "Transparent")
 	GameTooltipStatusBar:ClearAllPoints()

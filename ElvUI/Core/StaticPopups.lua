@@ -61,13 +61,13 @@ E.PopupDialogs["ELVUI_EDITBOX"] = {
 	text = E.title,
 	button1 = OKAY,
 	hasEditBox = 1,
-	OnShow = function()
+	OnShow = function(data)
 		this.editBox:SetAutoFocus(false)
 		this.editBox.width = this.editBox:GetWidth()
 		E:Width(this.editBox, 280)
 		this.editBox:AddHistoryLine("text")
-		this.editBox.temptxt = arg1
-		this.editBox:SetText(arg1)
+		this.editBox.temptxt = data
+		this.editBox:SetText(data)
 		this.editBox:HighlightText()
 		this.editBox:SetJustifyH("CENTER")
 	end,

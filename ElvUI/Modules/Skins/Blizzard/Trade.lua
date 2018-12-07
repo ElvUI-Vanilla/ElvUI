@@ -6,14 +6,16 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 --WoW API / Variables
+local CreateFrame = CreateFrame
+local hooksecurefunc = hooksecurefunc
 local GetItemQualityColor = GetItemQualityColor
 local GetTradePlayerItemInfo = GetTradePlayerItemInfo
 local GetTradeTargetItemInfo = GetTradeTargetItemInfo
-local hooksecurefunc = hooksecurefunc
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.trade ~= true then return end
 
+	local TradeFrame = _G["TradeFrame"]
 	E:StripTextures(TradeFrame, true)
 	E:Width(TradeFrame, 400)
 	E:CreateBackdrop(TradeFrame, "Transparent")
@@ -101,7 +103,7 @@ local function LoadSkin()
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
-			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			tradeItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 
@@ -117,7 +119,7 @@ local function LoadSkin()
 				tradeItemButton:SetBackdropBorderColor(GetItemQualityColor(quality))
 			end
 		else
-			tradeItemButton:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+			tradeItemButton:SetBackdropBorderColor(unpack(E.media.bordercolor))
 		end
 	end)
 end

@@ -821,7 +821,7 @@ function B:OnEvent()
 end
 
 function B:UpdateGoldText()
-	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db["bags"].moneyFormat))
+	self.BagFrame.goldText:SetText(E:FormatMoney(GetMoney(), E.db.bags.moneyFormat))
 end
 
 function B:FormatMoney(amount)
@@ -1530,7 +1530,7 @@ function B:CreateSellFrame()
 	B.SellFrame.statusbar = CreateFrame("StatusBar", "ElvUIVendorGraysFrameStatusbar", B.SellFrame)
 	E:Size(B.SellFrame.statusbar, 180, 16)
 	E:Point(B.SellFrame.statusbar, "BOTTOM", B.SellFrame, "BOTTOM", 0, 4)
-	B.SellFrame.statusbar:SetStatusBarTexture(E["media"].normTex)
+	B.SellFrame.statusbar:SetStatusBarTexture(E.media.normTex)
 	B.SellFrame.statusbar:SetStatusBarColor(1, 0, 0)
 	E:CreateBackdrop(B.SellFrame.statusbar, "Transparent")
 

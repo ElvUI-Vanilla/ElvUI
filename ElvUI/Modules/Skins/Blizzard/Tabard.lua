@@ -10,6 +10,7 @@ local hooksecurefunc = hooksecurefunc
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.tabard ~= true then return end
 
+	local TabardFrame = _G["TabardFrame"]
 	E:StripTextures(TabardFrame)
 	E:Kill(TabardFramePortrait)
 	E:CreateBackdrop(TabardFrame, "Transparent")

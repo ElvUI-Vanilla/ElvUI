@@ -12,6 +12,7 @@ local function LoadSkin()
 
 	UIPanelWindows["TalentFrame"] = {area = "left", pushable = 0, whileDead = 1}
 
+	local PlayerTalentFrame = _G["PlayerTalentFrame"]
 	E:StripTextures(TalentFrame)
 	E:CreateBackdrop(TalentFrame, "Transparent")
 	E:Point(TalentFrame.backdrop, "TOPLEFT", 13, -12)

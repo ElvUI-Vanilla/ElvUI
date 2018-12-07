@@ -27,6 +27,7 @@ local function LoadSkin()
 		"VerbalHarassmentButton",
 	}
 
+	local HelpFrame = _G["HelpFrame"]
 	E:StripTextures(HelpFrame)
 	E:CreateBackdrop(HelpFrame, "Transparent")
 	E:Point(HelpFrame.backdrop, "TOPLEFT", 6, -2)

@@ -97,7 +97,7 @@ function TT:GameTooltip_SetDefaultAnchor(tt, parent)
 		end
 		if self.db.cursorAnchor then
 			tt:SetOwner(parent, "ANCHOR_CURSOR")
-			return;
+			return
 		else
 			tt:SetOwner(parent, "ANCHOR_NONE")
 		end
@@ -207,10 +207,10 @@ function TT:UPDATE_MOUSEOVER_UNIT(_, unit)
 
 	local unitTarget = unit.."target"
 	if self.db.targetInfo and unit ~= "player" and UnitExists(unitTarget) then
-		local targetColor;
+		local targetColor
 		if UnitIsPlayer(unitTarget) then
-			local _, class = UnitClass(unitTarget);
-			targetColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class];
+			local _, class = UnitClass(unitTarget)
+			targetColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 		else
 			local reaction = UnitReaction(unitTarget, "player") or 4
 			targetColor = E.db.tooltip.useCustomFactionColors and E.db.tooltip.factionColors[reaction] or FACTION_BAR_COLORS[reaction]

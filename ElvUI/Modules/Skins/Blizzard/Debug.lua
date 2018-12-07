@@ -65,8 +65,8 @@ local function LoadSkin()
 
 	HookScript(FrameStackTooltip, "OnShow", function()
 		E:SetTemplate(this, "Transparent")
-		this:SetBackdropColor(unpack(E["media"].backdropfadecolor))
-		this:SetBackdropBorderColor(unpack(E["media"].bordercolor))
+		this:SetBackdropColor(unpack(E.media.backdropfadecolor))
+		this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 	end)
 
 	HookScript(EventTraceTooltip, "OnShow", function()
