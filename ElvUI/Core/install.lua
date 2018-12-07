@@ -212,6 +212,7 @@ local function SetupCVars()
 	SetCVar("UberTooltips", 1)
 	ALWAYS_SHOW_MULTIBARS = 1
 	LOCK_ACTIONBAR = 1
+	SIMPLE_CHAT = 0
 	SetActionBarToggles(1, 0, 1, 1)
 	TutorialFrame_HideAllAlerts()
 	ClearTutorials()

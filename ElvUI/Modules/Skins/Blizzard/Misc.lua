@@ -366,6 +366,12 @@ local function LoadSkin()
 	-- Interface Options Checkboxes
 	for _, value in UIOptionsFrameCheckButtons do
 		local UIOptionsFrameCheckBox = _G["UIOptionsFrameCheckButton"..value.index]
+		if value.index == 7 then
+			E:Kill(UIOptionsFrameCheckBox)
+		end
+		if value.index == 8 then
+			E:Point(UIOptionsFrameCheckBox, "TOPLEFT", 10, -8)
+		end
 		if UIOptionsFrameCheckBox then
 			S:HandleCheckBox(UIOptionsFrameCheckBox)
 		end

@@ -455,7 +455,7 @@ function CH:PositionChat(override)
 			if id ~= 2 then
 				E:Size(chat, (E.db.chat.separateSizes and E.db.chat.panelWidthRight or E.db.chat.panelWidth) - 11, (E.db.chat.separateSizes and E.db.chat.panelHeightRight or E.db.chat.panelHeight) - BASE_OFFSET)
 			else
-				E:Size(chat, E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET) - CombatLogQuickButtonFrame_Custom:GetHeight())
+				E:Size(chat, E.db.chat.panelWidth - 11, (E.db.chat.panelHeight - BASE_OFFSET))
 			end
 
 			tab:SetParent(RightChatPanel)
