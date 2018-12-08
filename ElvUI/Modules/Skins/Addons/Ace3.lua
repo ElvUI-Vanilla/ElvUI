@@ -289,7 +289,7 @@ function S:SkinAce3()
 				E:CreateBackdrop(frame, "Default")
 			end
 
-			E:Size(frame.backdrop, 16, 16)
+			E:Size(frame.backdrop, 24, 16)
 			frame.backdrop:ClearAllPoints()
 			E:Point(frame.backdrop, "LEFT", frame, "LEFT", 4, 0)
 			frame.backdrop:SetBackdropColor(0, 0, 0, 0)
