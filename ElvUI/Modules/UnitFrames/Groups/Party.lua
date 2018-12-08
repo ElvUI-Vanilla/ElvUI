@@ -1,8 +1,10 @@
-local E, L, V, P, G = unpack(ElvUI)
-local UF = E:GetModule("UnitFrames")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local UF = E:GetModule("UnitFrames");
 
+--Cache global variables
+--Lua functions
 local _G = _G
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 
 local ns = oUF

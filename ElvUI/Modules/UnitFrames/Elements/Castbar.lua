@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
 --Cache global variables
@@ -56,6 +56,11 @@ function UF:Construct_Castbar(frame, moverName)
 	castbar.Spark:SetBlendMode("ADD")
 	castbar.Spark:SetVertexColor(1, 1, 1)
 
+	--Set to castbar.SafeZone
+	castbar.LatencyTexture = castbar:CreateTexture(nil, "OVERLAY")
+	castbar.LatencyTexture:SetTexture(E.media.blankTex)
+	castbar.LatencyTexture:SetVertexColor(0.69, 0.31, 0.31, 0.75)
+
 	castbar.bg = castbar:CreateTexture(nil, "BORDER")
 	castbar.bg:Hide()
 
@@ -95,6 +100,15 @@ function UF:Configure_Castbar(frame)
 	E:Height(castbar.Holder, db.castbar.height)
 	if castbar.Holder:GetScript("OnSizeChanged") then
 		castbar.Holder:GetScript("OnSizeChanged")(castbar.Holder)
+	end
+
+	--Latency
+	if db.castbar.latency then
+		castbar.SafeZone = castbar.LatencyTexture
+		castbar.LatencyTexture:Show()
+	else
+		castbar.SafeZone = nil
+		castbar.LatencyTexture:Hide()
 	end
 
 	--Icon

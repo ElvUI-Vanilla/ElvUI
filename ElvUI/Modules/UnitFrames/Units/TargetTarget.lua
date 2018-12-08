@@ -16,13 +16,18 @@ function UF:Construct_TargetTargetFrame(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.Buffs = self:Construct_Buffs(frame)
+	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.Range = self:Construct_Range(frame)
+	-- frame.ThreatIndicator = self:Construct_Threat(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
+	frame.MouseGlow = self:Construct_MouseGlow(frame)
+	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.customTexts = {}
 
 	E:Point(frame, "BOTTOM", E.UIParent, "BOTTOM", 0, 75)
 	E:CreateMover(frame, frame:GetName().."Mover", L["TargetTarget Frame"], nil, nil, nil, "ALL,SOLO")
-	frame.unitframeType = "targettarget";
+	frame.unitframeType = "targettarget"
 end
 
 function UF:Update_TargetTargetFrame(frame, db)
@@ -58,7 +63,6 @@ function UF:Update_TargetTargetFrame(frame, db)
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
-	frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 	E:Size(_G[frame:GetName().."Mover"], frame:GetWidth(), frame:GetHeight())
 
@@ -72,13 +76,19 @@ function UF:Update_TargetTargetFrame(frame, db)
 
 	UF:Configure_Portrait(frame)
 
+	-- UF:Configure_Threat(frame)
+
 	UF:EnableDisable_Auras(frame)
 	UF:Configure_Auras(frame, "Buffs")
 	UF:Configure_Auras(frame, "Debuffs")
 
+	UF:Configure_Range(frame)
+
 	UF:Configure_RaidIcon(frame)
 
-	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + self.db["units"].player.castbar.height))
+	UF:Configure_CustomTexts(frame)
+
+	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + self.db.units.player.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 

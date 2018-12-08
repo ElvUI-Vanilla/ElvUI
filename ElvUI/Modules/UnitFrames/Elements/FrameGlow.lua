@@ -1,12 +1,18 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
+local ns = oUF
+local ElvUF = ns.oUF
+assert(ElvUF, "ElvUI was unable to locate oUF.")
+
+--Cache global variables
+--Lua functions
 local _G = _G
 local pairs = pairs
 local select = select
 local assert = assert
 local tinsert = table.insert
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local UnitIsUnit = UnitIsUnit
 local UnitReaction = UnitReaction
@@ -67,7 +73,7 @@ function UF:FrameGlow_ClassGlowPosition(frame, powerName, glow, offset, fromScri
 		UF:FrameGlow_HookPowerBar(frame, power, powerName, glow, offset)
 	end
 
-	local portrait = (frame.USE_PORTRAIT and not frame.PORTRAIT_WIDTH == 0) and (frame.Portrait and frame.Portrait.backdrop)
+	local portrait = (frame.USE_PORTRAIT and not frame.USE_PORTRAIT_OVERLAY) and (frame.Portrait and frame.Portrait.backdrop)
 
 	if powerName == "HappinessIndicator" and (power and power.backdrop and power:IsVisible()) then
 		if frame.ORIENTATION == "RIGHT" then
@@ -79,21 +85,11 @@ function UF:FrameGlow_ClassGlowPosition(frame, powerName, glow, offset, fromScri
 		end
 	else
 		if (power and power.backdrop and power:IsVisible()) and (not (frame.CLASSBAR_DETACHED or frame.USE_MINI_CLASSBAR)) then
-			if frame.ORIENTATION == "RIGHT" then
-				glow:SetPoint("TOPLEFT", power.backdrop, -offset, offset)
-				glow:SetPoint("TOPRIGHT", portrait or power.backdrop, offset, offset)
-			else
-				glow:SetPoint("TOPLEFT", portrait or power.backdrop, -offset, offset)
-				glow:SetPoint("TOPRIGHT", power.backdrop, offset, offset)
-			end
+			glow:SetPoint("TOPLEFT", (frame.ORIENTATION == "LEFT" and portrait) or power.backdrop, -offset, offset)
+			glow:SetPoint("TOPRIGHT", (frame.ORIENTATION == "RIGHT" and portrait) or power.backdrop, offset, offset)
 		elseif frame.Health and frame.Health.backdrop then
-			if frame.ORIENTATION == "RIGHT" then
-				glow:SetPoint("TOPLEFT", frame.Health.backdrop, -offset, offset)
-				glow:SetPoint("TOPRIGHT", portrait or frame.Health.backdrop, offset, offset)
-			else
-				glow:SetPoint("TOPLEFT", portrait or frame.Health.backdrop, -offset, offset)
-				glow:SetPoint("TOPRIGHT", frame.Health.backdrop, offset, offset)
-			end
+			glow:SetPoint("TOPLEFT", (frame.ORIENTATION == "LEFT" and portrait) or frame.Health.backdrop, -offset, offset)
+			glow:SetPoint("TOPRIGHT", (frame.ORIENTATION == "RIGHT" and portrait) or frame.Health.backdrop, offset, offset)
 		end
 	end
 end
@@ -101,23 +97,18 @@ end
 function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 	if not (frame and frame.VARIABLES_SET) then return end
 
-	local additionalPower = frame.AdditionalPower
-	local runes = frame.Runes
+	local infoPanel = frame.InfoPanel
+	local druidMana = frame.DruidAltMana
 	local comboPoints = frame.ComboPoints
 	local happiness = frame.HappinessIndicator
 	local power = frame.Power and frame.Power.backdrop
 	local health = frame.Health and frame.Health.backdrop
-	local portrait = (frame.USE_PORTRAIT and not frame.PORTRAIT_WIDTH ~= 0) and (frame.Portrait and frame.Portrait.backdrop)
+	local portrait = (frame.USE_PORTRAIT and not frame.USE_PORTRAIT_OVERLAY) and (frame.Portrait and frame.Portrait.backdrop)
 	local offset = (E.PixelMode and E.mult*3) or E.mult*4 -- edgeSize is 3
 
 	mainGlow:ClearAllPoints()
-	if frame.ORIENTATION == "RIGHT" then
-		mainGlow:SetPoint("TOPLEFT", health, -offset, offset)
-		mainGlow:SetPoint("TOPRIGHT", portrait or health, offset, offset)
-	else
-		mainGlow:SetPoint("TOPLEFT", portrait or health, -offset, offset)
-		mainGlow:SetPoint("TOPRIGHT", health, offset, offset)
-	end
+	mainGlow:SetPoint("TOPLEFT", (frame.ORIENTATION == "LEFT" and portrait) or health, -offset, offset)
+	mainGlow:SetPoint("TOPRIGHT", (frame.ORIENTATION == "RIGHT" and portrait) or health, offset, offset)
 
 	if frame.USE_POWERBAR_OFFSET or frame.USE_MINI_POWERBAR then
 		mainGlow:SetPoint("BOTTOMLEFT", health, -offset, -offset)
@@ -136,10 +127,8 @@ function UF:FrameGlow_PositionGlow(frame, mainGlow, powerGlow)
 		powerGlow:SetPoint("BOTTOMRIGHT", power, offset, -offset)
 	end
 
-	if additionalPower then
-		UF:FrameGlow_ClassGlowPosition(frame, "AdditionalPower", mainGlow, offset)
-	elseif runes then
-		UF:FrameGlow_ClassGlowPosition(frame, "Runes", mainGlow, offset)
+	if druidMana then
+		UF:FrameGlow_ClassGlowPosition(frame, "DruidAltMana", mainGlow, offset)
 	elseif comboPoints then
 		UF:FrameGlow_ClassGlowPosition(frame, "ComboPoints", mainGlow, offset)
 	elseif happiness then
@@ -174,20 +163,29 @@ function UF:FrameGlow_CreateGlow(frame, mouse)
 	if not frame.Highlight then
 		frame.Highlight = CreateFrame("Frame", nil, frame)
 		frame.Highlight:Hide()
-		HookScript(frame, "OnEnter", function()
-			frame.isHighlight = true
-			UF:FrameGlow_CheckMouseover(frame)
-		end)
-		HookScript(frame, "OnLeave", function()
-			frame.isHighlight = false
-			UF:FrameGlow_CheckMouseover(frame)
-		end)
-		
+
 		HookScript(frame.Highlight, "OnEvent", function()
 			if event == "UPDATE_MOUSEOVER_UNIT" then
 				UF:FrameGlow_CheckMouseover(frame)
 			elseif event == "PLAYER_TARGET_CHANGED" then
 				UF:FrameGlow_CheckTarget(frame)
+			end
+		end)
+
+		HookScript(frame, "OnEnter", function()
+			frame.isHighlight = true
+			for _, frame in ipairs(ElvUF.objects) do
+				if frame.unit then
+					UF:FrameGlow_CheckMouseover(frame)
+				end
+			end
+		end)
+		HookScript(frame, "OnLeave", function()
+			frame.isHighlight = false
+			for _, frame in ipairs(ElvUF.objects) do
+				if frame.unit then
+					UF:FrameGlow_CheckMouseover(frame)
+				end
 			end
 		end)
 	end
@@ -337,7 +335,6 @@ function UF:FrameGlow_CheckMouseover(frame, onEnter)
 				frame.Highlight.texture:Hide()
 			end
 		end
-
 		if (shouldShow == "both" or shouldShow == "texture") and frame.Highlight.texture and not frame.Highlight.texture:IsShown() then
 			frame.Highlight.texture:Show()
 		end
@@ -371,7 +368,6 @@ function UF:Construct_HighlightGlow(frame, glow)
 			end
 		end)
 
-		frame.Highlight:Show()
 		frame.Highlight:SetScript("OnUpdate", function()
 			if this.elapsed and this.elapsed > 0.1 then
 				if not UF:FrameGlow_MouseOnUnit(frame) then
@@ -426,11 +422,6 @@ function UF:FrameGlow_UpdateFrames()
 
 	-- focus, focustarget, pet, pettarget, player, target, targettarget, targettargettarget
 	for unit in pairs(self.units) do
-		UF:FrameGlow_ConfigureGlow(self[unit], unit, dbTexture)
-	end
-
-	-- arena{1-5}, boss{1-5}
-	for unit in pairs(self.groupunits) do
 		UF:FrameGlow_ConfigureGlow(self[unit], unit, dbTexture)
 	end
 

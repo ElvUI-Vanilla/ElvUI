@@ -4,6 +4,8 @@ local UF = E:GetModule("UnitFrames");
 --Cache global variables
 --Lua functions
 local _G = _G
+--WoW API / Variables
+local CreateFrame = CreateFrame
 
 local ns = oUF
 local ElvUF = ns.oUF
@@ -12,21 +14,31 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 function UF:Construct_TargetFrame(frame)
 	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
 	frame.Health.frequentUpdates = true
-
 	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
 	frame.Power.frequentUpdates = true
-
 	frame.Name = self:Construct_NameText(frame)
-
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+	frame.Castbar = self:Construct_Castbar(frame, L["Target Castbar"])
+	frame.Castbar.SafeZone = nil
+	frame.Castbar.LatencyTexture:Hide()
+	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
+
+	frame.ComboPointsHolder = CreateFrame("Frame", nil, frame)
+	E:Point(frame.ComboPointsHolder, "BOTTOM", E.UIParent, "BOTTOM", 0, 200)
+	frame.ComboPoints = self:Construct_Combobar(frame)
+
+	frame.DebuffHighlight = self:Construct_DebuffHighlight(frame)
 	frame.GPS = self:Construct_GPS(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.AuraBars = self:Construct_AuraBarHeader(frame)
+	frame.Range = self:Construct_Range(frame)
+	frame.PvPIndicator = self:Construct_PvPIcon(frame)
+	frame.customTexts = {}
 
 	E:Point(frame, "BOTTOMRIGHT", E.UIParent, "BOTTOM", 413, 68)
 	E:CreateMover(frame, frame:GetName().."Mover", L["Target Frame"], nil, nil, nil, "ALL,SOLO")
@@ -94,9 +106,23 @@ function UF:Update_TargetFrame(frame, db)
 	UF:Configure_Auras(frame, "Buffs")
 	UF:Configure_Auras(frame, "Debuffs")
 
+	UF:Configure_Castbar(frame)
+
+	UF:Configure_ComboPoints(frame)
+
+	UF:Configure_DebuffHighlight(frame)
+
 	UF:Configure_GPS(frame)
 
 	UF:Configure_RaidIcon(frame)
+
+	UF:Configure_AuraBars(frame)
+
+	UF:Configure_Range(frame)
+
+	UF:Configure_PVPIcon(frame)
+
+	UF:Configure_CustomTexts(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + db.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

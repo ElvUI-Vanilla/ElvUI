@@ -99,10 +99,10 @@ function UF:Configure_HealthBar(frame)
 	--Position
 	health:ClearAllPoints()
 	if frame.ORIENTATION == "LEFT" then
-		health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING, -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
+		health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING - (frame.HAPPINESS_WIDTH or 0), -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
 
 		if frame.USE_POWERBAR_OFFSET then
-			health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING - frame.POWERBAR_OFFSET, -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
+			health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING - frame.POWERBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET"TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING + (frame.HAPPINESS_WIDTH or 0), -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
 			health:SetWidth(frame.UNIT_WIDTH - (frame.PORTRAIT_WIDTH + frame.BORDER + frame.SPACING) - (frame.BORDER + frame.SPACING + frame.POWERBAR_OFFSET))
 			health:SetHeight(frame.UNIT_HEIGHT - (frame.BORDER + frame.SPACING + frame.POWERBAR_OFFSET) - (frame.BORDER + frame.SPACING + frame.CLASSBAR_YOFFSET))
 		elseif frame.POWERBAR_DETACHED or not frame.USE_POWERBAR or frame.USE_INSET_POWERBAR then
@@ -116,10 +116,10 @@ function UF:Configure_HealthBar(frame)
 			health:SetHeight(frame.UNIT_HEIGHT - (frame.BORDER + frame.SPACING + frame.CLASSBAR_YOFFSET) - (frame.BORDER + frame.SPACING + frame.BOTTOM_OFFSET))
 		end
 	elseif frame.ORIENTATION == "RIGHT" then
-		health:SetPoint("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
+		health:SetPoint("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING + (frame.HAPPINESS_WIDTH or 0), -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
 
 		if frame.USE_POWERBAR_OFFSET then
-			health:SetPoint("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING + frame.POWERBAR_OFFSET, -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
+			health:SetPoint("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING + frame.POWERBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0), -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
 			health:SetWidth(frame.UNIT_WIDTH - (frame.PORTRAIT_WIDTH + frame.BORDER + frame.SPACING) - (frame.BORDER + frame.SPACING + frame.POWERBAR_OFFSET))
 			health:SetHeight(frame.UNIT_HEIGHT - (frame.BORDER + frame.SPACING + frame.POWERBAR_OFFSET) - (frame.BORDER + frame.SPACING + frame.CLASSBAR_YOFFSET))
 		elseif frame.POWERBAR_DETACHED or not frame.USE_POWERBAR or frame.USE_INSET_POWERBAR then
@@ -133,7 +133,7 @@ function UF:Configure_HealthBar(frame)
 			health:SetHeight(frame.UNIT_HEIGHT - (frame.BORDER + frame.SPACING + frame.CLASSBAR_YOFFSET) - (frame.BORDER + frame.SPACING + frame.BOTTOM_OFFSET))
 		end
 	elseif frame.ORIENTATION == "MIDDLE" then
-		health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING, -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
+		health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING - (frame.HAPPINESS_WIDTH or 0), -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)
 
 		if frame.USE_POWERBAR_OFFSET then
 			health:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -frame.BORDER - frame.SPACING - frame.POWERBAR_OFFSET, -frame.BORDER - frame.SPACING - frame.CLASSBAR_YOFFSET)

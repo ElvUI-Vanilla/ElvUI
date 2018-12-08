@@ -81,7 +81,7 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* ...   - the arguments accompanying the event
 	--]]
-	return (self.HappinessIndicator.Override or Update) (self, ...)
+	return (self.HappinessIndicator.Override or Update) (self, unpack(arg))
 end
 
 local function ForceUpdate(element)

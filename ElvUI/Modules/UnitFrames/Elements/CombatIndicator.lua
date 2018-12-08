@@ -1,11 +1,6 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
---Cache global variables
---Lua functions
-
---WoW API / Variables
-
 function UF:Construct_CombatIndicator(frame)
 	local combat = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
 	combat:SetWidth(19)

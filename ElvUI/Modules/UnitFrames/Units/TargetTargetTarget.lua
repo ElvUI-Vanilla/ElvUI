@@ -1,6 +1,8 @@
-local E, L, V, P, G = unpack(ElvUI)
-local UF = E:GetModule("UnitFrames")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local UF = E:GetModule("UnitFrames");
 
+--Cache global variables
+--Lua functions
 local _G = _G
 
 local ns = oUF
@@ -24,7 +26,7 @@ function UF:Construct_TargetTargetTargetFrame(frame)
 	frame.customTexts = {}
 
 	E:Point(frame, "BOTTOM", E.UIParent, "BOTTOM", 0, 160)
-	E:CreateMover(frame, frame:GetName().."Mover", L["TargetTargetTarget Frame"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,targettargettarget,generalGroup")
+	E:CreateMover(frame, frame:GetName().."Mover", L["TargetTargetTarget Frame"], nil, nil, nil, "ALL,SOLO")
 	frame.unitframeType = "targettargettarget"
 end
 
@@ -60,7 +62,7 @@ function UF:Update_TargetTargetTargetFrame(frame, db)
 
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
-	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "RightButtonDown" or "LeftButtonUp" or "RightButtonUp")
+	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
 	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 	E:Size(_G[frame:GetName().."Mover"], frame:GetWidth(), frame:GetHeight())
 
@@ -84,7 +86,7 @@ function UF:Update_TargetTargetTargetFrame(frame, db)
 
 	UF:Configure_RaidIcon(frame)
 
-	-- UF:Configure_CustomTexts(frame)
+	UF:Configure_CustomTexts(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + self.db.units.player.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")

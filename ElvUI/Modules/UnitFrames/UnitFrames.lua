@@ -8,7 +8,7 @@ UF.LSM = LSM
 local _G = _G
 local select, pairs, type, unpack, assert, tostring = select, pairs, type, unpack, assert, tostring
 local min = math.min
-local tinsert = table.insert
+local tremove, tinsert = table.remove, table.insert
 local find, gsub, format = string.find, string.gsub, string.format
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
@@ -25,11 +25,13 @@ ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 UF.headerstoload = {}
+UF.unitgroupstoload = {}
 UF.unitstoload = {}
 
 UF.groupPrototype = {}
 UF.headerPrototype = {}
 UF.headers = {}
+UF.groupunits = {}
 UF.units = {}
 
 UF.statusbars = {}
@@ -202,6 +204,7 @@ function UF:Construct_UF(frame, unit)
 	end
 
 	frame.SHADOW_SPACING = 3
+	frame.HAPPINESS_WIDTH = 0
 	frame.CLASSBAR_YOFFSET = 0	--placeholder
 	frame.BOTTOM_OFFSET = 0 --placeholder
 
@@ -301,12 +304,12 @@ function UF:UpdateColors()
 	ElvUF.colors.power[2] = E:GetColorTable(db.power.FOCUS);
 	ElvUF.colors.power[3] = E:GetColorTable(db.power.ENERGY);
 
-	--[[ElvUF.colors.ComboPoints = {}
+	ElvUF.colors.ComboPoints = {}
 	ElvUF.colors.ComboPoints[1] = E:GetColorTable(db.classResources.comboPoints[1])
 	ElvUF.colors.ComboPoints[2] = E:GetColorTable(db.classResources.comboPoints[2])
 	ElvUF.colors.ComboPoints[3] = E:GetColorTable(db.classResources.comboPoints[3])
 	ElvUF.colors.ComboPoints[4] = E:GetColorTable(db.classResources.comboPoints[4])
-	ElvUF.colors.ComboPoints[5] = E:GetColorTable(db.classResources.comboPoints[5])]]
+	ElvUF.colors.ComboPoints[5] = E:GetColorTable(db.classResources.comboPoints[5])
 
 	ElvUF.colors.reaction[1] = bad
 	ElvUF.colors.reaction[2] = bad

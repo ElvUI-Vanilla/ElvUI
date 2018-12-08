@@ -1,11 +1,12 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
---Cache global variables
---Lua functions
-
 --WoW API / Variables
 local CreateFrame = CreateFrame
+
+local ns = oUF
+local ElvUF = ns.oUF
+assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 function UF:Construct_RaidRoleFrames(frame)
 	local anchor = CreateFrame("Frame", nil, frame.RaisedElementParent)
@@ -39,7 +40,7 @@ function UF:Configure_RaidRoleIcons(frame)
 			frame:EnableElement("MasterLooterIndicator")
 			frame:EnableElement("AssistantIndicator")
 		end
-		
+
 		raidRoleFrameAnchor:ClearAllPoints()
 		if frame.db.raidRoleIcons.position == "TOPLEFT" then
 			raidRoleFrameAnchor:SetPoint("LEFT", frame.Health, "TOPLEFT", 2, 0)

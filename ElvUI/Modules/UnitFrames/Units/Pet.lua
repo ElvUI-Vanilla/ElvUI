@@ -12,19 +12,20 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 function UF:Construct_PetFrame(frame)
 	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
 	frame.Health.frequentUpdates = true
-
 	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
-	frame.Power.frequentUpdates = true
-
 	frame.Name = self:Construct_NameText(frame)
-
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	frame.InfoPanel = self:Construct_InfoPanel(frame)
+	frame.Range = self:Construct_Range(frame)
+	if E.myclass == "HUNTER" then
+		frame.HappinessIndicator = self:Construct_Happiness(frame)
+	end
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.InfoPanel = self:Construct_InfoPanel(frame)
+	frame.customTexts = {}
 
 	E:Point(frame, "BOTTOM", E.UIParent, "BOTTOM", 0, 118)
 	E:CreateMover(frame, frame:GetName().."Mover", L["Pet Frame"], nil, nil, nil, "ALL,SOLO")
@@ -56,6 +57,9 @@ function UF:Update_PetFrame(frame, db)
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 
+		frame.HAPPINESS_SHOWN = frame.HappinessIndicator and frame.HappinessIndicator:IsShown()
+		frame.HAPPINESS_WIDTH = frame.HAPPINESS_SHOWN and (db.happiness.width + (frame.BORDER*2)) or 0
+
 		frame.BOTTOM_OFFSET = UF:GetHealthBottomOffset(frame)
 
 		frame.VARIABLES_SET = true
@@ -64,7 +68,6 @@ function UF:Update_PetFrame(frame, db)
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
-
 	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 	E:Size(_G[frame:GetName().."Mover"], frame:GetWidth(), frame:GetHeight())
 
@@ -82,7 +85,14 @@ function UF:Update_PetFrame(frame, db)
 	UF:Configure_Auras(frame, "Buffs")
 	UF:Configure_Auras(frame, "Debuffs")
 
-	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + db.castbar.height))
+	UF:Configure_Range(frame)
+
+	if E.myclass == "HUNTER" then
+		UF:Configure_Happiness(frame)
+	end
+
+	UF:Configure_CustomTexts(frame)
+
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 

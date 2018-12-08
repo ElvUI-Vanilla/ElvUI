@@ -1,40 +1,54 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
---Cache global variables
---Lua functions
-
---WoW API / Variables
+local RestingTextures = {
+	["DEFAULT"] = [[Interface\CharacterFrame\UI-StateIcon]],
+	["RESTING"] = [[Interface\AddOns\ElvUI\media\textures\resting]],
+	["RESTING1"] = [[Interface\AddOns\ElvUI\media\textures\resting1]]
+}
 
 function UF:Construct_RestingIndicator(frame)
-	local resting = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
-	resting:SetWidth(22)
-	resting:SetHeight(22)
-
-	return resting
+	return frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
 end
 
 function UF:Configure_RestingIndicator(frame)
 	if not frame.VARIABLES_SET then return end
-	local rIcon = frame.RestingIndicator
-	local db = frame.db
-	if db.restIcon then
+
+	local Icon = frame.RestingIndicator
+	local db = frame.db.RestIcon
+
+	if db.enable then
 		if not frame:IsElementEnabled("RestingIndicator") then
 			frame:EnableElement("RestingIndicator")
 		end
 
-		rIcon:ClearAllPoints()
-		if frame.ORIENTATION == "RIGHT" then
-			rIcon:SetPoint("CENTER", frame.Health, "TOPLEFT", -3, 6)
+		if db.defaultColor then
+			Icon:SetVertexColor(1, 1, 1, 1)
+			Icon:SetDesaturated(false)
 		else
-			if frame.USE_PORTRAIT and not frame.USE_PORTRAIT_OVERLAY then
-				rIcon:SetPoint("CENTER", frame.Portrait, "TOPLEFT", -3, 6)
-			else
-				rIcon:SetPoint("CENTER", frame.Health, "TOPLEFT", -3, 6)
-			end
+			Icon:SetVertexColor(db.color.r, db.color.g, db.color.b, db.color.a)
+			Icon:SetDesaturated(true)
+		end
+
+		if db.texture == "CUSTOM" and db.customTexture then
+			Icon:SetTexture(db.customTexture)
+			Icon:SetTexCoord(0, 1, 0, 1)
+		elseif db.texture ~= "DEFAULT" and RestingTextures[db.texture] then
+			Icon:SetTexture(RestingTextures[db.texture])
+			Icon:SetTexCoord(0, 1, 0, 1)
+		else
+			Icon:SetTexture(RestingTextures.DEFAULT)
+			Icon:SetTexCoord(0, .5, 0, .421875)
+		end
+
+		E:Size(Icon, db.size)
+		Icon:ClearAllPoints()
+		if frame.ORIENTATION ~= "RIGHT" and (frame.USE_PORTRAIT and not frame.USE_PORTRAIT_OVERLAY) then
+			E:Point(Icon, "CENTER", frame.Portrait, db.anchorPoint, db.xOffset, db.yOffset)
+		else
+			E:Point(Icon, "CENTER", frame.Health, db.anchorPoint, db.xOffset, db.yOffset)
 		end
 	elseif frame:IsElementEnabled("RestingIndicator") then
 		frame:DisableElement("RestingIndicator")
-		rIcon:Hide()
 	end
 end

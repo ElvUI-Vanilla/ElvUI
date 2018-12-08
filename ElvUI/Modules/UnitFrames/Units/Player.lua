@@ -4,6 +4,8 @@ local UF = E:GetModule("UnitFrames");
 --Cache global variables
 --Lua functions
 local _G = _G
+--WoW API / Variables
+local CreateFrame = CreateFrame
 
 local ns = oUF
 local ElvUF = ns.oUF
@@ -14,25 +16,40 @@ local CAN_HAVE_CLASSBAR = E.myclass == "DRUID"
 function UF:Construct_PlayerFrame(frame)
 	frame.Health = self:Construct_HealthBar(frame, true, true, "RIGHT")
 	frame.Health.frequentUpdates = true
-
 	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
 	frame.Power.frequentUpdates = true
-
 	frame.Name = self:Construct_NameText(frame)
-
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.Castbar = self:Construct_Castbar(frame, L["Player Castbar"])
-	frame.RaidTargetIndicator = UF:Construct_RaidIcon(frame)
+
+	if CAN_HAVE_CLASSBAR then
+		frame.ClassBarHolder = CreateFrame("Frame", nil, frame)
+		E:Point(frame.ClassBarHolder, "BOTTOM", E.UIParent, "BOTTOM", 0, 150)
+	end
+
+	if E.myclass == "DRUID" then
+		frame.DruidAltMana = self:Construct_DruidAltMana(frame)
+		frame.ClassBar = "DruidAltMana"
+	end
+
+	frame.MouseGlow = self:Construct_MouseGlow(frame)
+	frame.TargetGlow = self:Construct_TargetGlow(frame)
+	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
+	frame.RaidRoleFramesAnchor = self:Construct_RaidRoleFrames(frame)
 	frame.RestingIndicator = self:Construct_RestingIndicator(frame)
 	frame.CombatIndicator = self:Construct_CombatIndicator(frame)
 	frame.PvPText = self:Construct_PvPIndicator(frame)
+	frame.DebuffHighlight = self:Construct_DebuffHighlight(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
+	frame.PvPIndicator = self:Construct_PvPIcon(frame)
+	frame.CombatFade = true
+	frame.customTexts = {}
 
-	frame:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
-	E:CreateMover(frame, frame:GetName().."Mover", L["Player Frame"], nil, nil, nil, "ALL,SOLO")
+	E:Point(frame, "BOTTOMLEFT", E.UIParent, "BOTTOM", -413, 68)
+	E:CreateMover(frame, frame:GetName().."Mover", L["Player Frame"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,player,generalGroup")
 	frame.unitframeType = "player"
 end
 
@@ -61,7 +78,7 @@ function UF:Update_PlayerFrame(frame, db)
 		frame.CAN_HAVE_CLASSBAR = CAN_HAVE_CLASSBAR
 		frame.MAX_CLASS_BAR = frame.MAX_CLASS_BAR or UF.classMaxResourceBar[E.myclass] or 0
 		frame.USE_CLASSBAR = db.classbar.enable and frame.CAN_HAVE_CLASSBAR
-		frame.CLASSBAR_SHOWN = frame.CAN_HAVE_CLASSBAR and frame.ClassBar and frame[frame.ClassBar]:IsShown()
+		frame.CLASSBAR_SHOWN = frame.CAN_HAVE_CLASSBAR and frame[frame.ClassBar]:IsShown()
 		frame.CLASSBAR_DETACHED = db.classbar.detachFromFrame
 		frame.USE_MINI_CLASSBAR = db.classbar.fill == "spaced" and frame.USE_CLASSBAR
 		frame.CLASSBAR_HEIGHT = frame.USE_CLASSBAR and db.classbar.height or 0
@@ -81,7 +98,6 @@ function UF:Update_PlayerFrame(frame, db)
 	frame.colors = ElvUF.colors
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
-
 	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 	E:Size(_G[frame:GetName().."Mover"], frame:GetWidth(), frame:GetHeight())
 
@@ -107,7 +123,23 @@ function UF:Update_PlayerFrame(frame, db)
 
 	UF:Configure_Castbar(frame)
 
+	UF:Configure_ClassBar(frame)
+
+	if db.combatfade and not frame:IsElementEnabled("CombatFade") then
+		frame:EnableElement("CombatFade")
+	elseif not db.combatfade and frame:IsElementEnabled("CombatFade") then
+		frame:DisableElement("CombatFade")
+	end
+
+	UF:Configure_DebuffHighlight(frame)
+
 	UF:Configure_RaidIcon(frame)
+
+	UF:Configure_PVPIcon(frame)
+
+	UF:Configure_RaidRoleIcons(frame)
+
+	UF:Configure_CustomTexts(frame)
 
 	E:SetMoverSnapOffset(frame:GetName().."Mover", -(12 + db.castbar.height))
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
