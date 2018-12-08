@@ -237,7 +237,6 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.unitframe.colors.borderColor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(.31, .31, .31))
 		E.db.unitframe.colors.healthclass = false
 		E.db.unitframe.colors.health = E:GetColor(.31, .31, .31)
-		E.db.unitframe.colors.auraBarBuff = E:GetColor(.31, .31, .31)
 		E.db.unitframe.colors.castColor = E:GetColor(.31, .31, .31)
 		E.db.unitframe.colors.castClassColor = false
 	elseif theme == "class" then
@@ -245,7 +244,6 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.general.backdropcolor = E:GetColor(.1, .1, .1)
 		E.db.general.backdropfadecolor = E:GetColor(.06, .06, .06, .8)
 		E.db.unitframe.colors.borderColor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(.31, .31, .31))
-		E.db.unitframe.colors.auraBarBuff = E:GetColor(classColor.r, classColor.b, classColor.g)
 		E.db.unitframe.colors.healthclass = true
 		E.db.unitframe.colors.castClassColor = true
 	else
@@ -253,7 +251,6 @@ function E:SetupTheme(theme, noDisplayMsg)
 		E.db.general.backdropcolor = E:GetColor(.1, .1, .1)
 		E.db.general.backdropfadecolor = E:GetColor(.054, .054, .054, .8)
 		E.db.unitframe.colors.borderColor = (E.PixelMode and E:GetColor(0, 0, 0) or E:GetColor(.1, .1, .1))
-		E.db.unitframe.colors.auraBarBuff = E:GetColor(.1, .1, .1)
 		E.db.unitframe.colors.healthclass = false
 		E.db.unitframe.colors.health = E:GetColor(.1, .1, .1)
 		E.db.unitframe.colors.castColor = E:GetColor(.1, .1, .1)
@@ -643,34 +640,28 @@ local function SetupAuras(style)
 	local frame = UF.player
 	E:CopyTable(E.db.unitframe.units.player.buffs, P.unitframe.units.player.buffs)
 	E:CopyTable(E.db.unitframe.units.player.debuffs, P.unitframe.units.player.debuffs)
-	E:CopyTable(E.db.unitframe.units.player.aurabar, P.unitframe.units.player.aurabar)
 
 	if frame then
 		UF:Configure_Auras(frame, "Buffs")
 		UF:Configure_Auras(frame, "Debuffs")
-		-- UF:Configure_AuraBars(frame)
 	end
 
 	frame = UF.target
 	E:CopyTable(E.db.unitframe.units.target.buffs, P.unitframe.units.target.buffs)
 	E:CopyTable(E.db.unitframe.units.target.debuffs, P.unitframe.units.target.debuffs)
-	E:CopyTable(E.db.unitframe.units.target.aurabar, P.unitframe.units.target.aurabar)
 
 	if frame then
 		UF:Configure_Auras(frame, "Buffs")
 		UF:Configure_Auras(frame, "Debuffs")
-		-- UF:Configure_AuraBars(frame)
 	end
 
 	frame = UF.focus
 	E:CopyTable(E.db.unitframe.units.focus.buffs, P.unitframe.units.focus.buffs)
 	E:CopyTable(E.db.unitframe.units.focus.debuffs, P.unitframe.units.focus.debuffs)
-	E:CopyTable(E.db.unitframe.units.focus.aurabar, P.unitframe.units.focus.aurabar)
 
 	if frame then
 		UF:Configure_Auras(frame, "Buffs")
 		UF:Configure_Auras(frame, "Debuffs")
-		UF:Configure_AuraBars(frame)
 	end
 
 	if not style then
@@ -678,14 +669,12 @@ local function SetupAuras(style)
 		E.db.unitframe.units.player.buffs.enable = true
 		E.db.unitframe.units.player.buffs.attachTo = "FRAME"
 		E.db.unitframe.units.player.debuffs.attachTo = "BUFFS"
-		E.db.unitframe.units.player.aurabar.enable = false
 		if E.private.unitframe.enable then
 			E:GetModule("UnitFrames"):CreateAndUpdateUF("player")
 		end
 
 		--TARGET
 		E.db.unitframe.units.target.debuffs.enable = true
-		E.db.unitframe.units.target.aurabar.enable = false
 		if E.private.unitframe.enable then
 			E:GetModule("UnitFrames"):CreateAndUpdateUF("target")
 		end
@@ -831,14 +820,11 @@ local function SetPage(PageNum)
 	elseif PageNum == 7 then
 		f.SubTitle:SetText(L["Auras"])
 		f.Desc1:SetText(L["Select the type of aura system you want to use with ElvUI's unitframes. Set to Aura Bar & Icons to use both aura bars and icons, set to icons only to only see icons."])
-		f.Desc2:SetText(L["If you have an icon or aurabar that you don't want to display simply hold down shift and right click the icon for it to disapear."])
+		f.Desc2:SetText(L["If you have an icon that you don't want to display simply hold down shift and right click the icon for it to disapear."])
 		f.Desc3:SetText(L["Importance: |cffD3CF00Medium|r"])
 		InstallOption1Button:Show()
-		InstallOption1Button:SetScript("OnClick", function() --[[SetupAuras(true)--]] end)
-		InstallOption1Button:SetText(L["Aura Bars & Icons"])
-		InstallOption2Button:Show()
-		InstallOption2Button:SetScript("OnClick", function() --[[SetupAuras()--]] end)
-		InstallOption2Button:SetText(L["Icons Only"])
+		InstallOption1Button:SetScript("OnClick", function() SetupAuras() end)
+		InstallOption1Button:SetText(L["Icons Only"])
 	elseif PageNum == 8 then
 		f.SubTitle:SetText(L["Installation Complete"])
 		f.Desc1:SetText(L["You are now finished with the installation process. If you are in need of technical support please visit us at https://github.com/ElvUI-Vanilla/ElvUI"])

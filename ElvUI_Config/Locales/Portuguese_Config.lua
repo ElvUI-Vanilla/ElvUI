@@ -804,7 +804,6 @@ L["Class Power"] = "Poder por classe"
 L["Class Resources"] = "Recursos de Classe"
 L["Click Through"] = "Clicar através"
 L["Color all buffs that reduce the unit's incoming damage."] = "Colorir todos os bônus que reduzem o dano recebido pela unidade."
-L["Color aurabar debuffs by type."] = "Colorir penalidades da barra de auras por tipo."
 L["Color castbars by the class of player units."] = true;
 L["Color castbars by the reaction type of non-player units."] = true;
 L["Color health by amount remaining."] = "Colorir a vida pela quantidade restante."

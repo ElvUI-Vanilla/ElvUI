@@ -793,7 +793,6 @@ L["Class Power"] = true;
 L["Class Resources"] = true;
 L["Click Through"] = true;
 L["Color all buffs that reduce the unit's incoming damage."] = true;
-L["Color aurabar debuffs by type."] = true;
 L["Color castbars by the class of player units."] = true;
 L["Color castbars by the reaction type of non-player units."] = true;
 L["Color health by amount remaining."] = true;

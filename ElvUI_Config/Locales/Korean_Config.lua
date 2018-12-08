@@ -852,7 +852,6 @@ L["Class Power"] = "직업색상 사용"
 L["Class Resources"] = "직업별 특수 자원바"
 L["Click Through"] = "마우스 무시"
 L["Color all buffs that reduce the unit's incoming damage."] = "유닛이 입는 데미지를 줄이는 모든 생존류 기술에 이 색상을 적용합니다."
-L["Color aurabar debuffs by type."] = "디버프 종류에 따라서 클래스타이머의 색상을 따로 입힙니다.|n|n예로 독계열 디버프는 초록색 바로 표시되게 됩니다."
 L["Color castbars by the class of player units."] = true;
 L["Color castbars by the reaction type of non-player units."] = true;
 L["Color health by amount remaining."] = "기존에 설정된 색상에서 생명력이 줄어들 때 마다 점차 빨간색으로 변화합니다."
