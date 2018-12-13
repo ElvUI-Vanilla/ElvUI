@@ -828,10 +828,6 @@ P["unitframe"] = {
 				["size"] = 22,
 				["texture"] = "DEFAULT"
 			},
-			["raidRoleIcons"] = {
-				["enable"] = true,
-				["position"] = "TOPLEFT"
-			},
 			["CombatIcon"] = {
 				["enable"] = true,
 				["defaultColor"] = true,
@@ -1980,10 +1976,6 @@ P["unitframe"] = {
 					["frameLevel"] = 1
 				}
 			},
-			["raidRoleIcons"] = {
-				["enable"] = true,
-				["position"] = "TOPLEFT"
-			},
 			["petsGroup"] = {
 				["enable"] = false,
 				["width"] = 100,
@@ -2180,10 +2172,6 @@ P["unitframe"] = {
 					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
 			},
-			["raidRoleIcons"] = {
-				["enable"] = true,
-				["position"] = "TOPLEFT"
-			},
 			["raidicon"] = {
 				["enable"] = true,
 				["size"] = 18,
@@ -2337,10 +2325,6 @@ P["unitframe"] = {
 					["yOffset"] = 2,
 					["color"] = {r = 1, g = 0.9, b = 0, a = 1}
 				}
-			},
-			["raidRoleIcons"] = {
-				["enable"] = true,
-				["position"] = "TOPLEFT"
 			},
 			["buffIndicator"] = {
 				["enable"] = true,

@@ -1,68 +1,113 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
---Cache global variables
---Lua functions
-local _G = _G
---WoW API / Variables
-local CreateFrame = CreateFrame
-
 local ns = oUF
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
+
+--Cache global variables
+--Lua functions
+local _G = _G
+
+--WoW API / Variables
+local CreateFrame = CreateFrame
+local GetNumRaidMembers = GetNumRaidMembers
+local UnitInRaid = UnitInRaid
 
 function UF:Construct_PartyFrames()
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
 	self.RaisedElementParent = CreateFrame("Frame", nil, self)
-	self.RaisedElementParent:SetFrameLevel(self:GetFrameLevel() + 100)
 	self.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, self.RaisedElementParent)
-	self.RaisedElementParent.TextureParent:SetFrameLevel(self.RaisedElementParent:GetFrameLevel() + 1)
+	self.RaisedElementParent:SetFrameLevel(self:GetFrameLevel() + 100)
+	self.BORDER = E.Border
+	self.SPACING = E.Spacing
+	self.SHADOW_SPACING = 3
+	if self.isChild then
+		self.Health = UF:Construct_HealthBar(self, true)
 
-	self.Health = UF:Construct_HealthBar(self, true, true, "RIGHT")
-	self.Power = UF:Construct_PowerBar(self, true, true, "LEFT")
-	self.Power.frequentUpdates = false
-	self.Portrait3D = UF:Construct_Portrait(self, "model")
-	self.Portrait2D = UF:Construct_Portrait(self, "texture")
-	self.InfoPanel = UF:Construct_InfoPanel(self)
-	self.Name = UF:Construct_NameText(self)
-	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
-	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
+		self.MouseGlow = UF:Construct_MouseGlow(self)
+		self.TargetGlow = UF:Construct_TargetGlow(self)
+		self.Name = UF:Construct_NameText(self)
+		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 
-	self.GPS = UF:Construct_GPS(self)
+		self.originalParent = self:GetParent()
+
+		local childDB = UF.db.units.party.petsGroup
+		self.childType = "pet"
+		if self == _G[self.originalParent:GetName().."Target"] then
+			childDB = UF.db.units.party.targetsGroup
+			self.childType = "target"
+		end
+
+		self.unitframeType = "party"..self.childType
+
+		self:SetWidth(childDB.width)
+		self:SetHeight(childDB.height)
+	else
+		self:SetWidth(UF.db.units.party.width)
+		self:SetHeight(UF.db.units.party.height)
+
+		self.Health = UF:Construct_HealthBar(self, true, true, "RIGHT")
+
+		self.Power = UF:Construct_PowerBar(self, true, true, "LEFT")
+		self.Power.frequentUpdates = false
+
+		self.Portrait3D = UF:Construct_Portrait(self, "model")
+		self.Portrait2D = UF:Construct_Portrait(self, "texture")
+		self.InfoPanel = UF:Construct_InfoPanel(self)
+		self.Name = UF:Construct_NameText(self)
+		self.Buffs = UF:Construct_Buffs(self)
+		self.Debuffs = UF:Construct_Debuffs(self)
+		self.AuraWatch = UF:Construct_AuraWatch(self)
+		self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
+		self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
+		self.MouseGlow = UF:Construct_MouseGlow(self)
+		self.TargetGlow = UF:Construct_TargetGlow(self)
+		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
+		self.GPS = UF:Construct_GPS(self)
+		self.Castbar = UF:Construct_Castbar(self)
+		self.customTexts = {}
+		self.unitframeType = "party"
+	end
+
 	self.Range = UF:Construct_Range(self)
-	self.unitframeType = "party"
 
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
 	UF:Update_PartyFrames(self, UF.db.units.party)
 
-	return self;
+	return self
 end
 
 function UF:PartySmartVisibility()
 	if not self then self = this end
+	if not self.db or (self.db and not self.db.enable) then return end
 
-	if GetNumRaidMembers() < 1 then
+	local numMembers = GetNumRaidMembers()
+	if numMembers < 1 then
 		self:Show()
 	else
 		self:Hide()
 	end
 end
 
-function UF:Update_PartyHeader(header)
+function UF:Update_PartyHeader(header, db)
+	header.db = db
+
 	if not header.positioned then
 		header:ClearAllPoints()
-		header:SetPoint("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
+		E:Point(header, "BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
 		E:CreateMover(header, header:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY")
 
+		header:RegisterEvent("PLAYER_LOGIN")
+		header:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 		header:RegisterEvent("PARTY_MEMBERS_CHANGED")
 		header:RegisterEvent("RAID_ROSTER_UPDATE")
 		header:SetScript("OnEvent", UF.PartySmartVisibility)
-
 		header.positioned = true
 	end
 
@@ -72,7 +117,7 @@ end
 function UF:Update_PartyFrames(frame, db)
 	frame.db = db
 
-	frame.Portrait = db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D
+	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
 	frame.colors = ElvUF.colors
 	frame:RegisterForClicks(self.db.targetOnMouseDown and "LeftButtonDown" or "LeftButtonUp", self.db.targetOnMouseDown and "RightButtonDown" or "RightButtonUp")
 
@@ -85,7 +130,7 @@ function UF:Update_PartyFrames(frame, db)
 			frame.SPACING = E.Spacing
 		end
 
-		frame.ORIENTATION = db.orientation
+		frame.ORIENTATION = db.orientation --allow this value to change when unitframes position changes on screen?
 		frame.UNIT_WIDTH = db.width
 		frame.UNIT_HEIGHT = db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
 
@@ -102,8 +147,6 @@ function UF:Update_PartyFrames(frame, db)
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
-
-		frame.CLASSBAR_WIDTH = 0
 		frame.CLASSBAR_YOFFSET = 0
 
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
@@ -114,28 +157,80 @@ function UF:Update_PartyFrames(frame, db)
 		frame.VARIABLES_SET = true
 	end
 
-	frame:SetWidth(frame.UNIT_WIDTH)
-	frame:SetHeight(frame.UNIT_HEIGHT)
+	if frame.isChild then
+		frame.USE_PORTAIT = false
+		frame.USE_PORTRAIT_OVERLAY = false
+		frame.PORTRAIT_WIDTH = 0
+		frame.USE_POWERBAR = false
+		frame.USE_INSET_POWERBAR = false
+		frame.USE_MINI_POWERBAR = false
+		frame.USE_POWERBAR_OFFSET = false
+		frame.POWERBAR_OFFSET = 0
 
-	UF:Configure_InfoPanel(frame)
+		frame.POWERBAR_HEIGHT = 0
+		frame.POWERBAR_WIDTH = 0
 
-	UF:Configure_HealthBar(frame)
+		frame.BOTTOM_OFFSET = 0
 
-	UF:UpdateNameSettings(frame)
+		local childDB = db.petsGroup
+		if frame.childType == "target" then
+			childDB = db.targetsGroup
+		end
 
-	UF:Configure_Power(frame)
+		if not frame.originalParent.childList then
+			frame.originalParent.childList = {}
+		end
+		frame.originalParent.childList[frame] = true
 
-	UF:Configure_Portrait(frame)
+		if childDB.enable then
+			frame:SetParent(frame.originalParent)
+			RegisterUnitWatch(frame)
+			E:Size(frame, childDB.width, childDB.height)
+			frame:ClearAllPoints()
+			E:Point(frame, E.InversePoints[childDB.anchorPoint], frame.originalParent, childDB.anchorPoint, childDB.xOffset, childDB.yOffset)
+		else
+			UnregisterUnitWatch(frame)
+			frame:SetParent(E.HiddenFrame)
+		end
 
-	UF:Configure_RaidIcon(frame)
+		UF:Configure_HealthBar(frame)
 
-	UF:Configure_GPS(frame)
+		UF:Configure_RaidIcon(frame)
 
-	UF:Configure_RaidRoleIcons(frame)
+		UF:UpdateNameSettings(frame, frame.childType)
+	else
+
+		UF:Configure_InfoPanel(frame)
+		UF:Configure_HealthBar(frame)
+
+		UF:UpdateNameSettings(frame)
+
+		UF:Configure_Power(frame)
+
+		UF:Configure_Portrait(frame)
+
+		UF:EnableDisable_Auras(frame)
+		UF:Configure_Auras(frame, "Buffs")
+		UF:Configure_Auras(frame, "Debuffs")
+
+		UF:Configure_RaidDebuffs(frame)
+
+		UF:Configure_Castbar(frame)
+
+		UF:Configure_RaidIcon(frame)
+
+		UF:Configure_DebuffHighlight(frame)
+
+		UF:Configure_GPS(frame)
+
+		UF:UpdateAuraWatch(frame)
+
+		UF:Configure_CustomTexts(frame)
+	end
 
 	UF:Configure_Range(frame)
 
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF.headerstoload.party = true
+UF.headerstoload.party = {nil, "ELVUI_UNITPET, ELVUI_UNITTARGET"}

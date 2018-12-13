@@ -19,7 +19,7 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 function UF:Construct_HealthBar(frame, bg, text, textPos)
 	local health = CreateFrame("StatusBar", nil, frame)
-	UF["statusbars"][health] = true
+	UF.statusbars[health] = true
 
 	health:SetFrameLevel(10) --Make room for Portrait and Power which should be lower by default
 	health.PostUpdate = self.PostUpdateHealth
@@ -202,7 +202,7 @@ function UF:PostUpdateHealth(unit, min, max)
 	end
 
 	local r, g, b = self:GetStatusBarColor()
-	local colors = E.db["unitframe"]["colors"]
+	local colors = E.db.unitframe.colors
 	if ((colors.healthclass == true and colors.colorhealthbyvalue == true) or (colors.colorhealthbyvalue and parent.isForced)) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
 		local newr, newg, newb = ElvUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, r, g, b)
 

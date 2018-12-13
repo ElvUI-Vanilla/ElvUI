@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="Auras.lua"/>
+	<Script file="BuffIndicator.lua"/>
 	<Script file="Castbar.lua"/>
 	<Script file="Classbars.lua"/>
 	<Script file="CombatIndicator.lua"/>
@@ -15,11 +16,9 @@
 	<Script file="InfoPanel.lua"/>
 	<Script file="PvPIcon.lua"/>
 	<Script file="PvPIndicator.lua"/>
+	<Script file="RaidDebuffs.lua"/>
 	<Script file="RaidIcon.lua"/>
-	<Script file="RaidRoleIcons.lua"/>
 	<Script file="Range.lua"/>
-	<Script file="ReadyCheckIcon.lua"/>
 	<Script file="RestingIndicator.lua"/>
-	<Script file="ResurrectionIcon.lua"/>
 	<Script file="FrameGlow.lua"/>
 </Ui>

@@ -80,14 +80,14 @@ function UF:Configure_ClassBar(frame)
 		end
 	else --Detached
 		CLASSBAR_WIDTH = db.classbar.detachedWidth - ((frame.BORDER + frame.SPACING)*2)
-		bars.Holder:Size(db.classbar.detachedWidth, db.classbar.height)
+		E:Size(bars.Holder, db.classbar.detachedWidth, db.classbar.height)
 
 		if not bars.Holder.mover then
-			bars:Width(CLASSBAR_WIDTH)
-			bars:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER+frame.SPACING)*2))
+			bars:SerWidth(CLASSBAR_WIDTH)
+			bars:SetHeight(frame.CLASSBAR_HEIGHT - ((frame.BORDER+frame.SPACING)*2))
 			bars:ClearAllPoints()
 			E:Point(bars, "BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
-			E:CreateMover(bars.Holder, "ClassBarMover", L["Classbar"], nil, nil, nil, "ALL,SOLO")
+			E:CreateMover(bars.Holder, "ClassBarMover", L["Classbar"], nil, nil, nil, "ALL,SOLO", nil, "unitframe,player,classbar")
 		else
 			bars:ClearAllPoints()
 			E:Point(bars, "BOTTOMLEFT", bars.Holder, "BOTTOMLEFT", frame.BORDER + frame.SPACING, frame.BORDER + frame.SPACING)
@@ -114,8 +114,8 @@ function UF:Configure_ClassBar(frame)
 		end
 	end
 
-	bars:Width(CLASSBAR_WIDTH)
-	bars:Height(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
+	bars:SetWidth(CLASSBAR_WIDTH)
+	bars:SetHeight(frame.CLASSBAR_HEIGHT - ((frame.BORDER + frame.SPACING)*2))
 
 	if frame.ClassBar == "DruidAltMana" then
 		if frame.CLASSBAR_DETACHED and db.classbar.verticalOrientation then
@@ -137,6 +137,7 @@ function UF:Configure_ClassBar(frame)
 end
 
 local function ToggleResourceBar(bars, overrideVisibility)
+	local bars = bars or this
 	local frame = bars.origParent or bars:GetParent()
 	local db = frame.db
 	if not db then return end
@@ -177,13 +178,13 @@ function UF:Construct_DruidAltMana(frame)
 	druidAltMana.colorPower = true
 	druidAltMana.PostUpdate = UF.PostUpdateDruidAltMana
 	druidAltMana.PostUpdateVisibility = UF.PostVisibilityDruidAltMana
-	druidAltMana:CreateBackdrop("Default")
-	UF["statusbars"][druidAltMana] = true
-	druidAltMana:SetStatusBarTexture(E["media"].blankTex)
+	E:CreateBackdrop(druidAltMana, "Default")
+	UF.statusbars[druidAltMana] = true
+	druidAltMana:SetStatusBarTexture(E.media.blankTex)
 
 	druidAltMana.bg = druidAltMana:CreateTexture(nil, "BORDER")
 	druidAltMana.bg:SetAllPoints(druidAltMana)
-	druidAltMana.bg:SetTexture(E["media"].blankTex)
+	druidAltMana.bg:SetTexture(E.media.blankTex)
 	druidAltMana.bg.multiplier = 0.3
 
 	druidAltMana.text = druidAltMana:CreateFontString(nil, "OVERLAY")
@@ -195,17 +196,18 @@ function UF:Construct_DruidAltMana(frame)
 	return druidAltMana
 end
 
-function UF:PostUpdateDruidAltMana(_, min, max, event)
+function UF:PostUpdateDruidAltMana(_, cur, max, event)
 	local frame = self.origParent or self:GetParent()
 	local db = frame.db
 
-	if frame.USE_CLASSBAR and ((min ~= max or (not db.classbar.autoHide)) and (event ~= "ElementDisable")) then
+	--if frame.USE_CLASSBAR and ((cur ~= max or (not db.classbar.autoHide)) and (event ~= "ElementDisable")) then
+	if frame.USE_CLASSBAR and ((cur ~= max or (not db.classbar.autoHide)) and (event ~= "ElementDisable")) then
 		if db.classbar.additionalPowerText then
 			local powerValue = frame.Power.value
 			local powerValueText = powerValue:GetText()
 			local powerValueParent = powerValue:GetParent()
 			local powerTextPosition = db.power.position
-			local color = ElvUF["colors"].power[0]
+			local color = ElvUF.colors.power[0]
 			color = E:RGBToHex(color[1], color[2], color[3])
 
 			--Attempt to remove |cFFXXXXXX color codes in order to determine if power text is really empty
@@ -224,27 +226,27 @@ function UF:PostUpdateDruidAltMana(_, min, max, event)
 				if (powerValueText and (powerValueText ~= "" and powerValueText ~= " ")) then
 					if find(powerTextPosition, "RIGHT") then
 						E:Point(self.text, "RIGHT", powerValue, "LEFT", 3, 0)
-						self.text:SetText(format(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100)))
+						self.text:SetText(format(color.."%d%%|r |cffD7BEA5- |r", floor(cur / max * 100)))
 					elseif find(powerTextPosition, "LEFT") then
 						E:Point(self.text, "LEFT", powerValue, "RIGHT", -3, 0)
-						self.text:SetText(format("|cffD7BEA5 -|r"..color.." %d%%|r", floor(min / max * 100)))
+						self.text:SetText(format("|cffD7BEA5 -|r"..color.." %d%%|r", floor(cur / max * 100)))
 					else
 						if select(4, powerValue:GetPoint()) <= 0 then
 							E:Point(self.text, "LEFT", powerValue, "RIGHT", -3, 0)
-							self.text:SetText(format(" |cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100)))
+							self.text:SetText(format(" |cffD7BEA5-|r"..color.." %d%%|r", floor(cur / max * 100)))
 						else
 							E:Point(self.text, "RIGHT", powerValue, "LEFT", 3, 0)
-							self.text:SetText(format(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100)))
+							self.text:SetText(format(color.."%d%%|r |cffD7BEA5- |r", floor(cur / max * 100)))
 						end
 					end
 				else
 					E:Point(self.text, powerValue:GetPoint())
-					self.text:SetText(format(color.."%d%%|r", floor(min / max * 100)))
+					self.text:SetText(format(color.."%d%%|r", floor(cur / max * 100)))
 				end
 			else
-				self.text:SetParent(self)
+				self.text:SetParent(frame.RaisedElementParent)
 				E:Point(self.text, "CENTER", self)
-				self.text:SetText(format(color.."%d%%|r", floor(min / max * 100)))
+				self.text:SetText(format(color.."%d%%|r", floor(cur / max * 100)))
 			end
 		else --Text disabled
 			self.text:SetText()
@@ -264,6 +266,6 @@ function UF:PostVisibilityDruidAltMana(enabled, stateChanged)
 		UF:Configure_ClassBar(frame)
 		UF:Configure_HealthBar(frame)
 		UF:Configure_Power(frame)
-		UF:Configure_InfoPanel(frame, true) --2nd argument is to prevent it from setting template, which removes threat border
+		UF:Configure_InfoPanel(frame)
 	end
 end
