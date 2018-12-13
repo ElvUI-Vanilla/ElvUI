@@ -31,8 +31,8 @@ local function toInt(x)
 	return x
 end
 function select(n, ...)
-	if not (type(n) == "number" or (type(n) == "string" and n == "#")) then
-		error(format("bad argument #1 to 'select' (number expected, got %s)", n and type(n) or "no value"), 2)
+	if n ~= "#" and type(n) ~= "number" then
+		error(format("bad argument #1 to 'select' (number expected, got %s)", n ~= nil and type(n) or "no value"), 2)
 	end
 
 	if n == "#" then
@@ -60,7 +60,7 @@ function math.modf(i)
 	i = type(i) ~= "number" and tonumber(i) or i
 
 	if type(i) ~= "number" then
-		error(format("bad argument #1 to 'modf' (number expected, got %s)", i and type(i) or "no value"), 2)
+		error(format("bad argument #1 to 'modf' (number expected, got %s)", i ~= nil and type(i) or "no value"), 2)
 	end
 
 	if i == 0 then
@@ -78,7 +78,7 @@ function math.cosh(i)
 	i = type(i) ~= "number" and tonumber(i) or i
 
 	if type(i) ~= "number" then
-		error(format("bad argument #1 to 'cosh' (number expected, got %s)", i and type(i) or "no value"), 2)
+		error(format("bad argument #1 to 'cosh' (number expected, got %s)", i ~= nil and type(i) or "no value"), 2)
 	end
 
 	if i < 0 then
@@ -105,7 +105,7 @@ function math.sinh(i)
 	i = type(i) ~= "number" and tonumber(i) or i
 
 	if type(i) ~= "number" then
-		error(format("bad argument #1 to 'sinh' (number expected, got %s)", i and type(i) or "no value"), 2)
+		error(format("bad argument #1 to 'sinh' (number expected, got %s)", i ~= nil and type(i) or "no value"), 2)
 	end
 
 	local neg, x
@@ -147,7 +147,7 @@ function math.tanh(i)
 	i = type(i) ~= "number" and tonumber(i) or i
 
 	if type(i) ~= "number" then
-		error(format("bad argument #1 to 'tanh' (number expected, got %s)", i and type(i) or "no value"), 2)
+		error(format("bad argument #1 to 'tanh' (number expected, got %s)", i ~= nil and type(i) or "no value"), 2)
 	end
 
 	if i == 0 then
@@ -175,7 +175,7 @@ end
 
 function string.join(delimiter, ...)
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
-		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
+		error(format("bad argument #1 to 'join' (string expected, got %s)", delimiter ~= nil and type(delimiter) or "no value"), 2)
 	end
 
 	if arg.n == 0 then
@@ -188,11 +188,11 @@ strjoin = string.join
 
 function string.match(str, pattern, index)
 	if type(str) ~= "string" and type(str) ~= "number" then
-		error(format("bad argument #1 to 'match' (string expected, got %s)", str and type(str) or "no value"), 2)
+		error(format("bad argument #1 to 'match' (string expected, got %s)", str ~= nil and type(str) or "no value"), 2)
 	elseif type(pattern) ~= "string" and type(pattern) ~= "number" then
-		error(format("bad argument #2 to 'match' (string expected, got %s)", pattern and type(pattern) or "no value"), 2)
-	elseif index and type(index) ~= "number" and (type(index) ~= "string" or index == "") then
-		error(format("bad argument #3 to 'match' (number expected, got %s)", index and type(index) or "no value"), 2)
+		error(format("bad argument #2 to 'match' (string expected, got %s)", pattern ~= nil and type(pattern) or "no value"), 2)
+	elseif index and type(tonumber(index)) ~= "number" then
+		error(format("bad argument #3 to 'match' (number expected, got %s)", index ~= nil and type(index) or "no value"), 2)
 	end
 
 	local i1, i2, match, match2 = find(str, pattern, index)
@@ -212,7 +212,7 @@ strmatch = string.match
 
 function string.reverse(str)
 	if type(str) ~= "string" and type(str) ~= "number" then
-		error(format("bad argument #1 to 'reverse' (string expected, got %s)", str and type(str) or "no value"), 2)
+		error(format("bad argument #1 to 'reverse' (string expected, got %s)", str ~= nil and type(str) or "no value"), 2)
 	end
 
 	local size = len(str)
@@ -231,9 +231,9 @@ strrev = string.reverse
 
 function string.split(delimiter, str)
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
-		error(format("bad argument #1 to 'split' (string expected, got %s)", delimiter and type(delimiter) or "no value"), 2)
+		error(format("bad argument #1 to 'split' (string expected, got %s)", delimiter ~= nil and type(delimiter) or "no value"), 2)
 	elseif type(str) ~= "string" and type(str) ~= "number" then
-		error(format("bad argument #2 to 'split' (string expected, got %s)", str and type(str) or "no value"), 2)
+		error(format("bad argument #2 to 'split' (string expected, got %s)", str ~= nil and type(str) or "no value"), 2)
 	end
 
 	local fields = {}
@@ -273,9 +273,9 @@ local escapeSequences = {
 }
 function string.trim(str, chars)
 	if type(str) ~= "string" and type(str) ~= "number" then
-		error(format("bad argument #1 to 'trim' (string expected, got %s)", str and type(str) or "no value"), 2)
+		error(format("bad argument #1 to 'trim' (string expected, got %s)", str ~= nil and type(str) or "no value"), 2)
 	elseif chars and (type(chars) ~= "string" and type(chars) ~= "number") then
-		error(format("bad argument #2 to 'trim' (string expected, got %s)", chars and type(chars) or "no value"), 2)
+		error(format("bad argument #2 to 'trim' (string expected, got %s)", chars ~= nil and type(chars) or "no value"), 2)
 	end
 
 	if chars then
@@ -340,7 +340,7 @@ end
 
 function table.maxn(t)
 	if type(t) ~= "table" then
-		error(format("bad argument #1 to 'maxn' (table expected, got %s)", t and type(t) or "no value"), 2)
+		error(format("bad argument #1 to 'maxn' (table expected, got %s)", t ~= nil and type(t) or "no value"), 2)
 	end
 
 	local maxn = 0
@@ -358,7 +358,7 @@ end
 
 function table.wipe(t)
 	if type(t) ~= "table" then
-		error(format("bad argument #1 to 'wipe' (table expected, got %s)", t and type(t) or "no value"), 2)
+		error(format("bad argument #1 to 'wipe' (table expected, got %s)", t ~= nil and type(t) or "no value"), 2)
 	end
 
 	for k in pairs(t) do
