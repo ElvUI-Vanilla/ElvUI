@@ -1,7 +1,6 @@
 --Cache global variables
 local error = error
 local geterrorhandler = geterrorhandler
-local loadstring = loadstring
 local next = next
 local pairs = pairs
 local pcall = pcall
@@ -10,7 +9,7 @@ local tostring = tostring
 local type = type
 local unpack = unpack
 local abs, ceil, exp, floor = math.abs, math.ceil, math.exp, math.floor
-local find, format, gfind, gsub, len, sub = string.find, string.format, string.gfind, string.gsub, string.len, string.sub
+local find, format, gsub, len, sub = string.find, string.format, string.gsub, string.len, string.sub
 local concat, getn, setn, tremove = table.concat, table.getn, table.setn, table.remove
 
 math.fmod = math.mod
@@ -229,49 +228,31 @@ function string.reverse(str)
 end
 strrev = string.reverse
 
-function string.split(delimiter, str)
+local function string_split(delimiter, str, limit)
 	if type(delimiter) ~= "string" and type(delimiter) ~= "number" then
 		error(format("bad argument #1 to 'split' (string expected, got %s)", delimiter ~= nil and type(delimiter) or "no value"), 2)
 	elseif type(str) ~= "string" and type(str) ~= "number" then
 		error(format("bad argument #2 to 'split' (string expected, got %s)", str ~= nil and type(str) or "no value"), 2)
+	elseif limit and type(tonumber(limit)) ~= "number" then
+		error(format("bad argument #3 to 'split' (number expected, got %s)", limit ~= nil and type(limit) or "no value"), 2)
 	end
 
-	local fields = {}
-	gsub(str, format("([^%s]+)", delimiter), function(c) fields[getn(fields) + 1] = c end)
+	limit = tonumber(limit)
+	if limit and limit <= 1 then
+		return str
+	end
 
-	return unpack(fields)
+	local startPos, endPos = find(str, delimiter, 1, true)
+	if not startPos then
+		return str
+	end
+
+	return sub(str, 1, startPos - 1), string_split(delimiter, sub(str, endPos + 1), limit and (limit - 1))
 end
-strsplit = string.split
+string.split = string_split
+strsplit = string_split
 
-local escapeSequences = {
-	["\a"] = "\\a", -- Bell
-	["\b"] = "\\b", -- Backspace
-	["\t"] = "\\t", -- Horizontal tab
-	["\n"] = "\\n", -- Newline
-	["\v"] = "\\v", -- Vertical tab
-	["\f"] = "\\f", -- Form feed
-	["\r"] = "\\r", -- Carriage return
-	["\\"] = "\\\\", -- Backslash
-	["\""] = "\\\"", -- Quotation mark
-	["|"] = "||",
-	[" "] = "%s",
-
-	["!"] = "\\!",
-	["#"] = "\\#",
-	["$"] = "\\$",
-	["%"] = "\\%",
-	["&"] = "\\&",
-	["'"] = "\\'",
-	["("] = "\\(",
-	[")"] = "\\)",
-	["*"] = "\\*",
-	["+"] = "\\+",
-	[","] = "\\,",
-	["-"] = "\\-",
-	["."] = "\\.",
-	["/"] = "\\/"
-}
-function string.trim(str, chars)
+local function string_trim(str, chars)
 	if type(str) ~= "string" and type(str) ~= "number" then
 		error(format("bad argument #1 to 'trim' (string expected, got %s)", str ~= nil and type(str) or "no value"), 2)
 	elseif chars and (type(chars) ~= "string" and type(chars) ~= "number") then
@@ -279,42 +260,9 @@ function string.trim(str, chars)
 	end
 
 	if chars then
-		local tokens = {}
-		local size = 0
-
-		for token in gfind(chars, "[%z\1-\255]") do
-			size = size + 1
-			tokens[size] = token
-		end
-
-		local pattern = ""
-
-		for i = 1, size do
-			pattern = pattern..(escapeSequences[tokens[i]] or tokens[i]).."+"
-
-			if i < size then
-				pattern = pattern.."|"
-			end
-		end
-
-		local patternStart = loadstring("return \"^["..pattern.."](.-)$\"")()
-		local patternEnd = loadstring("return \"^(.-)["..pattern.."]$\"")()
-
-		local trimed, x, y = 1, 1, 1
-		while trimed > 0 do
-			if x > 0 then
-				str, x = gsub(str, patternStart, "%1")
-			end
-			if y > 0 then
-				str, y = gsub(str, patternEnd, "%1")
-			end
-
-			trimed = x + y
-		end
-
-		return str
+		local pattern = "["..gsub(chars, "([%]%.%^%-%%])", "%%%1").."]*"
+		return gsub(gsub(str, "^"..pattern, ""), pattern.."$", "")
 	elseif type(str) == "string" then
-		-- remove leading/trailing [space][tab][return][newline]
 		return gsub(str, "^%s*(.-)%s*$", "%1")
 	else
 		return tostring(str)
