@@ -8,9 +8,7 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 --Cache global variables
 --Lua functions
 local _G = _G
-local pairs = pairs
-local select = select
-local assert = assert
+local assert, ipairs, pairs, select = assert, ipairs, pairs, select
 local tinsert = table.insert
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -174,17 +172,17 @@ function UF:FrameGlow_CreateGlow(frame, mouse)
 
 		HookScript(frame, "OnEnter", function()
 			frame.isHighlight = true
-			for _, frame in ipairs(ElvUF.objects) do
-				if frame.unit then
-					UF:FrameGlow_CheckMouseover(frame)
+			for _, f in ipairs(ElvUF.objects) do
+				if f.unit and f:IsVisible() then
+					UF:FrameGlow_CheckMouseover(f)
 				end
 			end
 		end)
 		HookScript(frame, "OnLeave", function()
 			frame.isHighlight = false
-			for _, frame in ipairs(ElvUF.objects) do
-				if frame.unit then
-					UF:FrameGlow_CheckMouseover(frame)
+			for _, f in ipairs(ElvUF.objects) do
+				if f.unit and f:IsVisible() then
+					UF:FrameGlow_CheckMouseover(f)
 				end
 			end
 		end)
@@ -304,11 +302,11 @@ function UF:FrameGlow_CheckTarget(frame, setColor)
 	end
 end
 
-function UF:FrameGlow_CheckMouseover(frame, onEnter)
+function UF:FrameGlow_CheckMouseover(frame)
 	if not (frame and frame.MouseGlow and frame:IsVisible()) then return end
 
 	local shouldShow
-	if UF:FrameGlow_MouseOnUnit(frame, onEnter) then
+	if UF:FrameGlow_MouseOnUnit(frame) then
 		if E.db.unitframe.colors.frameGlow.mainGlow.enable and not (frame.db and frame.db.disableMouseoverGlow) then
 			shouldShow = "frame"
 		end
