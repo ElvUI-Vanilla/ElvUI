@@ -84,6 +84,16 @@ tt:SetOwner(UIParent, "ANCHOR_NONE")
 local registry = oldLib and oldLib.registry or {}
 lib.registry = registry
 
+local function GetManaRegen()
+	local base, spirit = UnitStat("player", 5)
+	local currMana, maxMana = UnitMana("player"), UnitManaMax("player")
+
+	local regen = ((spirit / 5) - 15)
+	local castingRegen = min(currMana + regen, maxMana)
+
+	return regen, castingRegen
+end
+
 local function getShapeshiftCost()
 	if not bearID then return 0 end
 
@@ -110,7 +120,7 @@ local SetMax_time = nil
 local UpdateMana_time = nil
 local killFSR_time = nil
 
-frame:SetScript("OnUpdate", function(this, elapsed)
+frame:SetScript("OnUpdate", function()
 	local currentTime = GetTime()
 	if SetMax_time and SetMax_time <= currentTime then
 		SetMax_time = nil
@@ -138,8 +148,8 @@ function frame:PLAYER_LOGIN()
 	end
 end
 
-function frame:UNIT_DISPLAYPOWER(unit)
-	if unit ~= "player" or UnitPowerType("player") ~= 0 then return end
+function frame:UNIT_DISPLAYPOWER()
+	if arg1 ~= "player" or UnitPowerType("player") ~= 0 then return end
 
 	self:UnregisterEvent("UNIT_DISPLAYPOWER")
 	self.UNIT_DISPLAYPOWER = nil
@@ -173,8 +183,8 @@ function frame:PLAYER_LEAVING_WORLD()
 	killFSR_time = nil
 end
 
-function frame:UNIT_MANA(unit)
-	if unit ~= "player" then return end
+function frame:UNIT_MANA()
+	if arg1 ~= "player" then return end
 
 	if UnitPowerType("player") == 0 then
 		currMana = UnitMana("player")
@@ -191,8 +201,8 @@ function frame:UNIT_MANA(unit)
 	end
 end
 
-function frame:UNIT_MAXMANA(unit)
-	if unit ~= "player" then return end
+function frame:UNIT_MAXMANA()
+	if arg1 ~= "player" then return end
 
 	local _, int = UnitStat("player", 4)
 	if UnitPowerType("player") == 0 then
@@ -256,7 +266,6 @@ function frame:LEARNED_SPELL_IN_TAB()
 end
 
 function frame:UpdateMana()
-	print(this)
 	local regen, castingRegen = GetManaRegen()
 	if fiveSecondRule then
 		currMana = currMana + floor(castingRegen * 2 + 0.5)
@@ -303,11 +312,7 @@ function frame:Update()
 	end
 end
 
--- if IsLoggedIn() then
-	frame:PLAYER_LOGIN()
--- else
-	-- frame:RegisterEvent("PLAYER_LOGIN")
--- end
+frame:PLAYER_LOGIN()
 
 function lib:GetCurrentMana()
 	return currMana
