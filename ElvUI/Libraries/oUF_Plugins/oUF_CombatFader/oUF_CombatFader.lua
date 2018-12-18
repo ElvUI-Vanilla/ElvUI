@@ -2,6 +2,9 @@
 local ns = oUF
 local oUF = ns.oUF
 
+local pairs = pairs
+
+local UIFrameFadeIn, UIFrameFadeOut = UIFrameFadeIn, UIFrameFadeOut
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local UnitExists = UnitExists
@@ -10,7 +13,7 @@ local frames, allFrames = {}, {}
 local showStatus
 
 local CheckForReset = function()
-	for frame, unit in pairs(allFrames) do
+	for frame in pairs(allFrames) do
 		if frame.fadeInfo and frame.fadeInfo.reset then
 			frame:SetAlpha(1)
 			frame.fadeInfo.reset = nil
@@ -19,7 +22,6 @@ local CheckForReset = function()
 end
 
 local FadeFramesInOut = function(fade, unit)
-	local E = unpack(ElvUI)
 	for frame, unit in pairs(frames) do
 		if not UnitExists(unit) then return end
 		if fade then
@@ -31,7 +33,7 @@ local FadeFramesInOut = function(fade, unit)
 				UIFrameFadeOut(frame, 0.15)
 				frame.fadeInfo.finishedFunc = CheckForReset
 			else
-				showStatus = false;
+				showStatus = false
 				return
 			end
 		end
@@ -47,8 +49,6 @@ local Update = function(self, arg1, arg2)
 	if type(arg1) == "boolean" and not frames[self] then
 		return
 	end
-
-	local E = unpack(ElvUI)
 
 	if not frames[self] then
 		UIFrameFadeIn(self, 0.15)
@@ -81,7 +81,7 @@ local Enable = function(self, unit)
 		allFrames[self] = self.unit
 
 		if unit == "player" then
-			showStatus = false;
+			showStatus = false
 		end
 
 		self:RegisterEvent("PLAYER_ENTERING_WORLD", Update)
@@ -95,8 +95,8 @@ local Enable = function(self, unit)
 		self:RegisterEvent("UNIT_MODEL_CHANGED", Update)
 
 		if not self.CombatFadeHooked then
-			HookScript(self, "OnEnter", function(self) Update(self, true) end)
-			HookScript(self, "OnLeave", function(self) Update(self, false) end)
+			HookScript(self, "OnEnter", function() Update(self, true) end)
+			HookScript(self, "OnLeave", function() Update(self, false) end)
 			self.CombatFadeHooked = true
 		end
 		return true
