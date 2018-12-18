@@ -8,10 +8,10 @@ Description: A library to provide data on mana for druids in bear or cat form.
 License: LGPL v2.1
 ]]
 
-if(select(2, UnitClass("player")) ~= "DRUID") then return; end
+if(select(2, UnitClass("player")) ~= "DRUID") then return end
 
 local MAJOR_VERSION = "LibDruidMana-1.0"
-local MINOR_VERSION = 90001 + tonumber(string.match("$Revision: 29 $", "%d+"))
+local MINOR_VERSION = 90001 + tonumber(strmatch("$Revision: 29 $", "%d+"))
 
 local floor = math.floor
 
@@ -85,11 +85,22 @@ local registry = oldLib and oldLib.registry or {}
 lib.registry = registry
 
 local function GetManaRegen()
-	local base, spirit = UnitStat("player", 5)
+	local _, spirit = UnitStat("player", 5)
 	local currMana, maxMana = UnitMana("player"), UnitManaMax("player")
+	local regen, castingRegen
 
-	local regen = ((spirit / 5) - 15)
-	local castingRegen = min(currMana + regen, maxMana)
+	regen = (ceil(spirit / 5) + 15)
+	castingRegen = min(currMana + regen, maxMana)
+
+	local j = 1
+	local icon
+	while UnitBuff("player",j) do
+		icon = UnitBuff("player",j)
+		if icon and icon == "Interface\\Icons\\Spell_Nature_Lightning" then
+			regen = ((ceil(UnitStat("player", 5) / 5) + 15) * 5)
+		end
+		j = j + 1
+	end
 
 	return regen, castingRegen
 end
@@ -106,13 +117,18 @@ local function getShapeshiftCost()
 
 	local line = tt.left[2]:GetText()
 	if line then
-		line = tonumber(string.match(line, "(%d+)"))
+		line = tonumber(strmatch(line, "(%d+)"))
 	end
 
 	return line or 0
 end
 
+local IsLoggedIn
 frame:SetScript("OnEvent", function(...)
+	if event == "PLAYER_LOGIN" then
+		IsLoggedIn = true
+	end
+
 	this[event](this, unpack(arg))
 end)
 
@@ -237,6 +253,8 @@ function frame:PLAYER_AURAS_CHANGED()
 end
 
 function frame:COMBAT_TEXT_UPDATE()
+	if arg1 ~= "AURA_START" then return end
+
 	-- if the spell is cast for either bear or cat, deduct the cost.
 	-- we can't rely on UNIT_DISPLAYPOWER since you could switch from bear -> bear, never calling that, so we check the spellcast.
 	if (bearName and arg2 == bearName) or (catName and arg2 == catName) then
@@ -251,12 +269,12 @@ function frame:LEARNED_SPELL_IN_TAB()
 	for i = 1, GetNumSpellTabs() do
 		local _, texture, offset, numSpells = GetSpellTabInfo(i)
 		-- the spell tab that shows the bear is the feral tree, gonna check for bear form and cat form, gleam important info
-		if string.find(texture, "Ability_Racial_BearForm") then
+		if strfind(texture, "Ability_Racial_BearForm") then
 			for j = offset + 1, offset + numSpells do
-				if string.find(GetSpellTexture(j, "spell"), "Ability_Racial_BearForm") then
+				if strfind(GetSpellTexture(j, "spell"), "Ability_Racial_BearForm") then
 					bearID = j
 					bearName = GetSpellName(j, "spell")
-				elseif string.find(GetSpellTexture(j, "spell"), "Ability_Druid_CatForm") then
+				elseif strfind(GetSpellTexture(j, "spell"), "Ability_Druid_CatForm") then
 					catName = GetSpellName(j, "spell")
 				end
 			end
@@ -267,6 +285,7 @@ end
 
 function frame:UpdateMana()
 	local regen, castingRegen = GetManaRegen()
+	print(regen, castingRegen, fiveSecondRule)
 	if fiveSecondRule then
 		currMana = currMana + floor(castingRegen * 2 + 0.5)
 	else
@@ -312,7 +331,11 @@ function frame:Update()
 	end
 end
 
-frame:PLAYER_LOGIN()
+if IsLoggedIn then
+	frame:PLAYER_LOGIN()
+else
+	frame:RegisterEvent("PLAYER_LOGIN")
+end
 
 function lib:GetCurrentMana()
 	return currMana
