@@ -8,19 +8,23 @@ Description: A library to provide data on mana for druids in bear or cat form.
 License: LGPL v2.1
 ]]
 
-if(select(2, UnitClass("player")) ~= "DRUID") then return end
+if(select(2, UnitClass("player")) ~= "DRUID") then return; end
 
 local MAJOR_VERSION = "LibDruidMana-1.0"
-local MINOR_VERSION = 90001 + tonumber(strmatch("$Revision: 29 $", "%d+"))
+local MINOR_VERSION = 90001 + tonumber(string.match("$Revision: 29 $", "%d+"))
 
-local floor = math.floor
+local unpack = unpack
+local ceil, floor, min = math.ceil, math.floor, math.min
+local find, format, match = string.find, string.format, string.match
+local getn = table.getn
 
-local GetManaRegen = GetManaRegen
 local GetNumSpellTabs = GetNumSpellTabs
 local GetSpellName = GetSpellName
 local GetSpellTabInfo = GetSpellTabInfo
 local GetSpellTexture = GetSpellTexture
+local GetTalentInfo = GetTalentInfo
 local GetTime = GetTime
+local UnitBuff = UnitBuff
 local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
 local UnitPowerType = UnitPowerType
@@ -70,7 +74,7 @@ if not tt.left then
 	tt.left = {}
 	tt.right = {}
 end
-for i = table.getn(tt.left) + 1, 30 do
+for i = getn(tt.left) + 1, 30 do
 	local left, right = tt:CreateFontString(), tt:CreateFontString()
 	tt.left[i] = left
 	tt.right[i] = right
@@ -84,26 +88,35 @@ tt:SetOwner(UIParent, "ANCHOR_NONE")
 local registry = oldLib and oldLib.registry or {}
 lib.registry = registry
 
-local function GetManaRegen()
-	local _, spirit = UnitStat("player", 5)
-	local currMana, maxMana = UnitMana("player"), UnitManaMax("player")
-	local regen, castingRegen
+function GetManaRegen()
+	local base = UnitStat("player", 5)
+	local currMana = UnitMana("player")
+	local maxMana = UnitManaMax("player")
+	local regen = ceil(base / 5) + 15
+	local castingRegen = 0
 
-	regen = (ceil(spirit / 5) + 15)
-	castingRegen = min(currMana + regen, maxMana)
+	local _, _, _, _, rank = GetTalentInfo(3, 6)
+	if rank > 0 then
+		castingRegen = ceil(regen * (0.05 * rank))
+	end
 
-	local j = 1
-	local icon
-	while UnitBuff("player",j) do
-		icon = UnitBuff("player",j)
+	local i, icon = 1
+	while true do
+		icon = UnitBuff("player", i)
+		if not icon then break end
+
 		if icon and icon == "Interface\\Icons\\Spell_Nature_Lightning" then
-			regen = ((ceil(UnitStat("player", 5) / 5) + 15) * 5)
+			castingRegen = regen + castingRegen
+			regen = regen * 5
+			break
 		end
-		j = j + 1
+
+		i = i + 1
 	end
 
 	return regen, castingRegen
 end
+local GetManaRegen = GetManaRegen
 
 local function getShapeshiftCost()
 	if not bearID then return 0 end
@@ -117,19 +130,19 @@ local function getShapeshiftCost()
 
 	local line = tt.left[2]:GetText()
 	if line then
-		line = tonumber(strmatch(line, "(%d+)"))
+		line = tonumber(match(line, "(%d+)"))
 	end
 
 	return line or 0
 end
 
 local IsLoggedIn
-frame:SetScript("OnEvent", function(...)
+frame:SetScript("OnEvent", function()
 	if event == "PLAYER_LOGIN" then
 		IsLoggedIn = true
 	end
-
-	this[event](this, unpack(arg))
+	print(event, arg1)
+	this[event](this, arg1)
 end)
 
 local SetMax_time = nil
@@ -253,8 +266,6 @@ function frame:PLAYER_AURAS_CHANGED()
 end
 
 function frame:COMBAT_TEXT_UPDATE()
-	if arg1 ~= "AURA_START" then return end
-
 	-- if the spell is cast for either bear or cat, deduct the cost.
 	-- we can't rely on UNIT_DISPLAYPOWER since you could switch from bear -> bear, never calling that, so we check the spellcast.
 	if (bearName and arg2 == bearName) or (catName and arg2 == catName) then
@@ -285,7 +296,8 @@ end
 
 function frame:UpdateMana()
 	local regen, castingRegen = GetManaRegen()
-	print(regen, castingRegen, fiveSecondRule)
+	print(regen, castingRegen)
+
 	if fiveSecondRule then
 		currMana = currMana + floor(castingRegen * 2 + 0.5)
 	else
