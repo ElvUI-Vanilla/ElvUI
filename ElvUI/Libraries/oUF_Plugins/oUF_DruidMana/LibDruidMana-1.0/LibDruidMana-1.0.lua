@@ -11,7 +11,7 @@ License: LGPL v2.1
 if(select(2, UnitClass("player")) ~= "DRUID") then return; end
 
 local MAJOR_VERSION = "LibDruidMana-1.0"
-local MINOR_VERSION = 90001 + tonumber(string.match("$Revision: 29 $", "%d+"))
+local MINOR_VERSION = 90002 + tonumber(string.match("$Revision: 29 $", "%d+"))
 
 local unpack = unpack
 local ceil, floor, min = math.ceil, math.floor, math.min
@@ -44,6 +44,69 @@ end
 local regenMana, maxMana, currMana, currInt, fiveSecondRule
 currMana, maxMana = 0, 0
 local bearID, bearName, catName
+
+local baseDruidMana = {
+	[1] = 50,
+	[2] = 57,
+	[3] = 65,
+	[4] = 74,
+	[5] = 84,
+	[6] = 95,
+	[7] = 107,
+	[8] = 120,
+	[9] = 134,
+	[10] = 149,
+	[11] = 165,
+	[12] = 182,
+	[13] = 200,
+	[14] = 219,
+	[15] = 239,
+	[16] = 260,
+	[17] = 282,
+	[18] = 305,
+	[19] = 329,
+	[20] = 354,
+	[21] = 380,
+	[22] = 392,
+	[23] = 420,
+	[24] = 449,
+	[25] = 479,
+	[26] = 509,
+	[27] = 524,
+	[28] = 554,
+	[29] = 584,
+	[30] = 614,
+	[31] = 629,
+	[32] = 659,
+	[33] = 689,
+	[34] = 704,
+	[35] = 734,
+	[36] = 749,
+	[37] = 779,
+	[38] = 809,
+	[39] = 824,
+	[40] = 854,
+	[41] = 869,
+	[42] = 899,
+	[43] = 914,
+	[44] = 944,
+	[45] = 959,
+	[46] = 989,
+	[47] = 1004,
+	[48] = 1019,
+	[49] = 1049,
+	[50] = 1064,
+	[51] = 1079,
+	[52] = 1109,
+	[53] = 1124,
+	[54] = 1139,
+	[55] = 1154,
+	[56] = 1169,
+	[57] = 1199,
+	[58] = 1214,
+	[59] = 1229,
+	[60] = 1244
+}
 
 -- frame for events and OnUpdate
 local frame
@@ -107,7 +170,7 @@ function GetManaRegen()
 
 		if icon and icon == "Interface\\Icons\\Spell_Nature_Lightning" then
 			castingRegen = regen + castingRegen
-			regen = regen * 5
+			regen = regen * 5 - 15
 			break
 		end
 
@@ -134,6 +197,19 @@ local function getShapeshiftCost()
 	end
 
 	return line or 0
+end
+
+local function updateStatsInForm()
+	local level = UnitLevel("player")
+	local baseMana = baseDruidMana[level]
+
+	local _, int = UnitStat("player", 4)
+	local baseInt = math.min(20, int)
+	local intMana = baseInt + (int - baseInt) * 15
+
+	maxMana = baseMana + intMana
+	currMana = maxMana
+	currInt = int
 end
 
 local IsLoggedIn
@@ -174,6 +250,8 @@ function frame:PLAYER_LOGIN()
 
 	if UnitPowerType("player") == 0 then
 		self:UNIT_DISPLAYPOWER("player")
+	else
+		updateStatsInForm()
 	end
 end
 
