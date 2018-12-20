@@ -92,7 +92,7 @@ function GetManaRegen()
 	local base = UnitStat("player", 5)
 	local currMana = UnitMana("player")
 	local maxMana = UnitManaMax("player")
-	local regen = ceil(base / 5) + 15
+	local regen = ceil(base / 5) - 15
 	local castingRegen = 0
 
 	local _, _, _, _, rank = GetTalentInfo(3, 6)
@@ -141,7 +141,7 @@ frame:SetScript("OnEvent", function()
 	if event == "PLAYER_LOGIN" then
 		IsLoggedIn = true
 	end
-	print(event, arg1)
+
 	this[event](this, arg1)
 end)
 
@@ -296,7 +296,6 @@ end
 
 function frame:UpdateMana()
 	local regen, castingRegen = GetManaRegen()
-	print(regen, castingRegen)
 
 	if fiveSecondRule then
 		currMana = currMana + floor(castingRegen * 2 + 0.5)
