@@ -210,9 +210,9 @@ end
 
 function difftime(time2, time1)
 	if type(time2) ~= "number" then
-		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 and type(time2) or "no value"), 2)
+		error(format("bad argument #1 to 'difftime' (number expected, got %s)", time2 ~= nil and type(time2) or "no value"), 2)
 	elseif time1 and type(time1) ~= "number" then
-		error(format("bad argument #2 to 'difftime' (number expected, got %s)", time1 and type(time1) or "no value"), 2)
+		error(format("bad argument #2 to 'difftime' (number expected, got %s)", time1 ~= nil and type(time1) or "no value"), 2)
 	end
 
 	return time1 and time2 - time1 or time2
@@ -322,7 +322,7 @@ end
 
 function GetMapNameByID(id)
 	if not (type(id) == "string" or type(id) == "number") then
-		error(format("Bad argument #1 to \"GetMapNameByID\" (number expected, got %s)", id and type(id) or "no value"), 2)
+		error(format("Bad argument #1 to \"GetMapNameByID\" (number expected, got %s)", id ~= nil and type(id) or "no value"), 2)
 	end
 
 	return mapByID[tonumber(id)]
@@ -383,7 +383,7 @@ end
 
 function CreateStatusBarTexturePointer(statusbar)
 	if type(statusbar) ~= "table" then
-		error(format("Bad argument #1 to \"CreateStatusBarTexturePointer\" (table expected, got %s)", statusbar and type(statusbar) or "no value"), 2)
+		error(format("Bad argument #1 to \"CreateStatusBarTexturePointer\" (table expected, got %s)", statusbar ~= nil and type(statusbar) or "no value"), 2)
 	elseif not (statusbar.GetObjectType and statusbar:GetObjectType() == "StatusBar") then
 		error("Bad argument #1 to \"CreateStatusBarTexturePointer\" (statusbar object expected)", 2)
 	end
