@@ -14,6 +14,5 @@
 	<Script file="masterlooterindicator.lua"/>
 	<Script file="assistantindicator.lua"/>
 	<Script file="combopoints.lua"/>
-	<!-- <Script file="raidroleindicator.lua"/> -->
 	<Script file="happinessindicator.lua"/>
 </Ui>

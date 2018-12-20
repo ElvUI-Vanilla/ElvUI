@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="LibDruidMana-1.0\LibDruidMana-1.0.xml"/>
+	<Script file="oUF_DruidMana.lua"/>
+</Ui>

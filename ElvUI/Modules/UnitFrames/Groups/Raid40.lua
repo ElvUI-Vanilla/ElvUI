@@ -13,12 +13,12 @@ local CreateFrame = CreateFrame
 local GetNumRaidMembers = GetNumRaidMembers
 local UnitInRaid = UnitInRaid
 
-function UF:Construct_RaidFrames()
+function UF:Construct_Raid40Frames()
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-	self:SetWidth(UF.db.units.raid.width)
-	self:SetHeight(UF.db.units.raid.height)
+	self:SetWidth(UF.db.units.raid40.width)
+	self:SetHeight(UF.db.units.raid40.height)
 
 	self.RaisedElementParent = CreateFrame("Frame", nil, self)
 	self.RaisedElementParent.TextureParent = CreateFrame("Frame", nil, self.RaisedElementParent)
@@ -49,46 +49,46 @@ function UF:Construct_RaidFrames()
 	UF:Update_StatusBars()
 	UF:Update_FontStrings()
 
-	self.unitframeType = "raid"
+	self.unitframeType = "raid40"
 
-	UF:Update_RaidFrames(self, UF.db.units.raid)
+	UF:Update_Raid40Frames(self, UF.db.units.raid40)
 
 	return self
 end
 
-function UF:RaidSmartVisibility()
+function UF:Raid40SmartVisibility()
 	if not self then self = this end
 	if not self.db or (self.db and not self.db.enable) then return end
 
 	local numMembers = GetNumRaidMembers()
-	if numMembers > 1 then
+	if numMembers > 20 then
 		self:Show()
 	else
 		self:Hide()
 	end
 end
 
-function UF:Update_RaidHeader(header, db)
+function UF:Update_Raid40Header(header, db)
 	header.db = db
 
 	if not header.positioned then
 		header:ClearAllPoints()
 		E:Point(header, "BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
-		E:CreateMover(header, header:GetName().."Mover", L["Raid Frames"], nil, nil, nil, "ALL,RAID")
+		E:CreateMover(header, header:GetName().."Mover", L["Raid-40 Frames"], nil, nil, nil, "ALL,RAID")
 
 		header:RegisterEvent("PLAYER_LOGIN")
 		header:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 		header:RegisterEvent("PARTY_MEMBERS_CHANGED")
 		header:RegisterEvent("RAID_ROSTER_UPDATE")
-		header:SetScript("OnEvent", UF.RaidSmartVisibility)
+		header:SetScript("OnEvent", UF.Raid40SmartVisibility)
 		header.positioned = true
 	end
 
-	UF.RaidSmartVisibility(header)
+	UF.Raid40SmartVisibility(header)
 end
 
-function UF:Update_RaidFrames(frame, db)
+function UF:Update_Raid40Frames(frame, db)
 	frame.db = db
 
 	frame.Portrait = frame.Portrait or (db.portrait.style == "2D" and frame.Portrait2D or frame.Portrait3D)
@@ -125,6 +125,7 @@ function UF:Update_RaidFrames(frame, db)
 		frame.PORTRAIT_WIDTH = (frame.USE_PORTRAIT_OVERLAY or not frame.USE_PORTRAIT) and 0 or db.portrait.width
 
 		frame.CLASSBAR_YOFFSET = 0
+
 		frame.USE_INFO_PANEL = not frame.USE_MINI_POWERBAR and not frame.USE_POWERBAR_OFFSET and db.infoPanel.enable
 		frame.INFO_PANEL_HEIGHT = frame.USE_INFO_PANEL and db.infoPanel.height or 0
 
@@ -164,4 +165,4 @@ function UF:Update_RaidFrames(frame, db)
 	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
-UF.headerstoload.raid = true
+UF.headerstoload.raid40 = true

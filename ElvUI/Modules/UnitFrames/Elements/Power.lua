@@ -241,4 +241,9 @@ function UF:PostUpdatePower(unit, cur, max)
 	if db and db.power and db.power.hideonnpc then
 		UF:PostNamePosition(parent, unit)
 	end
+
+	--Force update to DruidAltMana in order to reposition text if necessary
+	if parent:IsElementEnabled("DruidAltMana") then
+		E:Delay(0.01, parent.DruidAltMana.ForceUpdate, parent.DruidAltMana) --Delay it slightly  so Power text has a chance to clear itself first
+	end
 end

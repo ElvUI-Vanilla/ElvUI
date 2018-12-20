@@ -9,19 +9,20 @@
 	<Include file="AceComm-3.0\AceComm-3.0.xml"/>
 	<Include file="AceSerializer-3.0\AceSerializer-3.0.xml"/>
 	<Include file="AceTimer-3.0\AceTimer-3.0.xml"/>
-	<Include file="LibItemPrice-1.1\LibItemPrice-1.1.xml"/>
 	<Include file="AceHook-3.0\AceHook-3.0.xml"/>
+	<Include file="LibItemPrice-1.1\LibItemPrice-1.1.xml"/>
 	<Include file="LibSharedMedia-3.0\LibSharedMedia-3.0.xml"/>
 	<Include file="LibSimpleSticky\LibSimpleSticky.xml"/>
 	<Include file="LibDataBroker\LibDataBroker-1.1.xml"/>
 	<Include file="LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.xml"/>
 	<Include file="oUF\oUF.xml"/>
 	<Include file="oUF_Plugins\oUF_Plugins.xml"/>
+	<Include file="LibElvUIPlugin-1.0\LibElvUIPlugin-1.0.xml"/>
 	<Include file="UTF8\UTF8.xml"/>
+	<Include file="LibItemSearch-1.2\LibItemSearch-1.2.xml"/>
 	<Include file="LibCompress\LibCompress.xml"/>
 	<Include file="LibBase64-1.0\LibBase64-1.0.xml"/>
 	<Include file="LibAnim\LibAnim.xml"/>
 	<Include file="LibWho-2.0\LibWho-2.0.xml"/>
 	<Include file="LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
-	<Include file="LibItemSearch-1.2\LibItemSearch-1.2.xml"/>
 </Ui>

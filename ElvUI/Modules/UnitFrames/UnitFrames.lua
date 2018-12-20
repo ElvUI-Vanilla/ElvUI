@@ -794,8 +794,8 @@ function UF:UpdateAllHeaders(event)
 
 		if instanceType == "party" or instanceType == "raid" then
 			ORD:RegisterDebuffs(E.global.unitframe.aurafilters.RaidDebuffs.spells)
-		else
-			ORD:RegisterDebuffs(E.global.unitframe.aurafilters.CCDebuffs.spells)
+		-- else
+			-- ORD:RegisterDebuffs(E.global.unitframe.aurafilters.CCDebuffs.spells)
 		end
 	end
 
@@ -809,7 +809,7 @@ function UF:UpdateAllHeaders(event)
 		end
 		UF.headerFunctions[group]:Update(header)
 
-		if group == "party" or group == "raid" then
+		if group == "party" or group == "raid" or group == "raid40" then
 			--Update BuffIndicators on profile change as they might be using profile specific data
 			--self:UpdateAuraWatchFromHeader(group)
 		end
@@ -913,8 +913,8 @@ function UF:Initialize()
 	ORD.ShowDispelableDebuff = true
 	ORD.FilterDispellableDebuff = true
 
-	self:UpdateRangeCheckSpells()
-	self:RegisterEvent("LEARNED_SPELL_IN_TAB", "UpdateRangeCheckSpells")
+	-- self:UpdateRangeCheckSpells()
+	-- self:RegisterEvent("LEARNED_SPELL_IN_TAB", "UpdateRangeCheckSpells")
 end
 
 function UF:ResetUnitSettings(unit)

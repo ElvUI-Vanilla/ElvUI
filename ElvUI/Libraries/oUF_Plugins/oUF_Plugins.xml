@@ -1,4 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="oUF_RaidDebuffs\oUF_RaidDebuffs.xml"/>
+	<Include file="oUF_DruidMana\oUF_DruidMana.xml"/>
+	<Include file="oUF_DebuffHighlight\oUF_DebuffHighlight.xml"/>
 	<Include file="oUF_Smooth\oUF_Smooth.xml"/>
+	<Include file="oUF_CombatFader\oUF_CombatFader.xml"/>
 	<Include file="oUF_GPS\oUF_GPS.xml"/>
 </Ui>

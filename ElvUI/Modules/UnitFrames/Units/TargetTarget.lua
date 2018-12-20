@@ -19,7 +19,6 @@ function UF:Construct_TargetTargetFrame(frame)
 	frame.RaidTargetIndicator = self:Construct_RaidIcon(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.Range = self:Construct_Range(frame)
-	-- frame.ThreatIndicator = self:Construct_Threat(frame)
 	frame.InfoPanel = self:Construct_InfoPanel(frame)
 	frame.MouseGlow = self:Construct_MouseGlow(frame)
 	frame.TargetGlow = self:Construct_TargetGlow(frame)
@@ -75,8 +74,6 @@ function UF:Update_TargetTargetFrame(frame, db)
 	UF:Configure_Power(frame)
 
 	UF:Configure_Portrait(frame)
-
-	-- UF:Configure_Threat(frame)
 
 	UF:EnableDisable_Auras(frame)
 	UF:Configure_Auras(frame, "Buffs")
