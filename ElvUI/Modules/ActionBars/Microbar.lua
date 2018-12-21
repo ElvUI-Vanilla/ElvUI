@@ -4,7 +4,6 @@ local AB = E:GetModule("ActionBars");
 --Cache global variables
 --Lua functions
 local _G = _G
-local gsub, match = string.gsub, string.match
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local UIFrameFadeIn = UIFrameFadeIn
@@ -103,12 +102,6 @@ function AB:UpdateMicroPositionDimensions()
 	AB.MicroWidth = (((_G["CharacterMicroButton"]:GetWidth() + spacing) * self.db.microbar.buttonsPerRow) - spacing) + (offset * 2)
 	AB.MicroHeight = (((_G["CharacterMicroButton"]:GetHeight() + spacing) * numRows) - spacing) + (offset * 2)
 	E:Size(ElvUI_MicroBar, AB.MicroWidth, AB.MicroHeight)
-
-	-- local visibility = self.db.microbar.visibility
-	-- if visibility and match(visibility, "[\n\r]") then
-	-- 	visibility = gsub(visibility, "[\n\r]", "")
-	-- end
-
 
 	if ElvUI_MicroBar.mover then
 		if self.db.microbar.enabled then
