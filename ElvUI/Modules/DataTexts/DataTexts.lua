@@ -4,9 +4,11 @@ local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 local LSM = LibStub("LibSharedMedia-3.0");
 local TT = E:GetModule("Tooltip");
 
+--Cache global variables
+--Lua functions
 local pairs, type, error = pairs, type, error
 local len = string.len
-
+--WoW API / Variables
 local CreateFrame = CreateFrame
 local IsInInstance = IsInInstance
 

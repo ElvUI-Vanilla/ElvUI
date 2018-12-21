@@ -694,6 +694,25 @@ function GetItemCount(itemName)
 	return count
 end
 
+function GetContainerNumFreeSlots(bagID)
+	local maxSlots = 0
+	local usedSlots = 0
+
+	for bag = bagID, NUM_BAG_FRAMES do
+		local bagSize = GetContainerNumSlots(bag)
+		maxSlots = maxSlots + bagSize
+		for i = 1, bagSize do
+			itemLink = GetContainerItemLink(bag, i)
+			if itemLink then
+				usedSlots = usedSlots + 1
+			end
+		end
+	end
+
+	local freeSlots = maxSlots - usedSlots
+	return freeSlots
+end
+
 local scanTooltip
 function GetInventoryItemDurability(slot)
 	if not GetInventoryItemTexture("player", slot) then return end
@@ -711,5 +730,112 @@ function GetInventoryItemDurability(slot)
 		for current, maximum in gmatch(text, DURABILITY_TEMPLATE) do
 			return tonumber(current), tonumber(maximum)
 		end
+	end
+end
+
+local slots = {
+	["HeadSlot"] = "INVTYPE_HEAD",
+	["NeckSlot"] = "INVTYPE_NECK",
+	["ShoulderSlot"] = "INVTYPE_SHOULDER",
+	["BackSlot"] = "INVTYPE_CLOAK",
+	["ChestSlot"] = "INVTYPE_ROBE",
+	["WristSlot"] = "INVTYPE_WRIST",
+	["HandsSlot"] = "INVTYPE_HAND",
+	["WaistSlot"] = "INVTYPE_WAIST",
+	["LegsSlot"] = "INVTYPE_LEGS",
+	["FeetSlot"] = "INVTYPE_FEET",
+	["Finger0Slot"] = "INVTYPE_FINGER",
+	["Finger1Slot"] = "INVTYPE_FINGER",
+	["Trinket0Slot"] = "INVTYPE_TRINKET",
+	["Trinket1Slot"] = "INVTYPE_TRINKET",
+	["MainHandSlot"] = "INVTYPE_WEAPONMAINHAND",
+	["SecondaryHandSlot"] = "INVTYPE_HOLDABLE",
+	["RangedSlot"] = "INVTYPE_RANGEDRIGHT",
+}
+
+local bagsTable = {}
+function GetAverageItemLevel()
+	local itemLink, itemLevel, itemEquipLoc
+	local total, totalBag, item, bagItem, isBagItemLevel = 0, 0, 0, 0
+
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			itemLink = GetContainerItemLink(bag, slot)
+			if itemLink then
+				_, _, _, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(tonumber(string.match(itemLink, "item:(%d+)")))
+				if itemEquipLoc and itemEquipLoc ~= "" then
+					if not bagsTable[itemEquipLoc] then
+						bagsTable[itemEquipLoc] = itemLevel
+					else
+						if itemLevel > bagsTable[itemEquipLoc] then
+							bagsTable[itemEquipLoc] = itemLevel
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for slotName, itemLoc in pairs(slots) do
+		itemLink = GetInventoryItemLink("player", GetInventorySlotInfo(slotName))
+		if itemLink then
+			_, _, _, itemLevel, _, _, _, _, itemEquipLoc = GetItemInfo(tonumber(string.match(itemLink, "item:(%d+)")))
+			if itemLevel and itemLevel > 0 then
+				item = item + 1
+				bagItem = bagItem + 1
+
+				isBagItemLevel = bagsTable[itemEquipLoc]
+				if isBagItemLevel and isBagItemLevel > itemLevel then
+					totalBag = totalBag + isBagItemLevel
+				else
+					totalBag = totalBag + itemLevel
+				end
+
+				total = total + itemLevel
+			end
+		else
+			isBagItemLevel = bagsTable[itemLoc]
+			if isBagItemLevel then
+				bagItem = bagItem + 1
+				totalBag = totalBag + isBagItemLevel
+			end
+		end
+	end
+
+	wipe(bagsTable)
+
+	if total < 1 then
+		return 0, 0
+	end
+
+	return (totalBag / bagItem), (total / item)
+end
+
+function GetItemLevelColor(unit)
+	if not unit then unit = "player" end
+
+	local i = 0
+	local sumR, sumG, sumB = 0, 0, 0
+	for slotName, _ in pairs(slots) do
+		local slotID = GetInventorySlotInfo(slotName)
+		if GetInventoryItemTexture(unit, slotID) then
+			local itemLink = GetInventoryItemLink(unit, slotID)
+			if itemLink then
+				local _, _, quality = GetItemInfo(tonumber(string.match(itemLink, "item:(%d+)")))
+				if quality then
+					i = i + 1
+					local r, g, b = GetItemQualityColor(quality)
+					sumR = sumR + r
+					sumG = sumG + g
+					sumB = sumB + b
+				end
+			end
+		end
+	end
+
+	if i > 0 then
+		return (sumR / i), (sumG / i), (sumB / i)
+	else
+		return 1, 1, 1
 	end
 end
