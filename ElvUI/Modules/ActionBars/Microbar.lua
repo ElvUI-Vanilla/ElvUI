@@ -51,6 +51,7 @@ function AB:HandleMicroButton(button)
 	HookScript(button, "OnEnter", onEnter)
 	HookScript(button, "OnLeave", onLeave)
 	button:SetHitRectInsets(0, 0, 0, 0)
+	button:SetAlpha(self.db.microbar.alpha)
 	button:Show()
 
 	pushed:SetTexCoord(0.17, 0.87, 0.5, 0.908)
@@ -130,5 +131,5 @@ function AB:SetupMicroBar()
 
 	E:Kill(MainMenuBarPerformanceBarFrame)
 
-	E:CreateMover(ElvUI_MicroBar, 'MicrobarMover', L["Micro Bar"], nil, nil, nil, "ALL,ACTIONBARS", nil, "actionbar,microbar")
+	E:CreateMover(ElvUI_MicroBar, "MicrobarMover", L["Micro Bar"], nil, nil, nil, "ALL,ACTIONBARS", nil, "actionbar,microbar")
 end

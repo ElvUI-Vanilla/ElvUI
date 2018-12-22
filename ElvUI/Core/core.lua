@@ -892,24 +892,44 @@ function E:UpdateAll(ignoreInstall)
 	Layout:TopPanelVisibility()
 	Layout:SetDataPanelStyle()
 
-	ActionBars:UpdateButtonSettings()
-	ActionBars:UpdateMicroPositionDimensions()
+	if E.private.actionbar.enable then
+		ActionBars:UpdateButtonSettings()
+		ActionBars:UpdateMicroPositionDimensions()
+	end
+
 	AFK:Toggle()
-	Bags:Layout()
-	Bags:Layout(true)
-	Bags:SizeAndPositionBagBar()
-	Bags:UpdateCountDisplay()
-	Bags:UpdateItemLevelDisplay()
-	Chat:PositionChat(true)
-	Chat:SetupChat()
-	Chat:UpdateAnchors()
+
+	if E.private.bags.enable then
+		Bags:Layout()
+		Bags:Layout(true)
+		Bags:SizeAndPositionBagBar()
+		Bags:UpdateCountDisplay()
+		Bags:UpdateItemLevelDisplay()
+	end
+
+	if E.private.chat.enable then
+		Chat:PositionChat(true)
+		Chat:SetupChat()
+		Chat:UpdateAnchors()
+	end
+
 	DataBars:EnableDisable_ExperienceBar()
 	DataBars:EnableDisable_ReputationBar()
 	DataBars:UpdateDataBarDimensions()
+
 	DataTexts:LoadDataTexts()
-	Minimap:UpdateSettings()
-	NamePlates:ConfigureAll()
-	UnitFrames:Update_AllFrames()
+
+	if E.private.general.minimap.enable then
+		Minimap:UpdateSettings()
+	end
+
+	if E.private.nameplates.enable then
+		NamePlates:ConfigureAll()
+	end
+
+	if E.private.unitframe.enable then
+		UnitFrames:Update_AllFrames()
+	end
 
 	if E.RefreshGUI then
 		E:RefreshGUI()
@@ -1040,6 +1060,27 @@ end
 
 --DATABASE CONVERSIONS
 function E:DBConversions()
+	--Make sure default filters use the correct filter type
+	for filter, filterType in pairs(E.DEFAULT_FILTER) do
+		E.global.unitframe.aurafilters[filter].type = filterType
+	end
+
+	--Combat & Resting Icon options update
+	if E.db.unitframe.units.player.combatIcon ~= nil then
+		E.db.unitframe.units.player.CombatIcon.enable = E.db.unitframe.units.player.combatIcon
+		E.db.unitframe.units.player.combatIcon = nil
+	end
+	if E.db.unitframe.units.player.restIcon ~= nil then
+		E.db.unitframe.units.player.RestIcon.enable = E.db.unitframe.units.player.restIcon
+		E.db.unitframe.units.player.restIcon = nil
+	end
+
+	if not E.db.chat.panelColorConverted then
+		local color = E.db.general.backdropfadecolor
+		E.db.chat.panelColor = {r = color.r, g = color.g, b = color.b, a = color.a}
+		E.db.chat.panelColorConverted = true
+	end
+
 	--Vendor Greys option is now in bags table
 	if E.db.general.vendorGrays then
 		E.db.bags.vendorGrays.enable = E.db.general.vendorGrays
