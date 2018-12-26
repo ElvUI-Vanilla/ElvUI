@@ -4,6 +4,6 @@
 	<Script file="ColorPicker.lua"/>
 	<Script file="WatchFrame.lua"/>
 	<Script file="GM.lua"/>
-	<Script file="Durablity.lua"/>
+	<Script file="Durability.lua"/>
 	<Script file="CaptureBar.lua"/>
 </Ui>

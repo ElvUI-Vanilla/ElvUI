@@ -5,13 +5,13 @@ local E, L, DF = unpack(ElvUI)
 local B = E:GetModule("Blizzard")
 local S = E:GetModule("Skins")
 
-local collectgarbage = collectgarbage
-local tonumber = tonumber
+local tonumber, collectgarbage = tonumber, collectgarbage
 local floor = math.floor
 local format, strsub = string.format, strsub
 local getn = table.getn
 
 local CreateFrame = CreateFrame
+local IsAddOnLoaded = IsAddOnLoaded
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local CLASS, DEFAULTS = CLASS, DEFAULTS
 
