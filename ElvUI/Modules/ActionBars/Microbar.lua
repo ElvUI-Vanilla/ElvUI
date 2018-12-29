@@ -23,15 +23,35 @@ local MICRO_BUTTONS = {
 	"HelpMicroButton"
 }
 
-local function onEnter()
+local function onEnterBar()
 	if AB.db.microbar.mouseover then
 		UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
 	end
 end
 
-local function onLeave()
+local function onLeaveBar()
 	if AB.db.microbar.mouseover then
 		UIFrameFadeOut(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), 0)
+	end
+end
+
+local function onEnterButton(button)
+	if AB.db.microbar.mouseover then
+		UIFrameFadeIn(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), AB.db.microbar.alpha)
+	end
+
+	if button.backdrop then
+		button.backdrop:SetBackdropBorderColor(unpack(E.media.rgbvaluecolor))
+	end
+end
+
+local function onLeaveButton(button)
+	if AB.db.microbar.mouseover then
+		UIFrameFadeOut(ElvUI_MicroBar, 0.2, ElvUI_MicroBar:GetAlpha(), 0)
+	end
+
+	if button.backdrop then
+		button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
 	end
 end
 
@@ -48,8 +68,8 @@ function AB:HandleMicroButton(button)
 
 	button:SetParent(ElvUI_MicroBar)
 	E:Kill(button:GetHighlightTexture())
-	HookScript(button, "OnEnter", onEnter)
-	HookScript(button, "OnLeave", onLeave)
+	HookScript(button, "OnEnter", onEnterButton)
+	HookScript(button, "OnLeave", onLeaveButton)
 	button:SetHitRectInsets(0, 0, 0, 0)
 	button:SetAlpha(self.db.microbar.alpha)
 	button:Show()
@@ -104,12 +124,16 @@ function AB:UpdateMicroPositionDimensions()
 	AB.MicroHeight = (((_G["CharacterMicroButton"]:GetHeight() + spacing) * numRows) - spacing) + (offset * 2)
 	E:Size(ElvUI_MicroBar, AB.MicroWidth, AB.MicroHeight)
 
+	if self.db.microbar.enabled then
+		ElvUI_MicroBar:Show()
+	else
+		ElvUI_MicroBar:Hide()
+	end
+
 	if ElvUI_MicroBar.mover then
 		if self.db.microbar.enabled then
-			ElvUI_MicroBar:Show()
 			E:EnableMover(ElvUI_MicroBar.mover:GetName())
 		else
-			ElvUI_MicroBar:Hide()
 			E:DisableMover(ElvUI_MicroBar.mover:GetName())
 		end
 	end
@@ -118,8 +142,8 @@ end
 function AB:SetupMicroBar()
 	E:Point(ElvUI_MicroBar, "TOPLEFT", E.UIParent, "TOPLEFT", 4, -48)
 	ElvUI_MicroBar:EnableMouse(true)
-	ElvUI_MicroBar:SetScript("OnEnter", onEnter)
-	ElvUI_MicroBar:SetScript("OnLeave", onLeave)
+	ElvUI_MicroBar:SetScript("OnEnter", onEnterBar)
+	ElvUI_MicroBar:SetScript("OnLeave", onLeaveBar)
 
 	for i = 1, getn(MICRO_BUTTONS) do
 		self:HandleMicroButton(_G[MICRO_BUTTONS[i]])
