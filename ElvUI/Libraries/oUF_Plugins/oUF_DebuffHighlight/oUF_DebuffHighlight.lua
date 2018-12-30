@@ -26,13 +26,15 @@ local function GetDebuffType(unit, filter, filterTable)
 		local name, _, texture, _, debufftype = UnitAura(unit, i, "HARMFUL")
 		if not texture then break end
 
-		local filterSpell = filterTable[name]
-
-		if(filterTable and filterSpell and filterSpell.enable) then
-			return debufftype, texture, true, filterSpell.style, filterSpell.color
-		elseif(debufftype and (not filter or (filter and dispellist[debufftype]))) then
-			return debufftype, texture;
+		if(filterTable) then
+			local filterSpell = filterTable[name]
+			if(filterSpell and filterSpell.enable) then
+				return debufftype, texture, true, filterSpell.style, filterSpell.color
+			elseif(debufftype and (not filter or (filter and dispellist[debufftype]))) then
+				return debufftype, texture;
+			end
 		end
+		
 		i = i + 1
 	end
 end
