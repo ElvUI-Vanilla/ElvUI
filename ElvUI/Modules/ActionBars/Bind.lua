@@ -62,7 +62,7 @@ function AB:BindListener(key)
 		end
 		E:Print(format(L["All keybindings cleared for |cff00ff00%s|r."], bind.button.name))
 		self:BindUpdate(bind.button, bind.spellmacro)
-		if bind.spellmacro~="MACRO" then GameTooltip:Hide() end
+		if bind.spellmacro ~= "MACRO" then GameTooltip:Hide() end
 		return
 	end
 
@@ -84,6 +84,7 @@ function AB:BindListener(key)
 	local alt = IsAltKeyDown() and "ALT-" or ""
 	local ctrl = IsControlKeyDown() and "CTRL-" or ""
 	local shift = IsShiftKeyDown() and "SHIFT-" or ""
+
 	if not bind.spellmacro or bind.spellmacro == "PET" or bind.spellmacro == "SHAPESHIFT" then
 		SetBinding(alt..ctrl..shift..key, bind.button.bindstring)
 	else
@@ -91,7 +92,7 @@ function AB:BindListener(key)
 	end
 	E:Print(alt..ctrl..shift..key..L[" |cff00ff00bound to |r"]..bind.button.name..".")
 	self:BindUpdate(bind.button, bind.spellmacro)
-	if bind.spellmacro~="MACRO" then GameTooltip:Hide() end
+	if bind.spellmacro ~= "MACRO" then GameTooltip:Hide() end
 end
 
 function AB:BindUpdate(button, spellmacro)
@@ -113,23 +114,23 @@ function AB:BindUpdate(button, spellmacro)
 	if spellmacro == "MACRO" then
 		bind.button.id = bind.button:GetID()
 
-		if floor(.5 + select(2,MacroFrameTab1Text:GetTextColor()) * 10) / 10 == .8 then bind.button.id = bind.button.id + MAX_MACROS end
+		if floor(.5 + select(2, MacroFrameTab1Text:GetTextColor()) * 10) / 10 == .8 then bind.button.id = bind.button.id + MAX_MACROS end
 
 		bind.button.name = GetMacroInfo(bind.button.id)
 
 		GameTooltip:SetOwner(bind, "ANCHOR_TOP")
-		E:Point(GameTooltip, "BOTTOM", bind, "TOP", 0, 1)
+		GameTooltip:SetPoint("BOTTOM", bind, "TOP", 0, 1)
 		GameTooltip:AddLine(bind.button.name, 1, 1, 1)
 
 		bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
-			if getn(bind.button.bindings) == 0 then
-				GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
-			else
-				GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
-				for i = 1, getn(bind.button.bindings) do
-					GameTooltip:AddDoubleLine(L["Binding"]..i, bind.button.bindings[i], 1, 1, 1)
-				end
+		if getn(bind.button.bindings) == 0 then
+			GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
+		else
+			GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+			for i = 1, getn(bind.button.bindings) do
+				GameTooltip:AddDoubleLine(L["Binding"]..i, bind.button.bindings[i], 1, 1, 1)
 			end
+		end
 		GameTooltip:Show()
 	elseif spellmacro=="SHAPESHIFT" or spellmacro=="PET" then
 		bind.button.id = tonumber(button:GetID())
