@@ -16,6 +16,7 @@ local GetContainerItemLink = GetContainerItemLink
 local GetContainerNumSlots = GetContainerNumSlots
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetItemInfo = GetItemInfo
+local GetShapeshiftFormInfo = GetShapeshiftFormInfo
 local GetQuestGreenRange = GetQuestGreenRange
 local GetRealZoneText = GetRealZoneText
 local IsInInstance = IsInInstance
@@ -838,4 +839,37 @@ function GetItemLevelColor(unit)
 	else
 		return 1, 1, 1
 	end
+end
+
+local shapeshiftForms = {
+    -- Druid
+    ["Bear Form"] = 1,
+    ["Aquatic Form"] = 2,
+    ["Cat Form"] = 3,
+    ["Travel Form"] = 4,
+    ["Moonkin Form"] = 5,
+
+    -- Rogue
+    ["Stealth"] = 1,
+
+    -- Warrior
+    ["Battle Stance"] = 1,
+    ["Defensive Stance"] = 2,
+    ["Berserker Stance"] = 3,
+}
+
+function GetShapeshiftForm()
+    local numForms = GetNumShapeshiftForms()
+    for i = 1, NUM_SHAPESHIFT_SLOTS do
+        if i <= numForms then
+            local _, name, isActive = GetShapeshiftFormInfo(i)
+            name = name == "Dire Bear Form" and "Bear Form" or name
+            local formIndex = shapeshiftForms[name]
+            if formIndex and isActive then
+                return formIndex
+            end
+        end
+    end
+
+    return 0
 end
