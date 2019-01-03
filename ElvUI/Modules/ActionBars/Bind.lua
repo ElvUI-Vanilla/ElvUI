@@ -266,7 +266,7 @@ function AB:LoadKeyBinder()
 		b = EnumerateFrames(b)
 	end
 
-	for b in pairs(self.handledbuttons) do
+	for b in pairs(self.handledButtons) do
 		self:RegisterButton(b, true)
 	end
 
@@ -286,7 +286,7 @@ function AB:LoadKeyBinder()
 	f:SetClampedToScreen(true)
 	f:SetWidth(360)
 	f:SetHeight(130)
-	f:SetTemplate("Transparent")
+	E:SetTemplate(f, "Transparent")
 	f:Hide()
 
 	local header = CreateFrame("Button", nil, f)
