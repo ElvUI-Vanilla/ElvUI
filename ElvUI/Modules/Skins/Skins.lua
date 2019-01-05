@@ -12,7 +12,6 @@ local CreateFrame = CreateFrame
 local SetDesaturation = SetDesaturation
 local hooksecurefunc = hooksecurefunc
 local IsAddOnLoaded = IsAddOnLoaded
-local GetCVarBool = GetCVarBool
 
 E.Skins = S
 S.addonsToLoad = {}
@@ -22,11 +21,11 @@ S.addonCallbacks = {}
 S.nonAddonCallbacks = {["CallPriority"] = {}}
 
 S.SQUARE_BUTTON_TEXCOORDS = {
-	["UP"] = {     0.45312500,    0.64062500,     0.01562500,     0.20312500};
-	["DOWN"] = {   0.45312500,    0.64062500,     0.20312500,     0.01562500};
-	["LEFT"] = {   0.23437500,    0.42187500,     0.01562500,     0.20312500};
-	["RIGHT"] = {  0.42187500,    0.23437500,     0.01562500,     0.20312500};
-	["DELETE"] = { 0.01562500,    0.20312500,     0.01562500,     0.20312500}
+	["UP"]		= {0.45312500, 0.64062500, 0.01562500, 0.20312500};
+	["DOWN"]	= {0.45312500, 0.64062500, 0.20312500, 0.01562500};
+	["LEFT"]	= {0.23437500, 0.42187500, 0.01562500, 0.20312500};
+	["RIGHT"]	= {0.42187500, 0.23437500, 0.01562500, 0.20312500};
+	["DELETE"]	= {0.01562500, 0.20312500, 0.01562500, 0.20312500}
 }
 
 function S:SquareButton_SetIcon(self, name)
@@ -46,21 +45,17 @@ function S:SetOriginalBackdrop()
 	this:SetBackdropBorderColor(unpack(E.media.bordercolor))
 end
 
-function S:HandleButton(f, strip)
+function S:HandleButton(f, strip, isDeclineButton)
 	local name = f:GetName()
 	if name then
-		local left = _G[name .."Left"]
-		local middle = _G[name .."Middle"]
-		local right = _G[name .."Right"]
+		local left = _G[name.."Left"]
+		local middle = _G[name.."Middle"]
+		local right = _G[name.."Right"]
 
 		if left then E:Kill(left) end
 		if middle then E:Kill(middle) end
 		if right then E:Kill(right) end
 	end
-
-	if f.Left then E:Kill(f.Left) end
-	if f.Middle then E:Kill(f.Middle) end
-	if f.Right then E:Kill(f.Right) end
 
 	if f.SetNormalTexture then f:SetNormalTexture("") end
 	if f.SetHighlightTexture then f:SetHighlightTexture("") end
@@ -68,6 +63,18 @@ function S:HandleButton(f, strip)
 	if f.SetDisabledTexture then f:SetDisabledTexture("") end
 
 	if strip then E:StripTextures(f) end
+
+	-- used for a white X on decline buttons (more clear)
+	if isDeclineButton then
+		if f.Icon then f.Icon:Hide() end
+		if not f.text then
+			f.text = f:CreateFontString(nil, "OVERLAY")
+			f.text:SetFont([[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], 16, "OUTLINE")
+			f.text:SetText("x")
+			f.text:SetJustifyH("CENTER")
+			E:Point(f.text, "CENTER", f, "CENTER")
+		end
+	end
 
 	E:SetTemplate(f, "Default", true)
 	HookScript(f, "OnEnter", S.SetModifiedBackdrop)
@@ -92,8 +99,9 @@ function S:HandleButtonHighlight(frame)
 	rightGrad:SetGradientAlpha("Horizontal", 0.9, 0.9, 0.9, 0, 0.9, 0.9, 0.9, 0.35)
 end
 
-function S:HandleScrollBar(frame, thumbTrim)
+function S:HandleScrollBar(frame, thumbTrimY, thumbTrimX)
 	local name = frame:GetName()
+
 	if _G[name.."BG"] then _G[name.."BG"]:SetTexture(nil) end
 	if _G[name.."Track"] then _G[name.."Track"]:SetTexture(nil) end
 	if _G[name.."Top"] then _G[name.."Top"]:SetTexture(nil) end
@@ -103,8 +111,8 @@ function S:HandleScrollBar(frame, thumbTrim)
 	if _G[name.."ScrollUpButton"] and _G[name.."ScrollDownButton"] then
 		E:StripTextures(_G[name.."ScrollUpButton"])
 		if not _G[name.."ScrollUpButton"].icon then
-			S:HandleNextPrevButton(_G[name.."ScrollUpButton"])
-			S:SquareButton_SetIcon(_G[name.."ScrollUpButton"], "UP")
+			S:HandleNextPrevButton(_G[name.."ScrollUpButton"], true, true)
+			--S:SquareButton_SetIcon(_G[name.."ScrollUpButton"], "UP")
 			E:Size(_G[name.."ScrollUpButton"], _G[name.."ScrollUpButton"]:GetWidth() + 7, _G[name.."ScrollUpButton"]:GetHeight() + 7)
 		end
 
@@ -123,13 +131,14 @@ function S:HandleScrollBar(frame, thumbTrim)
 		end
 
 		if frame:GetThumbTexture() then
-			if not thumbTrim then thumbTrim = 3 end
 			frame:GetThumbTexture():SetTexture(nil)
 			if not frame.thumbbg then
+				if not thumbTrimY then thumbTrimY = 3 end
+				if not thumbTrimX then thumbTrimX = 2 end
 				frame.thumbbg = CreateFrame("Frame", nil, frame)
 				E:Height(frame:GetThumbTexture(), 24)
-				E:Point(frame.thumbbg, "TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 1, -thumbTrim)
-				E:Point(frame.thumbbg, "BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -1, thumbTrim)
+				E:Point(frame.thumbbg, "TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, -thumbTrimY)
+				E:Point(frame.thumbbg, "BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -thumbTrimX, thumbTrimY)
 				E:SetTemplate(frame.thumbbg, "Default", true, true)
 				frame.thumbbg:SetBackdropColor(0.6, 0.6, 0.6)
 				if frame.trackbg then
@@ -140,6 +149,7 @@ function S:HandleScrollBar(frame, thumbTrim)
 	end
 end
 
+--Tab Regions
 local tabs = {
 	"LeftDisabled",
 	"MiddleDisabled",
@@ -171,8 +181,8 @@ function S:HandleTab(tab)
 	E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 3)
 end
 
-function S:HandleNextPrevButton(btn, buttonOverride)
-	local inverseDirection = btn:GetName() and (find(lower(btn:GetName()), "left") or find(lower(btn:GetName()), "prev") or find(lower(btn:GetName()), "decrement") or find(lower(btn:GetName()), "promote"))
+function S:HandleNextPrevButton(btn, useVertical, inverseDirection)
+	inverseDirection = inverseDirection or btn:GetName() and (find(lower(btn:GetName()), "left") or find(lower(btn:GetName()), "prev") or find(lower(btn:GetName()), "decrement") or find(lower(btn:GetName()), "promote"))
 
 	E:StripTextures(btn)
 	btn:SetNormalTexture(nil)
@@ -184,7 +194,7 @@ function S:HandleNextPrevButton(btn, buttonOverride)
 		btn.icon = btn:CreateTexture(nil, "ARTWORK")
 		E:Size(btn.icon, 13)
 		btn.icon:SetPoint("CENTER", 0, 0)
-		btn.icon:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\SquareButtonTextures.blp")
+		btn.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures]])
 		btn.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
 		btn:SetScript("OnMouseDown", function()
@@ -200,6 +210,7 @@ function S:HandleNextPrevButton(btn, buttonOverride)
 			SetDesaturation(self.icon, true)
 			self.icon:SetAlpha(0.5)
 		end)
+
 		hooksecurefunc(btn, "Enable", function(self)
 			SetDesaturation(self.icon, false)
 			self.icon:SetAlpha(1.0)
@@ -211,7 +222,7 @@ function S:HandleNextPrevButton(btn, buttonOverride)
 		end
 	end
 
-	if buttonOverride then
+	if useVertical then
 		if inverseDirection then
 			S:SquareButton_SetIcon(btn, "UP")
 		else
@@ -233,8 +244,8 @@ function S:HandleRotateButton(btn)
 	E:SetTemplate(btn, "Default")
 	E:Size(btn, btn:GetWidth() - 14, btn:GetHeight() - 14)
 
-	btn:GetNormalTexture():SetTexCoord(0.27, 0.73, 0.27, 0.68)
-	btn:GetPushedTexture():SetTexCoord(0.27, 0.73, 0.27, 0.68)
+	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
+	btn:GetPushedTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 
 	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 
@@ -244,7 +255,7 @@ function S:HandleRotateButton(btn)
 end
 
 function S:HandleEditBox(frame)
-	if not frame then return end
+	if not frame then return end -- Prevent #132 error crash
 
 	E:CreateBackdrop(frame, "Default")
 	frame.backdrop:SetFrameLevel(frame:GetFrameLevel())
@@ -278,8 +289,15 @@ function S:HandleDropDownBox(frame, width)
 	if button then
 		button:ClearAllPoints()
 		E:Point(button, "RIGHT", frame, "RIGHT", -10, 3)
+		hooksecurefunc(button, "SetPoint", function(btn, _, _, _, _, _, noReset)
+			if not noReset then
+				btn:ClearAllPoints()
+				btn:SetPoint("RIGHT", frame, "RIGHT", E:Scale(-10), E:Scale(3), true)
+			end
+		end)
 
 		self:HandleNextPrevButton(button, true)
+		E:Size(button, button:GetWidth() + 1, button:GetHeight() + 1)
 	end
 	E:CreateBackdrop(frame, "Default")
 	E:Point(frame.backdrop, "TOPLEFT", 20, -2)
@@ -288,6 +306,7 @@ function S:HandleDropDownBox(frame, width)
 end
 
 function S:HandleCheckBox(frame, noBackdrop)
+	assert(frame, "does not exist.")
 	frame:SetNormalTexture(nil)
 	frame:SetPushedTexture(nil)
 	frame:SetHighlightTexture(nil)
@@ -296,6 +315,8 @@ function S:HandleCheckBox(frame, noBackdrop)
 	if noBackdrop then
 		E:SetTemplate(frame, "Default")
 		E:Size(frame, 16)
+
+		E:SetInside(frame:GetCheckedTexture(), nil, -4, -4)
 	else
 		E:CreateBackdrop(frame, "Default")
 		E:SetInside(frame.backdrop, nil, 4, 4)
@@ -331,10 +352,10 @@ function S:HandleItemButton(b, shrinkIcon)
 
 	local icon = b.icon or b.IconTexture or b.iconTexture
 	local texture
-	if b:GetName() and _G[b:GetName() .."IconTexture"] then
-		icon = _G[b:GetName() .."IconTexture"]
-	elseif b:GetName() and _G[b:GetName() .."Icon"] then
-		icon = _G[b:GetName() .."Icon"]
+	if b:GetName() and _G[b:GetName().."IconTexture"] then
+		icon = _G[b:GetName().."IconTexture"]
+	elseif b:GetName() and _G[b:GetName().."Icon"] then
+		icon = _G[b:GetName().."Icon"]
 	end
 
 	if icon and icon:GetTexture() then
@@ -373,10 +394,9 @@ function S:HandleCloseButton(f, point, text)
 		E:CreateBackdrop(f, "Default", true)
 		f.backdrop:SetPoint("TOPLEFT", 7, -8)
 		f.backdrop:SetPoint("BOTTOMRIGHT", -8, 8)
-		f:SetHitRectInsets(6, 6, 7, 7)
-
 		HookScript(f, "OnEnter", S.SetModifiedBackdrop)
 		HookScript(f, "OnLeave", S.SetOriginalBackdrop)
+		f:SetHitRectInsets(6, 6, 7, 7)
 	end
 	if not text then text = "x" end
 	if not f.text then
@@ -384,7 +404,7 @@ function S:HandleCloseButton(f, point, text)
 		f.text:SetFont([[Interface\AddOns\ElvUI\Media\Fonts\PT_Sans_Narrow.ttf]], 16, "OUTLINE")
 		f.text:SetText(text)
 		f.text:SetJustifyH("CENTER")
-		f.text:SetPoint("CENTER", f, "CENTER", 0, 1)
+		f.text:SetPoint("CENTER", f, "CENTER", -1, 1)
 	end
 
 	if point then
@@ -405,30 +425,20 @@ function S:HandleSliderFrame(frame)
 	end)
 	frame:SetThumbTexture(E.media.blankTex)
 	frame:GetThumbTexture():SetVertexColor(0.3, 0.3, 0.3)
-	E:Size(frame:GetThumbTexture(), SIZE-2)
+	E:Size(frame:GetThumbTexture(), SIZE - 2)
 	if orientation == "VERTICAL" then
 		E:Width(frame, SIZE)
 	else
 		E:Height(frame, SIZE)
 
 		for _, region in ipairs({frame:GetRegions()}) do
-			if region and region:GetObjectType() == "FontString" then
+			if region and region:IsObjectType("FontString") then
 				local point, anchor, anchorPoint, x, y = region:GetPoint()
 				if find(anchorPoint, "BOTTOM") then
 					E:Point(region, point, anchor, anchorPoint, x, y - 4)
 				end
 			end
 		end
-
-		--[[for i = 1, frame:GetNumRegions() do
-			local region = select(i, frame:GetRegions())
-			if region and region:GetObjectType() == "FontString" then
-				local point, anchor, anchorPoint, x, y = region:GetPoint()
-				if anchorPoint:find("BOTTOM") then
-					E:Point(region, point, anchor, anchorPoint, x, y - 4)
-				end
-			end
-		end]]
 	end
 end
 
@@ -604,7 +614,7 @@ function S:Initialize()
 		if IsAddOnLoaded(addon) then
 			self.addonsToLoad[addon] = nil
 			local _, catch = pcall(loadFunc)
-			if catch and GetCVarBool("ShowErrors") == "1" then
+			if catch and GetCVar("showErrors") == "1" then
 				ScriptErrorsFrame_OnError(catch, false)
 			end
 		end
@@ -612,7 +622,7 @@ function S:Initialize()
 
 	for _, loadFunc in pairs(self.nonAddonsToLoad) do
 		local _, catch = pcall(loadFunc)
-		if catch and GetCVarBool("ShowErrors") == "1" then
+		if catch and GetCVar("showErrors") == "1" then
 			ScriptErrorsFrame_OnError(catch, false)
 		end
 	end
