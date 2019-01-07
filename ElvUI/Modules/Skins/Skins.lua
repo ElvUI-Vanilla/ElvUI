@@ -12,6 +12,7 @@ local CreateFrame = CreateFrame
 local SetDesaturation = SetDesaturation
 local hooksecurefunc = hooksecurefunc
 local IsAddOnLoaded = IsAddOnLoaded
+local GetCVar = GetCVar
 
 E.Skins = S
 S.addonsToLoad = {}

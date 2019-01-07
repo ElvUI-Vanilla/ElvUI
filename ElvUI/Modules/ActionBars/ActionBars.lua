@@ -265,6 +265,8 @@ end
 function AB:UpdateButtonSettings()
 	if E.private.actionbar.enable ~= true then return end
 
+	LOCK_ACTIONBAR = (self.db.lockActionBars == true and "1" or "0")
+
 	for button, _ in pairs(self["handledButtons"]) do
 		if button then
 			self:StyleButton(button, button.noBackdrop)
@@ -277,6 +279,7 @@ function AB:UpdateButtonSettings()
 		self:PositionAndSizeBar("bar"..i)
 	end
 
+	self:AdjustMaxStanceButtons()
 	self:PositionAndSizeBarPet()
 	self:PositionAndSizeBarShapeShift()
 end
@@ -528,8 +531,6 @@ function AB:Initialize()
 	self:LoadKeyBinder()
 
 	self:SecureHook("PetActionBar_Update", "UpdatePet")
-
-	LOCK_ACTIONBAR = (self.db.lockActionBars == true and "1" or "0")
 
 	function _G.ActionButton_OnUpdate(elapsed)
 		if not this.updateTooltip then return end

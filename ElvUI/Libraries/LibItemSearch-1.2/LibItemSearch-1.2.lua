@@ -147,7 +147,7 @@ Lib.Filters.tip = {
 	match = function(self, link, _, search)
 		if find(link, "item:") then
 			scanner:SetOwner(UIParent, "ANCHOR_NONE");
-			scanner:SetHyperlink(link)
+			scanner:SetHyperlink(match(link, "item[%-?%d:]+"))
 
 			for i = 1, scanner:NumLines() do
 				if(Search:Find(search, _G[scanner:GetName() .. "TextLeft" .. i]:GetText())) then
@@ -187,7 +187,7 @@ Lib.Filters.tipPhrases = {
 		end
 
 		scanner:SetOwner(UIParent, "ANCHOR_NONE");
-		scanner:SetHyperlink(link);
+		scanner:SetHyperlink(match(link, "item[%-?%d:]+"));
 
 		local matches = false
 		for i = 1, scanner:NumLines() do
