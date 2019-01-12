@@ -407,7 +407,10 @@ function TT:SetHyperlink(tt, link, count)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if tt:GetName() == "GameTooltip" then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
+
 	tt:Show()
 end
 
@@ -587,6 +590,10 @@ function TT:SetTradeTargetItem(tt, index)
 	tt:Show()
 end
 
+function TT:Show()
+	return
+end
+
 function TT:CheckBackdropColor()
 	if not this:IsShown() then return end
 
@@ -662,6 +669,9 @@ function TT:Initialize()
 
 	self:SecureHook("GameTooltip_SetDefaultAnchor")
 	self:SecureHook("SetItemRef")
+
+	self:SecureHook(ItemRefTooltip, "SetHyperlink", "SetHyperlink")
+
 	self:SecureHook(GameTooltip, "SetUnit")
 
 	self:SecureHook(GameTooltip, "SetAction", "SetAction")
@@ -682,6 +692,7 @@ function TT:Initialize()
 	self:SecureHook(GameTooltip, "SetTradePlayerItem", "SetTradePlayerItem")
 	self:SecureHook(GameTooltip, "SetTradeSkillItem", "SetTradeSkillItem")
 	self:SecureHook(GameTooltip, "SetTradeTargetItem", "SetTradeTargetItem")
+	self:SecureHook(GameTooltip, "Show", "Show")
 
 	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
