@@ -1,21 +1,52 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local UF = E:GetModule("UnitFrames");
 
-function UF:Construct_CombatIndicator(frame)
-	local combat = frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
-	combat:SetWidth(19)
-	combat:SetHeight(19)
-	combat:SetPoint("CENTER", frame.Health, "CENTER", 0, 6)
-	combat:SetVertexColor(0.69, 0.31, 0.31)
+local CombatTextures = {
+	["DEFAULT"] = [[Interface\CharacterFrame\UI-StateIcon]],
+	["COMBAT"] = [[Interface\AddOns\ElvUI\media\textures\combat]],
+	["ATTACK"] = [[Interface\CURSOR\Attack]],
+	["ALERT"] = [[Interface\AddOns\ElvUI\media\textures\UI-Dialog-Icon-AlertNew]],
+	["ALERT2"] = [[Interface\AddOns\ElvUI\media\textures\UI-OptionsFrame-NewFeatureIcon]],
+	["ARTHAS"] = [[Interface\AddOns\ElvUI\media\textures\UI-LFR-PORTRAIT]],
+	["SKULL"] = [[Interface\LootFrame\LootPanel-Icon]]
+}
 
-	return combat
+function UF:Construct_CombatIndicator(frame)
+	return frame.RaisedElementParent.TextureParent:CreateTexture(nil, "OVERLAY")
 end
 
 function UF:Configure_CombatIndicator(frame)
-	if frame.db.combatIcon and not frame:IsElementEnabled("CombatIndicator") then
+	if not frame.VARIABLES_SET then return end
+
+	local Icon = frame.CombatIndicator
+	local db = frame.db.CombatIcon
+
+	Icon:ClearAllPoints()
+	E:Point(Icon, "CENTER", frame.Health, db.anchorPoint, db.xOffset, db.yOffset)
+	E:Size(Icon, db.size)
+
+	if db.defaultColor then
+		Icon:SetVertexColor(1, 1, 1, 1)
+		Icon:SetDesaturated(false)
+	else
+		Icon:SetVertexColor(db.color.r, db.color.g, db.color.b, db.color.a)
+		Icon:SetDesaturated(true)
+	end
+
+	if db.texture == "CUSTOM" and db.customTexture then
+		Icon:SetTexture(db.customTexture)
+		Icon:SetTexCoord(0, 1, 0, 1)
+	elseif db.texture ~= "DEFAULT" and CombatTextures[db.texture] then
+		Icon:SetTexture(CombatTextures[db.texture])
+		Icon:SetTexCoord(0, 1, 0, 1)
+	else
+		Icon:SetTexture(CombatTextures.DEFAULT)
+		Icon:SetTexCoord(.5, 1, 0, .49)
+	end
+
+	if db.enable and not frame:IsElementEnabled("CombatIndicator") then
 		frame:EnableElement("CombatIndicator")
-	elseif not frame.db.combatIcon and frame:IsElementEnabled("CombatIndicator") then
+	elseif not db.enable and frame:IsElementEnabled("CombatIndicator") then
 		frame:DisableElement("CombatIndicator")
-		frame.CombatIndicator:Hide()
 	end
 end
