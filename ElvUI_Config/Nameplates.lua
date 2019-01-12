@@ -5,9 +5,6 @@ local ACD = LibStub("AceConfigDialog-3.0");
 --Cache global variables
 --Lua functions
 local getn = table.getn
---WoW API / Variables
-local COLOR, FACTION_STANDING_LABEL4 = COLOR, FACTION_STANDING_LABEL4
-local FILTER, FILTERS, GENERAL, HEALTH, HIDE, LEVEL, NAME, NONE = FILTER, FILTERS, GENERAL, HEALTH, HIDE, LEVEL, NAME, NONE
 
 local selectedFilter
 local filters
@@ -823,7 +820,7 @@ E.Options.args.nameplate = {
 						fontSize = {
 							order = 5,
 							type = "range",
-							name = FONT_SIZE,
+							name = L["Font Size"],
 							min = 4, max = 34, step = 1,
 						},
 						fontOutline = {

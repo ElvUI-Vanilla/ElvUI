@@ -504,6 +504,12 @@ function CH:PositionChat(override)
 	self.initialMove = true
 end
 
+function CH:Panels_ColorUpdate()
+	local panelColor = E.db.chat.panelColor
+	LeftChatPanel.backdrop:SetBackdropColor(panelColor.r, panelColor.g, panelColor.b, panelColor.a)
+	RightChatPanel.backdrop:SetBackdropColor(panelColor.r, panelColor.g, panelColor.b, panelColor.a)
+end
+
 local function UpdateChatTabColor(_, r, g, b)
 	for i = 1, CreatedFrames do
 		_G["ChatFrame"..i.."TabText"]:SetTextColor(r, g, b)

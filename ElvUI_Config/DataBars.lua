@@ -1,7 +1,13 @@
 local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local mod = E:GetModule("DataBars");
 
+--Cache global variables
+--Lua functions
+local ceil = math.ceil
 local getn = table.getn
+--WoW API / Variables
+local GetScreenWidth = GetScreenWidth
+local GetScreenHeight = GetScreenHeight
 
 E.Options.args.databars = {
 	type = "group",
@@ -13,7 +19,7 @@ E.Options.args.databars = {
 		intro = {
 			order = 1,
 			type = "description",
-			name = L["Setup on-screen display of information bars."]
+			name = L["DATABAR_DESC"]
 		},
 		spacer = {
 			order = 2,
@@ -22,64 +28,88 @@ E.Options.args.databars = {
 		},
 		experience = {
 			order = 3,
-			get = function(info) return mod.db.experience[ info[getn(info)] ] end,
-			set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperienceDimensions() end,
 			type = "group",
 			name = L["XP Bar"],
+			get = function(info) return mod.db.experience[ info[getn(info)] ] end,
+			set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperienceDimensions() end,
 			args = {
+				header = {
+ 					order = 1,
+					type = "header",
+					name = L["XP Bar"]
+				},
 				enable = {
-					order = 0,
+					order = 2,
 					type = "toggle",
 					name = L["Enable"],
 					set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:EnableDisable_ExperienceBar() end
 				},
 				mouseover = {
-					order = 1,
+					order = 3,
 					type = "toggle",
-					name = L["Mouseover"]
+					name = L["Mouseover"],
+					disabled = function() return not mod.db.experience.enable end
 				},
 				hideAtMaxLevel = {
-					order = 2,
+					order = 4,
 					type = "toggle",
 					name = L["Hide At Max Level"],
-					set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperience() end
+					set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperience() end,
+					disabled = function() return not mod.db.experience.enable end
+				},
+				hideInCombat = {
+					order = 5,
+					type = "toggle",
+					name = L["Hide in Combat"],
+					set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperience() end,
+					disabled = function() return not mod.db.experience.enable end
+				},
+				spacer = {
+					order = 6,
+					type = "description",
+					name = ""
 				},
 				orientation = {
-					order = 3,
+					order = 7,
 					type = "select",
 					name = L["Statusbar Fill Orientation"],
 					desc = L["Direction the bar moves on gains/losses"],
 					values = {
 						["HORIZONTAL"] = L["Horizontal"],
 						["VERTICAL"] = L["Vertical"]
-					}
+					},
+					disabled = function() return not mod.db.experience.enable end
 				},
 				width = {
-					order = 4,
+					order = 8,
 					type = "range",
 					name = L["Width"],
-					min = 5, max = ceil(GetScreenWidth() or 800), step = 1
+					min = 5, max = ceil(GetScreenWidth() or 800), step = 1,
+					disabled = function() return not mod.db.experience.enable end
 				},
 				height = {
-					order = 5,
+					order = 9,
 					type = "range",
 					name = L["Height"],
-					min = 5, max = ceil(GetScreenHeight() or 800), step = 1
+					min = 5, max = ceil(GetScreenHeight() or 800), step = 1,
+					disabled = function() return not mod.db.experience.enable end
 				},
 				font = {
-					order = 6,
+					order = 10,
 					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
-					values = AceGUIWidgetLSMlists.font
+					values = AceGUIWidgetLSMlists.font,
+					disabled = function() return not mod.db.experience.enable end
 				},
 				textSize = {
-					order = 7,
-					name = L["Font Size"],
+					order = 11,
 					type = "range",
-					min = 6, max = 33, step = 1
+					name = L["Font Size"],
+					min = 6, max = 22, step = 1,
+					disabled = function() return not mod.db.experience.enable end
 				},
 				fontOutline = {
-					order = 8,
+					order = 12,
 					type = "select",
 					name = L["Font Outline"],
 					values = {
@@ -87,10 +117,11 @@ E.Options.args.databars = {
 						["OUTLINE"] = "OUTLINE",
 						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE"
-					}
+					},
+					disabled = function() return not mod.db.experience.enable end
 				},
 				textFormat = {
-					order = 9,
+					order = 13,
 					type = "select",
 					name = L["Text Format"],
 					width = "double",
@@ -102,71 +133,90 @@ E.Options.args.databars = {
 						CURMAX = L["Current - Max"],
 						CURPERC = L["Current - Percent"],
 						CURREM = L["Current - Remaining"],
-						CURPERCREM = L["Current - Percent (Remaining)"]
+						CURPERCREM = L["Current - Percent (Remaining)"],
 					},
-					set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperience() end
+					set = function(info, value) mod.db.experience[ info[getn(info)] ] = value; mod:UpdateExperience() end,
+					disabled = function() return not mod.db.experience.enable end
 				}
 			}
 		},
 		reputation = {
 			order = 4,
+			type = "group",
+			name = L["Reputation"],
 			get = function(info) return mod.db.reputation[ info[getn(info)] ] end,
 			set = function(info, value) mod.db.reputation[ info[getn(info)] ] = value; mod:UpdateReputationDimensions() end,
-			type = "group",
-			name = REPUTATION,
 			args = {
+				header = {
+ 					order = 1,
+					type = "header",
+					name = L["Reputation"]
+				},
 				enable = {
-					order = 0,
+					order = 2,
 					type = "toggle",
 					name = L["Enable"],
 					set = function(info, value) mod.db.reputation[ info[getn(info)] ] = value; mod:EnableDisable_ReputationBar() end
 				},
 				mouseover = {
-					order = 1,
+					order = 3,
 					type = "toggle",
-					name = L["Mouseover"]
+					name = L["Mouseover"],
+					disabled = function() return not mod.db.reputation.enable end
+				},
+				hideInCombat = {
+					order = 4,
+					type = "toggle",
+					name = L["Hide in Combat"],
+					set = function(info, value) mod.db.reputation[ info[getn(info)] ] = value; mod:UpdateReputation() end,
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				spacer = {
-					order = 2,
+					order = 5,
 					type = "description",
-					name = " "
+					name = ""
 				},
 				orientation = {
-					order = 3,
+					order = 6,
 					type = "select",
 					name = L["Statusbar Fill Orientation"],
 					desc = L["Direction the bar moves on gains/losses"],
 					values = {
 						["HORIZONTAL"] = L["Horizontal"],
 						["VERTICAL"] = L["Vertical"]
-					}
+					},
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				width = {
-					order = 4,
+					order = 7,
 					type = "range",
 					name = L["Width"],
-					min = 5, max = ceil(GetScreenWidth() or 800), step = 1
+					min = 5, max = ceil(GetScreenWidth() or 800), step = 1,
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				height = {
-					order = 5,
+					order = 8,
 					type = "range",
 					name = L["Height"],
-					min = 5, max = ceil(GetScreenHeight() or 800), step = 1
+					min = 5, max = ceil(GetScreenHeight() or 800), step = 1,
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				font = {
-					order = 6,
+					order = 9,
 					type = "select", dialogControl = "LSM30_Font",
 					name = L["Font"],
-					values = AceGUIWidgetLSMlists.font
+					values = AceGUIWidgetLSMlists.font,
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				textSize = {
-					order = 7,
-					name = FONT_SIZE,
+					order = 10,
+					name = L["Font Size"],
 					type = "range",
-					min = 6, max = 33, step = 1
+					min = 6, max = 22, step = 1,
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				fontOutline = {
-					order = 8,
+					order = 11,
 					type = "select",
 					name = L["Font Outline"],
 					values = {
@@ -174,10 +224,11 @@ E.Options.args.databars = {
 						["OUTLINE"] = "OUTLINE",
 						["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 						["THICKOUTLINE"] = "THICKOUTLINE"
-					}
+					},
+					disabled = function() return not mod.db.reputation.enable end
 				},
 				textFormat = {
-					order = 9,
+					order = 12,
 					type = "select",
 					name = L["Text Format"],
 					width = "double",
@@ -191,7 +242,8 @@ E.Options.args.databars = {
 						CURREM = L["Current - Remaining"],
 						CURPERCREM = L["Current - Percent (Remaining)"],
 					},
-					set = function(info, value) mod.db.reputation[ info[getn(info)] ] = value; mod:UpdateReputation() end
+					set = function(info, value) mod.db.reputation[ info[getn(info)] ] = value; mod:UpdateReputation() end,
+					disabled = function() return not mod.db.reputation.enable end
 				}
 			}
 		}

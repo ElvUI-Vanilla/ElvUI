@@ -8,8 +8,6 @@ local gsub, match = string.gsub, string.match
 local getn = table.getn
 --WoW API / Variables
 local GameTooltip = _G["GameTooltip"]
-local FONT_SIZE, NONE, COLOR =  FONT_SIZE, NONE, COLOR
-local GENERAL = GENERAL
 
 E.Options.args.bags = {
 	type = "group",
@@ -34,13 +32,13 @@ E.Options.args.bags = {
 		general = {
 			order = 3,
 			type = "group",
-			name = GENERAL,
+			name = L["General"],
 			disabled = function() return not E.bags end,
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = GENERAL
+					name = L["General"]
 				},
 				strata = {
 					order = 2,
@@ -119,7 +117,7 @@ E.Options.args.bags = {
 						countFontSize = {
 							order = 2,
 							type = "range",
-							name = FONT_SIZE,
+							name = L["Font Size"],
 							min = 4, max = 22, step = 1,
 							set = function(info, value) E.db.bags.countFontSize = value B:UpdateCountDisplay() end
 						},
@@ -138,7 +136,7 @@ E.Options.args.bags = {
 						countFontColor = {
 							order = 4,
 							type = "color",
-							name = COLOR,
+							name = L["Color"],
 							get = function(info)
 								local t = E.db.bags[ info[getn(info)] ]
 								local d = P.bags[ info[getn(info)] ]
@@ -213,7 +211,7 @@ E.Options.args.bags = {
 						itemLevelFontSize = {
 							order = 7,
 							type = "range",
-							name = FONT_SIZE,
+							name = L["Font Size"],
 							min = 6, max = 33, step = 1,
 							disabled = function() return not E.db.bags.itemLevel end,
 							set = function(info, value) E.db.bags.itemLevelFontSize = value B:UpdateItemLevelDisplay() end
@@ -288,12 +286,12 @@ E.Options.args.bags = {
 		colorGroup = {
 			order = 5,
 			type = "group",
-			name = COLOR,
+			name = L["Colors"],
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = COLOR
+					name = L["Colors"]
 				},
 				bags = {
 					order = 2,
@@ -351,7 +349,7 @@ E.Options.args.bags = {
 				items = {
 					order = 3,
 					type = "group",
-					name = ITEMS,
+					name = L["Items"],
 					guiInline = true,
 					get = function(info)
 						local t = E.db.bags.colors.items[ info[getn(info)] ]
@@ -374,7 +372,7 @@ E.Options.args.bags = {
 						questItem = {
 							order = 2,
 							type = "color",
-							name = ITEM_BIND_QUEST
+							name = L["Quest Item"]
 						}
 					}
 				}
@@ -457,22 +455,6 @@ E.Options.args.bags = {
 						["VERTICAL"] = L["Vertical"],
 						["HORIZONTAL"] = L["Horizontal"]
 					},
-					disabled = function() return not E.private.bags.bagBar end
-				},
-				visibility = {
-					order = 10,
-					type = "input",
-					name = L["Visibility State"],
-					desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
-					width = "full",
-					multiline = true,
-					set = function(info, value)
-						if value and match(value, "[\n\r]") then
-							value = gsub(value, "[\n\r]","")
-						end
-						E.db.bags.bagBar["visibility"] = value
-						B:SizeAndPositionBagBar()
-					end,
 					disabled = function() return not E.private.bags.bagBar end
 				}
 			}

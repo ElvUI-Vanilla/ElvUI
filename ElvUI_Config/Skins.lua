@@ -1,5 +1,9 @@
-local E, L, V, P, G = unpack(ElvUI);
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:GetModule("Skins");
+
+--Cache global variables
+--Lua functions
+local getn = table.getn
 
 E.Options.args.skins = {
 	type = "group",
@@ -15,22 +19,30 @@ E.Options.args.skins = {
 			order = 2,
 			type = "toggle",
 			name = "Blizzard",
-			get = function(info) return E.private.skins.blizzard.enable; end,
-			set = function(info, value) E.private.skins.blizzard.enable = value; E:StaticPopup_Show("PRIVATE_RL"); end,
+			get = function(info) return E.private.skins.blizzard.enable end,
+			set = function(info, value) E.private.skins.blizzard.enable = value E:StaticPopup_Show("PRIVATE_RL"); end,
 		},
 		ace3 = {
 			order = 3,
 			type = "toggle",
 			name = "Ace3",
-			get = function(info) return E.private.skins.ace3.enable; end,
-			set = function(info, value) E.private.skins.ace3.enable = value; E:StaticPopup_Show("PRIVATE_RL"); end,
+			get = function(info) return E.private.skins.ace3.enable end,
+			set = function(info, value) E.private.skins.ace3.enable = value E:StaticPopup_Show("PRIVATE_RL") end,
+		},
+		checkBoxSkin = {
+			order = 4,
+			type = "toggle",
+			name = L["CheckBox Skin"],
+			get = function(info) return E.private.skins.checkBoxSkin end,
+			set = function(info, value) E.private.skins.checkBoxSkin = value E:StaticPopup_Show("PRIVATE_RL") end,
+			disabled = function() return not E.private.skins.ace3.enable end
 		},
 		blizzard = {
 			order = 100,
 			type = "group",
 			name = "Blizzard",
-			get = function(info) return E.private.skins.blizzard[ info[getn(info)] ]; end,
-			set = function(info, value) E.private.skins.blizzard[ info[getn(info)] ] = value; E:StaticPopup_Show("CONFIG_RL"); end,
+			get = function(info) return E.private.skins.blizzard[ info[getn(info)] ] end,
+			set = function(info, value) E.private.skins.blizzard[ info[getn(info)] ] = value E:StaticPopup_Show("CONFIG_RL") end,
 			disabled = function() return not E.private.skins.blizzard.enable end,
 			guiInline = true,
 			args = {
@@ -41,7 +53,7 @@ E.Options.args.skins = {
 				},
 				auctionhouse = {
 					type = "toggle",
-					name = L["Auction Frame"],
+					name = L["Auctions"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				bags = {
@@ -62,7 +74,12 @@ E.Options.args.skins = {
 				},
 				binding = {
 					type = "toggle",
-					name = L["KeyBinding Frame"],
+					name = L["Key Binding"],
+					desc = L["TOGGLESKIN_DESC"]
+				},
+				BlizzardOptions = {
+					type = "toggle",
+					name = L["Interface Options"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				character = {
@@ -107,7 +124,7 @@ E.Options.args.skins = {
 				},
 				inspect = {
 					type = "toggle",
-					name = L["Inspect Frame"],
+					name = L["Inspect"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				loot = {
@@ -124,17 +141,17 @@ E.Options.args.skins = {
 				},
 				macro = {
 					type = "toggle",
-					name = L["Macro Frame"],
+					name = L["Macros"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				mail = {
 					type = "toggle",
-					name = L["Mail Frame"],
+					name = L["Mail"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				merchant = {
 					type = "toggle",
-					name = L["Merchant Frame"],
+					name = L["Merchant"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				misc = {
@@ -150,11 +167,6 @@ E.Options.args.skins = {
 				quest = {
 					type = "toggle",
 					name = L["Quest Frames"],
-					desc = L["TOGGLESKIN_DESC"]
-				},
-				questtimers = {
-					type = "toggle",
-					name = QUEST_TIMERS,
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				raid = {
@@ -179,7 +191,7 @@ E.Options.args.skins = {
 				},
 				talent = {
 					type = "toggle",
-					name = L["Talent Frame"],
+					name = L["Talents"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				taxi = {
@@ -194,12 +206,12 @@ E.Options.args.skins = {
 				},
 				trade = {
 					type = "toggle",
-					name = L["Trade Frame"],
+					name = L["Trade"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				tradeskill = {
 					type = "toggle",
-					name = L["TradeSkill Frame"],
+					name = L["Tradeskills"],
 					desc = L["TOGGLESKIN_DESC"]
 				},
 				trainer = {

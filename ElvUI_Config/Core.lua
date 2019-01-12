@@ -16,6 +16,7 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitInParty = UnitInParty
+local UnitInRaid = UnitInRaid
 
 local DEFAULT_WIDTH = 890
 local DEFAULT_HEIGHT = 651

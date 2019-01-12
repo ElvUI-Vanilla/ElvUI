@@ -552,6 +552,7 @@ P["chat"] = {
 	["tabFont"] = "PT Sans Narrow",
 	["tabFontSize"] = 12,
 	["tabFontOutline"] = "NONE",
+	["panelColor"] = {r = .06,g = .06,b = .06, a = 0.8}
 }
 
 --Datatexts
