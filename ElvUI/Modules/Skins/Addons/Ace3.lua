@@ -124,11 +124,27 @@ function S:SkinAce3()
 			checkbg:SetTexture("")
 			checkbg.SetTexture = E.noop
 
-			check:SetTexture([[Interface\AddOns\ElvUI\media\textures\melli]])
-			check.SetTexture = E.noop
-			check:SetVertexColor(1, 0.82, 0, 0.8)
-			E:SetInside(check, checkbg.backdrop)
 			check:SetParent(checkbg.backdrop)
+
+			if E.private.skins.checkBoxSkin then
+				E:SetInside(checkbg.backdrop, checkbg, 5, 5)
+
+				check:SetTexture([[Interface\AddOns\ElvUI\media\textures\melli]])
+				check.SetTexture = E.noop
+				E:SetInside(check, checkbg.backdrop)
+
+				hooksecurefunc(check, "SetDesaturated", function(chk, value)
+					if value == true then
+						chk:SetVertexColor(0.6, 0.6, 0.6, 0.8)
+					else
+						chk:SetVertexColor(1, 0.82, 0, 0.8)
+					end
+				end)
+			else
+				E:SetInside(checkbg.backdrop, checkbg, 4, 4)
+
+				E:SetOutside(check, checkbg.backdrop, 3, 3)
+			end
 
 			highlight:SetTexture("")
 			highlight.SetTexture = E.noop
@@ -310,6 +326,8 @@ function S:SkinAce3()
 				frame.checkers:SetParent(frame.backdrop)
 				E:SetInside(frame.checkers, frame.backdrop)
 			end
+		elseif TYPE == "Icon" then
+			E:StripTextures(widget.frame)
 		end
 
 		return oldRegisterAsWidget(self, widget)
@@ -385,7 +403,7 @@ function S:SkinAce3()
 					E:StripTextures(tab)
 					tab.backdrop = CreateFrame("Frame", nil, tab)
 					E:SetTemplate(tab.backdrop, "Transparent")
-					E:Delay(0.01, function() tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1) end) -- Temp Fix
+					E:Delay(0.05, function() tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1) end) -- Temp Fix
 					E:Point(tab.backdrop, "TOPLEFT", 10, -3)
 					E:Point(tab.backdrop, "BOTTOMRIGHT", -10, 0)
 

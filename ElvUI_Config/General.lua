@@ -1,5 +1,5 @@
-local E, L, V, P, G = unpack(ElvUI) --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-local CC = E:GetModule("ClassCache")
+local E, L, V, P, G = unpack(ElvUI); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local CC = E:GetModule("ClassCache");
 
 --Cache global variables
 --Lua functions

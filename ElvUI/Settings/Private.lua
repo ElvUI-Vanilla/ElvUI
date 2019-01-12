@@ -8,7 +8,7 @@ V["general"] = {
 	["lootUnderMouse"] = false,
 	["normTex"] = "ElvUI Norm",
 	["glossTex"] = "ElvUI Norm",
-	["dmgfont"] = "PT Sans Narrow",
+	["dmgfont"] = "Homespun",
 	["namefont"] = "PT Sans Narrow",
 	["chatBubbles"] = "backdrop",
 	["chatBubbleFont"] = "PT Sans Narrow",
@@ -20,15 +20,15 @@ V["general"] = {
 	["minimap"] = {
 		["enable"] = true,
 		["hideCalendar"] = true,
-		["zoomLevel"] = 0,
+		["zoomLevel"] = 0
 	},
 	["classCache"] = true,
-	["classColorMentionsSpeech"] = true,
+	["classColorMentionsSpeech"] = true
 }
 
 V["bags"] = {
 	["enable"] = true,
-	["bagBar"] = false,
+	["bagBar"] = false
 }
 
 V["nameplates"] = {
@@ -41,17 +41,18 @@ V["auras"] = {
 	["lbf"] = {
 		enable = false,
 		skin = "Blizzard"
-	},
+	}
 }
 
 V["chat"] = {
-	["enable"] = true,
+	["enable"] = true
 }
 
 V["skins"] = {
 	["ace3"] = {
 		["enable"] = true,
 	},
+	["checkBoxSkin"] = true,
 	["blizzard"] = {
 		["enable"] = true,
 		["alertframes"] = true,
@@ -60,6 +61,7 @@ V["skins"] = {
 		["battlefield"] = true,
 		["bgscore"] = true,
 		["binding"] = true,
+		["BlizzardOptions"] = true,
 		["character"] = true,
 		["debug"] = true,
 		["dressingroom"] = true,
@@ -77,7 +79,7 @@ V["skins"] = {
 		["misc"] = true,
 		["petition"] = true,
 		["quest"] = true,
-		["questtimers"] = true,
+		["questtimer"] = true,
 		["raid"] = true,
 		["spellbook"] = true,
 		["stable"] = true,
@@ -92,11 +94,11 @@ V["skins"] = {
 		["watchframe"] = true,
 		["worldmap"] = true,
 		["mirrorTimers"] = true
-	},
+	}
 }
 
 V["tooltip"] = {
-	["enable"] = true
+	["enable"] = true,
 }
 
 V["unitframe"] = {
@@ -104,8 +106,8 @@ V["unitframe"] = {
 	["disabledBlizzardFrames"] = {
 		["player"] = true,
 		["target"] = true,
-		["party"] = true,
-	},
+		["party"] = true
+	}
 }
 
 V["actionbar"] = {
@@ -113,7 +115,7 @@ V["actionbar"] = {
 	["lbf"] = {
 		enable = false,
 		skin = "Blizzard"
-	},
+	}
 }
 
 V["cooldown"] = {

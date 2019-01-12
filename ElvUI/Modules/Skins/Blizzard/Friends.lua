@@ -6,9 +6,11 @@ local S = E:GetModule("Skins");
 local _G = _G
 local unpack = unpack
 --WoW API / Variables
+local hooksecurefunc = hooksecurefunc
 local GetWhoInfo = GetWhoInfo
 local GetGuildRosterInfo = GetGuildRosterInfo
 local GUILDMEMBERS_TO_DISPLAY = GUILDMEMBERS_TO_DISPLAY
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local localizedTable = {}
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
@@ -67,14 +69,14 @@ local function LoadSkin()
 
 	-- Ignore List Frame
 	for i = 1, 2 do
-		local tab = _G["IgnoreFrameToggleTab"..i]
-		E:StripTextures(tab)
-		E:CreateBackdrop(tab, "Default", true)
-		E:Point(tab.backdrop, "TOPLEFT", 3, -7)
-		E:Point(tab.backdrop, "BOTTOMRIGHT", -2, -1)
+		local Tab = _G["IgnoreFrameToggleTab"..i]
+		E:StripTextures(Tab)
+		E:CreateBackdrop(Tab, "Default", true)
+		E:Point(Tab.backdrop, "TOPLEFT", 3, -7)
+		E:Point(Tab.backdrop, "BOTTOMRIGHT", -2, -1)
 
-		tab:SetScript("OnEnter", S.SetModifiedBackdrop)
-		tab:SetScript("OnLeave", S.SetOriginalBackdrop)
+		Tab:SetScript("OnEnter", S.SetModifiedBackdrop)
+		Tab:SetScript("OnLeave", S.SetOriginalBackdrop)
 	end
 
 	S:HandleButton(FriendsFrameIgnorePlayerButton)
@@ -150,23 +152,27 @@ local function LoadSkin()
 
 	hooksecurefunc("WhoList_Update", function()
 		local whoOffset = FauxScrollFrame_GetOffset(WhoListScrollFrame)
+		local button, nameText, levelText, classText, variableText
+		local _, guild, level, race, class, zone, classFileName
+		local classTextColor, levelTextColor
+		local index, columnTable
+
 		local playerZone = GetRealZoneText()
 		local playerGuild = GetGuildInfo("player")
-		local playerRace = UnitRace("player")
 
 		for i = 1, WHOS_TO_DISPLAY, 1 do
-			local index = whoOffset + i
-			local button = _G["WhoFrameButton"..i]
-			local nameText = _G["WhoFrameButton"..i.."Name"]
-			local levelText = _G["WhoFrameButton"..i.."Level"]
-			local classText = _G["WhoFrameButton"..i.."Class"]
-			local variableText = _G["WhoFrameButton"..i.."Variable"]
+			index = whoOffset + i
+			button = _G["WhoFrameButton"..i]
+			nameText = _G["WhoFrameButton"..i.."Name"]
+			levelText = _G["WhoFrameButton"..i.."Level"]
+			classText = _G["WhoFrameButton"..i.."Class"]
+			variableText = _G["WhoFrameButton"..i.."Variable"]
 
-			local _, guild, level, race, class, zone = GetWhoInfo(index)
+			_, guild, level, race, class, zone = GetWhoInfo(index)
 
-			local classFileName = localizedTable[class]
-			local classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName]
-			local levelTextColor = GetQuestDifficultyColor(level)
+			classFileName = localizedTable[class]
+			classTextColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classFileName] or RAID_CLASS_COLORS[classFileName]
+			levelTextColor = GetQuestDifficultyColor(level)
 
 			if classFileName then
 				button.icon:Show()
@@ -175,17 +181,11 @@ local function LoadSkin()
 				nameText:SetTextColor(classTextColor.r, classTextColor.g, classTextColor.b)
 				levelText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 
-				if zone == playerZone then
-					zone = "|cff00ff00"..zone
-				end
-				if guild == playerGuild then
-					guild = "|cff00ff00"..guild
-				end
-				if race == playerRace then
-					race = "|cff00ff00"..race
-				end
+				if zone == playerZone then zone = "|cff00ff00"..zone end
+				if guild == playerGuild then guild = "|cff00ff00"..guild end
+				if race == E.myrace then race = "|cff00ff00"..race end
 
-				local columnTable = {zone, guild, race}
+				columnTable = {zone, guild, race}
 
 				variableText:SetText(columnTable[UIDropDownMenu_GetSelectedID(WhoFrameDropDown)])
 			else
@@ -259,15 +259,16 @@ local function LoadSkin()
 						buttonText = _G["GuildFrameButton"..i.."Level"]
 						buttonText:SetTextColor(levelTextColor.r, levelTextColor.g, levelTextColor.b)
 						buttonText = _G["GuildFrameButton"..i.."Zone"]
+
 						if zone == playerZone then
 							buttonText:SetTextColor(0, 1, 0)
 						end
 					end
+
 					button.icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[classFileName]))
 				end
 			end
 		else
-			local class, classFileName
 			for i = 1, GUILDMEMBERS_TO_DISPLAY, 1 do
 				button = _G["GuildFrameGuildStatusButton"..i]
 				_, _, _, _, class, _, _, _, online = GetGuildRosterInfo(button.guildIndex)
@@ -348,7 +349,6 @@ local function LoadSkin()
 	E:CreateBackdrop(GuildInfoFrame, "Transparent")
 	E:Point(GuildInfoFrame.backdrop, "TOPLEFT", 3, -6)
 	E:Point(GuildInfoFrame.backdrop, "BOTTOMRIGHT", -2, 3)
-	E:Point(GuildInfoFrame, "TOPLEFT", GuildControlPopupFrame, "TOPLEFT", 2, 0)
 
 	E:SetTemplate(GuildInfoTextBackground, "Default")
 	S:HandleScrollBar(GuildInfoFrameScrollFrameScrollBar)
@@ -356,7 +356,7 @@ local function LoadSkin()
 	S:HandleCloseButton(GuildInfoCloseButton)
 
 	S:HandleButton(GuildInfoSaveButton)
-	E:Point(GuildInfoSaveButton, "BOTTOMLEFT", 104, 11)
+	E:Point(GuildInfoSaveButton, "BOTTOMLEFT", 8, 11)
 
 	S:HandleButton(GuildInfoCancelButton)
 	E:Point(GuildInfoCancelButton, "LEFT", GuildInfoSaveButton, "RIGHT", 3, 0)
@@ -364,29 +364,33 @@ local function LoadSkin()
 	-- Control Frame
 	E:StripTextures(GuildControlPopupFrame)
 	E:CreateBackdrop(GuildControlPopupFrame, "Transparent")
-	E:Point(GuildControlPopupFrame.backdrop, "TOPLEFT", 3, -6)
-	E:Point(GuildControlPopupFrame.backdrop, "BOTTOMRIGHT", -27, 27)
+	E:Point(GuildControlPopupFrame.backdrop, "TOPLEFT", 3, 0)
 
 	S:HandleDropDownBox(GuildControlPopupFrameDropDown, 185)
-	E:Size(GuildControlPopupFrameDropDownButton, 16)
+	E:Size(GuildControlPopupFrameDropDownButton, 18)
 
-	local function SkinPlusMinus(f, minus)
-		f:SetNormalTexture("")
-		f.SetNormalTexture = E.noop
-		f:SetPushedTexture("")
-		f.SetPushedTexture = E.noop
-		f:SetHighlightTexture("")
-		f.SetHighlightTexture = E.noop
-		f:SetDisabledTexture("")
-		f.SetDisabledTexture = E.noop
+	local function SkinPlusMinus(button, minus)
+		button:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button.SetNormalTexture = E.noop
 
-		f.Text = f:CreateFontString(nil, "OVERLAY")
-		E:FontTemplate(f.Text, nil, 22)
-		E:Point(f.Text, "LEFT", 5, 0)
+		button:SetPushedTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button.SetPushedTexture = E.noop
+
+		button:SetHighlightTexture("")
+		button.SetHighlightTexture = E.noop
+
+		button:SetDisabledTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusMinusButton")
+		button.SetDisabledTexture = E.noop
+		button:GetDisabledTexture():SetDesaturated(true)
+
 		if minus then
-			f.Text:SetText("-")
+			button:GetNormalTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+			button:GetPushedTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
+			button:GetDisabledTexture():SetTexCoord(0.540, 0.965, 0.085, 0.920)
 		else
-			f.Text:SetText("+")
+			button:GetNormalTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+			button:GetPushedTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
+			button:GetDisabledTexture():SetTexCoord(0.040, 0.465, 0.085, 0.920)
 		end
 	end
 
@@ -394,6 +398,11 @@ local function LoadSkin()
 	E:Point(GuildControlPopupFrameAddRankButton, "LEFT", GuildControlPopupFrameDropDown, "RIGHT", -8, 3)
 
 	SkinPlusMinus(GuildControlPopupFrameRemoveRankButton, true)
+	E:Point(GuildControlPopupFrameRemoveRankButton, "LEFT", GuildControlPopupFrameAddRankButton, "RIGHT", 4, 0)
+
+
+	local left, right = select(6, GuildControlPopupFrameEditBox:GetRegions())
+	E:Kill(left) E:Kill(right)
 
 	S:HandleEditBox(GuildControlPopupFrameEditBox)
 	E:Point(GuildControlPopupFrameEditBox.backdrop, "TOPLEFT", 0, -5)
