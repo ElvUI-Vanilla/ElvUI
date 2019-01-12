@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "拾取 / 提醒框架"
 L["Loot Frame"] = "拾取框架"
 L["MA Frames"] = "主助理框架"
 L["Micro Bar"] = "微型系統菜單" --Also in ActionBars
-L["Minimap"] = "小地圖"
 L["MirrorTimer"] = "鏡像計時器"
 L["MT Frames"] = "主坦克框架"
 L["Party Frames"] = "隊伍框架" --Also used in UnitFrames

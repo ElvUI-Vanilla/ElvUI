@@ -4,7 +4,7 @@ local DT = E:GetModule("DataTexts");
 --Cache global variables
 --Lua functions
 local _G = _G
-local pairs, ipairs = pairs, ipairs
+local pairs = pairs
 local format, join, upper = string.format, string.join, string.upper
 --WoW API / Variables
 local GetInventoryItemDurability = GetInventoryItemDurability

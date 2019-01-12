@@ -314,7 +314,7 @@ function M:Initialize()
 
 	MiniMapBattlefieldBorder:Hide()
 
-	E:CreateMover(MMHolder, "MinimapMover", L["Minimap"], nil, nil, MinimapPostDrag)
+	E:CreateMover(MMHolder, "MinimapMover", MINIMAP_LABEL, nil, nil, MinimapPostDrag)
 
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)

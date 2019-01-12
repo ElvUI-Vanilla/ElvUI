@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "Розыгрыш/оповещения"
 L["Loot Frame"] = "Окно добычи"
 L["MA Frames"] = "Помощники"
 L["Micro Bar"] = "Микроменю" --Also in ActionBars
-L["Minimap"] = "Миникарта"
 L["MirrorTimer"] = "Таймер"
 L["MT Frames"] = "Танки"
 L["Party Frames"] = "Группа" --Also used in UnitFrames

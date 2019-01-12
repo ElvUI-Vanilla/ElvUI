@@ -479,7 +479,7 @@ function E:SetMoversPositions()
 		end
 	end
 
-	for name, _ in pairs(E.CreatedMovers) do
+	for name in pairs(E.CreatedMovers) do
 		local f = _G[name]
 		local point, anchor, secondaryPoint, x, y
 		if E.db.movers and E.db.movers[name] and type(E.db.movers[name]) == "string" then

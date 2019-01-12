@@ -23,7 +23,6 @@ local MoveViewLeftStop = MoveViewLeftStop
 local Screenshot = Screenshot
 local UnitAffectingCombat = UnitAffectingCombat
 
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local MAX_BATTLEFIELD_QUEUES = MAX_BATTLEFIELD_QUEUES
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
@@ -39,7 +38,7 @@ local printKeys = {
 	["PRINTSCREEN"] = true,
 }
 
-if IsMacClient() then
+if E.isMacClient then
 	printKeys[_G["KEY_PRINTSCREEN_MAC"]] = true
 end
 
@@ -241,6 +240,29 @@ local function Chat_OnMouseWheel()
 	end
 end
 
+local function Chat_OnEvent()
+	local coloredName = CH:GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
+	local type = strsub(event, 10)
+	local info = ChatTypeInfo[type]
+
+	local playerLink, _
+	playerLink = "|Hplayer:"..arg2..":"..arg10..":".."|h"
+	local message = arg1
+	--Escape any % characters, as it may otherwise cause an "invalid option in format" error in the next step
+	message = gsub(message, "%%", "%%%%")
+
+	_, body = pcall(format, _G["CHAT_"..type.."_GET"]..message, playerLink.."["..coloredName.."]".."|h")
+
+	if CH.db.shortChannels then
+		body = gsub(body, "|Hchannel:(.-)|h%[(.-)%]|h", CH.ShortChannel)
+		body = gsub(body, "^(.-|h) "..L["whispers"], "%1")
+		body = gsub(body, "<"..CHAT_MSG_AFK..">", "[|cffFF0000"..L["AFK"].."|r] ")
+		body = gsub(body, "<"..CHAT_MSG_DND..">", "[|cffE7E716"..L["DND"].."|r] ")
+	end
+
+	this:AddMessage(body, info.r, info.g, info.b, info.id)
+end
+
 function AFK:Initialize()
 	if E.global.afkEnabled then
 		SetCVar("cameraYawMoveSpeed", E.global.afkCameraSpeedYaw)
@@ -273,9 +295,7 @@ function AFK:Initialize()
 	self.AFKMode.chat:SetScript("OnDragStart", self.AFKMode.chat.StartMoving)
 	self.AFKMode.chat:SetScript("OnDragStop", self.AFKMode.chat.StopMovingOrSizing)
 	self.AFKMode.chat:SetScript("OnMouseWheel", Chat_OnMouseWheel)
-	self.AFKMode.chat:SetScript("OnEvent", function()
-		CH:ChatFrame_OnEvent(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-	end)
+	self.AFKMode.chat:SetScript("OnEvent", Chat_OnEvent)
 
 	self.AFKMode.bottom = CreateFrame("Frame", nil, self.AFKMode)
 	self.AFKMode.bottom:SetFrameLevel(0)
@@ -287,11 +307,11 @@ function AFK:Initialize()
 	self.AFKMode.bottom.logo = self.AFKMode:CreateTexture(nil, "OVERLAY")
 	E:Size(self.AFKMode.bottom.logo, 320, 150)
 	E:Point(self.AFKMode.bottom.logo, "CENTER", self.AFKMode.bottom, "CENTER", 0, 50)
-	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\logo")
+	self.AFKMode.bottom.logo:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo")
 
 	self.AFKMode.bottom.faction = self.AFKMode.bottom:CreateTexture(nil, "OVERLAY")
 	E:Point(self.AFKMode.bottom.faction, "BOTTOMLEFT", self.AFKMode.bottom, "BOTTOMLEFT", -20, -16)
-	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\Media\\Textures\\"..E.myfaction.."-Logo")
+	self.AFKMode.bottom.faction:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\"..E.myfaction.."-Logo")
 	E:Size(self.AFKMode.bottom.faction, 140)
 
 	self.AFKMode.bottom.name = self.AFKMode.bottom:CreateFontString(nil, "OVERLAY")

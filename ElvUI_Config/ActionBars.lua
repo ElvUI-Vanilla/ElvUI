@@ -88,7 +88,7 @@ local function BuildABConfig()
 				desc = L["The button you must hold down in order to drag an ability to another action button."],
 				disabled = function() return (not E.private.actionbar.enable or not E.db.actionbar.lockActionBars) end,
 				values = {
-					["NONE"] = NONE,
+					["NONE"] = L["None"],
 					["SHIFT"] = "SHIFT_KEY",
 					["ALT"] = "ALT_KEY",
 					["CTRL"] = "CTRL_KEY"
@@ -175,7 +175,7 @@ local function BuildABConfig()
 						name = L["Font Outline"],
 						desc = L["Set the font outline."],
 						values = {
-							["NONE"] = NONE,
+							["NONE"] = L["None"],
 							["OUTLINE"] = "OUTLINE",
 							["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 							["THICKOUTLINE"] = "THICKOUTLINE"

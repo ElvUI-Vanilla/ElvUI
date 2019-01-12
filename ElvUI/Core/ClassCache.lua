@@ -204,7 +204,6 @@ function CC:PLAYER_ENTERING_WORLD()
 		self:UnregisterEvent("PARTY_MEMBERS_CHANGED")
 		self:UnregisterEvent("RAID_ROSTER_UPDATE")
 
-
 		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 
 		if self.onBattleground then
@@ -246,13 +245,13 @@ function CC:PLAYER_GUILD_UPDATE()
 end
 
 function CC:FRIENDLIST_UPDATE()
-	local name, classLocalized, _
+	local name, class, _
 
 	for i = 1, GetNumFriends() do
-		name, _, classLocalized = GetFriendInfo(i)
+		name, _, class = GetFriendInfo(i)
 
-		if classLocalized then
-			self:CachePlayer(name, GetEnglishClassName(classLocalized))
+		if class then
+			self:CachePlayer(name, GetEnglishClassName(class))
 		end
 	end
 end
@@ -260,13 +259,13 @@ end
 function CC:GUILD_ROSTER_UPDATE(_, update)
 	if not update then return end
 
-	local name, classLocalized, _
+	local name, class, _
 
 	for i = 1, GetNumGuildMembers() do
-		name, _, _, _, _, classLocalized = GetGuildRosterInfo(i)
+		name, _, _, _, class = GetGuildRosterInfo(i)
 
-		if classLocalized then
-			self:CachePlayer(name, GetEnglishClassName(classLocalized))
+		if class then
+			self:CachePlayer(name, GetEnglishClassName(class))
 		end
 	end
 end
@@ -345,14 +344,14 @@ function CC:UPDATE_BATTLEFIELD_SCORE()
 		return
 	end
 
-	local name, realm, classLocalized, _
+	local name, realm, class, _
 
 	for i = 1, numPlayers do
-		name, _, _, _, _, _, _, _, classLocalized = GetBattlefieldScore(i)
+		name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i)
 
-		if name and classLocalized then
+		if name and class then
 			name, realm = split("-", name)
-			self:CachePlayer(name, GetEnglishClassName(classLocalized), realm)
+			self:CachePlayer(name, GetEnglishClassName(class), realm)
 		end
 	end
 end

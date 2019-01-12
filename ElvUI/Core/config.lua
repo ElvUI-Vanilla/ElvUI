@@ -54,14 +54,7 @@ function E:ToggleConfigMode(override, configType)
 	if override ~= nil and override ~= "" then E.ConfigurationMode = override end
 
 	if E.ConfigurationMode ~= true then
-		if not grid then
-			E:Grid_Create()
-		elseif grid.boxSize ~= E.db.gridSize then
-			grid:Hide()
-			E:Grid_Create()
-		else
-			grid:Show()
-		end
+		E:Grid_Show()
 
 		if not ElvUIMoverPopupWindow then
 			E:CreateMoverPopup()
@@ -75,12 +68,10 @@ function E:ToggleConfigMode(override, configType)
 
 		E.ConfigurationMode = true
 	else
+		E:Grid_Hide()
+
 		if ElvUIMoverPopupWindow then
 			ElvUIMoverPopupWindow:Hide()
-		end
-
-		if grid then
-			grid:Hide()
 		end
 
 		E.ConfigurationMode = false
@@ -93,8 +84,35 @@ function E:ToggleConfigMode(override, configType)
 	self:ToggleMovers(E.ConfigurationMode, configType or "ALL")
 end
 
+function E:Grid_GetRegion()
+	if grid then
+		if grid.regionCount and grid.regionCount > 0 then
+			local line = select(grid.regionCount, grid:GetRegions())
+			grid.regionCount = grid.regionCount - 1
+			line:SetAlpha(1)
+			return line
+		else
+			return grid:CreateTexture()
+		end
+	end
+end
+
 function E:Grid_Create()
-	grid = CreateFrame("Frame", "EGrid", UIParent)
+	if not grid then
+		grid = CreateFrame("Frame", "ElvUIGrid", UIParent)
+		grid:SetFrameStrata("BACKGROUND")
+	else
+		grid.regionCount = 0
+		local numRegions = grid:GetNumRegions()
+		for i = 1, numRegions do
+			local region = select(i, grid:GetRegions())
+			if region and region.IsObjectType and region:IsObjectType("Texture") then
+				grid.regionCount = grid.regionCount + 1
+				region:SetAlpha(0)
+			end
+		end
+	end
+
 	grid.boxSize = E.db.gridSize
 	grid:SetAllPoints(E.UIParent)
 	grid:Show()
@@ -108,34 +126,41 @@ function E:Grid_Create()
 	local hStep = height / E.db.gridSize
 
 	for i = 0, E.db.gridSize do
-		local tx = grid:CreateTexture(nil, "BACKGROUND")
+		local tx = E:Grid_GetRegion()
 		if i == E.db.gridSize / 2 then
 			tx:SetTexture(1, 0, 0)
+			tx:SetDrawLayer("BACKGROUND", 1)
 		else
 			tx:SetTexture(0, 0, 0)
+			tx:SetDrawLayer("BACKGROUND", 0)
 		end
+		tx:ClearAllPoints()
 		E:Point(tx, "TOPLEFT", grid, "TOPLEFT", i*wStep - (size/2), 0)
 		E:Point(tx, "BOTTOMRIGHT", grid, "BOTTOMLEFT", i*wStep + (size/2), 0)
 	end
 	height = GetScreenHeight()
 
 	do
-		local tx = grid:CreateTexture(nil, "BACKGROUND")
+		local tx = E:Grid_GetRegion()
 		tx:SetTexture(1, 0, 0)
+		tx:SetDrawLayer("BACKGROUND", 1)
+		tx:ClearAllPoints()
 		E:Point(tx, "TOPLEFT", grid, "TOPLEFT", 0, -(height/2) + (size/2))
 		E:Point(tx, "BOTTOMRIGHT", grid, "TOPRIGHT", 0, -(height/2 + size/2))
 	end
 
-	for i = 1, floor((height/2)/hStep) do
-		local tx = grid:CreateTexture(nil, "BACKGROUND")
+	for i = 1, floor((height / 2) / hStep) do
+		local tx = E:Grid_GetRegion()
 		tx:SetTexture(0, 0, 0)
-
+		tx:SetDrawLayer("BACKGROUND", 0)
+		tx:ClearAllPoints()
 		E:Point(tx, "TOPLEFT", grid, "TOPLEFT", 0, -(height/2+i*hStep) + (size/2))
 		E:Point(tx, "BOTTOMRIGHT", grid, "TOPRIGHT", 0, -(height/2+i*hStep + size/2))
 
-		tx = grid:CreateTexture(nil, "BACKGROUND")
+		tx = E:Grid_GetRegion()
 		tx:SetTexture(0, 0, 0)
-
+		tx:SetDrawLayer("BACKGROUND", 0)
+		tx:ClearAllPoints()
 		E:Point(tx, "TOPLEFT", grid, "TOPLEFT", 0, -(height/2-i*hStep) + (size/2))
 		E:Point(tx, "BOTTOMRIGHT", grid, "TOPRIGHT", 0, -(height/2-i*hStep + size/2))
 	end
@@ -148,7 +173,7 @@ local function ConfigMode_OnClick()
 end
 
 local function ConfigMode_Initialize()
-	local info = {}
+	local info = L_UIDropDownMenu_CreateInfo()
 	info.func = ConfigMode_OnClick
 
 	for _, configMode in ipairs(E.ConfigModeLayouts) do
@@ -439,8 +464,8 @@ function E:CreateMoverPopup()
 	end)
 	upButton.icon = upButton:CreateTexture(nil, "ARTWORK")
 	E:Size(upButton.icon, 13)
-	E:Point(upButton.icon, "CENTER", 0)
-	upButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
+	E:Point(upButton.icon, "CENTER", 0, 0)
+	upButton.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures]])
 	upButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
 	S:SquareButton_SetIcon(upButton, "UP")
@@ -454,8 +479,8 @@ function E:CreateMoverPopup()
 	end)
 	downButton.icon = downButton:CreateTexture(nil, "ARTWORK")
 	E:Size(downButton.icon, 13)
-	E:Point(downButton.icon, "CENTER", 0)
-	downButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
+	E:Point(downButton.icon, "CENTER", 0, 0)
+	downButton.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures]])
 	downButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
 	S:SquareButton_SetIcon(downButton, "DOWN")
@@ -469,8 +494,8 @@ function E:CreateMoverPopup()
 	end)
 	leftButton.icon = leftButton:CreateTexture(nil, "ARTWORK")
 	E:Size(leftButton.icon, 13)
-	E:Point(leftButton.icon, "CENTER", 0)
-	leftButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
+	E:Point(leftButton.icon, "CENTER", 0, 0)
+	leftButton.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures]])
 	leftButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
 	S:SquareButton_SetIcon(leftButton, "LEFT")
@@ -484,8 +509,8 @@ function E:CreateMoverPopup()
 	end)
 	rightButton.icon = rightButton:CreateTexture(nil, "ARTWORK")
 	E:Size(rightButton.icon, 13)
-	E:Point(rightButton.icon, "CENTER", 0)
-	rightButton.icon:SetTexture([[Interface\AddOns\ElvUI\Media\Textures\SquareButtonTextures.blp]])
+	E:Point(rightButton.icon, "CENTER", 0, 0)
+	rightButton.icon:SetTexture([[Interface\AddOns\ElvUI\media\textures\SquareButtonTextures]])
 	rightButton.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
 
 	S:SquareButton_SetIcon(rightButton, "RIGHT")

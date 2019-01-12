@@ -50,7 +50,7 @@ local threatValues = {
 	["ICONRIGHT"] = L["Icon: RIGHT"],
 	["ICONTOP"] = L["Icon: TOP"],
 	["ICONBOTTOM"] = L["Icon: BOTTOM"],
-	["NONE"] = NONE
+	["NONE"] = L["None"]
 }
 
 local petAnchors = {
@@ -1190,7 +1190,7 @@ local function GetOptionsTable_RaidDebuff(updateFunc, groupName)
 				type = "select",
 				name = L["Font Outline"],
 				values = {
-					["NONE"] = NONE,
+					["NONE"] = L["None"],
 					["OUTLINE"] = "OUTLINE",
 					["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 					["THICKOUTLINE"] = "THICKOUTLINE"
@@ -1501,7 +1501,7 @@ local function CreateCustomTextGroup(unit, objectName)
 				name = L["Font Outline"],
 				desc = L["Set the font outline."],
 				values = {
-					["NONE"] = NONE,
+					["NONE"] = L["None"],
 					["OUTLINE"] = "OUTLINE",
 					["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 					["THICKOUTLINE"] = "THICKOUTLINE"
@@ -1838,7 +1838,7 @@ E.Options.args.unitframe = {
 							name = L["Debuff Highlighting"],
 							desc = L["Color the unit healthbar if there is a debuff that can be dispelled by you."],
 							values = {
-								["NONE"] = NONE,
+								["NONE"] = L["None"],
 								["GLOW"] = L["Glow"],
 								["FILL"] = L["Fill"]
 							}
@@ -1862,7 +1862,7 @@ E.Options.args.unitframe = {
 							name = L["Blacklist Modifier"],
 							desc = L["You need to hold this modifier down in order to blacklist an aura by right-clicking the icon. Set to None to disable the blacklist functionality."],
 							values = {
-								["NONE"] = NONE,
+								["NONE"] = L["None"],
 								["SHIFT"] = SHIFT_KEY,
 								["ALT"] = ALT_KEY,
 								["CTRL"] = CTRL_KEY
@@ -1927,7 +1927,7 @@ E.Options.args.unitframe = {
 									name = L["Font Outline"],
 									desc = L["Set the font outline."],
 									values = {
-										["NONE"] = NONE,
+										["NONE"] = L["None"],
 										["OUTLINE"] = "OUTLINE",
 										["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 										["THICKOUTLINE"] = "THICKOUTLINE"

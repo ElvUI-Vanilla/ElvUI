@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "Quadro de Saque / Alerta"
 L["Loot Frame"] = true
 L["MA Frames"] = "Quadro do Assistente Principal"
 L["Micro Bar"] = "Micro Barra"
-L["Minimap"] = "Minimapa"
 L["MirrorTimer"] = true
 L["MT Frames"] = "Quadro do Tank Principal"
 L["Party Frames"] = "Quadros de Grupo"

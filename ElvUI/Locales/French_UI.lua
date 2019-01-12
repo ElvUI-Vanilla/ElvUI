@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "Cadres de butin / Alerte"
 L["Loot Frame"] = "Cadre de butin"
 L["MA Frames"] = "Cadres de l`assistant principal"
 L["Micro Bar"] = "Micro Barre" --Also in ActionBars
-L["Minimap"] = "Mini-carte"
 L["MirrorTimer"] = "Timer mirroir"
 L["MT Frames"] = "Cadres du Tank principal"
 L["Party Frames"] = "Cadres de groupe" --Also used in UnitFrames

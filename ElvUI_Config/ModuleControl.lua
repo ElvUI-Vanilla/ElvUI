@@ -6,11 +6,6 @@ local CP = E:GetModule("CopyProfile");
 --Cache global variables
 --Lua functions
 local getn = table.getn
---WoW API / Variables
-local XPBAR_LABEL = XPBAR_LABEL
-local REPUTATION = REPUTATION
-local MINIMAP_LABEL = MINIMAP_LABEL
-local COLOR = COLOR
 
 --Actionbars
 local function CreateActionbarsConfig()
@@ -133,7 +128,7 @@ local function CreateDatatbarsConfig()
 	config.args.experience = {
 		order = 2,
 		type = "toggle",
-		name = XPBAR_LABEL,
+		name = L["XP Bar"],
 		get = function(info) return E.global.profileCopy.databars[ info[getn(info)] ] end,
 		set = function(info, value) E.global.profileCopy.databars[ info[getn(info)] ] = value end
 	}

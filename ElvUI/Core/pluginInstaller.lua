@@ -131,7 +131,7 @@ local function SetPage(PageNum, PrevPage)
 			if i == f.CurrentPage then
 				color = f.StepTitlesColorSelected or {.09,.52,.82}
 			else
-				color = f.StepTitlesColor or {1,1,1}
+				color = f.StepTitlesColor or {1, 1, 1}
 			end
 			b.text:SetTextColor(color[1] or color.r, color[2] or color.g, color[3] or color.b)
 		end
@@ -172,23 +172,23 @@ function PI:CreateStepComplete()
 	imsg.firstShow = false
 
 	imsg.bg = imsg:CreateTexture(nil, "BACKGROUND")
-	imsg.bg:SetTexture([[Interface\LevelUp\LevelUpTex]])
-	E:Point(imsg.bg, "BOTTOM", 0, 0)
+	imsg.bg:SetTexture([[Interface\AddOns\ElvUI\media\textures\LevelUpTex]])
+	imsg.bg:SetPoint("BOTTOM", 0, 0)
 	E:Size(imsg.bg, 326, 103)
 	imsg.bg:SetTexCoord(0.00195313, 0.63867188, 0.03710938, 0.23828125)
 	imsg.bg:SetVertexColor(1, 1, 1, 0.6)
 
 	imsg.lineTop = imsg:CreateTexture(nil, "BACKGROUND")
 	imsg.lineTop:SetDrawLayer("BACKGROUND", 2)
-	imsg.lineTop:SetTexture([[Interface\LevelUp\LevelUpTex]])
-	E:Point(imsg.lineTop, "TOP", 0, 0)
+	imsg.lineTop:SetTexture([[Interface\AddOns\ElvUI\media\textures\LevelUpTex]])
+	imsg.lineTop:SetPoint("TOP", 0, 0)
 	E:Size(imsg.lineTop, 418, 7)
 	imsg.lineTop:SetTexCoord(0.00195313, 0.81835938, 0.01953125, 0.03320313)
 
 	imsg.lineBottom = imsg:CreateTexture(nil, "BACKGROUND")
 	imsg.lineBottom:SetDrawLayer("BACKGROUND", 2)
-	imsg.lineBottom:SetTexture([[Interface\LevelUp\LevelUpTex]])
-	E:Point(imsg.lineBottom, "BOTTOM", 0, 0)
+	imsg.lineBottom:SetTexture([[Interface\AddOns\ElvUI\media\textures\LevelUpTex]])
+	imsg.lineBottom:SetPoint("BOTTOM", 0, 0)
 	E:Size(imsg.lineBottom, 418, 7)
 	imsg.lineBottom:SetTexCoord(0.00195313, 0.81835938, 0.01953125, 0.03320313)
 
@@ -204,7 +204,7 @@ function PI:CreateFrame()
 	f.SetPage = SetPage
 	E:Size(f, 550, 400)
 	E:SetTemplate(f, "Transparent")
-	E:Point(f, "CENTER", 0, 0)
+	f:SetPoint("CENTER", 0, 0)
 	f:SetFrameStrata("TOOLTIP")
 
 	f.Title = f:CreateFontString(nil, "OVERLAY")
@@ -246,7 +246,7 @@ function PI:CreateFrame()
 
 	f.Status.text = f.Status:CreateFontString(nil, "OVERLAY")
 	E:FontTemplate(f.Status.text)
-	E:Point(f.Status.text, "CENTER", 0, 0)
+	f.Status.text:SetPoint("CENTER", 0, 0)
 
 	f.Option1 = CreateFrame("Button", "PluginInstallOption1Button", f, "UIPanelButtonTemplate")
 	E:StripTextures(f.Option1)
@@ -319,20 +319,20 @@ function PI:CreateFrame()
 	E:Width(f.Desc4, f:GetWidth() - 40)
 
 	local close = CreateFrame("Button", "PluginInstallCloseButton", f, "UIPanelCloseButton")
-	E:Point(close, "TOPRIGHT", f, "TOPRIGHT")
+	close:SetPoint("TOPRIGHT", f, "TOPRIGHT")
 	close:SetScript("OnClick", function() f:Hide() end)
 	E.Skins:HandleCloseButton(close)
 
 	f.pending = CreateFrame("Frame", "PluginInstallPendingButton", f)
 	E:Size(f.pending, 20)
-	E:Point(f.pending, "TOPLEFT", f, "TOPLEFT", 8, -8)
+	f.pending:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -8)
 	f.pending.tex = f.pending:CreateTexture(nil, "OVERLAY")
 	E:Point(f.pending.tex, "TOPLEFT", f.pending, "TOPLEFT", 2, -2)
 	E:Point(f.pending.tex, "BOTTOMRIGHT", f.pending, "BOTTOMRIGHT", -2, 2)
-	f.pending.tex:SetTexture([[Interface\OptionsFrame\UI-OptionsFrame-NewFeatureIcon]])
+	f.pending.tex:SetTexture([[Interface\AddOns\ElvUI\media\textures\UI-OptionsFrame-NewFeatureIcon]])
 	E:CreateBackdrop(f.pending, "Transparent")
 	f.pending:SetScript("OnEnter", function(self)
-		_G["GameTooltip"]:SetOwner(self, "ANCHOR_BOTTOMLEFT", E.PixelMode and -7 or -9);
+		_G["GameTooltip"]:SetOwner(self, "ANCHOR_BOTTOMLEFT", E.PixelMode and -7 or -9)
 		_G["GameTooltip"]:AddLine(L["List of installations in queue:"], 1, 1, 1)
 		_G["GameTooltip"]:AddLine(" ")
 		for i = 1, getn(PI.Installs) do
@@ -350,11 +350,11 @@ function PI:CreateFrame()
 
 	f.side = CreateFrame("Frame", "PluginInstallTitleFrame", f)
 	E:SetTemplate(f.side, "Transparent")
-	E:Point(f.side, "TOPLEFT", f, "TOPRIGHT", E.PixelMode and 1 or 3, 0)
-	E:Point(f.side, "BOTTOMLEFT", f, "BOTTOMRIGHT", E.PixelMode and 1 or 3, 0)
+	f.side:SetPoint("TOPLEFT", f, "TOPRIGHT", E.PixelMode and 1 or 3, 0)
+	f.side:SetPoint("BOTTOMLEFT", f, "BOTTOMRIGHT", E.PixelMode and 1 or 3, 0)
 	E:Width(f.side, 140)
 	f.side.text = f.side:CreateFontString(nil, "OVERLAY")
-	E:Point(f.side.text, "TOP", f.side, "TOP", 0, -4)
+	f.side.text:SetPoint("TOP", f.side, "TOP", 0, -4)
 	f.side.text:SetFont(E.media.normFont, 18, "OUTLINE")
 	f.side.text:SetText(L["Steps"])
 	f.side.Lines = {} --Table to keep shown lines
@@ -362,14 +362,14 @@ function PI:CreateFrame()
 	for i = 1, 18 do
 		local button = CreateFrame("Button", nil, f)
 		if i == 1 then
-			E:Point(button, "TOP", f.side.text, "BOTTOM", 0, -6)
+			button:SetPoint("TOP", f.side.text, "BOTTOM", 0, -6)
 		else
-			E:Point(button, "TOP", f.side.Lines[i - 1], "BOTTOM")
+			button:SetPoint("TOP", f.side.Lines[i - 1], "BOTTOM")
 		end
 		E:Size(button, 130, BUTTON_HEIGHT)
 		button.text = button:CreateFontString(nil, "OVERLAY")
-		E:Point(button.text, "TOPLEFT", button, "TOPLEFT", 2, -2)
-		E:Point(button.text, "BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 2)
+		button.text:SetPoint("TOPLEFT", button, "TOPLEFT", 2, -2)
+		button.text:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 2)
 		button.text:SetFont(E.media.normFont, 14, "OUTLINE")
 		button:SetScript("OnClick", function() if i <= f.MaxPage then SetPage(i, f.CurrentPage) end end)
 		button.text:SetText("")
@@ -419,20 +419,20 @@ function PI:RunInstall()
 		f.Title:SetText(db.Title or L["ElvUI Plugin Installation"])
 		f.Status:SetMinMaxValues(0, f.MaxPage)
 		f.Status.text:SetText(f.CurrentPage.." / "..f.MaxPage)
-		f.tutorialImage:SetTexture(db.tutorialImage or [[Interface\AddOns\ElvUI\media\textures\logo.tga]])
+		f.tutorialImage:SetTexture(db.tutorialImage or [[Interface\AddOns\ElvUI\media\textures\logo]])
 
 		f.Pages = db.Pages
 
 		PluginInstallFrame:Show()
-		E:Point(f, "CENTER")
+		f:SetPoint("CENTER", 0, 0)
 		if db.StepTitles and getn(db.StepTitles) == f.MaxPage then
-			E:Point(f, "CENTER", E.UIParent, "CENTER", -((db.StepTitleWidth or 140)/2), 0)
-			E:Width(f.side, db.StepTitleWidth or 140)
+			f:SetPoint("CENTER", E.UIParent, "CENTER", -((db.StepTitleWidth or 140)/2), 0)
+			f.side:SetWidth(db.StepTitleWidth or 140)
 			f.side:Show()
 
 			for i = 1, getn(f.side.Lines) do
 				if db.StepTitles[i] then
-					E:Width(f.side.Lines[i], db.StepTitleButtonWidth or 130)
+					f.side.Lines[i]:SetWidth(db.StepTitleButtonWidth or 130)
 					f.side.Lines[i].text:SetJustifyH(db.StepTitleTextJustification or "CENTER")
 					f.side.Lines[i]:Show()
 				end

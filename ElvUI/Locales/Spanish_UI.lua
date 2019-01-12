@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "Marcos de Botín / Alerta"
 L["Loot Frame"] = "Marco de Botín"
 L["MA Frames"] = "Marcos de AP"
 L["Micro Bar"] = "Micro Barra"
-L["Minimap"] = "Minimapa"
 L["MirrorTimer"] = true
 L["MT Frames"] = "Marcos de TP"
 L["Party Frames"] = "Marco de Grupo"

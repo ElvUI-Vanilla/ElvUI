@@ -3,7 +3,7 @@
 ## Version: 0.85
 ## Title: |cff175581E|r|cffC4C4C4lvUI|r
 ## Notes: User Interface replacement AddOn for World of Warcraft.
-## SavedVariables: ElvDB, ElvPrivateDB
+## SavedVariables: ElvDB, ElvPrivateDB, GAME_LOCALE
 ## SavedVariablesPerCharacter: ElvCharacterDB
 ## Dependencies: !Compatibility
 ## OptionalDeps: !DebugTools, SharedMedia, Tukui, ButtonFacade

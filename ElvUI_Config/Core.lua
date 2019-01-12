@@ -23,7 +23,7 @@ local AC = LibStub("AceConfig-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
 local ACR = LibStub("AceConfigRegistry-3.0")
 
-AC.RegisterOptionsTable(E, "ElvUI", E.Options)
+AC:RegisterOptionsTable("ElvUI", E.Options)
 ACD:SetDefaultSize("ElvUI", DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
 function E:RefreshGUI()
@@ -35,7 +35,7 @@ E.Options.args = {
 	ElvUI_Header = {
 		order = 1,
 		type = "header",
-		name = L["Version"] .. format(": |cff99ff33%s|r", E.version),
+		name = L["Version"]..format(": |cff99ff33%s|r", E.version),
 		width = "full"
 	},
 	LoginMessage = {
@@ -125,19 +125,22 @@ local DEVELOPERS = {
 	"Haste",
 	"Nightcracker",
 	"Omega1970",
-	"Hydrazine"
+	"Hydrazine",
+	"Blazeflack",
+	"|cffff7d0aMerathilis|r",
+	"|cFF8866ccSimpy|r"
 }
 
 local TESTERS = {
 	"Tukui Community",
 	"|cffF76ADBSarah|r - For Sarahing",
 	"Affinity",
+	"Azilroka",
 	"Modarch",
 	"Bladesdruid",
 	"Tirain",
 	"Phima",
 	"Veiled",
-	"Blazeflack",
 	"Repooc",
 	"Darth Predator",
 	"Alex",
@@ -174,7 +177,7 @@ E.Options.args.credits = {
 		text = {
 			order = 1,
 			type = "description",
-			name = L["ELVUI_CREDITS"] .. "\n\n" .. L["Coding:"] .. DEVELOPER_STRING .. "\n\n" .. L["Testing:"] .. TESTER_STRING .. "\n\n" .. L["Donations:"] .. DONATOR_STRING
+			name = L["ELVUI_CREDITS"].."\n\n"..L["Coding:"]..DEVELOPER_STRING.."\n\n"..L["Testing:"]..TESTER_STRING.."\n\n"..L["Donations:"]..DONATOR_STRING
 		}
 	}
 }
@@ -274,7 +277,7 @@ local function ExportImport_Open(mode)
 				label1:SetText(L["Error exporting profile!"])
 			else
 				label1:SetText(format("%s: %s%s|r", L["Exported"], E.media.hexvaluecolor, profileTypeItems[profileType]))
-				if(profileType == "profile") then
+				if profileType == "profile" then
 					label2:SetText(format("%s: %s%s|r", L["Profile Name"], E.media.hexvaluecolor, profileKey))
 				end
 			end
@@ -288,17 +291,14 @@ local function ExportImport_Open(mode)
 
 		box.editBox:SetScript("OnChar", function() box:SetText(exportString) box.editBox:HighlightText() end)
 		box.editBox:SetScript("OnTextChanged", function()
-			if this then
-				box:SetText(exportString)
-				this:HighlightText()
-			end
-
+			box:SetText(exportString)
+			box.editBox:HighlightText()
+	
 			box.scrollFrame:UpdateScrollChildRect()
-			box.scrollFrame:SetVerticalScroll(box.scrollFrame:GetVerticalScrollRange())
 		end)
 	elseif mode == "import" then
 		frame:SetTitle(L["Import Profile"])
-		local importButton = AceGUI:Create("Button")
+		local importButton = AceGUI:Create("Button-ElvUI")
 		importButton:SetDisabled(true)
 		importButton:SetText(L["Import Now"])
 		importButton:SetAutoWidth(true)
@@ -317,7 +317,7 @@ local function ExportImport_Open(mode)
 		end)
 		frame:AddChild(importButton)
 
-		local decodeButton = AceGUI:Create("Button")
+		local decodeButton = AceGUI:Create("Button-ElvUI")
 		decodeButton:SetDisabled(true)
 		decodeButton:SetText(L["Decode Text"])
 		decodeButton:SetAutoWidth(true)
@@ -398,14 +398,14 @@ local function ExportImport_Open(mode)
 end
 
 E.Options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(E.data)
-AC.RegisterOptionsTable(E, "ElvProfiles", E.Options.args.profiles)
+AC:RegisterOptionsTable("ElvProfiles", E.Options.args.profiles)
 E.Options.args.profiles.order = -10
 
 if not E.Options.args.profiles.plugins then
 	E.Options.args.profiles.plugins = {}
 end
 
-E.Options.args.profiles.plugins["ElvUI"] = {
+E.Options.args.profiles.plugins.ElvUI = {
 	spacer = {
 		order = 89,
 		type = "description",
@@ -418,27 +418,24 @@ E.Options.args.profiles.plugins["ElvUI"] = {
 	},
 	distributeProfile = {
 		order = 91,
+		type = "execute",
 		name = L["Share Current Profile"],
 		desc = L["Sends your current profile to your target."],
-		type = "execute",
 		func = function()
 			if (GetNumPartyMembers() <= 0 or GetNumPartyMembers() <= 0) then
 				E:Print(L["You must be in a group."])
 				return
 			end
-
-			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
-				E:Print(L["You must be targeting a player."])
-				return
-			end
-
 			if not (UnitInParty("target") or UnitInRaid("target")) then
 				E:Print(L["You must be targeting a player within your group."])
 				return
 			end
-
+			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
+				E:Print(L["You must be targeting a player."])
+				return
+			end
 			local name, server = UnitName("target")
-			if name and not server or server == "" then
+			if name and (not server or server == "") then
 				D:Distribute(name)
 			elseif server then
 				D:Distribute(name, true)
@@ -455,24 +452,21 @@ E.Options.args.profiles.plugins["ElvUI"] = {
 				E:Print(L["You must be in a group."])
 				return
 			end
-
-			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
-				E:Print(L["You must be targeting a player."])
-				return
-			end
-
 			if not (UnitInParty("target") or UnitInRaid("target")) then
 				E:Print(L["You must be targeting a player within your group."])
 				return
 			end
-
+			if not UnitExists("target") or not UnitIsPlayer("target") or not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") then
+				E:Print(L["You must be targeting a player."])
+				return
+			end
 			local name, server = UnitName("target")
-			if name and not server or server == "" then
+			if name and (not server or server == "") then
 				D:Distribute(name, false, true)
 			elseif server then
 				D:Distribute(name, true, true)
 			end
-		end,
+		end
 	},
 	spacer2 = {
 		order = 93,

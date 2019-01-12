@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = true;
 L["Loot Frame"] = true;
 L["MA Frames"] = true;
 L["Micro Bar"] = true; --Also in ActionBars
-L["Minimap"] = true;
 L["MirrorTimer"] = true;
 L["MT Frames"] = true;
 L["Party Frames"] = true; --Also used in UnitFrames

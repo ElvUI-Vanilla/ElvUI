@@ -24,7 +24,7 @@ local FCF_OpenNewWindow = FCF_OpenNewWindow
 local FCF_SetWindowName = FCF_SetWindowName
 local FCF_StopDragging = FCF_StopDragging
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
-local CLASS, CHAT_LABEL, CONTINUE, PREVIOUS = CLASS, CHAT_LABEL, CONTINUE, PREVIOUS
+local CLASS, CONTINUE, PREVIOUS = CLASS, CONTINUE, PREVIOUS
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS
 local LOOT, GENERAL, TRADE = LOOT, GENERAL, TRADE
 local GUILD_EVENT_LOG = GUILD_EVENT_LOG
@@ -213,6 +213,7 @@ local function SetupCVars()
 	ALWAYS_SHOW_MULTIBARS = 1
 	LOCK_ACTIONBAR = 1
 	SIMPLE_CHAT = 0
+
 	SetActionBarToggles(1, 0, 1, 1)
 	TutorialFrame_HideAllAlerts()
 	ClearTutorials()
@@ -328,9 +329,6 @@ function E:SetupResolution(noDataReset)
 			E.db.unitframe.units.targettarget.power.enable = false
 			E.db.unitframe.units.targettarget.width = 200
 			E.db.unitframe.units.targettarget.height = 26
-
-			E.db.unitframe.units.arena.width = 200
-			E.db.unitframe.units.arena.castbar.width = 200
 		end
 
 		local isPixel = E.private.general.pixelPerfect
@@ -548,9 +546,6 @@ function E:SetupLayout(layout, noDataReset)
 		E.db.unitframe.units.targettarget.power.enable = false
 		E.db.unitframe.units.targettarget.width = 200
 		E.db.unitframe.units.targettarget.height = 26
-
-		E.db.unitframe.units.arena.width = 200
-		E.db.unitframe.units.arena.castbar.width = 200
 	end
 
 	if layout == "dpsCaster" or layout == "healer" or (layout == "dpsMelee" and E.myclass == "HUNTER") then
@@ -761,7 +756,7 @@ local function SetPage(PageNum)
 		InstallOption1Button:SetScript("OnClick", SetupCVars)
 		InstallOption1Button:SetText(L["Setup CVars"])
 	elseif PageNum == 3 then
-		f.SubTitle:SetText(CHAT_LABEL)
+		f.SubTitle:SetText(L["Chat"])
 		f.Desc1:SetText(L["This part of the installation process sets up your chat windows names, positions and colors."])
 		f.Desc2:SetText(L["The chat windows function the same as Blizzard standard chat windows, you can right click the tabs and drag them around, rename, etc. Please click the button below to setup your chat windows."])
 		f.Desc3:SetText(L["Importance: |cffD3CF00Medium|r"])
@@ -897,7 +892,7 @@ function E:Install()
 		imsg.lineBottom:SetTexCoord(0.00195313, 0.81835938, 0.01953125, 0.03320313)
 
 		imsg.text = imsg:CreateFontString(nil, "OVERLAY")
-		E:FontTemplate(imsg.text, E["media"].normFont, 32, "OUTLINE")
+		E:FontTemplate(imsg.text, E.media.normFont, 32, "OUTLINE")
 		E:Point(imsg.text, "BOTTOM", 0, 16)
 		imsg.text:SetTextColor(1, 0.82, 0)
 		imsg.text:SetJustifyH("CENTER")
@@ -945,7 +940,7 @@ function E:Install()
 		f.Status:SetMinMaxValues(0, MAX_PAGE)
 		E:Point(f.Status, "TOPLEFT", f.Prev, "TOPRIGHT", 6, -2)
 		E:Point(f.Status, "BOTTOMRIGHT", f.Next, "BOTTOMLEFT", -6, 2)
-
+		-- Setup StatusBar Animation
 		f.Status.anim = CreateAnimationGroup(f.Status)
 		f.Status.anim.progress = f.Status.anim:CreateAnimation("Progress")
 		f.Status.anim.progress:SetSmoothing("Out")
@@ -976,7 +971,7 @@ function E:Install()
 
 		f.Option3 = CreateFrame("Button", "InstallOption3Button", f, "UIPanelButtonTemplate")
 		E:StripTextures(f.Option3)
-		E:Size(f.Option3, 110, 30)
+		E:Size(f.Option3, 100, 30)
 		E:Point(f.Option3, "LEFT", f.Option2, "RIGHT", 4, 0)
 		f.Option3:SetText("")
 		f.Option3:Hide()
@@ -986,7 +981,7 @@ function E:Install()
 
 		f.Option4 = CreateFrame("Button", "InstallOption4Button", f, "UIPanelButtonTemplate")
 		E:StripTextures(f.Option4)
-		E:Size(f.Option4, 110, 30)
+		E:Size(f.Option4, 100, 30)
 		E:Point(f.Option4, "LEFT", f.Option3, "RIGHT", 4, 0)
 		f.Option4:SetText("")
 		f.Option4:Hide()
@@ -1030,9 +1025,8 @@ function E:Install()
 
 		f.tutorialImage = f:CreateTexture("InstallTutorialImage", "OVERLAY")
 		E:Size(f.tutorialImage, 256, 128)
-		f.tutorialImage:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo.tga")
+		f.tutorialImage:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\logo")
 		E:Point(f.tutorialImage, "BOTTOM", 0, 70)
-
 	end
 
 	ElvUIInstallFrame:Show()

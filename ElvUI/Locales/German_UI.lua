@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "Beute-/Alarmfenster"
 L["Loot Frame"] = "Beute-Fenster"
 L["MA Frames"] = "MA-Fenster"
 L["Micro Bar"] = "Mikroleiste" --Also in ActionBars
-L["Minimap"] = "Minimap"
 L["MirrorTimer"] = "Spiegel Zeitgeber"
 L["MT Frames"] = "MT-Fenster"
 L["Party Frames"] = "Gruppenfenster" --Also used in UnitFrames

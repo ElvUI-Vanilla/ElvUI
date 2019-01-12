@@ -227,7 +227,6 @@ L["Loot / Alert Frames"] = "획득/알림 창"
 L["Loot Frame"] = "전리품 프레임"
 L["MA Frames"] = "지원공격 전담 프레임"
 L["Micro Bar"] = "메뉴모음 바"
-L["Minimap"] = "미니맵"
 L["MirrorTimer"] = true
 L["MT Frames"] = "방어전담 프레임"
 L["Party Frames"] = "파티 프레임"

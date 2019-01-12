@@ -21,7 +21,7 @@ local IsInInstance, GetNumPartyMembers, GetNumRaidMembers = IsInInstance, GetNum
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local SendAddonMessage = SendAddonMessage
 local UnitFactionGroup = UnitFactionGroup
-local NONE = NONE
+local NONE = L["None"]
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 -- Constants
@@ -170,6 +170,16 @@ function E:ShapeshiftDelayedUpdate(func, ...)
 	end, 0.05)
 end
 
+function E:GetPlayerRole()
+	if self.HealingClasses[self.myclass] ~= nil and self:CheckTalentTree(self.HealingClasses[E.myclass]) then
+		return "HEALER"
+	elseif E.Role == "Tank" then
+		return "TANK"
+	else
+		return "DAMAGER"
+	end
+end
+
 --Basically check if another class border is being used on a class that doesn't match. And then return true if a match is found.
 function E:CheckClassColor(r, g, b)
 	r, g, b = floor(r*100 + .5) / 100, floor(g*100 + .5) / 100, floor(b*100 + .5) / 100
@@ -296,7 +306,7 @@ function E:RequestBGInfo()
 end
 
 function E:PLAYER_ENTERING_WORLD()
-	-- self:ScheduleTimer("CheckRole", 0.01)
+	self:ScheduleTimer("CheckRole", 0.01)
 
 	if not self.MediaUpdated then
 		self:UpdateMedia()
@@ -413,9 +423,9 @@ end
 
 function E:UpdateStatusBars()
 	for _, statusBar in pairs(self.statusBars) do
-		if statusBar and statusBar:GetObjectType() == "StatusBar" then
+		if statusBar and statusBar:IsObjectType("StatusBar") then
 			statusBar:SetStatusBarTexture(self.media.normTex)
-		elseif statusBar and statusBar:GetObjectType() == "Texture" then
+		elseif statusBar and statusBar:IsObjectType("Texture") then
 			statusBar:SetTexture(self.media.normTex)
 		end
 	end
@@ -463,6 +473,19 @@ function E:GetTalentSpecInfo(isInspect)
 	return specIdx, specName, specIcon
 end
 
+function E:CheckTalentTree(tree)
+	local talentTree = self.TalentTree
+	if not talentTree then return false end
+
+	if type(tree) == "number" then
+		return tree == talentTree
+	elseif type(tree) == "table" then
+		for _, index in pairs(tree) do
+			return index == talentTree
+		end
+	end
+end
+
 function E:CheckRole()
 	local talentTree = self:GetTalentSpecInfo()
 	local role
@@ -484,14 +507,6 @@ function E:CheckRole()
 		self.TalentTree = talentTree
 		self.callbacks:Fire("RoleChanged")
 	end
-
-	if E.myclass == "SHAMAN" then
-		if talentTree == 3 then
-			self.DispelClasses[self.myclass].Curse = true
-		else
-			self.DispelClasses[self.myclass].Curse = false
-		end
-	end
 end
 
 function E:IncompatibleAddOn(addon, module)
@@ -505,17 +520,16 @@ end
 function E:CheckIncompatible()
 	if E.global.ignoreIncompatible then return end
 
-	if IsAddOnLoaded("Prat-3.0") and E.private.chat.enable then
-		E:IncompatibleAddOn("Prat-3.0", "Chat")
+	if IsAddOnLoaded("SnowfallKeyPress") and E.private.actionbar.enable then
+		E.private.actionbar.keyDown = true
+		E:IncompatibleAddOn("SnowfallKeyPress", "ActionBar")
 	end
 
 	if IsAddOnLoaded("Chatter") and E.private.chat.enable then
 		E:IncompatibleAddOn("Chatter", "Chat")
 	end
-
-	if IsAddOnLoaded("SnowfallKeyPress") and E.private.actionbar.enable then
-		E.private.actionbar.keyDown = true
-		E:IncompatibleAddOn("SnowfallKeyPress", "ActionBar")
+	if IsAddOnLoaded("Prat") and E.private.chat.enable then
+		E:IncompatibleAddOn("Prat", "Chat")
 	end
 
 	if IsAddOnLoaded("TidyPlates") and E.private.nameplates.enable then
@@ -911,6 +925,7 @@ function E:UpdateAll(ignoreInstall)
 		Chat:PositionChat(true)
 		Chat:SetupChat()
 		Chat:UpdateAnchors()
+		Chat:Panels_ColorUpdate()
 	end
 
 	DataBars:EnableDisable_ExperienceBar()
@@ -1089,108 +1104,33 @@ function E:DBConversions()
 	end
 end
 
-local CPU_USAGE = {}
-local function CompareCPUDiff(showall, module, minCalls)
-	local greatestUsage, greatestCalls, greatestName, newName, newFunc
-	local greatestDiff, lastModule, mod, newUsage, calls, differance = 0
-
-	for name, oldUsage in pairs(CPU_USAGE) do
-		newName, newFunc = match(name, "^([^:]+):(.+)$")
-		if not newFunc then
-			E:Print("CPU_USAGE:", name, newFunc)
-		else
-			if newName ~= lastModule then
-				mod = E:GetModule(newName, true) or E
-				lastModule = newName
-			end
-			newUsage, calls = GetFunctionCPUUsage(mod[newFunc], true)
-			differance = newUsage - oldUsage
-			if showall and (calls > minCalls) then
-				E:Print('Name('..name..')  Calls('..calls..') Diff('..(differance > 0 and format("%.3f", differance) or 0)..')')
-			end
-			if (differance > greatestDiff) and calls > minCalls then
-				greatestName, greatestUsage, greatestCalls, greatestDiff = name, newUsage, calls, differance
-			end
-		end
-	end
-
-	if greatestName then
-		E:Print(greatestName.. " had the CPU usage difference of: "..(greatestUsage > 0 and format("%.3f", greatestUsage) or 0).."ms. And has been called ".. greatestCalls.." times.")
-	else
-		E:Print("CPU Usage: No CPU Usage differences found.")
-	end
-
-	twipe(CPU_USAGE)
-end
-
-function E:GetTopCPUFunc(msg)
-	local module, showall, delay, minCalls = match(msg, "^([^%s]+)%s*([^%s]*)%s*([^%s]*)%s*(.*)$")
-	local mod
-
-	module = (module == "nil" and nil) or module
-	if not module then
-		E:Print("cpuusage: module (arg1) is required! This can be set as 'all' too.")
-		return
-	end
-
-	local module, showall, delay, minCalls = msg:match("^(%S+)%s*(%S*)%s*(%S*)%s*(.*)$")
-	local checkCore, mod = (not module or module == "") and "E"
-
-	showall = (showall == "true" and true) or false
-	delay = (delay == "nil" and nil) or tonumber(delay) or 5
-	minCalls = (minCalls == "nil" and nil) or tonumber(minCalls) or 15
-
-	twipe(CPU_USAGE)
-	if module == "all" then
-		for moduName, modu in pairs(self.modules) do
-			for funcName, func in pairs(modu) do
-				if (funcName ~= "GetModule") and (type(func) == "function") then
-					CPU_USAGE[moduName..":"..funcName] = GetFunctionCPUUsage(func, true)
-				end
-			end
-		end
-	else
-		if not checkCore then
-			mod = self:GetModule(module, true)
-			if not mod then
-				self:Print(module.." not found, falling back to checking core.")
-				mod, checkCore = self, "E"
-			end
-		else
-			mod = self
-		end
-
-		for name, func in pairs(mod) do
-			if (name ~= "GetModule") and type(func) == "function" then
-				CPU_USAGE[(checkCore or module)..":"..name] = GetFunctionCPUUsage(func, true)
-			end
-		end
-	end
-
-	self:Delay(delay, CompareCPUDiff, showall, module, minCalls)
-	self:Print("Calculating CPU Usage differences (module: "..(checkCore or module)..", showall: "..tostring(showall)..", minCalls: "..tostring(minCalls)..", delay: "..tostring(delay)..")")
-end
-
-function E:Initialize()
+function E:Initialize(loginFrame)
 	self.myfaction, self.myLocalizedFaction = UnitFactionGroup("player")
 
 	twipe(self.db)
 	twipe(self.global)
 	twipe(self.private)
 
-	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF)
+	local AceDB = LibStub("AceDB-3.0")
+
+	self.data = AceDB:New("ElvDB", self.DF)
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
-	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateDB", self.privateVars)
+	self.charSettings = AceDB:New("ElvPrivateDB", self.privateVars)
 	self.private = self.charSettings.profile
 	self.db = self.data.profile
 	self.global = self.data.global
 	self:CheckIncompatible()
 	self:DBConversions()
 
-	-- self:ScheduleTimer("CheckRole", 0.01)
-	self:UIScale("PLAYER_LOGIN")
+	self:ScheduleTimer("CheckRole", 0.01)
+
+	self:UIScale("PLAYER_LOGIN", loginFrame)
+
+	if not E.db.general.cropIcon then
+		E.TexCoords = {0, 1, 0, 1}
+	end
 
 	self:LoadCommands() --Load Commands
 	self:InitializeModules() --Load Modules
@@ -1215,8 +1155,8 @@ function E:Initialize()
 	self:UpdateBorderColors()
 	self:UpdateBackdropColors()
 	self:UpdateStatusBars()
-	-- self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "CheckRole")
-	-- self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole")
+
+	self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckRole")
 	self:RegisterEvent("CVAR_UPDATE", "UIScale")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -1231,6 +1171,6 @@ function E:Initialize()
 	collectgarbage()
 
 	if self.db.general.loginmessage then
-		print(select(2, E:GetModule("Chat"):FindURL("CHAT_MSG_DUMMY", format(L["LOGIN_MSG"], self["media"].hexvaluecolor, self["media"].hexvaluecolor, self.version)))..".")
+		self:Print(select(2, E:GetModule("Chat"):FindURL("CHAT_MSG_DUMMY", format(L["LOGIN_MSG"], self.media.hexvaluecolor, self.media.hexvaluecolor, self.version)))..".")
 	end
 end

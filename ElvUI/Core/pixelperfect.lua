@@ -90,6 +90,7 @@ function E:UIScale(event)
 			--[[Eyefinity Test mode
 				Resize the E.UIParent to be smaller than it should be, all objects inside should relocate.
 				Dragging moveable frames outside the box and reloading the UI ensures that they are saving position correctly.
+				E:Size(E.UIParent, UIParent:GetWidth() - 250, UIParent:GetHeight() - 250)
 			]]
 		else
 			width, height = UIParent:GetWidth(), UIParent:GetHeight()

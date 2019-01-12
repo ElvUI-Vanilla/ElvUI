@@ -71,15 +71,14 @@ function E:FarmMode(msg)
 end
 
 function E:Grid(msg)
-	if msg and type(tonumber(msg)) == "number" and tonumber(msg) <= 256 and tonumber(msg) >= 4 then
+	msg = msg and tonumber(msg)
+	if type(msg) == "number" and (msg <= 256 and msg >= 4) then
 		E.db.gridSize = msg
 		E:Grid_Show()
+	elseif _G.ElvUIGrid and _G.ElvUIGrid:IsShown() then
+		E:Grid_Hide()
 	else
-		if EGrid then
-			E:Grid_Hide()
-		else
-			E:Grid_Show()
-		end
+		E:Grid_Show()
 	end
 end
 
@@ -91,10 +90,10 @@ function E:LuaError(msg)
 		EnableAddOn("!DebugTools")
 		EnableAddOn("ElvUI")
 		EnableAddOn("ElvUI_Config")
-		SetCVar("ShowErrors", "1")
+		SetCVar("ShowErrors", 1)
 		ReloadUI()
 	elseif msg == "off" then
-		SetCVar("ShowErrors", "0")
+		SetCVar("ShowErrors", 0)
 		E:Print("Lua errors off.")
 	else
 		E:Print("/luaerror on - /luaerror off")

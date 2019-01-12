@@ -27,6 +27,8 @@ P["general"] = {
 	["backdropfadecolor"] = {r = .06, g = .06, b = .06, a = 0.8},
 	["valuecolor"] = {r = 254/255, g = 123/255, b = 44/255},
 
+	["cropIcon"] = true,
+
 	["classCacheStoreInDB"] = true,
 	["classCacheRequestInfo"] = false,
 
