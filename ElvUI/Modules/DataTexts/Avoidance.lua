@@ -3,42 +3,41 @@ local DT = E:GetModule("DataTexts");
 
 --Cache global variables
 --Lua functions
-local find, format, join, match = string.find, string.format, string.join, string.match
+local format, join, match = string.format, string.join, string.match
 local abs = math.abs
 --WoW API / Variables
+local GetBlockChance = GetBlockChance
+local GetBonusBarOffset = GetBonusBarOffset
+local GetDodgeChance = GetDodgeChance
 local GetInventoryItemLink = GetInventoryItemLink
 local GetInventorySlotInfo = GetInventorySlotInfo
 local GetItemInfo = GetItemInfo
-local UnitLevel = UnitLevel
-local GetDodgeChance = GetDodgeChance
 local GetParryChance = GetParryChance
-local GetBlockChance = GetBlockChance
-local GetBonusBarOffset = GetBonusBarOffset
+local UnitLevel = UnitLevel
 local BOSS = BOSS
+local DEFENSE = DEFENSE
 local DODGE_CHANCE = DODGE_CHANCE
 local PARRY_CHANCE = PARRY_CHANCE
 local BLOCK_CHANCE = BLOCK_CHANCE
 
-DEFENSE = "Defense";
-DODGE_CHANCE = "Dodge Chance";
-PARRY_CHANCE = "Parry Chance";
-BLOCK_CHANCE = "Block Chance";
+DEFENSE = "Defense"
+DODGE_CHANCE = "Dodge Chance"
+PARRY_CHANCE = "Parry Chance"
+BLOCK_CHANCE = "Block Chance"
 
-local displayString, lastPanel
+local lastPanel
 local targetlv, playerlv
 local baseMissChance, levelDifference, dodge, parry, block, avoidance, unhittable
+local displayString = ""
 local chanceString = "%.2f%%"
 local AVD_DECAY_RATE = 0.2
 
 local function IsWearingShield()
 	local slotID = GetInventorySlotInfo("SecondaryHandSlot")
-	local link = GetInventoryItemLink("player", slotID)
-	if link then
-		local _, _, itemID = find(link, "(%d+):")
+	local itemLink = GetInventoryItemLink("player", slotID)
 
-		if itemID then
-			return select(9, GetItemInfo(itemID))
-		end
+	if itemLink then
+		return select(9, GetItemInfo(match(itemLink, "item:(%d+)")))
 	end
 end
 
@@ -107,7 +106,7 @@ local function OnEnter(self)
 	DT.tooltip:AddLine(" ")
 
 	if unhittable > 0 then
-		DT.tooltip:AddDoubleLine(L["Unhittable:"], "+" .. format(chanceString, unhittable), 1, 1, 1, 0, 1, 0)
+		DT.tooltip:AddDoubleLine(L["Unhittable:"], "+"..format(chanceString, unhittable), 1, 1, 1, 0, 1, 0)
 	else
 		DT.tooltip:AddDoubleLine(L["Unhittable:"], format(chanceString, unhittable), 1, 1, 1, 1, 0, 0)
 	end

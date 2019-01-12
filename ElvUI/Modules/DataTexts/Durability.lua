@@ -36,7 +36,7 @@ local function OnEvent(self)
 	lastPanel = self
 	totalDurability = 100
 
-	for _, value in ipairs(slots) do
+	for _, value in pairs(slots) do
 		local slot = GetInventorySlotInfo(value)
 		current, max = GetInventoryItemDurability(slot)
 
@@ -67,7 +67,7 @@ local function OnEnter(self)
 end
 
 local function ValueColorUpdate(hex)
-	displayString = join("", DURABILITY, ": ", hex, "%d%%|r")
+	displayString = join("", L["Durability"], ": ", hex, "%d%%|r")
 
 	if lastPanel ~= nil then
 		OnEvent(lastPanel, "ELVUI_COLOR_UPDATE")
@@ -75,4 +75,4 @@ local function ValueColorUpdate(hex)
 end
 E.valueColorUpdateFuncs[ValueColorUpdate] = true
 
-DT:RegisterDatatext("Durability", {"PLAYER_ENTERING_WORLD", "UPDATE_INVENTORY_ALERTS", "MERCHANT_SHOW"}, OnEvent, nil, OnClick, OnEnter, nil, DURABILITY)
+DT:RegisterDatatext("Durability", {"PLAYER_LOGIN", "UPDATE_INVENTORY_ALERTS", "MERCHANT_SHOW"}, OnEvent, nil, OnClick, OnEnter, nil, L["Durability"])

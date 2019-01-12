@@ -556,19 +556,17 @@ P["chat"] = {
 P["datatexts"] = {
 	["font"] = "PT Sans Narrow",
 	["fontSize"] = 12,
-	["fontOutline"] = "NONE",
-	["wordWrap"] = false,
-
+	["fontOutline"] = "OUTLINE",
 	["panels"] = {
 		["LeftChatDataPanel"] = {
 			["left"] = "Armor",
 			["middle"] = "Durability",
-			["right"] = "Avoidance",
+			["right"] = "Avoidance"
 		},
 		["RightChatDataPanel"] = {
 			["left"] = "System",
 			["middle"] = "Time",
-			["right"] = "Gold",
+			["right"] = "Gold"
 		},
 		["LeftMiniPanel"] = "Guild",
 		["RightMiniPanel"] = "Friends",
@@ -577,22 +575,20 @@ P["datatexts"] = {
 		["BottomLeftMiniPanel"] = "",
 		["BottomRightMiniPanel"] = "",
 		["TopRightMiniPanel"] = "",
-		["TopLeftMiniPanel"] = "",
+		["TopLeftMiniPanel"] = ""
 	},
-	["battleground"] = true,
-	["panelBackdrop"] = true,
-	["panelTransparency"] = false,
-
-	--Datatext Options
-	--General
-	["goldFormat"] = "BLIZZARD",
-	["goldCoins"] = false,
-
-	--Time Datatext
 	["timeFormat"] = "%I:%M",
 	["dateFormat"] = "",
-
-	--Enabled/Disabled Panels
+	["battleground"] = true,
+	["panelTransparency"] = false,
+	["panelBackdrop"] = true,
+	["goldFormat"] = "BLIZZARD",
+	["noCombatClick"] = false,
+	["noCombatHover"] = false,
+	["friends"] = {
+		["hideAFK"] = false,
+		["hideDND"] = false,
+	},
 	["minimapPanels"] = true,
 	["leftChatPanel"] = true,
 	["rightChatPanel"] = true,
@@ -601,7 +597,7 @@ P["datatexts"] = {
 	["minimapTopRight"] = false,
 	["minimapBottom"] = false,
 	["minimapBottomLeft"] = false,
-	["minimapBottomRight"] = false,
+	["minimapBottomRight"] = false
 }
 
 --Tooltip

@@ -792,11 +792,11 @@ function UF:UpdateAllHeaders(event)
 	if ORD then
 		ORD:ResetDebuffData()
 
-		if instanceType == "party" or instanceType == "raid" then
+		--[[if instanceType == "party" or instanceType == "raid" then
 			ORD:RegisterDebuffs(E.global.unitframe.aurafilters.RaidDebuffs.spells)
-		-- else
-			-- ORD:RegisterDebuffs(E.global.unitframe.aurafilters.CCDebuffs.spells)
-		end
+		else
+			ORD:RegisterDebuffs(E.global.unitframe.aurafilters.CCDebuffs.spells)
+		end--]]
 	end
 
 	if E.private.unitframe.disabledBlizzardFrames.party then

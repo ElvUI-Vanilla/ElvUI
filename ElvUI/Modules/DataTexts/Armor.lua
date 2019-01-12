@@ -15,7 +15,7 @@ local chanceString = "%.2f%%"
 local displayString = ""
 local _, effectiveArmor
 
-local function GetArmorReduction(armor, attackerLevel)
+local function PaperDollFrame_GetArmorReduction(armor, attackerLevel)
 	local levelModifier = attackerLevel
 	if levelModifier > 59 then
 		levelModifier = levelModifier + (4.5 * (levelModifier - 59))
@@ -44,14 +44,14 @@ local function OnEnter(self)
 
 	local playerLevel = UnitLevel("player") + 3
 	for i = 1, 4 do
-		local armorReduction = GetArmorReduction(effectiveArmor, playerLevel)
+		local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, playerLevel)
 		DT.tooltip:AddDoubleLine(playerLevel, format(chanceString, armorReduction), 1, 1, 1)
 		playerLevel = playerLevel - 1
 	end
 
 	local targetLevel = UnitLevel("target")
 	if targetLevel and targetLevel > 0 and (targetLevel > playerLevel + 3 or targetLevel < playerLevel) then
-		local armorReduction = GetArmorReduction(effectiveArmor, targetLevel)
+		local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, targetLevel)
 		DT.tooltip:AddDoubleLine(targetLevel, format(chanceString, armorReduction), 1, 1, 1)
 	end
 

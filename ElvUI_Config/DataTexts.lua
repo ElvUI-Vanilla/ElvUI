@@ -3,10 +3,13 @@ local DT = E:GetModule("DataTexts");
 
 --Cache global variables
 --Lua functions
+local _G = _G
+local pairs = pairs
 local find, upper = string.find, string.upper
 local getn = table.getn
 --WoW API / Variables
-local GENERAL, NONE = GENERAL, NONE
+local HideLeftChat = HideLeftChat
+local HideRightChat = HideRightChat
 
 local datatexts = {}
 
@@ -14,7 +17,7 @@ function DT:PanelLayoutOptions()
 	for name, data in pairs(DT.RegisteredDataTexts) do
 		datatexts[name] = data.localizedName or L[name]
 	end
-	datatexts[""] = NONE
+	datatexts[""] = L["None"]
 
 	local order
 	local table = E.Options.args.datatexts.args.panels.args
@@ -23,9 +26,9 @@ function DT:PanelLayoutOptions()
 		if not _G[pointLoc] then table[pointLoc] = nil return end
 		if type(tab) == "table" then
 			if find(pointLoc, "Chat") then
-				order = 15;
+				order = 15
 			else
-				order = 20;
+				order = 20
 			end
 			table[pointLoc] = {
 				order = order,
@@ -38,8 +41,8 @@ function DT:PanelLayoutOptions()
 					type = "select",
 					name = L[option] or upper(option),
 					values = datatexts,
-					get = function(info) return E.db.datatexts.panels[pointLoc][ info[getn(info)] ]; end,
-					set = function(info, value) E.db.datatexts.panels[pointLoc][ info[getn(info)] ] = value; DT:LoadDataTexts(); end
+					get = function(info) return E.db.datatexts.panels[pointLoc][ info[getn(info)] ] end,
+					set = function(info, value) E.db.datatexts.panels[pointLoc][ info[getn(info)] ] = value DT:LoadDataTexts() end
 				}
 			end
 		elseif type(tab) == "string" then
@@ -47,8 +50,8 @@ function DT:PanelLayoutOptions()
 				type = "select",
 				name = L[pointLoc] or pointLoc,
 				values = datatexts,
-				get = function(info) return E.db.datatexts.panels[pointLoc]; end,
-				set = function(info, value) E.db.datatexts.panels[pointLoc] = value; DT:LoadDataTexts(); end
+				get = function(info) return E.db.datatexts.panels[pointLoc] end,
+				set = function(info, value) E.db.datatexts.panels[pointLoc] = value DT:LoadDataTexts() end
 			}
 		end
 	end
@@ -58,8 +61,8 @@ E.Options.args.datatexts = {
 	type = "group",
 	name = L["DataTexts"],
 	childGroups = "tab",
-	get = function(info) return E.db.datatexts[ info[getn(info)] ]; end,
-	set = function(info, value) E.db.datatexts[ info[getn(info)] ] = value; DT:LoadDataTexts(); end,
+	get = function(info) return E.db.datatexts[ info[getn(info)] ] end,
+	set = function(info, value) E.db.datatexts[ info[getn(info)] ] = value DT:LoadDataTexts() end,
 	args = {
 		intro = {
 			order = 1,
@@ -74,18 +77,18 @@ E.Options.args.datatexts = {
 		general = {
 			order = 3,
 			type = "group",
-			name = GENERAL,
+			name = L["General"],
 			args = {
 				header = {
 					order = 1,
 					type = "header",
-					name = GENERAL
+					name = L["General"]
 				},
 				generalGroup = {
 					order = 2,
 					type = "group",
 					guiInline = true,
-					name = GENERAL,
+					name = L["General"],
 					args = {
 						battleground = {
 							order = 1,
@@ -95,21 +98,21 @@ E.Options.args.datatexts = {
 						},
 						panelTransparency = {
 							order = 2,
-							name = L["Panel Transparency"],
 							type = "toggle",
+							name = L["Panel Transparency"],
 							set = function(info, value)
-								E.db.datatexts[ info[getn(info)] ] = value;
-								E:GetModule("Layout"):SetDataPanelStyle();
+								E.db.datatexts[ info[getn(info)] ] = value
+								E:GetModule("Layout"):SetDataPanelStyle()
 							end
 						},
 						panelBackdrop = {
 							order = 3,
-							name = L["Backdrop"],
 							type = "toggle",
+							name = L["Backdrop"],
 							set = function(info, value)
 								E.db.datatexts[ info[getn(info)] ] = value
 								E:GetModule("Layout"):SetDataPanelStyle()
-							end,
+							end
 						},
 						noCombatClick = {
 							order = 4,
@@ -154,7 +157,7 @@ E.Options.args.datatexts = {
 						fontSize = {
 							order = 2,
 							type = "range",
-							name = FONT_SIZE,
+							name = L["Font Size"],
 							min = 4, max = 22, step = 1
 						},
 						fontOutline = {
@@ -163,7 +166,7 @@ E.Options.args.datatexts = {
 							name = L["Font Outline"],
 							desc = L["Set the font outline."],
 							values = {
-								["NONE"] = NONE,
+								["NONE"] = L["None"],
 								["OUTLINE"] = "OUTLINE",
 								["MONOCHROMEOUTLINE"] = "MONOCROMEOUTLINE",
 								["THICKOUTLINE"] = "THICKOUTLINE"
@@ -194,13 +197,13 @@ E.Options.args.datatexts = {
 					name = L["Datatext Panel (Left)"],
 					desc = L["Display data panels below the chat, used for datatexts."],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						if(E.db.LeftChatPanelFaded) then
-							E.db.LeftChatPanelFaded = true;
-							HideLeftChat();
+						E.db.datatexts[ info[getn(info)] ] = value
+						if E.db.LeftChatPanelFaded then
+							E.db.LeftChatPanelFaded = true
+							HideLeftChat()
 						end
-						E:GetModule("Chat"):UpdateAnchors();
-						E:GetModule("Layout"):ToggleChatPanels();
+						E:GetModule("Chat"):UpdateAnchors()
+						E:GetModule("Layout"):ToggleChatPanels()
 					end
 				},
 				rightChatPanel = {
@@ -209,13 +212,13 @@ E.Options.args.datatexts = {
 					name = L["Datatext Panel (Right)"],
 					desc = L["Display data panels below the chat, used for datatexts."],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						if(E.db.RightChatPanelFaded) then
-							E.db.RightChatPanelFaded = true;
-							HideRightChat();
+						E.db.datatexts[ info[getn(info)] ] = value
+						if E.db.RightChatPanelFaded then
+							E.db.RightChatPanelFaded = true
+							HideRightChat()
 						end
-						E:GetModule("Chat"):UpdateAnchors();
-						E:GetModule("Layout"):ToggleChatPanels();
+						E:GetModule("Chat"):UpdateAnchors()
+						E:GetModule("Layout"):ToggleChatPanels()
 					end
 				},
 				minimapPanels = {
@@ -224,17 +227,17 @@ E.Options.args.datatexts = {
 					name = L["Minimap Panels"],
 					desc = L["Display minimap panels below the minimap, used for datatexts."],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapTop = {
 					order = 5,
-					name = L["TopMiniPanel"],
 					type = "toggle",
+					name = L["TopMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapTopLeft = {
@@ -242,17 +245,17 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["TopLeftMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
-					end,
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
+					end
 				},
 				minimapTopRight = {
 					order = 7,
 					type = "toggle",
 					name = L["TopRightMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapBottom = {
@@ -260,8 +263,8 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["BottomMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapBottomLeft = {
@@ -269,17 +272,17 @@ E.Options.args.datatexts = {
 					type = "toggle",
 					name = L["BottomLeftMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				minimapBottomRight = {
 					order = 10,
-					name = L["BottomRightMiniPanel"],
 					type = "toggle",
+					name = L["BottomRightMiniPanel"],
 					set = function(info, value)
-						E.db.datatexts[ info[getn(info)] ] = value;
-						E:GetModule("Minimap"):UpdateSettings();
+						E.db.datatexts[ info[getn(info)] ] = value
+						E:GetModule("Minimap"):UpdateSettings()
 					end
 				},
 				spacer = {
@@ -303,14 +306,14 @@ E.Options.args.datatexts = {
 				header = {
 					order = 1,
 					type = "header",
-					name = L["Time"],
+					name = L["Time"]
 				},
 				timeFormat = {
 					order = 2,
 					type = "select",
 					name = L["Time Format"],
 					values = {
-						[""] = NONE,
+						[""] = L["None"],
 						["%I:%M"] = "03:27",
 						["%I:%M:%S"] = "03:27:32",
 						["%I:%M %p"] = "03:27 PM",
@@ -324,16 +327,57 @@ E.Options.args.datatexts = {
 					type = "select",
 					name = L["Date Format"],
 					values = {
-						[""] = NONE,
-						["%d/%m/%y "] = "27/03/16",
-						["%m/%d/%y "] = "03/27/16",
-						["%y/%m/%d "] = "16/03/27",
-						["%d.%m.%y "] = "27.03.16"
+						[""] = L["None"],
+						["%d/%m/%y "] = "DD/MM/YY",
+						["%m/%d/%y "] = "MM/DD/YY",
+						["%y/%m/%d "] = "YY/MM/DD",
+						["%d.%m.%y "] = "DD.MM.YY",
+						["%m.%d.%y "] = "MM.DD.YY",
+						["%y.%m.%d "] = "YY.MM.DD"
+					}
+				}
+			}
+		},
+		friends = {
+			order = 6,
+			type = "group",
+			name = L["Friends"],
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["Friends"]
+				},
+				description = {
+					order = 2,
+					type = "description",
+					name = L["Hide specific sections in the datatext tooltip."]
+				},
+				hideGroup = {
+					order = 3,
+					type = "group",
+					guiInline = true,
+					name = L["Hide"],
+					args = {
+						hideAFK = {
+							order = 1,
+							type = "toggle",
+							name = L["Away"],
+							get = function(info) return E.db.datatexts.friends.hideAFK end,
+							set = function(info, value) E.db.datatexts.friends.hideAFK = value DT:LoadDataTexts() end
+						},
+						hideDND = {
+							order = 2,
+							type = "toggle",
+							name = L["Busy"],
+							get = function(info) return E.db.datatexts.friends.hideDND end,
+							set = function(info, value) E.db.datatexts.friends.hideDND = value DT:LoadDataTexts() end
+						}
 					}
 				}
 			}
 		}
 	}
-};
+}
 
-DT:PanelLayoutOptions();
+DT:PanelLayoutOptions()
