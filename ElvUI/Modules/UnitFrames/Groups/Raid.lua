@@ -38,6 +38,7 @@ function UF:Construct_RaidFrames()
 	self.AuraWatch = UF:Construct_AuraWatch(self)
 	self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
 	self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
+	self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 	self.MouseGlow = UF:Construct_MouseGlow(self)
 	self.TargetGlow = UF:Construct_TargetGlow(self)
 	self.InfoPanel = UF:Construct_InfoPanel(self)
@@ -154,6 +155,8 @@ function UF:Update_RaidFrames(frame, db)
 	UF:Configure_DebuffHighlight(frame)
 
 	UF:Configure_GPS(frame)
+
+	UF:Configure_RaidRoleIcons(frame)
 
 	UF:Configure_Range(frame)
 

@@ -27,6 +27,7 @@ function UF:Construct_PartyFrames()
 	if self.isChild then
 		self.Health = UF:Construct_HealthBar(self, true)
 
+		self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
 		self.Name = UF:Construct_NameText(self)
@@ -222,6 +223,8 @@ function UF:Update_PartyFrames(frame, db)
 		UF:Configure_DebuffHighlight(frame)
 
 		UF:Configure_GPS(frame)
+
+		UF:Configure_RaidRoleIcons(frame)
 
 		UF:UpdateAuraWatch(frame)
 

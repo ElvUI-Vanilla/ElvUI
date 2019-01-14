@@ -60,7 +60,7 @@ local petAnchors = {
 }
 
 local attachToValues = {
-	["Health"] = HEALTH,
+	["Health"] = L["Health"],
 	["Power"] = L["Power"],
 	["InfoPanel"] = L["Information Panel"],
 	["Frame"] = L["Frame"]
@@ -3162,6 +3162,34 @@ E.Options.args.unitframe.args.player = {
 					width = "full"
 				}
 			}
+		},
+		raidRoleIcons = {
+			order = 703,
+			type = "group",
+			name = L["RL / ML Icons"],
+			get = function(info) return E.db.unitframe.units.player.raidRoleIcons[ info[getn(info)] ] end,
+			set = function(info, value) E.db.unitframe.units.player.raidRoleIcons[ info[getn(info)] ] = value UF:CreateAndUpdateUF("player") end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["RL / ML Icons"]
+				},
+				enable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"]
+				},
+				position = {
+					order = 3,
+					type = "select",
+					name = L["Position"],
+					values = {
+						["TOPLEFT"] = "TOPLEFT",
+						["TOPRIGHT"] = "TOPRIGHT"
+					}
+				}
+			}
 		}
 	}
 }
@@ -4462,6 +4490,34 @@ E.Options.args.unitframe.args.party = {
 				}--]]
 			}
 		},
+		raidRoleIcons = {
+			order = 750,
+			type = "group",
+			name = L["RL / ML Icons"],
+			get = function(info) return E.db.unitframe.units.party.raidRoleIcons[ info[getn(info)] ] end,
+			set = function(info, value) E.db.unitframe.units.party.raidRoleIcons[ info[getn(info)] ] = value UF:CreateAndUpdateHeaderGroup("party") end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["RL / ML Icons"]
+				},
+				enable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"]
+				},
+				position = {
+					order = 3,
+					type = "select",
+					name = L["Position"],
+					values = {
+						["TOPLEFT"] = "TOPLEFT",
+						["TOPRIGHT"] = "TOPRIGHT"
+					}
+				}
+			}
+		},
 		health = GetOptionsTable_Health(true, UF.CreateAndUpdateHeaderGroup, "party"),
 		power = GetOptionsTable_Power(false, UF.CreateAndUpdateHeaderGroup, "party"),
 		infoPanel = GetOptionsTable_InformationPanel(UF.CreateAndUpdateHeaderGroup, "party"),
@@ -4976,6 +5032,34 @@ E.Options.args.unitframe.args.raid = {
 				}--]]
 			}
 		},
+		raidRoleIcons = {
+			order = 750,
+			type = "group",
+			name = L["RL / ML Icons"],
+			get = function(info) return E.db.unitframe.units.raid.raidRoleIcons[ info[getn(info)] ] end,
+			set = function(info, value) E.db.unitframe.units.raid.raidRoleIcons[ info[getn(info)] ] = value UF:CreateAndUpdateHeaderGroup("raid") end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["RL / ML Icons"]
+				},
+				enable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"]
+				},
+				position = {
+					order = 3,
+					type = "select",
+					name = L["Position"],
+					values = {
+						["TOPLEFT"] = "TOPLEFT",
+						["TOPRIGHT"] = "TOPRIGHT"
+					}
+				}
+			}
+		},
 		rdebuffs = GetOptionsTable_RaidDebuff(UF.CreateAndUpdateHeaderGroup, "raid"),
 		raidicon = GetOptionsTable_RaidIcon(UF.CreateAndUpdateHeaderGroup, "raid"),
 		GPSArrow = GetOptionsTable_GPS("raid")
@@ -5302,6 +5386,34 @@ E.Options.args.unitframe.args.raid40 = {
 						end
 					end
 				}--]]
+			}
+		},
+		raidRoleIcons = {
+			order = 750,
+			type = "group",
+			name = L["RL / ML Icons"],
+			get = function(info) return E.db.unitframe.units.raid40.raidRoleIcons[ info[getn(info)] ] end,
+			set = function(info, value) E.db.unitframe.units.raid40.raidRoleIcons[ info[getn(info)] ] = value UF:CreateAndUpdateHeaderGroup("raid40") end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["RL / ML Icons"]
+				},
+				enable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"]
+				},
+				position = {
+					order = 3,
+					type = "select",
+					name = L["Position"],
+					values = {
+						["TOPLEFT"] = "TOPLEFT",
+						["TOPRIGHT"] = "TOPRIGHT"
+					}
+				}
 			}
 		},
 		rdebuffs = GetOptionsTable_RaidDebuff(UF.CreateAndUpdateHeaderGroup, "raid40"),
