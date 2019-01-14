@@ -134,6 +134,8 @@ function UF:Update_RaidFrames(frame, db)
 		frame.VARIABLES_SET = true
 	end
 
+	E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
+
 	UF:Configure_InfoPanel(frame)
 
 	UF:Configure_HealthBar(frame)

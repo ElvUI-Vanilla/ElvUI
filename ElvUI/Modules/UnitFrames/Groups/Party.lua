@@ -27,7 +27,6 @@ function UF:Construct_PartyFrames()
 	if self.isChild then
 		self.Health = UF:Construct_HealthBar(self, true)
 
-		self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
 		self.Name = UF:Construct_NameText(self)
@@ -64,6 +63,7 @@ function UF:Construct_PartyFrames()
 		self.AuraWatch = UF:Construct_AuraWatch(self)
 		self.RaidDebuffs = UF:Construct_RaidDebuffs(self)
 		self.DebuffHighlight = UF:Construct_DebuffHighlight(self)
+		self.RaidRoleFramesAnchor = UF:Construct_RaidRoleFrames(self)
 		self.MouseGlow = UF:Construct_MouseGlow(self)
 		self.TargetGlow = UF:Construct_TargetGlow(self)
 		self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
@@ -83,18 +83,6 @@ function UF:Construct_PartyFrames()
 	return self
 end
 
-function UF:PartySmartVisibility()
-	if not self then self = this end
-	if not self.db or (self.db and not self.db.enable) then return end
-
-	local numMembers = GetNumRaidMembers()
-	if numMembers < 1 then
-		self:Show()
-	else
-		self:Hide()
-	end
-end
-
 function UF:Update_PartyHeader(header, db)
 	header.db = db
 
@@ -103,6 +91,7 @@ function UF:Update_PartyHeader(header, db)
 		E:Point(header, "BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)
 
 		E:CreateMover(header, header:GetName().."Mover", L["Party Frames"], nil, nil, nil, "ALL,PARTY")
+		header.positioned = true
 
 		header:RegisterEvent("PLAYER_LOGIN")
 		header:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -113,6 +102,18 @@ function UF:Update_PartyHeader(header, db)
 	end
 
 	UF.PartySmartVisibility(header)
+end
+
+function UF:PartySmartVisibility()
+	if not self then self = this end
+	if not self.db or (self.db and not self.db.enable) then return end
+
+	local numMembers = GetNumRaidMembers()
+	if numMembers < 1 then
+		self:Show()
+	else
+		self:Hide()
+	end
 end
 
 function UF:Update_PartyFrames(frame, db)
@@ -200,6 +201,8 @@ function UF:Update_PartyFrames(frame, db)
 
 		UF:UpdateNameSettings(frame, frame.childType)
 	else
+
+		E:Size(frame, frame.UNIT_WIDTH, frame.UNIT_HEIGHT)
 
 		UF:Configure_InfoPanel(frame)
 		UF:Configure_HealthBar(frame)
