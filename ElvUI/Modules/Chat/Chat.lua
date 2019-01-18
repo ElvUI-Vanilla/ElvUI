@@ -976,6 +976,7 @@ end
 local function OnTextChanged(self)
 	local text = self:GetText()
 
+	if UnitAffectingCombat('player') then 
 		local MIN_REPEAT_CHARACTERS = E.db.chat.numAllowedCombatRepeat
 		if strlen(text) > MIN_REPEAT_CHARACTERS then
 		local repeatChar = true
@@ -990,6 +991,7 @@ local function OnTextChanged(self)
 				return
 			end
 		end
+	end
 
 	if strlen(text) < 5 then
 		if strsub(text, 1, 4) == "/tt " then
