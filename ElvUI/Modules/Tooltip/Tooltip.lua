@@ -270,10 +270,12 @@ end
 
 function TT:SetItemRef(link)
 	if find(link, "^item:") then
-		local id = tonumber(match(link, "(%d+)"))
-		ItemRefTooltip:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
-		ItemRefTooltip:Show()
+		if E.db.tooltip.spellID then
+			local id = tonumber(match(link, "(%d+)"))
+			ItemRefTooltip:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+		end
 	end
+	ItemRefTooltip:Show()
 end
 
 function TT:SetPrice(tt, id, count)
@@ -309,7 +311,9 @@ function TT:SetAction(tt, buttonID)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -324,7 +328,9 @@ function TT:SetAuctionItem(tt, type, index)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -339,7 +345,9 @@ function TT:SetAuctionSellItem(tt)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -353,8 +361,9 @@ function TT:SetBagItem(tt, bag, slot)
 		local _, count = GetContainerItemInfo(bag, slot)
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -372,8 +381,9 @@ function TT:SetCraftItem(tt, skill, slot)
 
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -383,7 +393,9 @@ function TT:SetCraftSpell(tt, id)
 
 	local id = tonumber(match(link, "enchant:(%d+)"))
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -408,7 +420,9 @@ function TT:SetHyperlink(tt, link, count)
 	end
 
 	if tt:GetName() == "GameTooltip" then
-		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+		if E.db.tooltip.spellID then
+			tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+		end
 	end
 
 	tt:Show()
@@ -425,7 +439,9 @@ function TT:SetInboxItem(tt, index, attachmentIndex)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -446,7 +462,9 @@ function TT:SetInventoryItem(tt, unit, slot)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -460,8 +478,9 @@ function TT:SetLootItem(tt, slot)
 		local _, _, count = GetLootSlotInfo(slot)
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -475,8 +494,9 @@ function TT:SetLootRollItem(tt, rollID)
 		local _, _, count = GetLootRollItemInfo(rollID)
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -490,8 +510,9 @@ function TT:SetMerchantItem(tt, slot)
 		local _, _, _, count = GetMerchantItemInfo(slot)
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -505,8 +526,9 @@ function TT:SetQuestItem(tt, type, slot)
 		local _, _, count = GetQuestItemInfo(type, slot)
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -520,8 +542,9 @@ function TT:SetQuestLogItem(tt, type, index)
 		local _, _, count = GetQuestLogRewardInfo(index)
 		self:SetPrice(tt, id, count)
 	end
-
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -536,7 +559,9 @@ function TT:SetSendMailItem(tt, index)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -551,7 +576,9 @@ function TT:SetTradePlayerItem(tt, index)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -571,7 +598,9 @@ function TT:SetTradeSkillItem(tt, skill, slot)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
@@ -586,7 +615,9 @@ function TT:SetTradeTargetItem(tt, index)
 		self:SetPrice(tt, id, count)
 	end
 
-	tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	if E.db.tooltip.spellID then
+		tt:AddLine(format("|cFFCA3C3C%s|r %d", ID, id))
+	end
 	tt:Show()
 end
 
