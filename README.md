@@ -1,5 +1,7 @@
 # ElvUI - Vanilla (1.12.1)
-:exclamation: *Does NOT work with Retail - [Classic (1.13)](https://git.tukui.org/elvui/elvui-classic)*
+## :exclamation: *Does NOT work with Retail - [Classic (1.13)](https://git.tukui.org/elvui/elvui-classic)*
+
+# Due to Classic 1.13 release, development on this addon has halted. If you or your friends still play 1.12.1 Vanilla and are wanting to help with any bug fixes, please submit any PR requests as you please. At this time, we will not answer any support tickets you make or ask about in regards to current bugs. For now, development will stay quiet on this matter.
 
 This is the backported version of ElvUI for World of Warcraft - Vanilla (1.12.1) 
 <br />
